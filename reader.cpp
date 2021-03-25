@@ -98,6 +98,8 @@ reader::reader(QWidget *parent) :
     stylesheetFile.close();
 
     ui->sizeValueLabel->setStyleSheet("font-size: 9pt");
+    ui->homeBtn->setStyleSheet("font-size: 9pt");
+    ui->aboutBtn->setStyleSheet("font-size: 9pt");
 
     // Hiding the menubar + definition widget
     ui->inkboxLabel->hide();
