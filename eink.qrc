@@ -1,0 +1,34 @@
+<RCC>
+    <qresource prefix="/">
+        <file>resources/eink.qss</file>
+        <file>resources/checkbox-checked.png</file>
+        <file>resources/checkbox-unchecked.png</file>
+        <file>resources/align-center.png</file>
+        <file>resources/align-justify.png</file>
+        <file>resources/align-left.png</file>
+        <file>resources/align-right.png</file>
+        <file>resources/chesterton.jpg</file>
+        <file>resources/alcott.jpg</file>
+        <file>resources/davies.jpg</file>
+        <file>resources/king.jpg</file>
+        <file>resources/star.png</file>
+        <file>resources/starred_star.png</file>
+        <file>resources/close.png</file>
+        <file>resources/chevron-left.png</file>
+        <file>resources/chevron-right.png</file>
+        <file>resources/christie.png</file>
+        <file>resources/exit.png</file>
+        <file>resources/usbms.png</file>
+        <file>resources/settings.png</file>
+        <file>resources/search.png</file>
+        <file>resources/power.png</file>
+        <file>resources/book.png</file>
+        <file>resources/apps.png</file>
+        <file>resources/battery_half.png</file>
+        <file>resources/battery_full.png</file>
+        <file>resources/battery_empty.png</file>
+        <file>resources/battery_charging.png</file>
+        <file>resources/alert.png</file>
+        <file>resources/eink_dark.qss</file>
+    </qresource>
+</RCC>
