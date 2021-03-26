@@ -14,10 +14,10 @@ apps::apps(QWidget *parent) :
     ui->calendarLaunchBtn->setProperty("type", "borderless");
     ui->savedWordsLaunchBtn->setProperty("type", "borderless");
 
-    ui->scribbleLaunchBtn->setStyleSheet("background: lightGrey");
-    ui->lightmapsLaunchBtn->setStyleSheet("background: lightGrey");
-    ui->calendarLaunchBtn->setStyleSheet("background: lightGrey");
-    ui->savedWordsLaunchBtn->setStyleSheet("background: lightGrey");
+    ui->scribbleLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
+    ui->lightmapsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
+    ui->calendarLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
+    ui->savedWordsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     QFile stylesheetFile(":/resources/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);

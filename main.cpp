@@ -3,6 +3,9 @@
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
+#include <QDebug>
+#include <QRect>
+#include <QScreen>
 
 int main(int argc, char *argv[])
 {
@@ -17,6 +20,8 @@ int main(int argc, char *argv[])
         QApplication a(argc, argv);
         alert w;
 
+        const QScreen* screen = qApp->primaryScreen();
+        w.setGeometry(QRect(QPoint(0,0), screen->geometry ().size()));
         w.show();
         return a.exec();
     }
@@ -30,6 +35,8 @@ int main(int argc, char *argv[])
         w.setStyleSheet(stylesheetFile.readAll());
         stylesheetFile.close();
 
+        const QScreen* screen = qApp->primaryScreen();
+        w.setGeometry(QRect(QPoint(0,0), screen->geometry ().size()));
         w.show();
         return a.exec();
     }
