@@ -32,6 +32,9 @@ public:
     bool menubar_shown = false;
     bool selected_text_lock = false;
     bool nextdefinition_lock = false;
+    bool is_epub = false;
+    bool parser_ran = false;
+    bool booktostr_ran = false;
     QString book_1;
     QString book_2;
     QString book_3;
@@ -71,7 +74,6 @@ public:
     };
     int setup_book(QString book, int i, bool run_parser) {
         // Parse ebook
-        // TODO: Use BeautifulSoup with Python to parse ePUBs and display them... somehow (?
         QString mount_prog ("sh");
         QStringList mount_args;
         mount_args << "split.sh";
@@ -79,17 +81,28 @@ public:
         mount_proc->start(mount_prog, mount_args);
         mount_proc->waitForFinished();
 
-        if(epub_file_match(book) == true) {
-            // Parsing ePUB with epub2txt, thanks to GitHub:kevinboone
+        if(booktostr_ran != true) {
+            if(epub_file_match(book) == true) {
+                // Parsing ePUBs with epub2txt, thanks to GitHub:kevinboone
+                QString epubProg ("sh");
+                QStringList epubArgs;
+                epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << book;
+                QProcess *epubProc = new QProcess();
+                epubProc->start(epubProg, epubArgs);
+                epubProc->waitForFinished();
 
-        }
-        else {
-            // This is likely not an ePUB.
-            ;
-        }
+                is_epub = true;
+                booktostr_ran = true;
+            }
+            else {
+                // This is likely not an ePUB.
+                // Copying book specified in the function call
+                QFile::copy(book, "/inkbox/book/book.txt");
 
-        // Copying book specified in the function call
-        QFile::copy(book, "/inkbox/book/book.txt");
+                is_epub = false;
+                booktostr_ran = true;
+            }
+        }
 
         // Checking if the user has defined an option for the number of words per page; if not, then setting the default.
         QDir::setCurrent("/mnt/onboard/.adds/inkbox");
@@ -100,12 +113,26 @@ public:
         }
 
         // Parsing file
-        QString parse_prog ("python3");
-        QStringList parse_args;
-        parse_args << "split.py" << checkconfig_str_val;
-        QProcess *parse_proc = new QProcess();
-        parse_proc->start(parse_prog, parse_args);
-        parse_proc->waitForFinished();
+        if(parser_ran != true) {
+            if(is_epub == true) {
+                QString parse_prog ("python3");
+                QStringList parse_args;
+                parse_args << "split.py" << checkconfig_str_val;
+                QProcess *parse_proc = new QProcess();
+                parse_proc->start(parse_prog, parse_args);
+                parse_proc->waitForFinished();
+                parser_ran = false;
+            }
+            else {
+                QString parse_prog ("python3");
+                QStringList parse_args;
+                parse_args << "split-txt.py" << checkconfig_str_val;
+                QProcess *parse_proc = new QProcess();
+                parse_proc->start(parse_prog, parse_args);
+                parse_proc->waitForFinished();
+                parser_ran = false;
+            }
+        }
 
         // Changing current working directory
         QDir::setCurrent("/inkbox/book");
@@ -141,7 +168,6 @@ public:
         QString valuestr = int_config.readAll();
         int value = valuestr.toInt();
         int_config.close();
-        qDebug() << value;
         return value;
     }
     void string_checkconfig_ro(QString file) {
@@ -200,11 +226,9 @@ public:
         QString fileExt = file.right(4);
 
         if(fileExt == "epub" or fileExt=="EPUB") {
-            qDebug() << "True.";
             return true;
         }
         else {
-            qDebug() << "False.";
             return false;
         }
     };

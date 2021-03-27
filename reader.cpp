@@ -104,14 +104,17 @@ reader::reader(QWidget *parent) :
 
     // Hiding the menubar + definition widget + brightness widget
     ui->hideOptionsBtn->hide();
+    ui->menuWidget->setVisible(false);
     ui->brightnessWidget->setVisible(false);
     ui->menuBarWidget->setVisible(false);
     ui->wordWidget->setVisible(false);
     if(checkconfig(".config/11-menubar/sticky") == true) {
+        ui->menuWidget->setVisible(true);
         ui->spacerWidget->setVisible(true);
         ui->statusBarWidget->setVisible(true);
     }
     else {
+        ui->menuWidget->setVisible(false);
         ui->spacerWidget->setVisible(false);
         ui->statusBarWidget->setVisible(false);
     }
@@ -277,9 +280,8 @@ reader::reader(QWidget *parent) :
 
     // Counting number of parsed files
     split_total = setup_book(book_file, 0, true);
+    split_files_number = split_total;
     split_total = split_total - 1;
-    split_files_number = setup_book(book_file, 0, true);
-    split_files_number = split_files_number / 2;
 
     // Get text
     QDir::setCurrent("/mnt/onboard/.adds/inkbox");
@@ -365,6 +367,7 @@ void reader::on_nextBtn_clicked()
         QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
     }
     else {
+        parser_ran = true;
         split_total = split_total - 1;
         setup_book(book_file, split_total, false);
         ui->text->setText("");
@@ -379,6 +382,7 @@ void reader::on_previousBtn_clicked()
         QMessageBox::critical(this, tr("Invalid argument"), tr("No previous page."));
     }
     else {
+        parser_ran = true;
         split_total = split_total + 1;
         setup_book(book_file, split_total, false);
         ui->text->setText("");
@@ -519,6 +523,7 @@ void reader::menubar_show() {
 
     ui->hideOptionsBtn->show();
     ui->optionsBtn->hide();
+    ui->menuWidget->setVisible(true);
     ui->menuBarWidget->setVisible(true);
     ui->statusBarWidget->setVisible(true);
 
@@ -529,6 +534,13 @@ void reader::menubar_show() {
     else {
         ui->brightnessWidget->setVisible(true);
     }
+    if(checkconfig(".config/11-menubar/sticky") == true) {
+        ui->spacerWidget->setVisible(false);
+    }
+    else {
+        // Safety measure
+        ui->spacerWidget->setVisible(false);
+    }
 
     menubar_shown = true;
 }
@@ -536,9 +548,10 @@ void reader::menubar_show() {
 void reader::menubar_hide() {
     string_checkconfig("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n") {
-        ;
+        ui->brightnessWidget->setVisible(false);
     }
     else {
+        // Safety measure
         ui->brightnessWidget->setVisible(false);
     }
     ui->hideOptionsBtn->hide();
@@ -552,6 +565,7 @@ void reader::menubar_hide() {
         ui->spacerWidget->setVisible(false);
         ui->statusBarWidget->setVisible(false);
     }
+    ui->menuWidget->hide();
     menubar_shown = false;
 }
 
