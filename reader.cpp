@@ -98,22 +98,22 @@ reader::reader(QWidget *parent) :
     stylesheetFile.close();
 
     ui->sizeValueLabel->setStyleSheet("font-size: 9pt");
-    ui->homeBtn->setStyleSheet("font-size: 9pt");
-    ui->aboutBtn->setStyleSheet("font-size: 9pt");
+    ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
+    ui->aboutBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->fontChooser->setStyleSheet("font-size: 9pt");
 
     // Hiding the menubar + definition widget + brightness widget
     ui->hideOptionsBtn->hide();
-    ui->brightnessWidget->hide();
-    ui->menuBarWidget->hide();
-    ui->wordWidget->hide();
+    ui->brightnessWidget->setVisible(false);
+    ui->menuBarWidget->setVisible(false);
+    ui->wordWidget->setVisible(false);
     if(checkconfig(".config/11-menubar/sticky") == true) {
-        ui->spacerWidget->show();
-        ui->statusBarWidget->show();
+        ui->spacerWidget->setVisible(true);
+        ui->statusBarWidget->setVisible(true);
     }
     else {
-        ui->spacerWidget->hide();
-        ui->statusBarWidget->hide();
+        ui->spacerWidget->setVisible(false);
+        ui->statusBarWidget->setVisible(false);
     }
 
     // Getting brightness level
@@ -519,15 +519,15 @@ void reader::menubar_show() {
 
     ui->hideOptionsBtn->show();
     ui->optionsBtn->hide();
-    ui->menuBarWidget->show();
-    ui->statusBarWidget->show();
+    ui->menuBarWidget->setVisible(true);
+    ui->statusBarWidget->setVisible(true);
 
     string_checkconfig("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n") {
         ;
     }
     else {
-        ui->brightnessWidget->show();
+        ui->brightnessWidget->setVisible(true);
     }
 
     menubar_shown = true;
@@ -539,18 +539,18 @@ void reader::menubar_hide() {
         ;
     }
     else {
-        ui->brightnessWidget->hide();
+        ui->brightnessWidget->setVisible(false);
     }
     ui->hideOptionsBtn->hide();
     ui->optionsBtn->show();
-    ui->menuBarWidget->hide();
+    ui->menuBarWidget->setVisible(false);
     if(checkconfig(".config/11-menubar/sticky") == true) {
-        ui->spacerWidget->show();
-        ui->statusBarWidget->show();
+        ui->spacerWidget->setVisible(true);
+        ui->statusBarWidget->setVisible(true);
     }
     else {
-        ui->spacerWidget->hide();
-        ui->statusBarWidget->hide();
+        ui->spacerWidget->setVisible(false);
+        ui->statusBarWidget->setVisible(false);
     }
     menubar_shown = false;
 }
@@ -559,16 +559,23 @@ void reader::wordwidget_show() {
     if(menubar_shown == true) {
         menubar_hide();
         ui->hideOptionsBtn->hide();
-        ui->wordWidget->show();
+        ui->optionsBtn->hide();
+        ui->line->hide();
+        ui->wordWidget->setVisible(true);
     }
     else {
         ui->hideOptionsBtn->hide();
-        ui->wordWidget->show();
+        ui->optionsBtn->hide();
+        ui->line->hide();
+        ui->wordWidget->setVisible(true);
     }
 }
 
 void reader::wordwidget_hide() {
-    ui->wordWidget->hide();
+    ui->wordWidget->setVisible(false);
+    ui->hideOptionsBtn->hide();
+    ui->optionsBtn->show();
+    ui->line->show();
     selected_text_lock = false;
 }
 
