@@ -86,8 +86,7 @@ MainWindow::MainWindow(QWidget *parent)
     stylesheetFile.close();
 
     // Running rootfs changes script if it's there
-    // This is a BIG security flaw. Feel free to enable it, but it's not secure at all.
-    /*
+    // This is a BIG security flaw. Hopefully I'll get an idea later and I'll find out a better way to do that...
     if(checkconfig("/opt/inkbox_genuine") == true) {
         if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
             QFile::copy("/mnt/onboard/onboard/.inkbox/rootfs.sh", "/external_root/rootfs.sh");
@@ -106,7 +105,6 @@ MainWindow::MainWindow(QWidget *parent)
     else {
         ;
     }
-    */
 
     // Custom settings
     // Reading from the config files and tweaking the program according to the options set
