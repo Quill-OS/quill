@@ -25,6 +25,7 @@ public:
     ~MainWindow();
     bool checked_box = false;
     bool existing_recent_books = false;
+    bool reboot_after_update = false;
     QString checkconfig_str_val;
     QString relative_path;
     bool checkconfig(QString file) {

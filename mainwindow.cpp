@@ -86,20 +86,54 @@ MainWindow::MainWindow(QWidget *parent)
     stylesheetFile.close();
 
     // Running rootfs changes script if it's there
-    // This is a BIG security flaw. Hopefully I'll get an idea later and I'll find out a better way to do that...
+    // This is a BIG security flaw. I'll try to find something that could replace it but in a safer way.
     if(checkconfig("/opt/inkbox_genuine") == true) {
         if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
-            QFile::copy("/mnt/onboard/onboard/.inkbox/rootfs.sh", "/external_root/rootfs.sh");
+            // Checking if we need to reboot after running the two scripts
+            if(checkconfig("/mnt/onboard/onboard/.inkbox/reboot") == true) {
+                reboot_after_update = true;
+                QFile::remove("/mnt/onboard/onboard/.inkbox/reboot");
+            }
+            else {
+                reboot_after_update = false;
+            }
 
+            QFile::copy("/mnt/onboard/onboard/.inkbox/rootfs.sh", "/external_root/tmp/rootfs.sh");
+            QFile::copy("/mnt/onboard/onboard/.inkbox/rootfs-internal.sh", "/tmp/rootfs-internal.sh");
+
+            // First script
             QString rootfs_prog ("chroot");
             QStringList rootfs_args;
-            rootfs_args << "/external_root" << "/rootfs.sh";
+            rootfs_args << "/external_root" << "/tmp/rootfs.sh";
+            // Removing script
+            QFile::remove("/mnt/onboard/onboard/.inkbox/rootfs.sh");
             QProcess *rootfs_proc = new QProcess();
             rootfs_proc->start(rootfs_prog, rootfs_args);
             rootfs_proc->waitForFinished();
 
-            QFile::remove("/mnt/onboard/onboard/.inkbox/rootfs.sh");
-            QFile::remove("/external_root/rootfs.sh");
+            // Second script
+            QString rootfs_internal_prog ("sh");
+            QStringList rootfs_internal_args;
+            rootfs_internal_args << "/tmp/rootfs-internal.sh";
+            // Removing script
+            QFile::remove("/mnt/onboard/onboard/.inkbox/rootfs-internal.sh");
+            QProcess *rootfs_internal_proc = new QProcess();
+            rootfs_internal_proc->start(rootfs_internal_prog, rootfs_internal_args);
+            rootfs_internal_proc->waitForFinished();
+
+            // Rebooting if needed
+            if(reboot_after_update == true) {
+                QString rebootProg("busybox");
+                QStringList rebootArgs;
+                rebootArgs << "reboot";
+                QProcess *rebootProc = new QProcess();
+                rebootProc->start(rebootProg, rebootArgs);
+                rebootProc->waitForFinished();
+            }
+            else {
+                // Update process finished.
+                ;
+            }
         }
     }
     else {
