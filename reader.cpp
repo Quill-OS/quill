@@ -100,49 +100,21 @@ reader::reader(QWidget *parent) :
     ui->sizeValueLabel->setStyleSheet("font-size: 9pt");
     ui->homeBtn->setStyleSheet("font-size: 9pt");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
+    ui->fontChooser->setStyleSheet("font-size: 9pt");
 
-    // Hiding the menubar + definition widget
-    ui->inkboxLabel->hide();
+    // Hiding the menubar + definition widget + brightness widget
     ui->hideOptionsBtn->hide();
-    ui->line_4->hide();
-    ui->line_5->hide();
-    ui->line_6->hide();
-    ui->line_7->hide();
-    ui->line_8->hide();
-    ui->line_9->hide();
-    ui->line_10->hide();
-    ui->line_11->hide();
-    ui->line_12->hide();
-    ui->line_13->hide();
-    ui->line_14->hide();
-    ui->timeLabel->hide();
-    ui->brightnessDecBtn->hide();
-    ui->brightnessIncBtn->hide();
-    ui->brightnessLabel->hide();
-    ui->brightnessStatus->hide();
-    ui->homeBtn->hide();
-    ui->aboutBtn->hide();
-    ui->batteryLabel->hide();
-    ui->batteryIconLabel->hide();
-    ui->fontChooser->hide();
-    ui->fontLabel->hide();
-    ui->styleLabel->hide();
-    ui->alignmentLabel->hide();
-    ui->alignJustifyBtn->hide();
-    ui->alignCenterBtn->hide();
-    ui->alignLeftBtn->hide();
-    ui->alignRightBtn->hide();
-    ui->sizeLabel->hide();
-    ui->sizeSlider->hide();
-    ui->sizeValueLabel->hide();
-    ui->infoCloseBtn->hide();
-    ui->saveWordBtn->hide();
-    ui->previousDefinitionBtn->hide();
-    ui->nextDefinitionBtn->hide();
-    ui->definitionLabel->hide();
-    ui->wordSearchLabel->hide();
-    ui->wordLabel->hide();
-    ui->definitionStatusLabel->hide();
+    ui->brightnessWidget->hide();
+    ui->menuBarWidget->hide();
+    ui->wordWidget->hide();
+    if(checkconfig(".config/11-menubar/sticky") == true) {
+        ui->spacerWidget->show();
+        ui->statusBarWidget->show();
+    }
+    else {
+        ui->spacerWidget->hide();
+        ui->statusBarWidget->hide();
+    }
 
     // Getting brightness level
     int brightness_value = get_brightness();
@@ -545,125 +517,58 @@ void reader::menubar_show() {
         }
     }
 
-    ui->inkboxLabel->show();
     ui->hideOptionsBtn->show();
     ui->optionsBtn->hide();
-    ui->line_4->show();
-    ui->line_5->show();
-    ui->line_6->show();
-    ui->line_7->show();
-    ui->line_8->show();
-    ui->line_9->show();
-    ui->line_10->show();
-    ui->line_11->show();
-    ui->timeLabel->show();
-    ui->brightnessDecBtn->show();
-    ui->brightnessIncBtn->show();
-    ui->brightnessLabel->show();
-    ui->brightnessStatus->show();
-    ui->aboutBtn->show();
-    ui->homeBtn->show();
-    ui->batteryLabel->show();
-    ui->batteryIconLabel->show();
-    ui->fontChooser->show();
-    ui->fontLabel->show();
-    ui->styleLabel->show();
-    ui->alignmentLabel->show();
-    ui->alignJustifyBtn->show();
-    ui->alignCenterBtn->show();
-    ui->alignLeftBtn->show();
-    ui->alignRightBtn->show();
-    ui->sizeLabel->show();
-    ui->sizeSlider->show();
-    ui->sizeValueLabel->show();
+    ui->menuBarWidget->show();
+    ui->statusBarWidget->show();
+
+    string_checkconfig("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n") {
+        ;
+    }
+    else {
+        ui->brightnessWidget->show();
+    }
+
     menubar_shown = true;
 }
 
 void reader::menubar_hide() {
-    ui->inkboxLabel->hide();
+    string_checkconfig("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n") {
+        ;
+    }
+    else {
+        ui->brightnessWidget->hide();
+    }
     ui->hideOptionsBtn->hide();
-    ui->line_4->hide();
-    ui->line_5->hide();
-    ui->line_6->hide();
-    ui->line_7->hide();
-    ui->line_8->hide();
-    ui->line_9->hide();
-    ui->line_10->hide();
-    ui->line_11->hide();
     ui->optionsBtn->show();
-    ui->timeLabel->hide();
-    ui->brightnessDecBtn->hide();
-    ui->brightnessIncBtn->hide();
-    ui->brightnessLabel->hide();
-    ui->brightnessStatus->hide();
-    ui->aboutBtn->hide();
-    ui->homeBtn->hide();
-    ui->batteryLabel->hide();
-    ui->batteryIconLabel->hide();
-    ui->fontChooser->hide();
-    ui->fontLabel->hide();
-    ui->styleLabel->hide();
-    ui->alignmentLabel->hide();
-    ui->alignJustifyBtn->hide();
-    ui->alignCenterBtn->hide();
-    ui->alignLeftBtn->hide();
-    ui->alignRightBtn->hide();
-    ui->sizeLabel->hide();
-    ui->sizeSlider->hide();
-    ui->sizeValueLabel->hide();
+    ui->menuBarWidget->hide();
+    if(checkconfig(".config/11-menubar/sticky") == true) {
+        ui->spacerWidget->show();
+        ui->statusBarWidget->show();
+    }
+    else {
+        ui->spacerWidget->hide();
+        ui->statusBarWidget->hide();
+    }
     menubar_shown = false;
 }
 
 void reader::wordwidget_show() {
     if(menubar_shown == true) {
         menubar_hide();
-        ui->optionsBtn->hide();
         ui->hideOptionsBtn->hide();
-        ui->infoCloseBtn->show();
-        ui->saveWordBtn->show();
-        ui->previousDefinitionBtn->show();
-        ui->nextDefinitionBtn->show();
-        ui->definitionLabel->show();
-        ui->wordSearchLabel->show();
-        ui->wordLabel->show();
-        ui->definitionStatusLabel->show();
-        ui->line->hide();
-        ui->line_12->show();
-        ui->line_13->show();
-        ui->line_14->show();
+        ui->wordWidget->show();
     }
     else {
-        ui->optionsBtn->hide();
         ui->hideOptionsBtn->hide();
-        ui->infoCloseBtn->show();
-        ui->saveWordBtn->show();
-        ui->definitionLabel->show();
-        ui->definitionStatusLabel->show();
-        ui->previousDefinitionBtn->show();
-        ui->nextDefinitionBtn->show();
-        ui->wordSearchLabel->show();
-        ui->wordLabel->show();
-        ui->line_13->show();
-        ui->line_12->show();
-        ui->line->hide();
-        ui->line_14->show();
+        ui->wordWidget->show();
     }
 }
 
 void reader::wordwidget_hide() {
-    ui->infoCloseBtn->hide();
-    ui->saveWordBtn->hide();
-    ui->definitionLabel->hide();
-    ui->wordSearchLabel->hide();
-    ui->wordLabel->hide();
-    ui->line_12->hide();
-    ui->line_13->hide();
-    ui->line_14->hide();
-    ui->line->show();
-    ui->optionsBtn->show();
-    ui->previousDefinitionBtn->hide();
-    ui->nextDefinitionBtn->hide();
-    ui->definitionStatusLabel->hide();
+    ui->wordWidget->hide();
     selected_text_lock = false;
 }
 

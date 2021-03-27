@@ -28,6 +28,7 @@ settings::settings(QWidget *parent) :
     ui->updateBtn->setProperty("type", "borderless");
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
+    ui->aboutBtn->setStyleSheet("font-size: 9pt");
     ui->requestLeaseBtn->setStyleSheet("font-size: 9pt");
     ui->usbmsBtn->setStyleSheet("font-size: 9pt");
     ui->updateBtn->setStyleSheet("font-size: 9pt");
@@ -67,6 +68,8 @@ settings::settings(QWidget *parent) :
     if(checkconfig(".config/10-dark_mode/config") == true) {
         ui->darkModeCheckBox->click();
     }
+
+    // Words number
     string_checkconfig(".config/07-words_number/config");
     if(checkconfig_str_val == "") {
         ;
@@ -75,6 +78,12 @@ settings::settings(QWidget *parent) :
         int words_number = checkconfig_str_val.toInt();
         ui->wordsNumber->setValue(words_number);
     }
+
+    // Sticky menubar
+    if(checkconfig(".config/11-menubar/sticky") == true) {
+        ui->menuBarCheckBox->click();
+    }
+
     // Scaling
     string_checkconfig(".config/09-dpi/config");
     if(checkconfig_str_val == "") {
@@ -287,6 +296,7 @@ void settings::on_previousBtn_clicked()
         ui->wordsNumber->show();
         ui->wordsNumberLabel->show();
         ui->clockCheckBox->show();
+        ui->menuBarCheckBox->show();
 
         ui->line_9->hide();
         ui->softwareLabel->hide();
@@ -324,6 +334,7 @@ void settings::on_previousBtn_clicked()
             ui->label_7->hide();
             ui->line_8->hide();
             ui->clockCheckBox->hide();
+            ui->menuBarCheckBox->hide();
             ui->demoCheckBox->hide();
             ui->quoteCheckBox->hide();
             if(checkconfig("/opt/inkbox_genuine") == true) {
@@ -362,6 +373,7 @@ void settings::on_nextBtn_clicked()
         ui->demoCheckBox->hide();
         ui->quoteCheckBox->hide();
         ui->clockCheckBox->hide();
+        ui->menuBarCheckBox->hide();
         ui->wordsNumber->hide();
         ui->wordsNumberLabel->hide();
 
@@ -462,5 +474,17 @@ void settings::on_uiScalingSlider_valueChanged(int value)
     else {
         // This is supposed to happen when the user clicks the slider, and not the software. Refer to setValue() methods for uiScalingSlider in main().
         launch_sh = true;
+    }
+}
+
+void settings::on_menuBarCheckBox_toggled(bool checked)
+{
+    if(checked == true) {
+        checked_box = true;
+        writeconfig(".config/11-menubar/sticky", "StickyMenuBar=");
+    }
+    else {
+        checked_box = false;
+        writeconfig(".config/11-menubar/sticky", "StickyMenuBar=");
     }
 }

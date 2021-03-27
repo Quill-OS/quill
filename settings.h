@@ -93,6 +93,8 @@ private slots:
 
     void on_uiScalingSlider_valueChanged(int value);
 
+    void on_menuBarCheckBox_toggled(bool checked);
+
 private:
     Ui::settings *ui;
     usbms_splash *usbmsWindow;
