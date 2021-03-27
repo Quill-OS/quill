@@ -79,6 +79,15 @@ public:
         mount_proc->start(mount_prog, mount_args);
         mount_proc->waitForFinished();
 
+        if(epub_file_match(book) == true) {
+            // Parsing ePUB with epub2txt, thanks to GitHub:kevinboone
+
+        }
+        else {
+            // This is likely not an ePUB.
+            ;
+        }
+
         // Copying book specified in the function call
         QFile::copy(book, "/inkbox/book/book.txt");
 
@@ -186,6 +195,18 @@ public:
             return false;
         }
         config.close();
+    };
+    bool epub_file_match(QString file) {
+        QString fileExt = file.right(4);
+
+        if(fileExt == "epub" or fileExt=="EPUB") {
+            qDebug() << "True.";
+            return true;
+        }
+        else {
+            qDebug() << "False.";
+            return false;
+        }
     };
     void string_writeconfig(string file, string config_option) {
         ofstream fhandler;
