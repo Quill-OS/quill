@@ -46,14 +46,8 @@ settings::settings(QWidget *parent) :
     ui->label_6->hide();
     ui->line_3->hide();
     ui->line_7->hide();
-    ui->line_9->hide();
-    ui->softwareLabel->hide();
     ui->updateBtn->hide();
     ui->updateLabel->hide();
-    ui->darkModeCheckBox->hide();
-    ui->uiScalingLabel->hide();
-    ui->uiScalingSlider->hide();
-    ui->uiScaleNumberLabel->hide();
 
     // Settings tweaking + enabling specific features whether it's running on the provided integrated OS or Kobo firmware
     if(checkconfig(".config/01-demo/config") == true) {
@@ -281,31 +275,13 @@ void settings::on_usbmsBtn_clicked()
     usbms_t->start();
 }
 
-// Please forgive me, I didn't know that QStackedWidget existed back then...
+// Now I know that QStackedWidget exists... ;p
 
 void settings::on_previousBtn_clicked()
 {
     settings_page = settings_page - 1;
     if(settings_page == 1) {
-        ui->line_6->show();
-        ui->label_2->show();
-        ui->demoCheckBox->show();
-        ui->quoteCheckBox->show();
-        ui->line_8->show();
-        ui->label_7->show();
-        ui->wordsNumber->show();
-        ui->wordsNumberLabel->show();
-        ui->clockCheckBox->show();
-        ui->menuBarCheckBox->show();
-
-        ui->line_9->hide();
-        ui->softwareLabel->hide();
-        ui->updateBtn->hide();
-        ui->updateLabel->hide();
-        ui->darkModeCheckBox->hide();
-        ui->uiScalingLabel->hide();
-        ui->uiScalingSlider->hide();
-        ui->uiScaleNumberLabel->hide();
+        ui->stackedWidget->setCurrentIndex(0);
 
         if(checkconfig("/opt/inkbox_genuine") == true) {
             // Enforcing security policy if the user has not rooted the device
@@ -321,35 +297,17 @@ void settings::on_previousBtn_clicked()
                 ui->label_3->hide();
                 ui->line_3->hide();
             }
-            ui->label_5->show();
-            ui->label_6->show();
-            ui->line_7->show();
-            ui->usbmsBtn->show();
         }
     }
     else {
         if(settings_page == 2) {
-            ui->line_6->hide();
-            ui->label_2->hide();
-            ui->label_7->hide();
-            ui->line_8->hide();
-            ui->clockCheckBox->hide();
-            ui->menuBarCheckBox->hide();
-            ui->demoCheckBox->hide();
-            ui->quoteCheckBox->hide();
+            ui->stackedWidget->setCurrentIndex(1);
             if(checkconfig("/opt/inkbox_genuine") == true) {
-                ui->label_3->hide();
-                ui->label_4->hide();
-                ui->label_5->hide();
-                ui->label_6->hide();
-                ui->line_7->hide();
-                ui->line_3->hide();
-
-                ui->line_9->show();
-                ui->softwareLabel->show();
-                ui->darkModeCheckBox->show();
-
                 if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
+                    ui->updateBtn->show();
+                    ui->updateLabel->show();
+                }
+                else {
                     ui->updateBtn->show();
                     ui->updateLabel->show();
                 }
@@ -366,23 +324,7 @@ void settings::on_nextBtn_clicked()
 {
     settings_page = settings_page + 1;
     if(settings_page == 2) {
-        ui->line_6->hide();
-        ui->label_2->hide();
-        ui->label_7->hide();
-        ui->line_8->hide();
-        ui->demoCheckBox->hide();
-        ui->quoteCheckBox->hide();
-        ui->clockCheckBox->hide();
-        ui->menuBarCheckBox->hide();
-        ui->wordsNumber->hide();
-        ui->wordsNumberLabel->hide();
-
-        ui->line_9->show();
-        ui->softwareLabel->show();
-        ui->darkModeCheckBox->show();
-        ui->uiScalingLabel->show();
-        ui->uiScalingSlider->show();
-        ui->uiScaleNumberLabel->show();
+        ui->stackedWidget->setCurrentIndex(1);
 
         if(checkconfig("/opt/inkbox_genuine") == true) {
             // Enforcing security policy if the user has not rooted the device
@@ -398,14 +340,6 @@ void settings::on_nextBtn_clicked()
                 ui->label_3->hide();
                 ui->line_3->hide();
             }
-            ui->label_3->hide();
-            ui->label_4->hide();
-            ui->label_5->hide();
-            ui->label_6->hide();
-            ui->line_7->hide();
-            ui->line_3->hide();
-            ui->requestLeaseBtn->hide();
-            ui->usbmsBtn->hide();
 
             if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
                 ui->updateBtn->show();
