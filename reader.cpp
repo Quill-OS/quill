@@ -564,8 +564,8 @@ void reader::menubar_hide() {
     else {
         ui->spacerWidget->setVisible(false);
         ui->statusBarWidget->setVisible(false);
+        ui->menuWidget->setVisible(false);
     }
-    ui->menuWidget->hide();
     menubar_shown = false;
 }
 
