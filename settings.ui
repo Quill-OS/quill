@@ -318,7 +318,7 @@
            <item row="3" column="0">
             <widget class="QCheckBox" name="menuBarCheckBox">
              <property name="text">
-              <string>Always show menu bar</string>
+              <string>Always show status bar</string>
              </property>
             </widget>
            </item>
