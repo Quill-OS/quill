@@ -7,6 +7,7 @@
 #include "reader.h"
 #include "quit.h"
 #include "alert.h"
+#include "usbms_splash.h"
 #include <iostream>
 #include <QFile>
 #include <QTextStream>
@@ -156,5 +157,6 @@ private:
     reader *readerWindow;
     quit *quitWindow;
     alert *alertWindow;
+    usbms_splash *usbmsWindow;
 };
 #endif // MAINWINDOW_H

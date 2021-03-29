@@ -53,14 +53,14 @@ MainWindow::MainWindow(QWidget *parent)
     if(checkconfig_str_val == "n705\n") {
         stdIconWidth = sW / 12;
         stdIconHeight = sH / 12;
-        brightnessIconWidth = sW / 30;
-        brightnessIconHeight = sH / 30;
+        brightnessIconWidth = sW / 24;
+        brightnessIconHeight = sH / 24;
     }
     else {
         stdIconWidth = sW / 14;
         stdIconHeight = sH / 14;
-        brightnessIconWidth = sW / 28;
-        brightnessIconHeight = sH / 28;
+        brightnessIconWidth = sW / 26;
+        brightnessIconHeight = sH / 26;
     }
 
     // Setting icons up
@@ -78,14 +78,81 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
 
+    // Battery
+    string_checkconfig_ro("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n") {
+        stdIconWidth = sW / 16;
+        stdIconHeight = sH / 16;
+        QPixmap chargingPixmap(":/resources/battery_charging.png");
+        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap fullPixmap(":/resources/battery_full.png");
+        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap halfPixmap(":/resources/battery_half.png");
+        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap emptyPixmap(":/resources/battery_empty.png");
+        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+
+        // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
+        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+        if(checkconfig_str_val == "Charging\n") {
+            ui->batteryIcon->setPixmap(scaledChargingPixmap);
+        }
+        else {
+            get_battery_level();
+            if(batt_level_int >= 75 && batt_level_int <= 100) {
+                ui->batteryIcon->setPixmap(scaledFullPixmap);
+            }
+            if(batt_level_int >= 25 && batt_level_int <= 74) {
+                ui->batteryIcon->setPixmap(scaledHalfPixmap);
+            }
+            if(batt_level_int >= 0 && batt_level_int <= 24) {
+                ui->batteryIcon->setPixmap(scaledEmptyPixmap);
+            }
+        }
+    }
+    else {
+        stdIconWidth = sW / 19;
+        stdIconHeight = sH / 19;
+        QPixmap chargingPixmap(":/resources/battery_charging.png");
+        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap fullPixmap(":/resources/battery_full.png");
+        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap halfPixmap(":/resources/battery_half.png");
+        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap emptyPixmap(":/resources/battery_empty.png");
+        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+
+        // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
+        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+        if(checkconfig_str_val == "Charging\n") {
+            ui->batteryIcon->setPixmap(scaledChargingPixmap);
+        }
+        else {
+            get_battery_level();
+            if(batt_level_int >= 75 && batt_level_int <= 100) {
+                ui->batteryIcon->setPixmap(scaledFullPixmap);
+            }
+            if(batt_level_int >= 25 && batt_level_int <= 74) {
+                ui->batteryIcon->setPixmap(scaledHalfPixmap);
+            }
+            if(batt_level_int >= 0 && batt_level_int <= 24) {
+                ui->batteryIcon->setPixmap(scaledEmptyPixmap);
+            }
+        }
+    }
+
     ui->book1Btn->setStyleSheet("font-size: 11pt; padding: 25px");
     ui->book2Btn->setStyleSheet("font-size: 11pt; padding: 25px");
     ui->book3Btn->setStyleSheet("font-size: 11pt; padding: 25px");
     ui->book4Btn->setStyleSheet("font-size: 11pt; padding: 25px");
 
-    ui->brightnessBtn->setStyleSheet("font-size: 9pt; padding-bottom: 5px; padding-top: 5px; padding-left: 10px; padding-right: 10px;");
-    ui->batteryIcon->setStyleSheet("font-size: 5pt");
+    ui->brightnessBtn->setStyleSheet("font-size: 9pt; padding-bottom: 5px; padding-top: 5px; padding-left: 8px; padding-right: 8px;");
+    ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 8px; padding-right: 8px;");
+    ui->line_7->setStyleSheet("padding: 0px");
     ui->batteryIcon->setText("");
+    ui->batteryLabel->setText("");
+    ui->timeLabel->setText("");
+    ui->batteryLabel->setStyleSheet("padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px");
 
     ui->book1Btn->hide();
     ui->book2Btn->hide();
@@ -372,9 +439,9 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_searchBtn_clicked()
 {
     // Testing
-    /*alertWindow = new alert();
-    alertWindow->setAttribute(Qt::WA_DeleteOnClose);
-    alertWindow->showFullScreen();*/
+    /*usbmsWindow = new usbms_splash();
+    usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    usbmsWindow->showFullScreen();*/
 }
 
 void MainWindow::on_quitBtn_clicked()
