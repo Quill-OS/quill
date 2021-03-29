@@ -26,8 +26,10 @@ public:
     bool checked_box = false;
     bool existing_recent_books = false;
     bool reboot_after_update = false;
+    int batt_level_int;
     QString checkconfig_str_val;
     QString relative_path;
+    QString batt_level;
     bool checkconfig(QString file) {
         QFile config(file);
         config.open(QIODevice::ReadOnly);
@@ -47,6 +49,15 @@ public:
             fhandler.open(file);
             fhandler << config << boolalpha << checked_box << endl;
             fhandler.close();
+    }
+    void get_battery_level() {
+        QFile batt_level_file("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity");
+        batt_level_file.open(QIODevice::ReadOnly);
+        batt_level = batt_level_file.readAll();
+        batt_level = batt_level.trimmed();
+        batt_level_int = batt_level.toInt();
+        batt_level = batt_level.append("%");
+        batt_level_file.close();
     }
     int brightness_checkconfig(QString file) {
         QFile config(file);

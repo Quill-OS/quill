@@ -30,12 +30,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->quitBtn->setProperty("type", "borderless");
     ui->searchBtn->setProperty("type", "borderless");
     ui->pushButton->setProperty("type", "borderless");
+    ui->brightnessBtn->setProperty("type", "borderless");
 
     ui->settingsBtn->setText("");
     ui->appsBtn->setText("");
     ui->pushButton->setText("");
     ui->quitBtn->setText("");
     ui->searchBtn->setText("");
+    ui->brightnessBtn->setText("");
 
     // Getting the screen's size
     float sW = QGuiApplication::screens()[0]->size().width();
@@ -44,15 +46,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     float stdIconWidth;
     float stdIconHeight;
+    float brightnessIconWidth;
+    float brightnessIconHeight;
 
     string_checkconfig("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n") {
         stdIconWidth = sW / 12;
         stdIconHeight = sH / 12;
+        brightnessIconWidth = sW / 30;
+        brightnessIconHeight = sH / 30;
     }
     else {
         stdIconWidth = sW / 14;
         stdIconHeight = sH / 14;
+        brightnessIconWidth = sW / 28;
+        brightnessIconHeight = sH / 28;
     }
 
     // Setting icons up
@@ -67,10 +75,17 @@ MainWindow::MainWindow(QWidget *parent)
     ui->quitBtn->setIcon(QIcon(":/resources/power.png"));
     ui->quitBtn->setIconSize(QSize(stdIconWidth, stdIconHeight));
 
+    ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
+    ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
+
     ui->book1Btn->setStyleSheet("font-size: 11pt; padding: 25px");
     ui->book2Btn->setStyleSheet("font-size: 11pt; padding: 25px");
     ui->book3Btn->setStyleSheet("font-size: 11pt; padding: 25px");
     ui->book4Btn->setStyleSheet("font-size: 11pt; padding: 25px");
+
+    ui->brightnessBtn->setStyleSheet("font-size: 9pt; padding-bottom: 5px; padding-top: 5px; padding-left: 10px; padding-right: 10px;");
+    ui->batteryIcon->setStyleSheet("font-size: 5pt");
+    ui->batteryIcon->setText("");
 
     ui->book1Btn->hide();
     ui->book2Btn->hide();
@@ -167,10 +182,10 @@ MainWindow::MainWindow(QWidget *parent)
         QTimer *t = new QTimer(this);
         t->setInterval(500);
         connect(t, &QTimer::timeout, [&]() {
-           QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd");
            QString time = QTime::currentTime().toString("hh:mm:ss");
+           get_battery_level();
            ui->timeLabel->setText(time);
-           ui->dateLabel->setText(date);
+           ui->batteryLabel->setText(batt_level);
         } );
         t->start();
     }
@@ -178,10 +193,10 @@ MainWindow::MainWindow(QWidget *parent)
         QTimer *t = new QTimer(this);
         t->setInterval(500);
         connect(t, &QTimer::timeout, [&]() {
-           QString date = QDateTime::currentDateTime().toString("yyyy-MM-dd");
            QString time = QTime::currentTime().toString("hh:mm");
+           get_battery_level();
            ui->timeLabel->setText(time);
-           ui->dateLabel->setText(date);
+           ui->batteryLabel->setText(batt_level);
         } );
         t->start();
     }

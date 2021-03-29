@@ -17,34 +17,50 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="1">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="0" column="6">
+       <widget class="QPushButton" name="brightnessBtn">
+        <property name="text">
+         <string>Brightness</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
+       </widget>
       </item>
-      <item row="0" column="5">
-       <spacer name="horizontalSpacer_2">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="0" column="3">
+       <widget class="QLabel" name="inkboxLabel">
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
+        <property name="text">
+         <string>Welcome to InkBox</string>
         </property>
-       </spacer>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
       </item>
-      <item row="0" column="4">
-       <widget class="QLabel" name="label_2">
+      <item row="0" column="9">
+       <widget class="QLabel" name="batteryLabel">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>batteryLevel</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="8">
+       <widget class="QLabel" name="batteryIcon">
+        <property name="text">
+         <string>batteryIcon</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label">
         <property name="text">
          <string>―</string>
         </property>
@@ -67,39 +83,46 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QLabel" name="inkboxLabel">
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
+      <item row="0" column="1">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="text">
-         <string>Welcome to InkBox</string>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
         </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
+       </spacer>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label">
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_2">
         <property name="text">
          <string>―</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="6">
-       <widget class="QLabel" name="dateLabel">
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
+      <item row="0" column="5">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="text">
-         <string>date</string>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="7">
+       <widget class="Line" name="line_7">
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
@@ -140,22 +163,6 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="3" column="0">
-           <widget class="QLabel" name="recentBooksLabel">
-            <property name="font">
-             <font>
-              <family>Chivo</family>
-              <italic>true</italic>
-             </font>
-            </property>
-            <property name="text">
-             <string>Recently read books will appear here.</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="2" column="0">
            <spacer name="verticalSpacer_5">
             <property name="orientation">
@@ -184,6 +191,84 @@
              <set>Qt::AlignCenter</set>
             </property>
            </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="recentBooksLabel">
+            <property name="font">
+             <font>
+              <family>Chivo</family>
+              <italic>true</italic>
+             </font>
+            </property>
+            <property name="text">
+             <string>Recently read books will appear here.</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <spacer name="verticalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>20</width>
+              <height>40</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="4" column="0">
+           <layout class="QGridLayout" name="gridLayout">
+            <property name="bottomMargin">
+             <number>0</number>
+            </property>
+            <item row="0" column="0">
+             <layout class="QGridLayout" name="gridLayout_6">
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="book1Btn">
+                <property name="text">
+                 <string>Book 1</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QPushButton" name="book2Btn">
+                <property name="text">
+                 <string>Book 2</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <layout class="QGridLayout" name="gridLayout_8">
+              <property name="bottomMargin">
+               <number>0</number>
+              </property>
+              <item row="0" column="0">
+               <widget class="QPushButton" name="book3Btn">
+                <property name="text">
+                 <string>Book 3</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QPushButton" name="book4Btn">
+                <property name="text">
+                 <string>Book 4</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
           </item>
           <item row="5" column="0">
            <layout class="QGridLayout" name="gridLayout_4">
@@ -276,68 +361,6 @@
              </spacer>
             </item>
            </layout>
-          </item>
-          <item row="4" column="0">
-           <layout class="QGridLayout" name="gridLayout">
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item row="0" column="0">
-             <layout class="QGridLayout" name="gridLayout_6">
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="book1Btn">
-                <property name="text">
-                 <string>Book 1</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="book2Btn">
-                <property name="text">
-                 <string>Book 2</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-            <item row="1" column="0">
-             <layout class="QGridLayout" name="gridLayout_8">
-              <property name="bottomMargin">
-               <number>0</number>
-              </property>
-              <item row="0" column="0">
-               <widget class="QPushButton" name="book3Btn">
-                <property name="text">
-                 <string>Book 3</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QPushButton" name="book4Btn">
-                <property name="text">
-                 <string>Book 4</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item row="0" column="0">
-           <spacer name="verticalSpacer_4">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
           </item>
          </layout>
         </item>

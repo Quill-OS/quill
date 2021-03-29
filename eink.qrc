@@ -30,5 +30,6 @@
         <file>resources/battery_charging.png</file>
         <file>resources/alert.png</file>
         <file>resources/eink_dark.qss</file>
+        <file>resources/frontlight.png</file>
     </qresource>
 </RCC>
