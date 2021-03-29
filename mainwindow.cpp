@@ -81,6 +81,11 @@ MainWindow::MainWindow(QWidget *parent)
     // Battery
     string_checkconfig_ro("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n") {
+        // Hide brightness controls; they won't be very useful there anyway...
+        ui->brightnessBtn->hide();
+        ui->line_7->hide();
+
+        // Setting icons up
         stdIconWidth = sW / 16;
         stdIconHeight = sH / 16;
         QPixmap chargingPixmap(":/resources/battery_charging.png");
