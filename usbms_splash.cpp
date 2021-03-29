@@ -13,8 +13,8 @@ usbms_splash::usbms_splash(QWidget *parent) :
     // Getting the screen's size
     float sW = QGuiApplication::screens()[0]->size().width();
     float sH = QGuiApplication::screens()[0]->size().height();
-    // Defining what the default icon size will be
 
+    // Defining what the default icon size will be
     float stdIconWidth = sW / 1.15;
     float stdIconHeight = sH / 1.15;
 
