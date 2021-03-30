@@ -66,7 +66,8 @@ reader::reader(QWidget *parent) :
     // Font
     string_checkconfig(".config/04-book/font");
     if(checkconfig_str_val == "") {
-        ;
+        ui->fontChooser->setCurrentText(checkconfig_str_val);
+        ui->text->setFont(QFont("Inter"));
     }
     else {
         if(checkconfig_str_val == "Crimson Pro") {
