@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     alert.cpp \
     apps.cpp \
+    brightnessdialog.cpp \
     calendarapp.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -23,6 +24,7 @@ SOURCES += \
 HEADERS += \
     alert.h \
     apps.h \
+    brightnessdialog.h \
     calendarapp.h \
     mainwindow.h \
     quit.h \
@@ -34,6 +36,7 @@ HEADERS += \
 FORMS += \
     alert.ui \
     apps.ui \
+    brightnessdialog.ui \
     calendarapp.ui \
     mainwindow.ui \
     quit.ui \

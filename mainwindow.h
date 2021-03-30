@@ -8,6 +8,7 @@
 #include "quit.h"
 #include "alert.h"
 #include "usbms_splash.h"
+#include "brightnessdialog.h"
 #include <iostream>
 #include <QFile>
 #include <QTextStream>
@@ -150,6 +151,8 @@ private slots:
 
     void on_book4Btn_clicked();
 
+    void on_brightnessBtn_clicked();
+
 private:
     Ui::MainWindow *ui;
     settings *settingsWindow;
@@ -158,5 +161,6 @@ private:
     quit *quitWindow;
     alert *alertWindow;
     usbms_splash *usbmsWindow;
+    brightnessDialog *brightnessDialogWindow;
 };
 #endif // MAINWINDOW_H

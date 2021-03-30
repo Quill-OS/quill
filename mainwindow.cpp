@@ -16,6 +16,8 @@
 #include <QTextStream>
 #include <QPixmap>
 #include <QScreen>
+#include <QFont>
+#include <QFontDatabase>
 
 using namespace std;
 
@@ -146,6 +148,14 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
+    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont crimson(family);
+
+    ui->book1Btn->setFont(QFont(crimson));
+    ui->book2Btn->setFont(QFont(crimson));
+    ui->book3Btn->setFont(QFont(crimson));
+    ui->book4Btn->setFont(QFont(crimson));
     ui->book1Btn->setStyleSheet("font-size: 11pt; padding: 25px");
     ui->book2Btn->setStyleSheet("font-size: 11pt; padding: 25px");
     ui->book3Btn->setStyleSheet("font-size: 11pt; padding: 25px");
@@ -502,4 +512,11 @@ void MainWindow::on_book4Btn_clicked()
     readerWindow = new reader();
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);
     readerWindow->showFullScreen();
+}
+
+void MainWindow::on_brightnessBtn_clicked()
+{
+    brightnessDialogWindow = new brightnessDialog();
+    brightnessDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    brightnessDialogWindow->show();
 }
