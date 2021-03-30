@@ -162,7 +162,16 @@ MainWindow::MainWindow(QWidget *parent)
     ui->book4Btn->setStyleSheet("font-size: 11pt; padding: 25px");
 
     ui->brightnessBtn->setStyleSheet("font-size: 9pt; padding-bottom: 5px; padding-top: 5px; padding-left: 8px; padding-right: 8px;");
-    ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 8px; padding-right: 8px;");
+
+    // Checking if we have a Mini there
+    string_checkconfig_ro("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n") {
+        ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 1px; padding-right: 1px;");
+    }
+    else {
+        ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 8px; padding-right: 8px;");
+    }
+
     ui->line_7->setStyleSheet("padding: 0px");
     ui->batteryIcon->setText("");
     ui->batteryLabel->setText("");
