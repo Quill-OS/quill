@@ -12,6 +12,8 @@
 #include <fstream>
 #include <QMessageBox>
 #include <regex>
+#include <QFont>
+#include <QFontDatabase>
 
 using namespace std;
 

@@ -196,14 +196,14 @@
                <item row="1" column="0">
                 <widget class="QPushButton" name="brightnessDecBtn">
                  <property name="text">
-                  <string>―</string>
+                  <string/>
                  </property>
                 </widget>
                </item>
                <item row="1" column="2">
                 <widget class="QPushButton" name="brightnessIncBtn">
                  <property name="text">
-                  <string> + </string>
+                  <string/>
                  </property>
                 </widget>
                </item>
@@ -331,6 +331,11 @@
                      <item>
                       <property name="text">
                        <string>Inter</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Crimson Pro</string>
                       </property>
                      </item>
                      <item>

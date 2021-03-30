@@ -54,7 +54,10 @@ reader::reader(QWidget *parent) :
     ui->previousDefinitionBtn->setIcon(QIcon(":/resources/chevron-left.png"));
     ui->nextDefinitionBtn->setText("");
     ui->nextDefinitionBtn->setIcon(QIcon(":/resources/chevron-right.png"));
-
+    ui->brightnessDecBtn->setText("");
+    ui->brightnessDecBtn->setIcon(QIcon(":/resources/minus.png"));
+    ui->brightnessIncBtn->setText("");
+    ui->brightnessIncBtn->setIcon(QIcon(":/resources/plus.png"));
 
     // Making text selectable
     ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
@@ -66,9 +69,18 @@ reader::reader(QWidget *parent) :
         ;
     }
     else {
-        QFont config_font(checkconfig_str_val);
-        ui->text->setFont(config_font);
-        ui->fontChooser->setCurrentText(checkconfig_str_val);
+        if(checkconfig_str_val == "Crimson Pro") {
+            int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
+            QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+            QFont crimson(family);
+            ui->text->setFont(crimson);
+            ui->fontChooser->setCurrentText(checkconfig_str_val);
+        }
+        else {
+            QFont config_font(checkconfig_str_val);
+            ui->text->setFont(config_font);
+            ui->fontChooser->setCurrentText(checkconfig_str_val);
+        }
     }
 
     // Alignment
@@ -475,6 +487,13 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
         QFont libertinus("Libertinus Serif");
         ui->text->setFont(libertinus);
         string_writeconfig(".config/04-book/font", "Libertinus Serif");
+    }
+    if(arg1 == "Crimson Pro") {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
+        QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+        QFont crimson(family);
+        ui->text->setFont(crimson);
+        string_writeconfig(".config/04-book/font", "Crimson Pro");
     }
 }
 

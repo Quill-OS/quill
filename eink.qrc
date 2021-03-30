@@ -31,5 +31,11 @@
         <file>resources/alert.png</file>
         <file>resources/eink_dark.qss</file>
         <file>resources/frontlight.png</file>
+        <file>resources/fonts/CrimsonPro-Bold.ttf</file>
+        <file>resources/fonts/CrimsonPro-Italic.ttf</file>
+        <file>resources/fonts/CrimsonPro-Regular.ttf</file>
+        <file>resources/check.png</file>
+        <file>resources/minus.png</file>
+        <file>resources/plus.png</file>
     </qresource>
 </RCC>
