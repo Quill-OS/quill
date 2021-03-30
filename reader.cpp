@@ -181,6 +181,27 @@ reader::reader(QWidget *parent) :
         scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
     }
 
+    // Checking if there is a page refresh setting set
+    string_checkconfig(".config/04-book/refresh");
+    if(checkconfig_str_val == "") {
+        // Writing the default, refresh every 3 pages
+        string_writeconfig(".config/04-book/refresh", "3");
+        string_checkconfig(".config/04-book/refresh");
+    }
+    else {
+        // A config option was set, continuing after the Else statement...
+        ;
+    }
+    pageRefreshSetting = checkconfig_str_val.toInt();
+    // Checking if that config option was set to "Never refresh"...
+    if(pageRefreshSetting == -1) {
+        neverRefresh = true;
+    }
+    else {
+        // Safety measure
+        neverRefresh = false;
+    }
+
     // Clock setting to show seconds + battery level
     if(checkconfig(".config/02-clock/config") == true) {
         QTimer *t = new QTimer(this);
@@ -385,6 +406,20 @@ void reader::on_nextBtn_clicked()
         setup_book(book_file, split_total, false);
         ui->text->setText("");
         ui->text->setText(ittext);
+
+        pagesTurned = pagesTurned + 1;
+        if(neverRefresh == true) {
+            // Do nothing; "Never refresh" was set
+            ;
+        }
+        else {
+            if(pagesTurned >= pageRefreshSetting) {
+                // Refreshing the screen
+                this->repaint();
+                // Reset count
+                pagesTurned = 0;
+            }
+        }
     }
 }
 
@@ -400,12 +435,28 @@ void reader::on_previousBtn_clicked()
         setup_book(book_file, split_total, false);
         ui->text->setText("");
         ui->text->setText(ittext);
+
+        // We always increment pagesTurned regardless if we press the Previous or Next button
+        pagesTurned = pagesTurned + 1;
+        if(neverRefresh == true) {
+            // Do nothing; "Never refresh" was set
+            ;
+        }
+        else {
+            if(pagesTurned >= pageRefreshSetting) {
+                // Refreshing the screen
+                this->repaint();
+                // Reset count
+                pagesTurned = 0;
+            }
+        }
     }
 }
 
 void reader::on_optionsBtn_clicked()
 {
     menubar_show();
+    this->repaint();
 }
 
 void reader::on_hideOptionsBtn_clicked()

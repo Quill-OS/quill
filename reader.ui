@@ -726,7 +726,7 @@
               <widget class="QLabel" name="wordLabel">
                <property name="font">
                 <font>
-                 <family>Ubuntu</family>
+                 <family>Inter</family>
                  <weight>75</weight>
                  <bold>true</bold>
                 </font>

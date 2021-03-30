@@ -95,6 +95,8 @@ private slots:
 
     void on_menuBarCheckBox_toggled(bool checked);
 
+    void on_comboBox_currentIndexChanged(const QString &arg1);
+
 private:
     Ui::settings *ui;
     usbms_splash *usbmsWindow;

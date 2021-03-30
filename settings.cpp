@@ -32,6 +32,7 @@ settings::settings(QWidget *parent) :
     ui->requestLeaseBtn->setStyleSheet("font-size: 9pt");
     ui->usbmsBtn->setStyleSheet("font-size: 9pt");
     ui->updateBtn->setStyleSheet("font-size: 9pt");
+    ui->comboBox->setStyleSheet("font-size: 9pt");
 
     ui->previousBtn->setText("");
     ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
@@ -93,6 +94,45 @@ settings::settings(QWidget *parent) :
         }
         if(dpi_number == 227) {
             ui->uiScalingSlider->setValue(2);
+        }
+    }
+
+    // Refresh
+    string_checkconfig(".config/04-book/refresh");
+    if(checkconfig_str_val == "") {
+        // Set default option, 3
+        string_writeconfig(".config/04-book/refresh", "3");
+        string_checkconfig(".config/04-book/refresh");
+        ui->comboBox->setCurrentText("3 pages");
+    }
+    else {
+        int refreshInt = checkconfig_str_val.toInt();
+        if(refreshInt == -1) {
+            ui->comboBox->setCurrentText("Never refresh");
+        }
+        if(refreshInt == 0) {
+            ui->comboBox->setCurrentText("Every page");
+        }
+        if(refreshInt == 1) {
+            ui->comboBox->setCurrentText("1 page");
+        }
+        if(refreshInt == 2) {
+            ui->comboBox->setCurrentText("2 pages");
+        }
+        if(refreshInt == 3) {
+            ui->comboBox->setCurrentText("3 pages");
+        }
+        if(refreshInt == 4) {
+            ui->comboBox->setCurrentText("4 pages");
+        }
+        if(refreshInt == 5) {
+            ui->comboBox->setCurrentText("5 pages");
+        }
+        if(refreshInt == 6) {
+            ui->comboBox->setCurrentText("6 pages");
+        }
+        else {
+            qDebug() << "Refresh setting value out of range, skipping...";
         }
     }
 
@@ -420,5 +460,33 @@ void settings::on_menuBarCheckBox_toggled(bool checked)
     else {
         checked_box = false;
         writeconfig(".config/11-menubar/sticky", "StickyMenuBar=");
+    }
+}
+
+void settings::on_comboBox_currentIndexChanged(const QString &arg1)
+{
+    if(arg1 == "Every page") {
+        string_writeconfig(".config/04-book/refresh", "0");
+    }
+    if(arg1 == "1 page") {
+        string_writeconfig(".config/04-book/refresh", "1");
+    }
+    if(arg1 == "2 pages") {
+        string_writeconfig(".config/04-book/refresh", "2");
+    }
+    if(arg1 == "3 pages") {
+        string_writeconfig(".config/04-book/refresh", "3");
+    }
+    if(arg1 == "4 pages") {
+        string_writeconfig(".config/04-book/refresh", "4");
+    }
+    if(arg1 == "5 pages") {
+        string_writeconfig(".config/04-book/refresh", "5");
+    }
+    if(arg1 == "6 pages") {
+        string_writeconfig(".config/04-book/refresh", "6");
+    }
+    if(arg1 == "Never refresh") {
+        string_writeconfig(".config/04-book/refresh", "-1");
     }
 }
