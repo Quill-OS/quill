@@ -113,6 +113,11 @@ Back
        </item>
        <item row="2" column="1">
         <widget class="QPushButton" name="calendarLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+          </font>
+         </property>
          <property name="text">
           <string>Launch</string>
          </property>
@@ -122,7 +127,7 @@ Back
         <widget class="QPushButton" name="scribbleLaunchBtn">
          <property name="font">
           <font>
-           <family>Ubuntu</family>
+           <family>Inter</family>
            <italic>false</italic>
           </font>
          </property>
@@ -148,7 +153,7 @@ Back
         <widget class="QPushButton" name="lightmapsLaunchBtn">
          <property name="font">
           <font>
-           <family>Ubuntu</family>
+           <family>Inter</family>
            <italic>false</italic>
           </font>
          </property>
@@ -172,6 +177,11 @@ Back
        </item>
        <item row="3" column="1">
         <widget class="QPushButton" name="savedWordsLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+          </font>
+         </property>
          <property name="text">
           <string>Launch</string>
          </property>
