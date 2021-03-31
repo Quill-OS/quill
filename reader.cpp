@@ -397,7 +397,7 @@ reader::~reader()
 
 void reader::on_nextBtn_clicked()
 {
-    if(split_total - 1 == 0) {
+    if(split_total - 1 == 1) {
         QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
     }
     else {
@@ -426,7 +426,7 @@ void reader::on_nextBtn_clicked()
 void reader::on_previousBtn_clicked()
 {
     // Making sure we won't encounter a "List index out of range" error ;)
-    if(split_total >= split_files_number) {
+    if(split_total >= split_files_number - 1) {
         QMessageBox::critical(this, tr("Invalid argument"), tr("No previous page."));
     }
     else {
