@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include <usbms_splash.h>
+#include "generaldialog.h"
 
 using namespace std;
 
@@ -97,9 +98,12 @@ private slots:
 
     void on_comboBox_currentIndexChanged(const QString &arg1);
 
+    void on_resetBtn_clicked();
+
 private:
     Ui::settings *ui;
     usbms_splash *usbmsWindow;
+    generalDialog *generalDialogWindow;
 };
 
 #endif // SETTINGS_H

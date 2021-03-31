@@ -13,6 +13,7 @@ SOURCES += \
     apps.cpp \
     brightnessdialog.cpp \
     calendarapp.cpp \
+    generaldialog.cpp \
     main.cpp \
     mainwindow.cpp \
     quit.cpp \
@@ -26,6 +27,7 @@ HEADERS += \
     apps.h \
     brightnessdialog.h \
     calendarapp.h \
+    generaldialog.h \
     mainwindow.h \
     quit.h \
     reader.h \
@@ -38,6 +40,7 @@ FORMS += \
     apps.ui \
     brightnessdialog.ui \
     calendarapp.ui \
+    generaldialog.ui \
     mainwindow.ui \
     quit.ui \
     reader.ui \

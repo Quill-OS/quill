@@ -26,12 +26,14 @@ settings::settings(QWidget *parent) :
     ui->requestLeaseBtn->setProperty("type", "borderless");
     ui->usbmsBtn->setProperty("type", "borderless");
     ui->updateBtn->setProperty("type", "borderless");
+    ui->resetBtn->setProperty("type", "borderless");
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
     ui->requestLeaseBtn->setStyleSheet("font-size: 9pt");
     ui->usbmsBtn->setStyleSheet("font-size: 9pt");
     ui->updateBtn->setStyleSheet("font-size: 9pt");
+    ui->resetBtn->setStyleSheet("font-size: 9pt");
     ui->comboBox->setStyleSheet("font-size: 9pt");
 
     ui->previousBtn->setText("");
@@ -489,4 +491,15 @@ void settings::on_comboBox_currentIndexChanged(const QString &arg1)
     if(arg1 == "Never refresh") {
         string_writeconfig(".config/04-book/refresh", "-1");
     }
+}
+
+void settings::on_resetBtn_clicked()
+{
+    // We write to a temporary file to show a "Reset" prompt
+    string_writeconfig("/inkbox/resetDialog", "true");
+
+    // We show the dialog
+    generalDialogWindow = new generalDialog();
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
 }

@@ -462,10 +462,10 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_searchBtn_clicked()
 {
-    // Testing
-    /*usbmsWindow = new usbms_splash();
-    usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
-    usbmsWindow->showFullScreen();*/
+    /*// Testing
+    generalDialogWindow = new generalDialog();
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();*/
 }
 
 void MainWindow::on_quitBtn_clicked()

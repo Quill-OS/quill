@@ -9,6 +9,7 @@
 #include "alert.h"
 #include "usbms_splash.h"
 #include "brightnessdialog.h"
+#include "generaldialog.h"
 #include <iostream>
 #include <QFile>
 #include <QTextStream>
@@ -162,5 +163,6 @@ private:
     alert *alertWindow;
     usbms_splash *usbmsWindow;
     brightnessDialog *brightnessDialogWindow;
+    generalDialog *generalDialogWindow;
 };
 #endif // MAINWINDOW_H
