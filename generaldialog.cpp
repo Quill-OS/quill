@@ -70,8 +70,15 @@ void generalDialog::on_cancelBtn_clicked()
 void generalDialog::on_okBtn_clicked()
 {
     if(resetDialog == true) {
-        // Reset the device ... some code to come
-        ;
+        // Soft-reset the device
+        // We set a custom boot flag and reboot silently in Diagnostics
+        string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
+        string_writeconfig("/external_root/boot/flags/DO_SOFT_RESET", "true");
+        QString prog ("reboot");
+        QStringList args;
+        QProcess *proc = new QProcess();
+        proc->start(prog, args);
+        proc->waitForFinished();
     }
     if(updateDialog == true) {
         string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "true");

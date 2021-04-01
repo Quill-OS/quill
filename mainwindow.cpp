@@ -208,16 +208,6 @@ MainWindow::MainWindow(QWidget *parent)
             QFile::copy("/mnt/onboard/onboard/.inkbox/rootfs-internal.sh", "/tmp/rootfs-internal.sh");
 
             // First script
-            QString rootfs_prog ("chroot");
-            QStringList rootfs_args;
-            rootfs_args << "/external_root" << "/tmp/rootfs.sh";
-            // Removing script
-            QFile::remove("/mnt/onboard/onboard/.inkbox/rootfs.sh");
-            QProcess *rootfs_proc = new QProcess();
-            rootfs_proc->start(rootfs_prog, rootfs_args);
-            rootfs_proc->waitForFinished();
-
-            // Second script
             QString rootfs_internal_prog ("sh");
             QStringList rootfs_internal_args;
             rootfs_internal_args << "/tmp/rootfs-internal.sh";
@@ -226,6 +216,16 @@ MainWindow::MainWindow(QWidget *parent)
             QProcess *rootfs_internal_proc = new QProcess();
             rootfs_internal_proc->start(rootfs_internal_prog, rootfs_internal_args);
             rootfs_internal_proc->waitForFinished();
+
+            // Second script
+            QString rootfs_prog ("chroot");
+            QStringList rootfs_args;
+            rootfs_args << "/external_root" << "/tmp/rootfs.sh";
+            // Removing script
+            QFile::remove("/mnt/onboard/onboard/.inkbox/rootfs.sh");
+            QProcess *rootfs_proc = new QProcess();
+            rootfs_proc->start(rootfs_prog, rootfs_args);
+            rootfs_proc->waitForFinished();
 
             // Rebooting if needed
             if(reboot_after_update == true) {
