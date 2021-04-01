@@ -20,6 +20,7 @@ public:
     explicit generalDialog(QWidget *parent = nullptr);
     ~generalDialog();
     bool resetDialog = false;
+    bool updateDialog = false;
     bool checkconfig(QString file) {
         QFile config(file);
         config.open(QIODevice::ReadWrite);

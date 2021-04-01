@@ -418,6 +418,17 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
+    // Check for an update and ask if the user wants to install it
+    if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
+        if(checkconfig("/tmp/cancelUpdateDialog") == false) {
+            // I'm sorry.
+            QTimer::singleShot(2000, this, SLOT(openUpdateDialog()));
+        }
+        else {
+            qDebug() << "Not showing update dialog, user dismissed it...";
+        }
+    }
+
     // Check if it's the first boot since an update and confirm that it installed successfully
     if(checkconfig("/opt/inkbox_genuine") == true) {
         if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
@@ -437,6 +448,18 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::openUpdateDialog() {
+    updateDialog = true;
+    // We write to a temporary file to show a "Reset" prompt
+    string_writeconfig("/inkbox/updateDialog", "true");
+
+    // We show the dialog
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
+    QApplication::processEvents();
 }
 
 void MainWindow::on_settingsBtn_clicked()

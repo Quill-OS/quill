@@ -30,12 +30,28 @@ public:
     bool existing_recent_books = false;
     bool reboot_after_update = false;
     int batt_level_int;
+    bool updateDialog = false;
+    int timerTime = 0;
     QString checkconfig_str_val;
     QString relative_path;
     QString batt_level;
     bool checkconfig(QString file) {
         QFile config(file);
         config.open(QIODevice::ReadOnly);
+        QTextStream in (&config);
+        const QString content = in.readAll();
+        string contentstr = content.toStdString();
+        if(contentstr.find("true") != std::string::npos) {
+            return true;
+        }
+        else {
+            return false;
+        }
+        config.close();
+    };
+    bool checkconfig_rw(QString file) {
+        QFile config(file);
+        config.open(QIODevice::ReadWrite);
         QTextStream in (&config);
         const QString content = in.readAll();
         string contentstr = content.toStdString();
@@ -137,22 +153,15 @@ public slots:
 private slots:
     void on_settingsBtn_clicked();
     void on_appsBtn_clicked();
-
     void on_pushButton_clicked();
-
     void on_searchBtn_clicked();
-
     void on_quitBtn_clicked();
-
     void on_book1Btn_clicked();
-
     void on_book2Btn_clicked();
-
     void on_book3Btn_clicked();
-
     void on_book4Btn_clicked();
-
     void on_brightnessBtn_clicked();
+    void openUpdateDialog();
 
 private:
     Ui::MainWindow *ui;

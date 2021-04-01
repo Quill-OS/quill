@@ -15,6 +15,7 @@
 
 #include "mainwindow.h"
 #include "alert.h"
+#include "generaldialog.h"
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
