@@ -28,6 +28,13 @@ alert::alert(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
+    // Checking if the update signature was bad
+    if(checkconfig("/external_root/boot/flags/ALERT_SIGN") == true) {
+        ui->securityLabel->setText("Failed to install update.");
+        ui->messageLabel->setText("The update's digital signature is untrusted. For security reasons, it is not possible to install it.");
+        ui->stackedWidget->setCurrentIndex(1);
+    }
+
     ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 16pt}");
     ui->messageLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 9pt}");
     ui->securityLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 11pt}");
@@ -35,6 +42,8 @@ alert::alert(QWidget *parent) :
     ui->resetBtn->setProperty("type", "borderless");
     ui->continueBtn->setStyleSheet("padding: 20px");
     ui->resetBtn->setStyleSheet("padding: 20px");
+    ui->continue2Btn->setProperty("type", "borderless");
+    ui->continue2Btn->setStyleSheet("padding: 20px");
 }
 
 alert::~alert()
@@ -46,6 +55,7 @@ void alert::on_continueBtn_clicked()
 {
     // We continue anyway and re-set the ALERT flag
     string_writeconfig("/external_root/boot/flags/ALERT", "false");
+    string_writeconfig("/external_root/boot/flags/ALERT_SIGN", "false");
     QProcess process;
     process.startDetached("inkbox", QStringList());
     qApp->quit();
@@ -62,4 +72,14 @@ void alert::on_resetBtn_clicked()
     QProcess *reboot_proc = new QProcess();
     reboot_proc->start(reboot_prog, reboot_args);
     reboot_proc->waitForFinished();
+}
+
+void alert::on_continue2Btn_clicked()
+{
+    // We continue anyway and re-set the ALERT flag
+    string_writeconfig("/external_root/boot/flags/ALERT", "false");
+    string_writeconfig("/external_root/boot/flags/ALERT_SIGN", "false");
+    QProcess process;
+    process.startDetached("inkbox", QStringList());
+    qApp->quit();
 }
