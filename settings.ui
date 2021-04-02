@@ -101,16 +101,6 @@ OK
        </item>
       </layout>
      </item>
-     <item row="28" column="0">
-      <widget class="Line" name="line_3">
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="0">
       <widget class="Line" name="line_4">
        <property name="frameShadow">
@@ -169,19 +159,6 @@ OK
         </size>
        </property>
       </spacer>
-     </item>
-     <item row="27" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="font">
-        <font>
-         <family>Chivo</family>
-         <italic>true</italic>
-        </font>
-       </property>
-       <property name="text">
-        <string>Networking</string>
-       </property>
-      </widget>
      </item>
      <item row="26" column="0">
       <widget class="QStackedWidget" name="stackedWidget">
@@ -248,13 +225,6 @@ OK
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_6">
-               <property name="text">
-                <string>Enter USB Mass Storage session</string>
-               </property>
-              </widget>
-             </item>
              <item row="0" column="1">
               <spacer name="horizontalSpacer_2">
                <property name="orientation">
@@ -267,6 +237,13 @@ OK
                 </size>
                </property>
               </spacer>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_6">
+               <property name="text">
+                <string>Enter USB Mass Storage session</string>
+               </property>
+              </widget>
              </item>
             </layout>
            </item>
@@ -282,6 +259,87 @@ OK
            </item>
            <item row="1" column="0">
             <widget class="Line" name="line_8">
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <layout class="QGridLayout" name="gridLayout_9">
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="screenRefreshLabel">
+               <property name="text">
+                <string>Screen refresh</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <spacer name="horizontalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="2">
+              <widget class="QComboBox" name="comboBox">
+               <item>
+                <property name="text">
+                 <string>Every page</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>1 page</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>2 pages</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>3 pages</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>4 pages</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>5 pages</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>6 pages</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Never refresh</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="18" column="0">
+            <widget class="Line" name="line_3">
              <property name="frameShadow">
               <enum>QFrame::Plain</enum>
              </property>
@@ -386,6 +444,19 @@ OK
              </property>
             </widget>
            </item>
+           <item row="17" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="font">
+              <font>
+               <family>Chivo</family>
+               <italic>true</italic>
+              </font>
+             </property>
+             <property name="text">
+              <string>Networking</string>
+             </property>
+            </widget>
+           </item>
            <item row="9" column="0">
             <widget class="QCheckBox" name="demoCheckBox">
              <property name="text">
@@ -393,20 +464,20 @@ OK
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
-            <layout class="QGridLayout" name="gridLayout_9">
+           <item row="19" column="0">
+            <layout class="QGridLayout" name="gridLayout_3">
              <property name="bottomMargin">
               <number>0</number>
              </property>
              <item row="0" column="0">
-              <widget class="QLabel" name="screenRefreshLabel">
+              <widget class="QLabel" name="label_4">
                <property name="text">
-                <string>Screen refresh</string>
+                <string>Request DHCP lease</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
-              <spacer name="horizontalSpacer_7">
+              <spacer name="horizontalSpacer">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -419,47 +490,16 @@ OK
               </spacer>
              </item>
              <item row="0" column="2">
-              <widget class="QComboBox" name="comboBox">
-               <item>
-                <property name="text">
-                 <string>Every page</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>1 page</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>2 pages</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>3 pages</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>4 pages</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>5 pages</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>6 pages</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>Never refresh</string>
-                </property>
-               </item>
+              <widget class="QPushButton" name="requestLeaseBtn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Request</string>
+               </property>
               </widget>
              </item>
             </layout>
@@ -670,46 +710,6 @@ OK
         </layout>
        </widget>
       </widget>
-     </item>
-     <item row="29" column="0">
-      <layout class="QGridLayout" name="gridLayout_3">
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Request DHCP lease</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="0" column="2">
-        <widget class="QPushButton" name="requestLeaseBtn">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Request</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
     </layout>
    </item>
