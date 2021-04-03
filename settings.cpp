@@ -317,7 +317,7 @@ void settings::on_usbmsBtn_clicked()
     usbms_t->start();
 }
 
-// Now I know that QStackedWidget exists... ;p
+// Now I know that QStackedWidgets exist... ;p
 
 void settings::on_previousBtn_clicked()
 {

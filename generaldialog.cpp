@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QProcess>
+#include <QScreen>
 
 generalDialog::generalDialog(QWidget *parent) :
     QDialog(parent),
@@ -49,6 +50,12 @@ generalDialog::generalDialog(QWidget *parent) :
         // We shouldn't be there ;)
         ;
     }
+
+    // Centering dialog
+    QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
+    int x = (screenGeometry.width() - this->width()) / 2;
+    int y = (screenGeometry.height() - this->height()) / 2;
+    this->move(x, y);
 }
 
 generalDialog::~generalDialog()
