@@ -144,7 +144,7 @@ settings::settings(QWidget *parent) :
     }
 
     // Lock screen
-    if(checkconfig(".config/12-lockscreen") == true) {
+    if(checkconfig(".config/12-lockscreen/config") == true) {
         ui->enableLockscreenCheckBox->click();
     }
 
