@@ -53,6 +53,9 @@ settings::settings(QWidget *parent) :
     ui->line_7->hide();
     ui->updateBtn->hide();
     ui->updateLabel->hide();
+    ui->enableLockscreenCheckBox->hide();
+    ui->setPasscodeBtn->hide();
+    ui->setPasscodeLabel->hide();
 
     // Settings tweaking + enabling specific features whether it's running on the provided integrated OS or Kobo firmware
     if(checkconfig(".config/01-demo/config") == true) {
@@ -140,6 +143,11 @@ settings::settings(QWidget *parent) :
         }
     }
 
+    // Lock screen
+    if(checkconfig(".config/12-lockscreen") == true) {
+        ui->enableLockscreenCheckBox->click();
+    }
+
     if(checkconfig("/opt/inkbox_genuine") == true) {
         // Enforcing security policy if the user has not rooted the device
         if(checkconfig("/external_root/opt/root/rooted") == true) {
@@ -154,6 +162,9 @@ settings::settings(QWidget *parent) :
             ui->label_3->hide();
             ui->line_3->hide();
         }
+        ui->enableLockscreenCheckBox->show();
+        ui->setPasscodeBtn->show();
+        ui->setPasscodeLabel->show();
         ui->usbmsBtn->show();
         ui->label_5->show();
         ui->label_6->show();
