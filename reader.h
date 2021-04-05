@@ -140,6 +140,7 @@ public:
             ittext = content[i];
             QDir::setCurrent("/mnt/onboard/.adds/inkbox");
         }
+        return 0;
     }
     void checkwords() {
         QFile words_list(".config/06-words/config");

@@ -4,7 +4,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
-QMAKE_CXXFLAGS += -Wno-unused-function
+QMAKE_CXXFLAGS += -Wno-unused-function -Wno-unused-parameter
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.

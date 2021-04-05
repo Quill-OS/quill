@@ -26,7 +26,6 @@
 
 int main(int argc, char *argv[])
 {
-    checkconfig("test");
     // Checking if there has been an ALERT flag set up, and if there is, show a big warning
     if(checkconfig("/external_root/boot/flags/ALERT") == true) {
         QApplication a(argc, argv);
