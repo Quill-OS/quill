@@ -21,6 +21,7 @@ settings::settings(QWidget *parent) :
     ui(new Ui::settings)
 {
     ui->setupUi(this);
+    ui->setPasscodeBtn->setProperty("type", "borderless");
     ui->okBtn->setProperty("type", "borderless");
     ui->aboutBtn->setProperty("type", "borderless");
     ui->requestLeaseBtn->setProperty("type", "borderless");
@@ -35,6 +36,7 @@ settings::settings(QWidget *parent) :
     ui->updateBtn->setStyleSheet("font-size: 9pt");
     ui->resetBtn->setStyleSheet("font-size: 9pt");
     ui->comboBox->setStyleSheet("font-size: 9pt");
+    ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
 
     ui->previousBtn->setText("");
     ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
@@ -515,11 +517,9 @@ void settings::on_setPasscodeBtn_clicked()
 void settings::on_enableLockscreenCheckBox_toggled(bool checked)
 {
     if(checked == true) {
-        checked_box = true;
-        writeconfig(".config/12-lockscreen/config", "EnableLockScreen=");
+        string_writeconfig(".config/12-lockscreen/config", "true");
     }
     else {
-        checked_box = false;
-        writeconfig(".config/12-lockscreen/config", "EnableLockScreen=");
+        string_writeconfig(".config/12-lockscreen/config", "false");
     }
 }

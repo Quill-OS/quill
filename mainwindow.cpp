@@ -192,7 +192,7 @@ MainWindow::MainWindow(QWidget *parent)
     stylesheetFile.close();
 
     // Running rootfs changes script if it's there
-    // This is a BIG security flaw. I'll try to find something that could replace it but in a safer way.
+    // Not a big security flaw anymore. InkBox OS verifies the digital signature of the update package and aborts the update if it's not genuine.
     if(checkconfig("/opt/inkbox_genuine") == true) {
         if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
             // Checking if we need to reboot after running the two scripts
