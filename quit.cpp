@@ -1,5 +1,6 @@
 #include "quit.h"
 #include "ui_quit.h"
+#include "functions.h"
 #include <QProcess>
 #include <QIcon>
 #include <QPixmap>

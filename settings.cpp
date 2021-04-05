@@ -2,6 +2,7 @@
 #include "ui_settings.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "functions.h"
 #include <QFile>
 #include <QMessageBox>
 #include <QSettings>

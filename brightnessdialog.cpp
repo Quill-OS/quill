@@ -1,5 +1,6 @@
 #include "brightnessdialog.h"
 #include "ui_brightnessdialog.h"
+#include "functions.h"
 
 #include <QFont>
 #include <QFontDatabase>

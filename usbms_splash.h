@@ -2,8 +2,6 @@
 #define USBMS_SPLASH_H
 
 #include <QWidget>
-#include <QFile>
-#include <QTextStream>
 
 namespace Ui {
 class usbms_splash;

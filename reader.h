@@ -1,6 +1,8 @@
 #ifndef READER_H
 #define READER_H
 
+#include "functions.h"
+
 #include <QWidget>
 #include <QProcess>
 #include <QDebug>
@@ -8,12 +10,6 @@
 #include <QDir>
 #include <QDirIterator>
 #include <QList>
-#include <iostream>
-#include <fstream>
-#include <QMessageBox>
-#include <regex>
-#include <QFont>
-#include <QFontDatabase>
 
 using namespace std;
 
@@ -30,7 +26,6 @@ public:
     int split_files_number;
     int page_number;
     int dictionary_position = 1;
-    int batt_level_int;
     int pagesTurned = 0;
 
     // -1 : Never refresh | 0 : Refresh every page | 1 : Refresh every 1 page. And so on...
@@ -50,10 +45,7 @@ public:
     QString book_4;
     QString ittext;
     QString book_file;
-    QString batt_level;
     bool batt_status;
-    QString percent = "%";
-    QString checkconfig_str_val;
     QString selected_text;
     QString word;
     QString words; // Saved words
@@ -67,20 +59,6 @@ public:
     QList<QString> content;
     explicit reader(QWidget *parent = nullptr);
     ~reader();
-    bool checkconfig(QString file) {
-        QFile config(file);
-        config.open(QIODevice::ReadWrite);
-        QTextStream in (&config);
-        const QString content = in.readAll();
-        string contentstr = content.toStdString();
-        if(contentstr.find("true") != std::string::npos) {
-            return true;
-        }
-        else {
-            return false;
-        }
-        config.close();
-    };
     int setup_book(QString book, int i, bool run_parser) {
         // Parse ebook
         QString mount_prog ("sh");
@@ -163,29 +141,6 @@ public:
             QDir::setCurrent("/mnt/onboard/.adds/inkbox");
         }
     }
-    int get_brightness() {
-        QFile brightness("/var/run/brightness");
-        brightness.open(QIODevice::ReadOnly);
-        QString valuestr = brightness.readAll();
-        int value = valuestr.toInt();
-        brightness.close();
-        return value;
-    }
-    int int_checkconfig(QString file) {
-        QFile int_config(file);
-        int_config.open(QIODevice::ReadOnly);
-        QString valuestr = int_config.readAll();
-        int value = valuestr.toInt();
-        int_config.close();
-        return value;
-    }
-    void string_checkconfig_ro(QString file) {
-        QFile config(file);
-        config.open(QIODevice::ReadOnly);
-        QTextStream in (&config);
-        checkconfig_str_val = in.readAll();
-        config.close();
-    }
     void checkwords() {
         QFile words_list(".config/06-words/config");
         words_list.open(QIODevice::ReadWrite);
@@ -193,44 +148,6 @@ public:
         words = in.readAll();
         words_list.close();
     }
-    void set_brightness(int value) {
-        ofstream fhandler;
-        fhandler.open("/var/run/brightness");
-        fhandler << value;
-        fhandler.close();
-    }
-    void brightness_writeconfig(int value) {
-        ofstream fhandler;
-        fhandler.open(".config/03-brightness/config");
-        fhandler << value;
-        fhandler.close();
-    }
-    void string_checkconfig(QString file) {
-        QFile config(file);
-        config.open(QIODevice::ReadWrite);
-        QTextStream in (&config);
-        checkconfig_str_val = in.readAll();
-        config.close();
-    }
-    bool checkconfig_match(QString file, string pattern) {
-        QFile config(file);
-        config.open(QIODevice::ReadWrite);
-        QTextStream in (&config);
-        const QString content = in.readAll();
-        string contentstr = content.toStdString();
-
-        // Thanks to https://stackoverflow.com/questions/22516463/how-do-i-find-a-complete-word-not-part-of-it-in-a-string-in-c
-        std::regex r("\\b" + pattern + "\\b");
-        std::smatch m;
-
-        if(std::regex_search(contentstr, m, r)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-        config.close();
-    };
     bool epub_file_match(QString file) {
         QString fileExt = file.right(4);
 
@@ -241,21 +158,6 @@ public:
             return false;
         }
     };
-    void string_writeconfig(string file, string config_option) {
-        ofstream fhandler;
-        fhandler.open(file);
-        fhandler << config_option;
-        fhandler.close();
-    }
-    void get_battery_level() {
-        QFile batt_level_file("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity");
-        batt_level_file.open(QIODevice::ReadOnly);
-        batt_level = batt_level_file.readAll();
-        batt_level = batt_level.trimmed();
-        batt_level_int = batt_level.toInt();
-        batt_level = batt_level.append("%");
-        batt_level_file.close();
-    }
     void dictionary_lookup(string word, QString first_letter, int position) {
         ofstream fhandler;
         fhandler.open("/inkbox/dictionary/word");

@@ -1,5 +1,6 @@
 #include "alert.h"
 #include "ui_alert.h"
+#include "functions.h"
 
 #include <QPixmap>
 #include <QScreen>

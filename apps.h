@@ -20,11 +20,8 @@ public:
 private slots:
     void on_scribbleLaunchBtn_clicked();
     void exitSlot();
-
     void on_lightmapsLaunchBtn_clicked();
-
     void on_savedWordsLaunchBtn_clicked();
-
     void on_calendarLaunchBtn_clicked();
 
 private:

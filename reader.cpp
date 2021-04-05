@@ -1,5 +1,6 @@
 #include "reader.h"
 #include "ui_reader.h"
+#include "functions.h"
 #include <QProcess>
 #include <QFileDialog>
 #include <QDir>
@@ -11,6 +12,7 @@
 #include <QSize>
 #include <QDesktopWidget>
 #include <QScreen>
+#include <QFontDatabase>
 
 using namespace std;
 

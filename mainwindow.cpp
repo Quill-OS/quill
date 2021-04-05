@@ -4,6 +4,7 @@
 #include "ui_settings.h"
 #include "apps.h"
 #include "ui_apps.h"
+#include "functions.h"
 #include <QTime>
 #include <QDateTime>
 #include <QTimer>

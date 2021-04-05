@@ -1,5 +1,6 @@
 #include "generaldialog.h"
 #include "ui_generaldialog.h"
+#include "functions.h"
 
 #include <QFile>
 #include <QDebug>

@@ -16,6 +16,7 @@
 #include "mainwindow.h"
 #include "alert.h"
 #include "generaldialog.h"
+#include "functions.h"
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
@@ -25,14 +26,9 @@
 
 int main(int argc, char *argv[])
 {
+    checkconfig("test");
     // Checking if there has been an ALERT flag set up, and if there is, show a big warning
-    QFile config("/external_root/boot/flags/ALERT");
-    config.open(QIODevice::ReadOnly);
-    QTextStream in (&config);
-    const QString content = in.readAll();
-    string contentstr = content.toStdString();
-    config.close();
-    if(contentstr.find("true") != std::string::npos) {
+    if(checkconfig("/external_root/boot/flags/ALERT") == true) {
         QApplication a(argc, argv);
         alert w;
 
