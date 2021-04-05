@@ -24,9 +24,11 @@ generalDialog::generalDialog(QWidget *parent) :
 
     ui->okBtn->setProperty("type", "borderless");
     ui->cancelBtn->setProperty("type", "borderless");
+    ui->acceptBtn->setProperty("type", "borderless");
 
     ui->okBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->cancelBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
+    ui->acceptBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->bodyLabel->setStyleSheet("font-size: 9pt");
 
     if(checkconfig("/inkbox/resetDialog") == true) {
@@ -46,6 +48,14 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->headerLabel->setText("Update available");
         this->adjustSize();
         string_writeconfig("/inkbox/updateDialog", "false");
+    }
+    if(checkconfig("/inkbox/settingsRebootDialog") == true) {
+        settingsRebootDialog = true;
+        ui->stackedWidget->setCurrentIndex(1);
+        ui->bodyLabel->setText("The settings you chose might require a complete reboot of the device for them to work properly.");
+        ui->headerLabel->setText("Information");
+        this->adjustSize();
+        string_writeconfig("/inkbox/settingsRebootDialog", "false");
     }
     else {
         // We shouldn't be there ;)
@@ -78,15 +88,26 @@ void generalDialog::on_cancelBtn_clicked()
 void generalDialog::on_okBtn_clicked()
 {
     if(resetDialog == true) {
-        // Soft-reset the device
-        // We set a custom boot flag and reboot silently in Diagnostics
-        string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
-        string_writeconfig("/external_root/boot/flags/DO_SOFT_RESET", "true");
-        QString prog ("reboot");
-        QStringList args;
-        QProcess *proc = new QProcess();
-        proc->start(prog, args);
-        proc->waitForFinished();
+        if(checkconfig("/opt/inkbox_genuine") == true) {
+            // Soft-reset the device
+            // We set a custom boot flag and reboot silently in Diagnostics
+            string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
+            string_writeconfig("/external_root/boot/flags/DO_SOFT_RESET", "true");
+            QString prog ("reboot");
+            QStringList args;
+            QProcess *proc = new QProcess();
+            proc->start(prog, args);
+            proc->waitForFinished();
+        }
+        else {
+            // Restore default settings, we're not running on InkBox OS
+            QString prog ("sh");
+            QStringList args;
+            args << "reset-config.sh";
+            QProcess *proc = new QProcess();
+            proc->startDetached(prog, args);
+            qApp->quit();
+        }
     }
     if(updateDialog == true) {
         string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "true");
@@ -98,4 +119,13 @@ void generalDialog::on_okBtn_clicked()
         proc->start(prog, args);
         proc->waitForFinished();
     }
+}
+void generalDialog::on_acceptBtn_clicked()
+{
+    // We don't have any other option ;p
+    generalDialog::close();
+
+    QProcess process;
+    process.startDetached("inkbox.sh", QStringList());
+    qApp->quit();
 }

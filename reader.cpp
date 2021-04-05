@@ -267,24 +267,30 @@ reader::reader(QWidget *parent) :
     } );
     select_t->start();
 
-    // We have to get the file's path
     if(checkconfig("/inkbox/skip_opendialog") == true) {
-        string_checkconfig("/inkbox/book_number");
-        if(checkconfig_str_val == "1") {
-            string_checkconfig(".config/08-recent_books/1");
-            book_file = checkconfig_str_val;
+        // We have to get the file's path
+        if(checkconfig("/tmp/suspendBook") == true) {
+            // Prevent from opening the Reader framework next time unless the condition is reset
+            string_writeconfig("/tmp/suspendBook", "false");
         }
-        if(checkconfig_str_val == "2") {
-            string_checkconfig(".config/08-recent_books/2");
-            book_file = checkconfig_str_val;
-        }
-        if(checkconfig_str_val == "3") {
-            string_checkconfig(".config/08-recent_books/3");
-            book_file = checkconfig_str_val;
-        }
-        if(checkconfig_str_val == "4") {
-            string_checkconfig(".config/08-recent_books/4");
-            book_file = checkconfig_str_val;
+        else {
+            string_checkconfig("/inkbox/book_number");
+            if(checkconfig_str_val == "1") {
+                string_checkconfig(".config/08-recent_books/1");
+                book_file = checkconfig_str_val;
+            }
+            if(checkconfig_str_val == "2") {
+                string_checkconfig(".config/08-recent_books/2");
+                book_file = checkconfig_str_val;
+            }
+            if(checkconfig_str_val == "3") {
+                string_checkconfig(".config/08-recent_books/3");
+                book_file = checkconfig_str_val;
+            }
+            if(checkconfig_str_val == "4") {
+                string_checkconfig(".config/08-recent_books/4");
+                book_file = checkconfig_str_val;
+            }
         }
     }
     else {

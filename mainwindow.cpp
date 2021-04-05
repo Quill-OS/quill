@@ -259,14 +259,12 @@ MainWindow::MainWindow(QWidget *parent)
         ui->inkboxLabel->setText("InkBox");
     }
 
-    // Dark mode: specfic to InkBox OS, but could be ported to Kobos running Nickel in the future
-    if(checkconfig("/opt/inkbox_genuine") == true) {
-        if(checkconfig(".config/10-dark_mode/config") == true) {
-            string_writeconfig("/tmp/invertScreen", "y");
-        }
-        else {
-            string_writeconfig("/tmp/invertScreen", "n");
-        }
+    // Dark mode
+    if(checkconfig(".config/10-dark_mode/config") == true) {
+        string_writeconfig("/tmp/invertScreen", "y");
+    }
+    else {
+        string_writeconfig("/tmp/invertScreen", "n");
     }
 
     // Clock setting to show seconds

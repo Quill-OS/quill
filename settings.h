@@ -19,13 +19,14 @@ class settings : public QWidget
 public:
     int settings_page = 1;
     bool launch_sh = false;
+    bool ui_enable_changed = false;
+    bool ui_not_user_change = false;
     bool not_user_change = true;
 
     explicit settings(QWidget *parent = nullptr);
     ~settings();
 
 private slots:
-    void exitSlot();
     void on_demoCheckBox_toggled(bool);
     void on_aboutBtn_clicked();
     void on_okBtn_clicked();
@@ -44,6 +45,7 @@ private slots:
     void on_resetBtn_clicked();
     void on_setPasscodeBtn_clicked();
     void on_enableLockscreenCheckBox_toggled(bool checked);
+    void on_enableUiScalingCheckBox_toggled(bool checked);
 
 private:
     Ui::settings *ui;

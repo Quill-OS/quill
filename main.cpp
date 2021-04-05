@@ -17,6 +17,7 @@
 #include "alert.h"
 #include "generaldialog.h"
 #include "functions.h"
+#include "reader.h"
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
@@ -32,7 +33,18 @@ int main(int argc, char *argv[])
         alert w;
 
         const QScreen* screen = qApp->primaryScreen();
-        w.setGeometry(QRect(QPoint(0,0), screen->geometry ().size()));
+        w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
+        w.show();
+        return a.exec();
+    }
+    // If we're waking from sleep and we have the lockscreen enabled, we'll "resume" the book from scratch
+    if(checkconfig("/tmp/suspendBook") == true) {
+        string_writeconfig("/inkbox/skip_opendialog", "true");
+        QApplication a(argc, argv);
+        reader w;
+
+        const QScreen* screen = qApp->primaryScreen();
+        w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
         w.show();
         return a.exec();
     }

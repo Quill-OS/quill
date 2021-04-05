@@ -152,7 +152,7 @@ public:
     bool epub_file_match(QString file) {
         QString fileExt = file.right(4);
 
-        if(fileExt == "epub" or fileExt=="EPUB") {
+        if(fileExt == "epub" or fileExt == "EPUB") {
             return true;
         }
         else {

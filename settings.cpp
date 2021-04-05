@@ -57,6 +57,11 @@ settings::settings(QWidget *parent) :
     ui->enableLockscreenCheckBox->hide();
     ui->setPasscodeBtn->hide();
     ui->setPasscodeLabel->hide();
+    ui->securityLabel->hide();
+    ui->line_2->hide();
+    ui->uiScaleNumberLabel->hide();
+    ui->uiScalingSlider->hide();
+    ui->uiScalingLabel->hide();
 
     // Settings tweaking + enabling specific features whether it's running on the provided integrated OS or Kobo firmware
     if(checkconfig(".config/01-demo/config") == true) {
@@ -149,6 +154,12 @@ settings::settings(QWidget *parent) :
         ui->enableLockscreenCheckBox->click();
     }
 
+    // DPI checkbox
+    if(checkconfig_rw(".config/09-dpi/config-enabled") == true) {
+        ui_not_user_change = true;
+        ui->enableUiScalingCheckBox->click();
+    }
+
     if(checkconfig("/opt/inkbox_genuine") == true) {
         // Enforcing security policy if the user has not rooted the device
         if(checkconfig("/external_root/opt/root/rooted") == true) {
@@ -163,6 +174,8 @@ settings::settings(QWidget *parent) :
             ui->label_3->hide();
             ui->line_3->hide();
         }
+        ui->securityLabel->show();
+        ui->line_2->show();
         ui->enableLockscreenCheckBox->show();
         ui->setPasscodeBtn->show();
         ui->setPasscodeLabel->show();
@@ -178,11 +191,6 @@ settings::settings(QWidget *parent) :
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
-    QObject::connect(ui->okBtn, SIGNAL(clicked()), this, SLOT(exitSlot()));
-}
-
-void settings::exitSlot() {
-    settings::close();
 }
 
 settings::~settings()
@@ -193,9 +201,18 @@ settings::~settings()
 void settings::on_okBtn_clicked() {
     // Prevent potential unknown damage launching via shell script this could do
     if(launch_sh == true) {
-        QProcess process;
-        process.startDetached("inkbox.sh", QStringList());
-        qApp->quit();
+        if(ui_enable_changed == true) {
+            ui_enable_changed = false;
+            string_writeconfig("/inkbox/settingsRebootDialog", "true");
+            generalDialogWindow = new generalDialog();
+            generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+            generalDialogWindow->show();
+        }
+        else {
+            QProcess process;
+            process.startDetached("inkbox.sh", QStringList());
+            qApp->quit();
+        }
     }
     else {
         QProcess process;
@@ -533,5 +550,33 @@ void settings::on_enableLockscreenCheckBox_toggled(bool checked)
     }
     else {
         string_writeconfig(".config/12-lockscreen/config", "false");
+    }
+}
+
+void settings::on_enableUiScalingCheckBox_toggled(bool checked)
+{
+    if(checked == true) {
+        // Writing default value
+        string_writeconfig(".config/09-dpi/config", "187");
+        string_writeconfig(".config/09-dpi/config-enabled", "true");
+        ui->uiScaleNumberLabel->show();
+        ui->uiScalingSlider->show();
+        ui->uiScalingLabel->show();
+        launch_sh = true;
+        if(ui_not_user_change == true) {
+            ui_enable_changed = false;
+        }
+        else {
+            ui_enable_changed = true;
+        }
+    }
+    else {
+        string_writeconfig(".config/09-dpi/config", "false");
+        string_writeconfig(".config/09-dpi/config-enabled", "false");
+        ui->uiScaleNumberLabel->hide();
+        ui->uiScalingSlider->hide();
+        ui->uiScalingLabel->hide();
+        launch_sh = true;
+        ui_enable_changed = true;
     }
 }
