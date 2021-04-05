@@ -503,3 +503,23 @@ void settings::on_resetBtn_clicked()
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
 }
+
+void settings::on_setPasscodeBtn_clicked()
+{
+    string_writeconfig("/tmp/setPasscode", "true");
+    QProcess process;
+    process.startDetached("lockscreen", QStringList());
+    qApp->quit();
+}
+
+void settings::on_enableLockscreenCheckBox_toggled(bool checked)
+{
+    if(checked == true) {
+        checked_box = true;
+        writeconfig(".config/12-lockscreen/config", "EnableLockScreen=");
+    }
+    else {
+        checked_box = false;
+        writeconfig(".config/12-lockscreen/config", "EnableLockScreen=");
+    }
+}

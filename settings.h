@@ -100,6 +100,10 @@ private slots:
 
     void on_resetBtn_clicked();
 
+    void on_setPasscodeBtn_clicked();
+
+    void on_enableLockscreenCheckBox_toggled(bool checked);
+
 private:
     Ui::settings *ui;
     usbms_splash *usbmsWindow;

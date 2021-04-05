@@ -28,7 +28,7 @@ alert::alert(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
-    // Checking if the update signature was bad
+    // Checking if the update's signature is untrusted
     if(checkconfig("/external_root/boot/flags/ALERT_SIGN") == true) {
         ui->securityLabel->setText("Failed to update InkBox.");
         ui->messageLabel->setText("The digital signature of the update is untrusted.\nFor security reasons, it cannot be installed.");
