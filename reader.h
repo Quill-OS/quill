@@ -39,6 +39,8 @@ public:
     bool parser_ran = false;
     bool booktostr_ran = false;
     bool neverRefresh = false;
+    bool wakeFromSleep = false;
+    bool remount = true;
     QString book_1;
     QString book_2;
     QString book_3;
@@ -61,12 +63,24 @@ public:
     ~reader();
     int setup_book(QString book, int i, bool run_parser) {
         // Parse ebook
-        QString mount_prog ("sh");
-        QStringList mount_args;
-        mount_args << "split.sh";
-        QProcess *mount_proc = new QProcess();
-        mount_proc->start(mount_prog, mount_args);
-        mount_proc->waitForFinished();
+        if(remount != false) {
+            QString mount_prog ("sh");
+            QStringList mount_args;
+            mount_args << "split.sh";
+            QProcess *mount_proc = new QProcess();
+            mount_proc->start(mount_prog, mount_args);
+            mount_proc->waitForFinished();
+            remount = false;
+        }
+        else {
+            string_writeconfig("/inkbox/remount", "false");
+            QString mount_prog ("sh");
+            QStringList mount_args;
+            mount_args << "split.sh";
+            QProcess *mount_proc = new QProcess();
+            mount_proc->start(mount_prog, mount_args);
+            mount_proc->waitForFinished();
+        }
 
         if(booktostr_ran != true) {
             if(epub_file_match(book) == true) {
@@ -108,7 +122,7 @@ public:
                 QProcess *parse_proc = new QProcess();
                 parse_proc->start(parse_prog, parse_args);
                 parse_proc->waitForFinished();
-                parser_ran = false;
+                parser_ran = true;
             }
             else {
                 QString parse_prog ("python3");
@@ -117,7 +131,7 @@ public:
                 QProcess *parse_proc = new QProcess();
                 parse_proc->start(parse_prog, parse_args);
                 parse_proc->waitForFinished();
-                parser_ran = false;
+                parser_ran = true;
             }
         }
 
@@ -219,40 +233,24 @@ public:
 
 private slots:
     void on_nextBtn_clicked();
-
     void on_previousBtn_clicked();
-
     void on_optionsBtn_clicked();
-
     void on_hideOptionsBtn_clicked();
-
     void on_brightnessDecBtn_clicked();
-
     void on_brightnessIncBtn_clicked();
-
     void on_aboutBtn_clicked();
-
     void on_homeBtn_clicked();
-
     void on_fontChooser_currentIndexChanged(const QString &arg1);
-
     void on_alignLeftBtn_clicked();
-
     void on_alignCenterBtn_clicked();
-
     void on_alignRightBtn_clicked();
-
     void on_alignJustifyBtn_clicked();
-
     void on_infoCloseBtn_clicked();
-
     void on_previousDefinitionBtn_clicked();
-
     void on_nextDefinitionBtn_clicked();
-
     void on_saveWordBtn_clicked();
-
     void on_sizeSlider_valueChanged(int value);
+    void writeconfig_pagenumber();
 
 private:
     Ui::reader *ui;

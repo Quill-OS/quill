@@ -270,8 +270,10 @@ reader::reader(QWidget *parent) :
     if(checkconfig("/inkbox/skip_opendialog") == true) {
         // We have to get the file's path
         if(checkconfig("/tmp/suspendBook") == true) {
+            wakeFromSleep = true;
             // Prevent from opening the Reader framework next time unless the condition is reset
             string_writeconfig("/tmp/suspendBook", "false");
+            book_file = "/inkbox/book/book.txt";
         }
         else {
             string_checkconfig("/inkbox/book_number");
@@ -320,10 +322,21 @@ reader::reader(QWidget *parent) :
         }
     }
 
-    // Counting number of parsed files
-    split_total = setup_book(book_file, 0, true);
-    split_files_number = split_total;
-    split_total = split_total - 1;
+    // Checking if we're waking from sleep; if so, do nothing there because the book should already have been parsed
+    if(wakeFromSleep != true) {
+        // Counting number of parsed files
+        split_total = setup_book(book_file, 0, true);
+        split_files_number = split_total;
+        split_total = split_total - 1;
+
+        writeconfig_pagenumber();
+    }
+    else {
+        // Retrieve split_total from tmpfs
+        string_checkconfig("/tmp/inkboxPageNumber");
+        split_total = checkconfig_str_val.toInt();
+        setup_book(book_file, 0, true);
+    }
 
     // Get text
     QDir::setCurrent("/mnt/onboard/.adds/inkbox");
@@ -370,6 +383,12 @@ reader::reader(QWidget *parent) :
     // Wheeee!
     ui->text->setText(ittext);
 
+    // Clean up
+    string_writeconfig("/inkbox/remount", "true");
+
+    // Way to tell shell scripts that we're in the Reader framework
+    string_writeconfig("/tmp/inkboxReading", "true");
+
     // Saving the book opened in the favorites list
     string_checkconfig(".config/08-recent_books/1");
     book_1 = checkconfig_str_val;
@@ -411,6 +430,7 @@ void reader::on_nextBtn_clicked()
     else {
         parser_ran = true;
         split_total = split_total - 1;
+
         setup_book(book_file, split_total, false);
         ui->text->setText("");
         ui->text->setText(ittext);
@@ -428,6 +448,7 @@ void reader::on_nextBtn_clicked()
                 pagesTurned = 0;
             }
         }
+        writeconfig_pagenumber();
     }
 }
 
@@ -458,6 +479,7 @@ void reader::on_previousBtn_clicked()
                 pagesTurned = 0;
             }
         }
+        writeconfig_pagenumber();
     }
 }
 
@@ -511,6 +533,10 @@ void reader::on_aboutBtn_clicked()
 
 void reader::on_homeBtn_clicked()
 {
+    // We're leaving reading mode
+    string_writeconfig("/tmp/inkboxReading", "false");
+
+    // Relaunching process
     QProcess process;
     process.startDetached("inkbox", QStringList());
     qApp->quit();
@@ -777,4 +803,10 @@ void reader::on_sizeSlider_valueChanged(int value)
             ui->sizeValueLabel->setText("5");
         }
     }
+}
+
+void reader::writeconfig_pagenumber() {
+    // Saving the page number in tmpfs
+    string split_total_str = to_string(split_total);
+    string_writeconfig("/tmp/inkboxPageNumber", split_total_str);
 }
