@@ -32,13 +32,24 @@ generalDialog::generalDialog(QWidget *parent) :
     ui->bodyLabel->setStyleSheet("font-size: 9pt");
 
     if(checkconfig("/inkbox/resetDialog") == true) {
-        resetDialog = true;
-        ui->okBtn->setText("Proceed");
-        ui->cancelBtn->setText("Go back");
-        ui->bodyLabel->setText("This will erase any books you have on the device. Settings will be reset.");
-        ui->headerLabel->setText("Warning");
-        this->adjustSize();
-        string_writeconfig("/inkbox/resetDialog", "false");
+        if(checkconfig("/opt/inkbox_genuine") == true) {
+            resetDialog = true;
+            ui->okBtn->setText("Proceed");
+            ui->cancelBtn->setText("Go back");
+            ui->bodyLabel->setText("This will erase any books you have on the device. Settings will be reset.");
+            ui->headerLabel->setText("Warning");
+            this->adjustSize();
+            string_writeconfig("/inkbox/resetDialog", "false");
+        }
+        else {
+            resetDialog = true;
+            ui->okBtn->setText("Proceed");
+            ui->cancelBtn->setText("Go back");
+            ui->bodyLabel->setText("Settings will be reset.");
+            ui->headerLabel->setText("Warning");
+            this->adjustSize();
+            string_writeconfig("/inkbox/resetDialog", "false");
+        }
     }
     if(checkconfig("/inkbox/updateDialog") == true) {
         updateDialog = true;
@@ -105,7 +116,12 @@ void generalDialog::on_okBtn_clicked()
             QStringList args;
             args << "reset-config.sh";
             QProcess *proc = new QProcess();
-            proc->startDetached(prog, args);
+            proc->start(prog, args);
+            proc->waitForFinished();
+
+            // Relaunching InkBox
+            QProcess process;
+            process.startDetached("inkbox.sh", QStringList());
             qApp->quit();
         }
     }

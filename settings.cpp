@@ -145,7 +145,7 @@ settings::settings(QWidget *parent) :
             ui->comboBox->setCurrentText("6 pages");
         }
         else {
-            qDebug() << "Refresh setting value out of range, skipping...";
+            // Something bad (or not ;p) has happened
         }
     }
 
@@ -184,6 +184,9 @@ settings::settings(QWidget *parent) :
         ui->label_6->show();
         ui->line_7->show();
         ui->okBtn->setText("OK");
+    }
+    else {
+        ui->label_8->setText("Reset InkBox");
     }
 
 
@@ -226,7 +229,7 @@ void settings::on_aboutBtn_clicked()
     if(checkconfig("/opt/inkbox_genuine") == true) {
         QString aboutmsg = "InkBox is an open-source Qt-based eBook reader. It brings you the latest Qt features while being also fast and responsive.";
         string_checkconfig_ro("/external_root/opt/isa/version");
-        aboutmsg.append("\n\nInkBox v");
+        aboutmsg.append("\n\nInkBox ");
         aboutmsg.append(checkconfig_str_val);
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }

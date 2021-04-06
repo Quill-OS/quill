@@ -322,7 +322,7 @@ reader::reader(QWidget *parent) :
         }
     }
 
-    // Checking if we're waking from sleep; if so, do nothing there because the book should already have been parsed
+    // Checking if we're waking from sleep; if so, do nothing there because the book should have already been parsed
     if(wakeFromSleep != true) {
         // Counting number of parsed files
         split_total = setup_book(book_file, 0, true);
@@ -403,7 +403,17 @@ reader::reader(QWidget *parent) :
     book_4 = checkconfig_str_val;
     string str_book_4 = book_4.toStdString();
 
-    string book_file_str = book_file.toStdString();
+    string book_file_str;
+
+    // Don't mess up "Recently read books" with random "book.txt" buttons...
+    if(wakeFromSleep == true) {
+        string_checkconfig("/tmp/inkboxBookPath");
+        book_file_str = checkconfig_str_val.toStdString();
+    }
+    else {
+        book_file_str = book_file.toStdString();
+        string_writeconfig("/tmp/inkboxBookPath", book_file_str);
+    }
 
     if(book_1 == book_file) {
         ;
@@ -522,7 +532,7 @@ void reader::on_aboutBtn_clicked()
     if(checkconfig("/opt/inkbox_genuine") == true) {
         QString aboutmsg = "InkBox is an open-source Qt-based eBook reader. It brings you the latest Qt features while being also fast and responsive.";
         string_checkconfig_ro("/external_root/opt/isa/version");
-        aboutmsg.append("\n\nInkBox v");
+        aboutmsg.append("\n\nInkBox ");
         aboutmsg.append(checkconfig_str_val);
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
