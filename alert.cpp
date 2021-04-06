@@ -29,10 +29,17 @@ alert::alert(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
-    // Checking if the update's signature is untrusted
+    // Checking if the update's signature is untrusted. The signature error will always take precedence over the downgrade one (c.f. update.sh script)
     if(checkconfig("/external_root/boot/flags/ALERT_SIGN") == true) {
+        signatureError = true;
         ui->securityLabel->setText("Failed to update InkBox.");
         ui->messageLabel->setText("The digital signature of the update is untrusted.\nFor security reasons, it cannot be installed.");
+        ui->stackedWidget->setCurrentIndex(1);
+    }
+    if(checkconfig("/external_root/boot/flags/ALERT_DOWNGRADE") == true) {
+        downgradeError = true;
+        ui->securityLabel->setText("Failed to update InkBox.");
+        ui->messageLabel->setText("An error occured during the update process.\nThe update provided is lower than the actual installed version.");
         ui->stackedWidget->setCurrentIndex(1);
     }
 
@@ -79,8 +86,17 @@ void alert::on_continue2Btn_clicked()
 {
     // We continue anyway and re-set the ALERT flag
     string_writeconfig("/external_root/boot/flags/ALERT", "false");
-    string_writeconfig("/external_root/boot/flags/ALERT_SIGN", "false");
-    QProcess process;
-    process.startDetached("inkbox", QStringList());
-    qApp->quit();
+
+    if(signatureError == true) {
+        string_writeconfig("/external_root/boot/flags/ALERT_SIGN", "false");
+        QProcess process;
+        process.startDetached("inkbox", QStringList());
+        qApp->quit();
+    }
+    if(downgradeError == true) {
+        string_writeconfig("/external_root/boot/flags/ALERT_DOWNGRADE", "false");
+        QProcess process;
+        process.startDetached("inkbox", QStringList());
+        qApp->quit();
+    }
 }

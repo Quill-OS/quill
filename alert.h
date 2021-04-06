@@ -16,6 +16,8 @@ class alert : public QWidget
 public:
     explicit alert(QWidget *parent = nullptr);
     ~alert();
+    bool signatureError = false;
+    bool downgradeError = false;
 
 private slots:
     void on_continueBtn_clicked();
