@@ -39,7 +39,7 @@ alert::alert(QWidget *parent) :
     if(checkconfig("/external_root/boot/flags/ALERT_DOWNGRADE") == true) {
         downgradeError = true;
         ui->securityLabel->setText("Failed to update InkBox.");
-        ui->messageLabel->setText("An error occured during the update process.\nThe update provided is lower than the actual installed version.");
+        ui->messageLabel->setText("An error occured during the update process.\nThe update package's version is lower than the actual installed version.");
         ui->stackedWidget->setCurrentIndex(1);
     }
 
