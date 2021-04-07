@@ -156,7 +156,7 @@ settings::settings(QWidget *parent) :
 
     // DPI checkbox
     string_checkconfig(".config/09-dpi/config");
-    // Check if the string is a number
+    // Check if the string is a number; else, we don't check the check box
     if(checkconfig_str_val == "false") {
         string_writeconfig(".config/09-dpi/config-enabled", "false");
     }
