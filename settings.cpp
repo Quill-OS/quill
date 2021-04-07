@@ -155,6 +155,9 @@ settings::settings(QWidget *parent) :
     }
 
     // DPI checkbox
+    if(checkconfig(".config/09-dpi/config") != false) {
+        string_writeconfig(".config/09-dpi/config-enabled", "false");
+    }
     if(checkconfig_rw(".config/09-dpi/config-enabled") == true) {
         ui_not_user_change = true;
         ui->enableUiScalingCheckBox->click();
