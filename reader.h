@@ -251,6 +251,7 @@ private slots:
     void on_saveWordBtn_clicked();
     void on_sizeSlider_valueChanged(int value);
     void writeconfig_pagenumber();
+    void quit_restart();
 
 private:
     Ui::reader *ui;

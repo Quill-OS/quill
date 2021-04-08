@@ -306,7 +306,15 @@ reader::reader(QWidget *parent) :
             dialog->setStyleSheet(stylesheetFile.readAll());
             stylesheetFile.close();
             book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
-            QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+
+            if(book_file != "") {
+                QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+            }
+            else {
+                // User clicked "Cancel" button
+                QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+                quit_restart();
+            }
         }
         else {
             QDir::setCurrent("/mnt/onboard");
@@ -318,7 +326,15 @@ reader::reader(QWidget *parent) :
             dialog->setStyleSheet(stylesheetFile.readAll());
             stylesheetFile.close();
             book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
-            QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+
+            if(book_file != "") {
+                QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+            }
+            else {
+                // User clicked "Cancel" button
+                QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+                quit_restart();
+            }
         }
     }
 
@@ -547,9 +563,7 @@ void reader::on_homeBtn_clicked()
     string_writeconfig("/tmp/inkboxReading", "false");
 
     // Relaunching process
-    QProcess process;
-    process.startDetached("inkbox", QStringList());
-    qApp->quit();
+    quit_restart();
 }
 
 void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
@@ -819,4 +833,11 @@ void reader::writeconfig_pagenumber() {
     // Saving the page number in tmpfs
     string split_total_str = to_string(split_total);
     string_writeconfig("/tmp/inkboxPageNumber", split_total_str);
+}
+
+void reader::quit_restart() {
+    // Restarting InkBox
+    QProcess process;
+    process.startDetached("inkbox", QStringList());
+    qApp->quit();
 }
