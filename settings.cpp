@@ -611,8 +611,17 @@ void settings::on_enableLockscreenCheckBox_toggled(bool checked)
 void settings::on_enableUiScalingCheckBox_toggled(bool checked)
 {
     if(checked == true) {
-        // Writing default value
-        string_writeconfig(".config/09-dpi/config", "187");
+        // Writing default value depending on the device
+        string_checkconfig("/opt/inkbox_device");
+        if(checkconfig_str_val == "n705\n") {
+            string_writeconfig(".config/09-dpi/config", "187");
+        }
+        if(checkconfig_str_val == "n905\n") {
+            string_writeconfig(".config/09-dpi/config", "160");
+        }
+        else {
+            string_writeconfig(".config/09-dpi/config", "187");
+        }
         string_writeconfig(".config/09-dpi/config-enabled", "true");
         ui->uiScaleNumberLabel->show();
         ui->uiScalingSlider->show();
