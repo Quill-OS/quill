@@ -99,14 +99,40 @@ settings::settings(QWidget *parent) :
     }
     else {
         int dpi_number = checkconfig_str_val.toInt();
-        if(dpi_number == 187) {
-            ui->uiScalingSlider->setValue(0);
+        // Checking if it's a Mini or a Touch
+        string_checkconfig("/opt/inkbox_device");
+        if(checkconfig_str_val == "n705\n") {
+            if(dpi_number == 187) {
+                ui->uiScalingSlider->setValue(0);
+            }
+            if(dpi_number == 214) {
+                ui->uiScalingSlider->setValue(1);
+            }
+            if(dpi_number == 227) {
+                ui->uiScalingSlider->setValue(2);
+            }
         }
-        if(dpi_number == 214) {
-            ui->uiScalingSlider->setValue(1);
+        if(checkconfig_str_val == "n905\n") {
+            if(dpi_number == 160) {
+                ui->uiScalingSlider->setValue(0);
+            }
+            if(dpi_number == 187) {
+                ui->uiScalingSlider->setValue(1);
+            }
+            if(dpi_number == 200) {
+                ui->uiScalingSlider->setValue(2);
+            }
         }
-        if(dpi_number == 227) {
-            ui->uiScalingSlider->setValue(2);
+        else {
+            if(dpi_number == 187) {
+                ui->uiScalingSlider->setValue(0);
+            }
+            if(dpi_number == 214) {
+                ui->uiScalingSlider->setValue(1);
+            }
+            if(dpi_number == 227) {
+                ui->uiScalingSlider->setValue(2);
+            }
         }
     }
 
@@ -470,13 +496,31 @@ void settings::on_darkModeCheckBox_toggled(bool checked)
 void settings::on_uiScalingSlider_valueChanged(int value)
 {
     if(value == 0) {
-        string_writeconfig(".config/09-dpi/config", "187");
+        string_checkconfig("/opt/inkbox_device");
+        if(checkconfig_str_val == "n705\n") {
+            string_writeconfig(".config/09-dpi/config", "187");
+        }
+        if(checkconfig_str_val == "n905\n") {
+            string_writeconfig(".config/09-dpi/config", "160");
+        }
     }
     if(value == 1) {
-        string_writeconfig(".config/09-dpi/config", "214");
+        string_checkconfig("/opt/inkbox_device");
+        if(checkconfig_str_val == "n705\n") {
+            string_writeconfig(".config/09-dpi/config", "214");
+        }
+        if(checkconfig_str_val == "n905\n") {
+            string_writeconfig(".config/09-dpi/config", "187");
+        }
     }
     if(value == 2) {
-        string_writeconfig(".config/09-dpi/config", "227");
+        string_checkconfig("/opt/inkbox_device");
+        if(checkconfig_str_val == "n705\n") {
+            string_writeconfig(".config/09-dpi/config", "227");
+        }
+        if(checkconfig_str_val == "n905\n") {
+            string_writeconfig(".config/09-dpi/config", "200");
+        }
     }
 
     // Making sense for the user

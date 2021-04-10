@@ -145,7 +145,7 @@ reader::reader(QWidget *parent) :
     // Defining what the icons' size will be
     if(checkconfig("/opt/inkbox_genuine") == true) {
         string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
+        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
             float stdIconWidth = sW / 16;
             float stdIconHeight = sW / 16;
             QPixmap chargingPixmap(":/resources/battery_charging.png");
@@ -657,7 +657,7 @@ void reader::menubar_show() {
     ui->statusBarWidget->setVisible(true);
 
     string_checkconfig("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         ;
     }
     else {
@@ -676,7 +676,7 @@ void reader::menubar_show() {
 
 void reader::menubar_hide() {
     string_checkconfig("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         ui->brightnessWidget->setVisible(false);
     }
     else {
@@ -784,6 +784,28 @@ void reader::on_sizeSlider_valueChanged(int value)
 
     // Future improvement?
     if(checkconfig_match("/opt/inkbox_device", "n705\n") == true) {
+        if(value == 0) {
+            ui->text->setStyleSheet("font-size: 6pt");
+            ui->sizeValueLabel->setText("1");
+        }
+        if(value == 1) {
+            ui->text->setStyleSheet("font-size: 10pt");
+            ui->sizeValueLabel->setText("2");
+        }
+        if(value == 2) {
+            ui->text->setStyleSheet("font-size: 14pt");
+            ui->sizeValueLabel->setText("3");
+        }
+        if(value == 3) {
+            ui->text->setStyleSheet("font-size: 18pt");
+            ui->sizeValueLabel->setText("4");
+        }
+        if(value == 4) {
+            ui->text->setStyleSheet("font-size: 22pt");
+            ui->sizeValueLabel->setText("5");
+        }
+    }
+    if(checkconfig_match("/opt/inkbox_device", "n905\n") == true) {
         if(value == 0) {
             ui->text->setStyleSheet("font-size: 6pt");
             ui->sizeValueLabel->setText("1");

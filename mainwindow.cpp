@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Battery
     string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         // Hide brightness controls; they won't be very useful there anyway...
         ui->brightnessBtn->hide();
         ui->line_7->hide();
@@ -119,6 +119,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
     else {
+        // Setting icons up
         stdIconWidth = sW / 19;
         stdIconHeight = sH / 19;
         QPixmap chargingPixmap(":/resources/battery_charging.png");
@@ -164,9 +165,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->brightnessBtn->setStyleSheet("font-size: 9pt; padding-bottom: 5px; padding-top: 5px; padding-left: 8px; padding-right: 8px;");
 
-    // Checking if we have a Mini there
+    // Checking if we have a Mini or Touch there
     string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 1px; padding-right: 1px;");
     }
     else {
