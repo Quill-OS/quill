@@ -85,6 +85,18 @@ Back
        <property name="bottomMargin">
         <number>0</number>
        </property>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="savedWordsLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="0">
         <widget class="QLabel" name="calendarLabel">
          <property name="font">
@@ -98,19 +110,6 @@ Back
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Light Maps</string>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="1">
         <widget class="QPushButton" name="calendarLaunchBtn">
          <property name="font">
@@ -120,32 +119,6 @@ Back
          </property>
          <property name="text">
           <string>Launch</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="scribbleLaunchBtn">
-         <property name="font">
-          <font>
-           <family>Inter</family>
-           <italic>false</italic>
-          </font>
-         </property>
-         <property name="text">
-          <string>Launch</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="scribbleLabel">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Scribble</string>
          </property>
         </widget>
        </item>
@@ -175,8 +148,60 @@ Back
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QPushButton" name="savedWordsLaunchBtn">
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Light Maps</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="scribbleLabel">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Scribble</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="scribbleLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <italic>false</italic>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="label_4">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Calculator</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QPushButton" name="calculatorLaunchBtn">
          <property name="font">
           <font>
            <family>Inter</family>

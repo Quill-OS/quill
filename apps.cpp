@@ -18,6 +18,7 @@ apps::apps(QWidget *parent) :
     ui->lightmapsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->calendarLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->savedWordsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
+    ui->calculatorLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     QFile stylesheetFile(":/resources/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
@@ -61,4 +62,11 @@ void apps::on_calendarLaunchBtn_clicked()
     calendarWindow = new calendarApp();
     calendarWindow->setAttribute(Qt::WA_DeleteOnClose);
     calendarWindow->showFullScreen();
+}
+
+void apps::on_calculatorLaunchBtn_clicked()
+{
+    QProcess process;
+    process.startDetached("calculator", QStringList());
+    qApp->quit();
 }

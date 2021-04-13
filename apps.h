@@ -23,6 +23,7 @@ private slots:
     void on_lightmapsLaunchBtn_clicked();
     void on_savedWordsLaunchBtn_clicked();
     void on_calendarLaunchBtn_clicked();
+    void on_calculatorLaunchBtn_clicked();
 
 private:
     Ui::apps *ui;
