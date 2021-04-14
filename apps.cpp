@@ -13,6 +13,7 @@ apps::apps(QWidget *parent) :
     ui->lightmapsLaunchBtn->setProperty("type", "borderless");
     ui->calendarLaunchBtn->setProperty("type", "borderless");
     ui->savedWordsLaunchBtn->setProperty("type", "borderless");
+    ui->calculatorLaunchBtn->setProperty("type", "borderless");
 
     ui->scribbleLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->lightmapsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
