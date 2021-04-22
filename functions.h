@@ -9,6 +9,18 @@
 #include <QProcess>
 #include <regex>
 
+// WoW, static variables and namespaces are awesome
+namespace global_static {
+    namespace battery {
+        static bool showLowBatteryDialog = true;
+        static bool showCriticalBatteryAlert = false;
+    }
+    namespace reader {
+        static int pageNumber;
+        static bool skipOpenDialog = false;
+    }
+}
+
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534
 namespace {
     QString checkconfig_str_val;
@@ -154,5 +166,57 @@ namespace {
         config.close();
         return 0;
     };
+    bool isBatteryLow() {
+        // Checks if battery level is under 15% of total capacity.
+        get_battery_level();
+        if(batt_level_int <= 15) {
+            return true;
+        }
+        else {
+            return false;
+        }
+        return 0;
+    }
+    bool isBatteryCritical() {
+        // Checks if the battery level is critical (i.e. <= 5%)
+        get_battery_level();
+        if(batt_level_int <= 5) {
+            return true;
+        }
+        else {
+            return false;
+        }
+        return 0;
+    }
+    void poweroff(bool splash) {
+        if(splash == true) {
+            QString prog ("poweroff");
+            QStringList args;
+            QProcess *proc = new QProcess();
+            proc->start(prog, args);
+        }
+        else {
+            QString prog ("busybox");
+            QStringList args;
+            args << "poweroff";
+            QProcess *proc = new QProcess();
+            proc->start(prog, args);
+        }
+    }
+    void reboot(bool splash) {
+        if(splash == true) {
+            QString prog ("reboot");
+            QStringList args;
+            QProcess *proc = new QProcess();
+            proc->start(prog, args);
+        }
+        else {
+            QString prog ("busybox");
+            QStringList args;
+            args << "reboot";
+            QProcess *proc = new QProcess();
+            proc->start(prog, args);
+        }
+    }
 }
 #endif // FUNCTIONS_H

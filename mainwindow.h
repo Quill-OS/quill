@@ -12,6 +12,11 @@
 #include "generaldialog.h"
 using namespace std;
 
+namespace mainwindow_static {
+    static bool updateDialog = false;
+    static bool lowBatteryDialog = false;
+}
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -25,7 +30,6 @@ public:
     ~MainWindow();
     bool existing_recent_books = false;
     bool reboot_after_update = false;
-    bool updateDialog = false;
     int timerTime = 0;
     QString relative_path;
 public slots:
@@ -42,6 +46,7 @@ private slots:
     void on_book4Btn_clicked();
     void on_brightnessBtn_clicked();
     void openUpdateDialog();
+    void openLowBatteryDialog();
 
 private:
     Ui::MainWindow *ui;

@@ -1,6 +1,8 @@
 #include "generaldialog.h"
 #include "ui_generaldialog.h"
 #include "functions.h"
+#include "reader.h"
+#include "mainwindow.h"
 
 #include <QFile>
 #include <QDebug>
@@ -67,6 +69,17 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->headerLabel->setText("Information");
         this->adjustSize();
         string_writeconfig("/inkbox/settingsRebootDialog", "false");
+    }
+    if(mainwindow_static::lowBatteryDialog == true) {
+        lowBatteryDialog = true;
+        ui->stackedWidget->setCurrentIndex(1);
+        get_battery_level();
+        QString message = "Warning! Battery is low. Please consider charging your eReader.\nCurrent level: ";
+        message.append(batt_level);
+        ui->bodyLabel->setText(message);
+        ui->headerLabel->setText("Warning");
+        this->adjustSize();
+        string_writeconfig("/inkbox/lowBatteryDialog", "false");
     }
     else {
         // We shouldn't be there ;)
@@ -141,7 +154,15 @@ void generalDialog::on_acceptBtn_clicked()
     // We don't have any other option ;p
     generalDialog::close();
 
-    QProcess process;
-    process.startDetached("inkbox.sh", QStringList());
-    qApp->quit();
+    if(lowBatteryDialog == true) {
+        mainwindow_static::lowBatteryDialog = false;
+        reader_static::batteryAlertLock = false;
+        global_static::battery::showLowBatteryDialog = false;
+    }
+
+    if(settingsRebootDialog == true) {
+        QProcess process;
+        process.startDetached("inkbox.sh", QStringList());
+        qApp->quit();
+    }
 }

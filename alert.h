@@ -18,6 +18,7 @@ public:
     ~alert();
     bool signatureError = false;
     bool downgradeError = false;
+    bool criticalBattery = false;
 
 private slots:
     void on_continueBtn_clicked();

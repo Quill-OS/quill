@@ -2,6 +2,8 @@
 #define READER_H
 
 #include "functions.h"
+#include "alert.h"
+#include "generaldialog.h"
 
 #include <QWidget>
 #include <QProcess>
@@ -12,6 +14,10 @@
 #include <QList>
 
 using namespace std;
+
+namespace reader_static {
+    static bool batteryAlertLock = false;
+}
 
 namespace Ui {
 class reader;
@@ -230,6 +236,9 @@ public:
     void menubar_hide();
     void wordwidget_show();
     void wordwidget_hide();
+    void batteryWatchdog();
+    void openLowBatteryDialog();
+    void openCriticalBatteryAlertWindow();
 
 private slots:
     void on_nextBtn_clicked();
@@ -255,6 +264,8 @@ private slots:
 
 private:
     Ui::reader *ui;
+    alert *alertWindow;
+    generalDialog *generalDialogWindow;
 };
 
 #endif // READER_H

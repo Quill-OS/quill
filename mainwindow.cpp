@@ -231,12 +231,7 @@ MainWindow::MainWindow(QWidget *parent)
 
             // Rebooting if needed
             if(reboot_after_update == true) {
-                QString rebootProg("busybox");
-                QStringList rebootArgs;
-                rebootArgs << "reboot";
-                QProcess *rebootProc = new QProcess();
-                rebootProc->start(rebootProg, rebootArgs);
-                rebootProc->waitForFinished();
+                reboot(false);
             }
             else {
                 // Update process finished.
@@ -422,11 +417,18 @@ MainWindow::MainWindow(QWidget *parent)
     if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
         if(checkconfig("/tmp/cancelUpdateDialog") == false) {
             // I'm sorry.
+            qDebug() << "An update is available.";
             QTimer::singleShot(2000, this, SLOT(openUpdateDialog()));
         }
         else {
             qDebug() << "Not showing update dialog, user dismissed it...";
         }
+    }
+
+    // Checking if battery level is low
+    if(isBatteryLow() == true) {
+        qDebug() << "Warning! Battery is low!";
+        QTimer::singleShot(2000, this, SLOT(openLowBatteryDialog()));
     }
 
     // Check if it's the first boot since an update and confirm that it installed successfully
@@ -451,11 +453,20 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::openUpdateDialog() {
-    updateDialog = true;
+    mainwindow_static::updateDialog = true;
     // We write to a temporary file to show a "Reset" prompt
     string_writeconfig("/inkbox/updateDialog", "true");
 
     // We show the dialog
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
+    QApplication::processEvents();
+}
+
+void MainWindow::openLowBatteryDialog() {
+    mainwindow_static::lowBatteryDialog = true;
+
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();

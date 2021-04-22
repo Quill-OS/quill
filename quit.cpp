@@ -46,18 +46,12 @@ quit::~quit()
 
 void quit::on_pushButton_clicked()
 {
-    QString prog ("poweroff");
-    QStringList args;
-    QProcess *proc = new QProcess();
-    proc->start(prog, args);
+    poweroff(true);
 }
 
 void quit::on_pushButton_2_clicked()
 {
-    QString prog ("reboot");
-    QStringList args;
-    QProcess *proc = new QProcess();
-    proc->start(prog, args);
+    reboot(true);
 }
 
 void quit::on_pushButton_4_clicked()

@@ -42,6 +42,14 @@ alert::alert(QWidget *parent) :
         ui->messageLabel->setText("An error occured during the update process.\nThe update package's version is lower than the actual installed version.");
         ui->stackedWidget->setCurrentIndex(1);
     }
+    if(global_static::battery::showCriticalBatteryAlert == true) {
+        global_static::battery::showCriticalBatteryAlert = false;
+        criticalBattery = true;
+        ui->securityLabel->setText("Please charge your eReader.");
+        ui->messageLabel->setText("The battery level is very low. To prevent damage to the filesystem, your device has been turned off.\nPlease consider charging it.");
+        ui->stackedWidget->setVisible(false);
+        poweroff(false);
+    }
 
     ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 16pt}");
     ui->messageLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 9pt}");

@@ -213,6 +213,25 @@ reader::reader(QWidget *parent) :
            get_battery_level();
            ui->batteryLabel->setText(batt_level);
            ui->timeLabel->setText(time);
+           if(global_static::battery::showLowBatteryDialog != true) {
+               // Do nothing, since a dialog should already have been displayed and (probably) dismissed
+               ;
+           }
+           else {
+                   if(reader_static::batteryAlertLock == true) {
+                       ;
+                   }
+                   else {
+                       if(isBatteryCritical() == true) {
+                           openCriticalBatteryAlertWindow();
+                       }
+                       else {
+                           if(isBatteryLow() == true) {
+                               openLowBatteryDialog();
+                           }
+                       }
+                   }
+           }
         } );
         t->start();
     }
@@ -224,6 +243,25 @@ reader::reader(QWidget *parent) :
            get_battery_level();
            ui->batteryLabel->setText(batt_level);
            ui->timeLabel->setText(time);
+           if(global_static::battery::showLowBatteryDialog != true) {
+               // Do nothing, since a dialog should already have been displayed and (probably) dismissed
+               ;
+           }
+           else {
+                   if(reader_static::batteryAlertLock == true) {
+                       ;
+                   }
+                   else {
+                       if(isBatteryCritical() == true) {
+                           openCriticalBatteryAlertWindow();
+                       }
+                       else {
+                           if(isBatteryLow() == true) {
+                               openLowBatteryDialog();
+                           }
+                       }
+                   }
+           }
         } );
         t->start();
     }
@@ -599,6 +637,7 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
         string_writeconfig(".config/04-book/font", "Libertinus Serif");
     }
     if(arg1 == "Crimson Pro") {
+        // As adding Crimson Pro to the default fonts bundled along with the Qt libs breaks the general Inter homogeneity, it is incorporated on-demand here.
         int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
         QString family = QFontDatabase::applicationFontFamilies(id).at(0);
         QFont crimson(family);
@@ -862,4 +901,26 @@ void reader::quit_restart() {
     QProcess process;
     process.startDetached("inkbox", QStringList());
     qApp->quit();
+}
+
+void reader::batteryWatchdog() {
+
+}
+
+void reader::openLowBatteryDialog() {
+    reader_static::batteryAlertLock = true;
+
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
+    QApplication::processEvents();
+}
+
+void reader::openCriticalBatteryAlertWindow() {
+    global_static::battery::showCriticalBatteryAlert = true;
+
+    alertWindow = new alert(this);
+    alertWindow->setAttribute(Qt::WA_DeleteOnClose);
+    alertWindow->showFullScreen();
+    QApplication::processEvents();
 }

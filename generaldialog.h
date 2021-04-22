@@ -19,6 +19,7 @@ public:
     bool resetDialog = false;
     bool updateDialog = false;
     bool settingsRebootDialog = false;
+    bool lowBatteryDialog = false;
 
 private slots:
     void on_cancelBtn_clicked();
