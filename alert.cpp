@@ -47,15 +47,18 @@ alert::alert(QWidget *parent) :
         ui->stackedWidget->setCurrentIndex(1);
     }
     if(global::battery::showCriticalBatteryAlert == true) {
+        ui->stackedWidget->setVisible(false);
+        ui->stackedWidget->deleteLater();
+
         QPixmap pixmap(":/resources/battery_alert.png");
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         ui->alertIconLabel->setPixmap(scaledPixmap);
 
         global::battery::showCriticalBatteryAlert = false;
         criticalBattery = true;
-        ui->securityLabel->setText("Please charge your eReader.");
-        ui->messageLabel->setText("The battery level is very low. To prevent damage to the filesystem, your device has been turned off.\nPlease consider charging it.");
-        ui->stackedWidget->setVisible(false);
+        ui->warningLabel->setText("Please charge your eReader.");
+        ui->securityLabel->setText("The battery's charge level is critical.");
+        ui->messageLabel->setText("To prevent filesystem damage, your device has been turned off.\nPlease consider charging it.");
         poweroff(false);
     }
 

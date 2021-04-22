@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
             ;
         }
         else {
-            string_writeconfig("/inkbox/batteryCritical", "true");
+            global::battery::showCriticalBatteryAlert = true;
             QApplication a(argc, argv);
             alert w;
 

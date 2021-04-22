@@ -6,12 +6,6 @@
 #include "generaldialog.h"
 
 #include <QWidget>
-#include <QProcess>
-#include <QDebug>
-#include <QFile>
-#include <QDir>
-#include <QDirIterator>
-#include <QList>
 
 using namespace std;
 
@@ -24,6 +18,9 @@ class reader : public QWidget
     Q_OBJECT
 
 public:
+    explicit reader(QWidget *parent = nullptr);
+    ~reader();
+
     int split_total;
     int split_files_number;
     int page_number;
@@ -61,174 +58,11 @@ public:
     QPixmap scaledFullPixmap;
     QPixmap scaledEmptyPixmap;
     QList<QString> content;
-    explicit reader(QWidget *parent = nullptr);
-    ~reader();
     int setup_book(QString book, int i, bool run_parser);
-    /*int setup_book(QString book, int i, bool run_parser) {
-        // Parse ebook
-        if(remount != false) {
-            QString mount_prog ("sh");
-            QStringList mount_args;
-            mount_args << "split.sh";
-            QProcess *mount_proc = new QProcess();
-            mount_proc->start(mount_prog, mount_args);
-            mount_proc->waitForFinished();
-            remount = false;
-        }
-        else {
-            string_writeconfig("/inkbox/remount", "false");
-            QString mount_prog ("sh");
-            QStringList mount_args;
-            mount_args << "split.sh";
-            QProcess *mount_proc = new QProcess();
-            mount_proc->start(mount_prog, mount_args);
-            mount_proc->waitForFinished();
-        }
-
-        if(booktostr_ran != true) {
-            if(epub_file_match(book) == true) {
-                // Parsing ePUBs with epub2txt, thanks to GitHub:kevinboone
-                QString epubProg ("sh");
-                QStringList epubArgs;
-                epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << book;
-                QProcess *epubProc = new QProcess();
-                epubProc->start(epubProg, epubArgs);
-                epubProc->waitForFinished();
-
-                is_epub = true;
-                booktostr_ran = true;
-            }
-            else {
-                // This is likely not an ePUB.
-                // Copying book specified in the function call
-                QFile::copy(book, "/inkbox/book/book.txt");
-
-                is_epub = false;
-                booktostr_ran = true;
-            }
-        }
-
-        // Checking if the user has defined an option for the number of words per page; if not, then setting the default.
-        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-        string_checkconfig(".config/07-words_number/config");
-        if(checkconfig_str_val == "") {
-            string_writeconfig(".config/07-words_number/config", "100");
-            string_checkconfig(".config/07-words_number/config");
-        }
-
-        // Parsing file
-        if(parser_ran != true) {
-            if(is_epub == true) {
-                QString parse_prog ("python3");
-                QStringList parse_args;
-                parse_args << "split.py" << checkconfig_str_val;
-                QProcess *parse_proc = new QProcess();
-                parse_proc->start(parse_prog, parse_args);
-                parse_proc->waitForFinished();
-                parser_ran = true;
-            }
-            else {
-                QString parse_prog ("python3");
-                QStringList parse_args;
-                parse_args << "split-txt.py" << checkconfig_str_val;
-                QProcess *parse_proc = new QProcess();
-                parse_proc->start(parse_prog, parse_args);
-                parse_proc->waitForFinished();
-                parser_ran = true;
-            }
-        }
-
-        // Changing current working directory
-        QDir::setCurrent("/inkbox/book");
-
-        // Reading file
-        if(run_parser == true) {
-            QDirIterator it("/inkbox/book/split");
-            while (it.hasNext()) {
-                  QFile f(it.next());
-                  f.open(QIODevice::ReadOnly);
-                  content << f.readAll();
-                  f.close();
-            }
-            return content.size();
-            QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-        }
-        else {
-            ittext = content[i];
-            QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-        }
-        return 0;
-    }*/
-    void checkwords() {
-        QFile words_list(".config/06-words/config");
-        words_list.open(QIODevice::ReadWrite);
-        QTextStream in (&words_list);
-        words = in.readAll();
-        words_list.close();
-    }
-    bool epub_file_match(QString file) {
-        QString fileExt = file.right(4);
-
-        if(fileExt == "epub" or fileExt == "EPUB") {
-            return true;
-        }
-        else {
-            return false;
-        }
-    };
-    void dictionary_lookup(string word, QString first_letter, int position) {
-        ofstream fhandler;
-        fhandler.open("/inkbox/dictionary/word");
-        fhandler << word;
-        fhandler.close();
-
-        QDir::setCurrent("dictionary");
-        QDir::setCurrent(first_letter);
-        QString lookup_prog ("sh");
-        QStringList lookup_args;
-        QString position_str = QString::number(position);
-        lookup_args << "../scripts/lookup.sh" << position_str;
-        QProcess *lookup_proc = new QProcess();
-        lookup_proc->start(lookup_prog, lookup_args);
-        lookup_proc->waitForFinished();
-
-        QFile definition_file("/inkbox/dictionary/definition");
-        definition_file.open(QIODevice::ReadWrite);
-        QTextStream in (&definition_file);
-        definition = in.readAll();
-        definition = definition.remove(QRegExp("[\n]"));
-        if(definition == "No definition found.") {
-            nextdefinition_lock = true;
-        }
-        else {
-            nextdefinition_lock = false;
-        }
-        definition_file.close();
-
-        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-    }
-    void save_word(string word, bool remove) {
-        if(remove == false) {
-            QFile words(".config/06-words/config");
-            words.open(QIODevice::ReadWrite);
-            QTextStream in (&words);
-            QString words_list = in.readAll();
-            string words_list_str = words_list.toStdString();
-            words.close();
-
-            ofstream fhandler;
-            fhandler.open(".config/06-words/config");
-            fhandler << words_list_str << word << "\n";
-            fhandler.close();
-        }
-        else {
-            ofstream fhandler;
-            fhandler.open(".config/06-words/config");
-            fhandler << word;
-            fhandler.close();
-        }
-    }
-
+    void checkwords();
+    bool epub_file_match(QString file);
+    void dictionary_lookup(string word, QString first_letter, int position);
+    void save_word(string word, bool remove);
     void menubar_show();
     void menubar_hide();
     void wordwidget_show();

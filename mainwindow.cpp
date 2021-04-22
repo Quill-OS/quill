@@ -8,6 +8,7 @@
 #include <QTime>
 #include <QDateTime>
 #include <QTimer>
+#include <QDebug>
 #include <QMessageBox>
 #include <QString>
 #include <QFile>
@@ -427,7 +428,13 @@ MainWindow::MainWindow(QWidget *parent)
     // Checking if battery level is low
     if(isBatteryLow() == true) {
         qDebug() << "Warning! Battery is low!";
-        QTimer::singleShot(2000, this, SLOT(openLowBatteryDialog()));
+        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+        if(checkconfig_str_val == "Charging\n") {
+            ;
+        }
+        else {
+            QTimer::singleShot(2000, this, SLOT(openLowBatteryDialog()));
+        }
     }
 
     // Check if it's the first boot since an update and confirm that it installed successfully

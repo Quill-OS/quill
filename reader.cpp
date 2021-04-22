@@ -13,6 +13,7 @@
 #include <QDesktopWidget>
 #include <QScreen>
 #include <QFontDatabase>
+#include <QDirIterator>
 
 using namespace std;
 
@@ -579,6 +580,79 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         QDir::setCurrent("/mnt/onboard/.adds/inkbox");
     }
     return 0;
+}
+
+void reader::checkwords() {
+    QFile words_list(".config/06-words/config");
+    words_list.open(QIODevice::ReadWrite);
+    QTextStream in (&words_list);
+    words = in.readAll();
+    words_list.close();
+}
+
+bool reader::epub_file_match(QString file) {
+    QString fileExt = file.right(4);
+
+    if(fileExt == "epub" or fileExt == "EPUB") {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+void reader::dictionary_lookup(string word, QString first_letter, int position) {
+    ofstream fhandler;
+    fhandler.open("/inkbox/dictionary/word");
+    fhandler << word;
+    fhandler.close();
+
+    QDir::setCurrent("dictionary");
+    QDir::setCurrent(first_letter);
+    QString lookup_prog ("sh");
+    QStringList lookup_args;
+    QString position_str = QString::number(position);
+    lookup_args << "../scripts/lookup.sh" << position_str;
+    QProcess *lookup_proc = new QProcess();
+    lookup_proc->start(lookup_prog, lookup_args);
+    lookup_proc->waitForFinished();
+
+    QFile definition_file("/inkbox/dictionary/definition");
+    definition_file.open(QIODevice::ReadWrite);
+    QTextStream in (&definition_file);
+    definition = in.readAll();
+    definition = definition.remove(QRegExp("[\n]"));
+    if(definition == "No definition found.") {
+        nextdefinition_lock = true;
+    }
+    else {
+        nextdefinition_lock = false;
+    }
+    definition_file.close();
+
+    QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+}
+
+void reader::save_word(string word, bool remove) {
+    if(remove == false) {
+        QFile words(".config/06-words/config");
+        words.open(QIODevice::ReadWrite);
+        QTextStream in (&words);
+        QString words_list = in.readAll();
+        string words_list_str = words_list.toStdString();
+        words.close();
+
+        ofstream fhandler;
+        fhandler.open(".config/06-words/config");
+        fhandler << words_list_str << word << "\n";
+        fhandler.close();
+    }
+    else {
+        ofstream fhandler;
+        fhandler.open(".config/06-words/config");
+        fhandler << word;
+        fhandler.close();
+    }
 }
 
 void reader::on_nextBtn_clicked()

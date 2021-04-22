@@ -74,10 +74,10 @@ generalDialog::generalDialog(QWidget *parent) :
         lowBatteryDialog = true;
         ui->stackedWidget->setCurrentIndex(1);
         get_battery_level();
-        QString message = "Warning! Battery is low. Please consider charging your eReader.\nCurrent level: ";
+        QString message = "The battery's level is critical. Please charge your eReader.\nCurrent level: ";
         message.append(batt_level);
         ui->bodyLabel->setText(message);
-        ui->headerLabel->setText("Warning");
+        ui->headerLabel->setText("Low battery");
         this->adjustSize();
         string_writeconfig("/inkbox/lowBatteryDialog", "false");
     }
