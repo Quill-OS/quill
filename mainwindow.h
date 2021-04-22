@@ -12,11 +12,6 @@
 #include "generaldialog.h"
 using namespace std;
 
-namespace mainwindow_static {
-    static bool updateDialog = false;
-    static bool lowBatteryDialog = false;
-}
-
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE

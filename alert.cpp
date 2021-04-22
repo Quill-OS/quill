@@ -19,10 +19,6 @@ alert::alert(QWidget *parent) :
     float stdIconWidth = sW / 1.7;
     float stdIconHeight = sH / 1.7;
 
-    QPixmap pixmap(":/resources/alert.png");
-    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-    ui->alertIconLabel->setPixmap(scaledPixmap);
-
     // General stylesheet
     QFile stylesheetFile(":/resources/eink_dark.qss");
     stylesheetFile.open(QFile::ReadOnly);
@@ -31,19 +27,31 @@ alert::alert(QWidget *parent) :
 
     // Checking if the update's signature is untrusted. The signature error will always take precedence over the downgrade one (c.f. update.sh script)
     if(checkconfig("/external_root/boot/flags/ALERT_SIGN") == true) {
+        QPixmap pixmap(":/resources/alert.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->alertIconLabel->setPixmap(scaledPixmap);
+
         signatureError = true;
         ui->securityLabel->setText("Failed to update InkBox.");
         ui->messageLabel->setText("The digital signature of the update is untrusted.\nFor security reasons, it cannot be installed.");
         ui->stackedWidget->setCurrentIndex(1);
     }
     if(checkconfig("/external_root/boot/flags/ALERT_DOWNGRADE") == true) {
+        QPixmap pixmap(":/resources/alert.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->alertIconLabel->setPixmap(scaledPixmap);
+
         downgradeError = true;
         ui->securityLabel->setText("Failed to update InkBox.");
         ui->messageLabel->setText("An error occured during the update process.\nThe update package's version is lower than the actual installed version.");
         ui->stackedWidget->setCurrentIndex(1);
     }
-    if(global_static::battery::showCriticalBatteryAlert == true) {
-        global_static::battery::showCriticalBatteryAlert = false;
+    if(global::battery::showCriticalBatteryAlert == true) {
+        QPixmap pixmap(":/resources/battery_alert.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->alertIconLabel->setPixmap(scaledPixmap);
+
+        global::battery::showCriticalBatteryAlert = false;
         criticalBattery = true;
         ui->securityLabel->setText("Please charge your eReader.");
         ui->messageLabel->setText("The battery level is very low. To prevent damage to the filesystem, your device has been turned off.\nPlease consider charging it.");

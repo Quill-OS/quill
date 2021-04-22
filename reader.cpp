@@ -213,12 +213,12 @@ reader::reader(QWidget *parent) :
            get_battery_level();
            ui->batteryLabel->setText(batt_level);
            ui->timeLabel->setText(time);
-           if(global_static::battery::showLowBatteryDialog != true) {
+           if(global::battery::showLowBatteryDialog != true) {
                // Do nothing, since a dialog should already have been displayed and (probably) dismissed
                ;
            }
            else {
-                   if(reader_static::batteryAlertLock == true) {
+                   if(global::battery::batteryAlertLock == true) {
                        ;
                    }
                    else {
@@ -243,12 +243,12 @@ reader::reader(QWidget *parent) :
            get_battery_level();
            ui->batteryLabel->setText(batt_level);
            ui->timeLabel->setText(time);
-           if(global_static::battery::showLowBatteryDialog != true) {
+           if(global::battery::showLowBatteryDialog != true) {
                // Do nothing, since a dialog should already have been displayed and (probably) dismissed
                ;
            }
            else {
-                   if(reader_static::batteryAlertLock == true) {
+                   if(global::battery::batteryAlertLock == true) {
                        ;
                    }
                    else {
@@ -305,7 +305,7 @@ reader::reader(QWidget *parent) :
     } );
     select_t->start();
 
-    if(checkconfig("/inkbox/skip_opendialog") == true) {
+    if(global::reader::skipOpenDialog == true) {
         // We have to get the file's path
         if(checkconfig("/tmp/suspendBook") == true) {
             wakeFromSleep = true;
@@ -314,20 +314,19 @@ reader::reader(QWidget *parent) :
             book_file = "/inkbox/book/book.txt";
         }
         else {
-            string_checkconfig("/inkbox/book_number");
-            if(checkconfig_str_val == "1") {
+            if(global::reader::bookNumber == 1) {
                 string_checkconfig(".config/08-recent_books/1");
                 book_file = checkconfig_str_val;
             }
-            if(checkconfig_str_val == "2") {
+            if(global::reader::bookNumber == 2) {
                 string_checkconfig(".config/08-recent_books/2");
                 book_file = checkconfig_str_val;
             }
-            if(checkconfig_str_val == "3") {
+            if(global::reader::bookNumber == 3) {
                 string_checkconfig(".config/08-recent_books/3");
                 book_file = checkconfig_str_val;
             }
-            if(checkconfig_str_val == "4") {
+            if(global::reader::bookNumber == 4) {
                 string_checkconfig(".config/08-recent_books/4");
                 book_file = checkconfig_str_val;
             }
@@ -484,6 +483,102 @@ reader::reader(QWidget *parent) :
 reader::~reader()
 {
     delete ui;
+}
+
+int reader::setup_book(QString book, int i, bool run_parser) {
+    // Parse ebook
+    if(remount != false) {
+        QString mount_prog ("sh");
+        QStringList mount_args;
+        mount_args << "split.sh";
+        QProcess *mount_proc = new QProcess();
+        mount_proc->start(mount_prog, mount_args);
+        mount_proc->waitForFinished();
+        remount = false;
+    }
+    else {
+        string_writeconfig("/inkbox/remount", "false");
+        QString mount_prog ("sh");
+        QStringList mount_args;
+        mount_args << "split.sh";
+        QProcess *mount_proc = new QProcess();
+        mount_proc->start(mount_prog, mount_args);
+        mount_proc->waitForFinished();
+    }
+
+    if(booktostr_ran != true) {
+        if(epub_file_match(book) == true) {
+            // Parsing ePUBs with epub2txt, thanks to GitHub:kevinboone
+            QString epubProg ("sh");
+            QStringList epubArgs;
+            epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << book;
+            QProcess *epubProc = new QProcess();
+            epubProc->start(epubProg, epubArgs);
+            epubProc->waitForFinished();
+
+            is_epub = true;
+            booktostr_ran = true;
+        }
+        else {
+            // This is likely not an ePUB.
+            // Copying book specified in the function call
+            QFile::copy(book, "/inkbox/book/book.txt");
+
+            is_epub = false;
+            booktostr_ran = true;
+        }
+    }
+
+    // Checking if the user has defined an option for the number of words per page; if not, then setting the default.
+    QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+    string_checkconfig(".config/07-words_number/config");
+    if(checkconfig_str_val == "") {
+        string_writeconfig(".config/07-words_number/config", "100");
+        string_checkconfig(".config/07-words_number/config");
+    }
+
+    // Parsing file
+    if(parser_ran != true) {
+        if(is_epub == true) {
+            QString parse_prog ("python3");
+            QStringList parse_args;
+            parse_args << "split.py" << checkconfig_str_val;
+            QProcess *parse_proc = new QProcess();
+            parse_proc->start(parse_prog, parse_args);
+            parse_proc->waitForFinished();
+            parser_ran = true;
+        }
+        else {
+            QString parse_prog ("python3");
+            QStringList parse_args;
+            parse_args << "split-txt.py" << checkconfig_str_val;
+            QProcess *parse_proc = new QProcess();
+            parse_proc->start(parse_prog, parse_args);
+            parse_proc->waitForFinished();
+            parser_ran = true;
+        }
+    }
+
+    // Changing current working directory
+    QDir::setCurrent("/inkbox/book");
+
+    // Reading file
+    if(run_parser == true) {
+        QDirIterator it("/inkbox/book/split");
+        while (it.hasNext()) {
+              QFile f(it.next());
+              f.open(QIODevice::ReadOnly);
+              content << f.readAll();
+              f.close();
+        }
+        return content.size();
+        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+    }
+    else {
+        ittext = content[i];
+        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+    }
+    return 0;
 }
 
 void reader::on_nextBtn_clicked()
@@ -908,7 +1003,7 @@ void reader::batteryWatchdog() {
 }
 
 void reader::openLowBatteryDialog() {
-    reader_static::batteryAlertLock = true;
+    global::battery::batteryAlertLock = true;
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -917,7 +1012,7 @@ void reader::openLowBatteryDialog() {
 }
 
 void reader::openCriticalBatteryAlertWindow() {
-    global_static::battery::showCriticalBatteryAlert = true;
+    global::battery::showCriticalBatteryAlert = true;
 
     alertWindow = new alert(this);
     alertWindow->setAttribute(Qt::WA_DeleteOnClose);

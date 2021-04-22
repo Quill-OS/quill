@@ -247,8 +247,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Reading from the config files and tweaking the program according to the options set
 
     // Safety mesure; /inkbox is a tmpfs
-    checked_box = false;
-    writeconfig("/inkbox/skip_opendialog", "SkipOpenDialog=");
+    global::reader::skipOpenDialog = false;
 
     // Demo setting, changes "Welcome to InkBox" label to "InkBox"
     if(checkconfig(".config/01-demo/config") == true) {
@@ -453,7 +452,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::openUpdateDialog() {
-    mainwindow_static::updateDialog = true;
+    global::mainwindow::updateDialog = true;
     // We write to a temporary file to show a "Reset" prompt
     string_writeconfig("/inkbox/updateDialog", "true");
 
@@ -465,7 +464,7 @@ void MainWindow::openUpdateDialog() {
 }
 
 void MainWindow::openLowBatteryDialog() {
-    mainwindow_static::lowBatteryDialog = true;
+    global::mainwindow::lowBatteryDialog = true;
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -511,10 +510,8 @@ void MainWindow::on_quitBtn_clicked()
 
 void MainWindow::on_book1Btn_clicked()
 {
-    checked_box = true;
-    writeconfig("/inkbox/skip_opendialog", "SkipOpenDialog=");
-
-    string_writeconfig("/inkbox/book_number", "1");
+    global::reader::skipOpenDialog = true;
+    global::reader::bookNumber = 1;
 
     readerWindow = new reader();
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -523,10 +520,8 @@ void MainWindow::on_book1Btn_clicked()
 
 void MainWindow::on_book2Btn_clicked()
 {
-    checked_box = true;
-    writeconfig("/inkbox/skip_opendialog", "SkipOpenDialog=");
-
-    string_writeconfig("/inkbox/book_number", "2");
+    global::reader::skipOpenDialog = true;
+    global::reader::bookNumber = 2;
 
     readerWindow = new reader();
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -535,10 +530,8 @@ void MainWindow::on_book2Btn_clicked()
 
 void MainWindow::on_book3Btn_clicked()
 {
-    checked_box = true;
-    writeconfig("/inkbox/skip_opendialog", "SkipOpenDialog=");
-
-    string_writeconfig("/inkbox/book_number", "3");
+    global::reader::skipOpenDialog = true;
+    global::reader::bookNumber = 3;
 
     readerWindow = new reader();
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -547,10 +540,8 @@ void MainWindow::on_book3Btn_clicked()
 
 void MainWindow::on_book4Btn_clicked()
 {
-    checked_box = true;
-    writeconfig("/inkbox/skip_opendialog", "SkipOpenDialog=");
-
-    string_writeconfig("/inkbox/book_number", "4");
+    global::reader::skipOpenDialog = true;
+    global::reader::bookNumber = 4;
 
     readerWindow = new reader();
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);

@@ -9,15 +9,21 @@
 #include <QProcess>
 #include <regex>
 
-// WoW, static variables and namespaces are awesome
-namespace global_static {
+// WoW, global variables and namespaces are awesome
+namespace global {
     namespace battery {
-        static bool showLowBatteryDialog = true;
-        static bool showCriticalBatteryAlert = false;
+        inline bool showLowBatteryDialog;
+        inline bool showCriticalBatteryAlert;
+        inline bool batteryAlertLock;
     }
     namespace reader {
-        static int pageNumber;
-        static bool skipOpenDialog = false;
+        inline int pageNumber;
+        inline int bookNumber;
+        inline bool skipOpenDialog;
+    }
+    namespace mainwindow {
+        inline bool updateDialog;
+        inline bool lowBatteryDialog;
     }
 }
 

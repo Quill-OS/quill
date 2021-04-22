@@ -37,5 +37,6 @@
         <file>resources/check.png</file>
         <file>resources/minus.png</file>
         <file>resources/plus.png</file>
+        <file>resources/battery_alert.png</file>
     </qresource>
 </RCC>

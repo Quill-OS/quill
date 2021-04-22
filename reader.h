@@ -15,10 +15,6 @@
 
 using namespace std;
 
-namespace reader_static {
-    static bool batteryAlertLock = false;
-}
-
 namespace Ui {
 class reader;
 }
@@ -67,7 +63,8 @@ public:
     QList<QString> content;
     explicit reader(QWidget *parent = nullptr);
     ~reader();
-    int setup_book(QString book, int i, bool run_parser) {
+    int setup_book(QString book, int i, bool run_parser);
+    /*int setup_book(QString book, int i, bool run_parser) {
         // Parse ebook
         if(remount != false) {
             QString mount_prog ("sh");
@@ -161,7 +158,7 @@ public:
             QDir::setCurrent("/mnt/onboard/.adds/inkbox");
         }
         return 0;
-    }
+    }*/
     void checkwords() {
         QFile words_list(".config/06-words/config");
         words_list.open(QIODevice::ReadWrite);

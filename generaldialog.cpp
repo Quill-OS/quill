@@ -70,7 +70,7 @@ generalDialog::generalDialog(QWidget *parent) :
         this->adjustSize();
         string_writeconfig("/inkbox/settingsRebootDialog", "false");
     }
-    if(mainwindow_static::lowBatteryDialog == true) {
+    if(global::mainwindow::lowBatteryDialog == true) {
         lowBatteryDialog = true;
         ui->stackedWidget->setCurrentIndex(1);
         get_battery_level();
@@ -155,9 +155,9 @@ void generalDialog::on_acceptBtn_clicked()
     generalDialog::close();
 
     if(lowBatteryDialog == true) {
-        mainwindow_static::lowBatteryDialog = false;
-        reader_static::batteryAlertLock = false;
-        global_static::battery::showLowBatteryDialog = false;
+        global::mainwindow::lowBatteryDialog = false;
+        global::battery::batteryAlertLock = false;
+        global::battery::showLowBatteryDialog = false;
     }
 
     if(settingsRebootDialog == true) {
