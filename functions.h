@@ -20,6 +20,7 @@ namespace global {
         inline int pageNumber;
         inline int bookNumber;
         inline bool skipOpenDialog;
+        inline bool startBatteryWatchdog;
     }
     namespace mainwindow {
         inline bool updateDialog;

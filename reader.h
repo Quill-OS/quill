@@ -68,6 +68,7 @@ public:
     void wordwidget_show();
     void wordwidget_hide();
     void openLowBatteryDialog();
+    void openCriticalBatteryAlertWindow();
 
 private slots:
     void on_nextBtn_clicked();
