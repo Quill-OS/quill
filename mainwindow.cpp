@@ -548,13 +548,13 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_searchBtn_clicked()
 {
-    global::battery::showCriticalBatteryAlert = true;
+    /*global::battery::showCriticalBatteryAlert = true;
     global::battery::showLowBatteryDialog = false;
 
     alertWindow = new alert();
     alertWindow->setAttribute(Qt::WA_DeleteOnClose);
     alertWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
-    alertWindow->show();
+    alertWindow->show();*/
 }
 
 void MainWindow::on_quitBtn_clicked()
