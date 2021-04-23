@@ -60,7 +60,7 @@ alert::alert(QWidget *parent) :
         ui->warningLabel->setText("Please charge your eReader.");
         ui->securityLabel->setText("The battery's charge level is critical.");
         ui->messageLabel->setText("To prevent filesystem damage, your device has been turned off.\nPlease consider charging it.");
-        poweroff(false);
+        //poweroff(false);
     }
 
     ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 16pt}");

@@ -58,6 +58,10 @@ int main(int argc, char *argv[])
     }
     // If we're waking from sleep and we have the lockscreen enabled, we'll "resume" the book from scratch
     if(checkconfig("/tmp/suspendBook") == true) {
+        // Start the low/critical battery alert timer from the Reader framework since MainWindow is not going to be shown
+        global::reader::startBatteryWatchdog = true;
+        global::reader::skipOpenDialog = true;
+
         string_writeconfig("/inkbox/skip_opendialog", "true");
         QApplication a(argc, argv);
         reader w;

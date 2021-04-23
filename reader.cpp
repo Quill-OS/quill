@@ -24,6 +24,7 @@ reader::reader(QWidget *parent) :
 {
     // Variables
     global::battery::showLowBatteryDialog = true;
+    global::battery::showCriticalBatteryAlert = true;
 
     ui->setupUi(this);
     ui->previousBtn->setProperty("type", "borderless");
@@ -218,20 +219,6 @@ reader::reader(QWidget *parent) :
            get_battery_level();
            ui->batteryLabel->setText(batt_level);
            ui->timeLabel->setText(time);
-           if(global::battery::showLowBatteryDialog != true) {
-               // Do nothing, since a dialog should already have been displayed and (probably) dismissed
-               ;
-           }
-           else {
-                   if(global::battery::batteryAlertLock == true) {
-                       ;
-                   }
-                   else {
-                       if(isBatteryLow() == true) {
-                           openLowBatteryDialog();
-                       }
-                   }
-           }
         } );
         t->start();
     }
@@ -243,20 +230,6 @@ reader::reader(QWidget *parent) :
            get_battery_level();
            ui->batteryLabel->setText(batt_level);
            ui->timeLabel->setText(time);
-           if(global::battery::showLowBatteryDialog != true) {
-               // Do nothing, since a dialog should already have been displayed and (probably) dismissed
-               ;
-           }
-           else {
-                   if(global::battery::batteryAlertLock == true) {
-                       ;
-                   }
-                   else {
-                       if(isBatteryLow() == true) {
-                           openLowBatteryDialog();
-                       }
-                   }
-           }
         } );
         t->start();
     }
@@ -301,28 +274,30 @@ reader::reader(QWidget *parent) :
     select_t->start();
 
     // We have to get the file's path
-    if(checkconfig("/tmp/suspendBook") == true) {
-        wakeFromSleep = true;
-        // Prevent from opening the Reader framework next time unless the condition is reset
-        string_writeconfig("/tmp/suspendBook", "false");
-        book_file = "/inkbox/book/book.txt";
-    }
     if(global::reader::skipOpenDialog == true) {
-        if(global::reader::bookNumber == 1) {
-            string_checkconfig(".config/08-recent_books/1");
-            book_file = checkconfig_str_val;
+        if(checkconfig("/tmp/suspendBook") == true) {
+            wakeFromSleep = true;
+            // Prevent from opening the Reader framework next time unless the condition is reset
+            string_writeconfig("/tmp/suspendBook", "false");
+            book_file = "/inkbox/book/book.txt";
         }
-        if(global::reader::bookNumber == 2) {
-            string_checkconfig(".config/08-recent_books/2");
-            book_file = checkconfig_str_val;
-        }
-        if(global::reader::bookNumber == 3) {
-            string_checkconfig(".config/08-recent_books/3");
-            book_file = checkconfig_str_val;
-        }
-        if(global::reader::bookNumber == 4) {
-            string_checkconfig(".config/08-recent_books/4");
-            book_file = checkconfig_str_val;
+        else {
+            if(global::reader::bookNumber == 1) {
+                string_checkconfig(".config/08-recent_books/1");
+                book_file = checkconfig_str_val;
+            }
+            if(global::reader::bookNumber == 2) {
+                string_checkconfig(".config/08-recent_books/2");
+                book_file = checkconfig_str_val;
+            }
+            if(global::reader::bookNumber == 3) {
+                string_checkconfig(".config/08-recent_books/3");
+                book_file = checkconfig_str_val;
+            }
+            if(global::reader::bookNumber == 4) {
+                string_checkconfig(".config/08-recent_books/4");
+                book_file = checkconfig_str_val;
+            }
         }
     }
     else {
@@ -470,6 +445,47 @@ reader::reader(QWidget *parent) :
         string_writeconfig(".config/08-recent_books/2", str_book_1);
         string_writeconfig(".config/08-recent_books/3", str_book_2);
         string_writeconfig(".config/08-recent_books/4", str_book_3);
+    }
+
+    // Battery watchdog
+    if(global::reader::startBatteryWatchdog == true) {
+        QTimer *t = new QTimer(this);
+        t->setInterval(2000);
+        connect(t, &QTimer::timeout, [&]() {
+            // Checking if battery level is low
+            if(global::battery::showCriticalBatteryAlert != true) {
+                ;
+            }
+            else {
+                if(isBatteryCritical() == true) {
+                    qDebug() << "Warning! Battery is at a critical charge level!";
+                    openCriticalBatteryAlertWindow();
+                }
+            }
+
+            if(global::battery::showLowBatteryDialog != true) {
+                // Do nothing, since a dialog should already have been displayed and (probably) dismissed
+                ;
+            }
+            else {
+                if(isBatteryLow() == true) {
+                    if(global::battery::batteryAlertLock == true) {
+                        ;
+                    }
+                    else {
+                        qDebug() << "Warning! Battery is low!";
+                        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+                        if(checkconfig_str_val == "Charging\n") {
+                            ;
+                        }
+                        else {
+                            openLowBatteryDialog();
+                        }
+                    }
+                }
+            }
+        } );
+        t->start();
     }
 }
 
@@ -1065,11 +1081,21 @@ void reader::quit_restart() {
 }
 
 void reader::openLowBatteryDialog() {
-    global::battery::batteryAlertLock = true;
-    global::battery::showLowBatteryDialog = false;
     global::mainwindow::lowBatteryDialog = true;
+    global::battery::batteryAlertLock = true;
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
+    QApplication::processEvents();
+}
+
+void reader::openCriticalBatteryAlertWindow() {
+    global::battery::showCriticalBatteryAlert = true;
+    global::battery::showLowBatteryDialog = false;
+
+    alertWindow = new alert();
+    alertWindow->setAttribute(Qt::WA_DeleteOnClose);
+    alertWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+    alertWindow->show();
 }

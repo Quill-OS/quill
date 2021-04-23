@@ -294,6 +294,7 @@ MainWindow::MainWindow(QWidget *parent)
         t->start();
     }
 
+    // Battery watchdog
     QTimer *batteryWatchdog = new QTimer(this);
     batteryWatchdog->setInterval(2000);
     connect(batteryWatchdog, &QTimer::timeout, [&]() {
