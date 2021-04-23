@@ -74,7 +74,7 @@ generalDialog::generalDialog(QWidget *parent) :
         lowBatteryDialog = true;
         ui->stackedWidget->setCurrentIndex(1);
         get_battery_level();
-        QString message = "The battery's level is critical. Please charge your eReader.\nCurrent level: ";
+        QString message = "The battery's level is low. Please charge your eReader.\nCurrent level: ";
         message.append(batt_level);
         ui->bodyLabel->setText(message);
         ui->headerLabel->setText("Low battery");
@@ -151,9 +151,6 @@ void generalDialog::on_okBtn_clicked()
 }
 void generalDialog::on_acceptBtn_clicked()
 {
-    // We don't have any other option ;p
-    generalDialog::close();
-
     if(lowBatteryDialog == true) {
         global::mainwindow::lowBatteryDialog = false;
         global::battery::batteryAlertLock = false;
@@ -165,4 +162,7 @@ void generalDialog::on_acceptBtn_clicked()
         process.startDetached("inkbox.sh", QStringList());
         qApp->quit();
     }
+
+    // We don't have any other option ;p
+    generalDialog::close();
 }

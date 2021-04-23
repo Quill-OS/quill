@@ -12,6 +12,7 @@ alert::alert(QWidget *parent) :
     ui(new Ui::alert)
 {
     ui->setupUi(this);
+
     // Getting the screen's size
     float sW = QGuiApplication::screens()[0]->size().width();
     float sH = QGuiApplication::screens()[0]->size().height();
@@ -47,6 +48,7 @@ alert::alert(QWidget *parent) :
         ui->stackedWidget->setCurrentIndex(1);
     }
     if(global::battery::showCriticalBatteryAlert == true) {
+        global::battery::showCriticalBatteryAlert = false;
         ui->stackedWidget->setVisible(false);
         ui->stackedWidget->deleteLater();
 
@@ -54,12 +56,11 @@ alert::alert(QWidget *parent) :
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         ui->alertIconLabel->setPixmap(scaledPixmap);
 
-        global::battery::showCriticalBatteryAlert = false;
         criticalBattery = true;
         ui->warningLabel->setText("Please charge your eReader.");
         ui->securityLabel->setText("The battery's charge level is critical.");
         ui->messageLabel->setText("To prevent filesystem damage, your device has been turned off.\nPlease consider charging it.");
-        poweroff(false);
+        //poweroff(false);
     }
 
     ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 16pt}");

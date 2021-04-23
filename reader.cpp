@@ -14,6 +14,7 @@
 #include <QScreen>
 #include <QFontDatabase>
 #include <QDirIterator>
+#include <QDebug>
 
 using namespace std;
 
@@ -21,6 +22,9 @@ reader::reader(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::reader)
 {
+    // Variables
+    global::battery::showLowBatteryDialog = true;
+
     ui->setupUi(this);
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
@@ -223,13 +227,8 @@ reader::reader(QWidget *parent) :
                        ;
                    }
                    else {
-                       if(isBatteryCritical() == true) {
-                           openCriticalBatteryAlertWindow();
-                       }
-                       else {
-                           if(isBatteryLow() == true) {
-                               openLowBatteryDialog();
-                           }
+                       if(isBatteryLow() == true) {
+                           openLowBatteryDialog();
                        }
                    }
            }
@@ -253,13 +252,8 @@ reader::reader(QWidget *parent) :
                        ;
                    }
                    else {
-                       if(isBatteryCritical() == true) {
-                           openCriticalBatteryAlertWindow();
-                       }
-                       else {
-                           if(isBatteryLow() == true) {
-                               openLowBatteryDialog();
-                           }
+                       if(isBatteryLow() == true) {
+                           openLowBatteryDialog();
                        }
                    }
            }
@@ -306,31 +300,29 @@ reader::reader(QWidget *parent) :
     } );
     select_t->start();
 
+    // We have to get the file's path
+    if(checkconfig("/tmp/suspendBook") == true) {
+        wakeFromSleep = true;
+        // Prevent from opening the Reader framework next time unless the condition is reset
+        string_writeconfig("/tmp/suspendBook", "false");
+        book_file = "/inkbox/book/book.txt";
+    }
     if(global::reader::skipOpenDialog == true) {
-        // We have to get the file's path
-        if(checkconfig("/tmp/suspendBook") == true) {
-            wakeFromSleep = true;
-            // Prevent from opening the Reader framework next time unless the condition is reset
-            string_writeconfig("/tmp/suspendBook", "false");
-            book_file = "/inkbox/book/book.txt";
+        if(global::reader::bookNumber == 1) {
+            string_checkconfig(".config/08-recent_books/1");
+            book_file = checkconfig_str_val;
         }
-        else {
-            if(global::reader::bookNumber == 1) {
-                string_checkconfig(".config/08-recent_books/1");
-                book_file = checkconfig_str_val;
-            }
-            if(global::reader::bookNumber == 2) {
-                string_checkconfig(".config/08-recent_books/2");
-                book_file = checkconfig_str_val;
-            }
-            if(global::reader::bookNumber == 3) {
-                string_checkconfig(".config/08-recent_books/3");
-                book_file = checkconfig_str_val;
-            }
-            if(global::reader::bookNumber == 4) {
-                string_checkconfig(".config/08-recent_books/4");
-                book_file = checkconfig_str_val;
-            }
+        if(global::reader::bookNumber == 2) {
+            string_checkconfig(".config/08-recent_books/2");
+            book_file = checkconfig_str_val;
+        }
+        if(global::reader::bookNumber == 3) {
+            string_checkconfig(".config/08-recent_books/3");
+            book_file = checkconfig_str_val;
+        }
+        if(global::reader::bookNumber == 4) {
+            string_checkconfig(".config/08-recent_books/4");
+            book_file = checkconfig_str_val;
         }
     }
     else {
@@ -1072,24 +1064,12 @@ void reader::quit_restart() {
     qApp->quit();
 }
 
-void reader::batteryWatchdog() {
-
-}
-
 void reader::openLowBatteryDialog() {
     global::battery::batteryAlertLock = true;
+    global::battery::showLowBatteryDialog = false;
+    global::mainwindow::lowBatteryDialog = true;
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
-    QApplication::processEvents();
-}
-
-void reader::openCriticalBatteryAlertWindow() {
-    global::battery::showCriticalBatteryAlert = true;
-
-    alertWindow = new alert(this);
-    alertWindow->setAttribute(Qt::WA_DeleteOnClose);
-    alertWindow->showFullScreen();
-    QApplication::processEvents();
 }

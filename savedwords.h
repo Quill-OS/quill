@@ -22,26 +22,8 @@ public:
     explicit savedwords(QWidget *parent = nullptr);
     ~savedwords();
     QString words;
-    void checkwords() {
-        QFile words_list(".config/06-words/config");
-        words_list.open(QIODevice::ReadWrite);
-        QTextStream in (&words_list);
-        words = in.readAll();
-        words_list.close();
-    }
-    void save_word_init(string word) {
-        QFile words(".config/06-words/config");
-        words.open(QIODevice::ReadWrite);
-        QTextStream in (&words);
-        QString words_list = in.readAll();
-        string words_list_str = words_list.toStdString();
-        words.close();
-
-        ofstream fhandler;
-        fhandler.open(".config/06-words/config");
-        fhandler << "";
-        fhandler.close();
-    }
+    void checkwords();
+    void save_word_init();
 
 private slots:
     void on_backBtn_clicked();

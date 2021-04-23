@@ -67,9 +67,7 @@ public:
     void menubar_hide();
     void wordwidget_show();
     void wordwidget_hide();
-    void batteryWatchdog();
     void openLowBatteryDialog();
-    void openCriticalBatteryAlertWindow();
 
 private slots:
     void on_nextBtn_clicked();

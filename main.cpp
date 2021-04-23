@@ -18,13 +18,13 @@
 #include "generaldialog.h"
 #include "functions.h"
 #include "reader.h"
+
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
 #include <QDebug>
 #include <QRect>
 #include <QScreen>
-#include <QTimer>
 
 int main(int argc, char *argv[])
 {
@@ -66,6 +66,7 @@ int main(int argc, char *argv[])
         w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
         w.show();
         return a.exec();
+
     }
     else {
         QApplication a(argc, argv);

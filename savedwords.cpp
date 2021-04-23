@@ -41,11 +41,33 @@ void savedwords::on_backBtn_clicked()
 void savedwords::on_clearBtn_clicked()
 {
     // Warning: possible memory leak here. Though, usually, when you press the "Clear" button and all clears up, you don't have to press it again ;)
-    save_word_init("");
+    save_word_init();
     checkwords();
     QStringListModel* model = new QStringListModel(this);
     QStringList list = words.split("\n", QString::SkipEmptyParts);
     model->setStringList(list);
     ui->wordsList->setModel(model);
     ui->wordsList->setEditTriggers(QAbstractItemView::NoEditTriggers);
+}
+
+void savedwords::checkwords() {
+    QFile words_list(".config/06-words/config");
+    words_list.open(QIODevice::ReadWrite);
+    QTextStream in (&words_list);
+    words = in.readAll();
+    words_list.close();
+}
+
+void savedwords::save_word_init() {
+    QFile words(".config/06-words/config");
+    words.open(QIODevice::ReadWrite);
+    QTextStream in (&words);
+    QString words_list = in.readAll();
+    string words_list_str = words_list.toStdString();
+    words.close();
+
+    ofstream fhandler;
+    fhandler.open(".config/06-words/config");
+    fhandler << "";
+    fhandler.close();
 }

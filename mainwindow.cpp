@@ -43,6 +43,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->searchBtn->setText("");
     ui->brightnessBtn->setText("");
 
+    ui->quoteHeadingLabel->setStyleSheet("padding: 50px");
+
+    // Variables
+    global::battery::showLowBatteryDialog = true;
+    global::battery::showCriticalBatteryAlert = true;
+
     // Getting the screen's size
     float sW = QGuiApplication::screens()[0]->size().width();
     float sH = QGuiApplication::screens()[0]->size().height();
@@ -248,6 +254,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Reading from the config files and tweaking the program according to the options set
 
     // Safety mesure; /inkbox is a tmpfs
+    string_writeconfig("/tmp/skip_opendialog", "true");
     global::reader::skipOpenDialog = false;
 
     // Demo setting, changes "Welcome to InkBox" label to "InkBox"
@@ -255,7 +262,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->inkboxLabel->setText("InkBox");
     }
 
-    // Dark mode
+    // Dark mode; write to the Kobo Nightmode FIFO
     if(checkconfig(".config/10-dark_mode/config") == true) {
         string_writeconfig("/tmp/invertScreen", "y");
     }
@@ -286,6 +293,44 @@ MainWindow::MainWindow(QWidget *parent)
         } );
         t->start();
     }
+
+    QTimer *batteryWatchdog = new QTimer(this);
+    batteryWatchdog->setInterval(2000);
+    connect(batteryWatchdog, &QTimer::timeout, [&]() {
+        // Checking if battery level is low
+        if(global::battery::showCriticalBatteryAlert != true) {
+            ;
+        }
+        else {
+            if(isBatteryCritical() == true) {
+                qDebug() << "Warning! Battery is at a critical charge level!";
+                openCriticalBatteryAlertWindow();
+            }
+        }
+
+        if(global::battery::showLowBatteryDialog != true) {
+            // Do nothing, since a dialog should already have been displayed and (probably) dismissed
+            ;
+        }
+        else {
+            if(isBatteryLow() == true) {
+                if(global::battery::batteryAlertLock == true) {
+                    ;
+                }
+                else {
+                    qDebug() << "Warning! Battery is low!";
+                    string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+                    if(checkconfig_str_val == "Charging\n") {
+                        ;
+                    }
+                    else {
+                        openLowBatteryDialog();
+                    }
+                }
+            }
+        }
+    } );
+    batteryWatchdog->start();
 
     // We set the brightness level saved in the config file
     int brightness_value = brightness_checkconfig(".config/03-brightness/config");
@@ -425,18 +470,6 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
-    // Checking if battery level is low
-    if(isBatteryLow() == true) {
-        qDebug() << "Warning! Battery is low!";
-        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-        if(checkconfig_str_val == "Charging\n") {
-            ;
-        }
-        else {
-            QTimer::singleShot(2000, this, SLOT(openLowBatteryDialog()));
-        }
-    }
-
     // Check if it's the first boot since an update and confirm that it installed successfully
     if(checkconfig("/opt/inkbox_genuine") == true) {
         if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
@@ -472,11 +505,22 @@ void MainWindow::openUpdateDialog() {
 
 void MainWindow::openLowBatteryDialog() {
     global::mainwindow::lowBatteryDialog = true;
+    global::battery::batteryAlertLock = true;
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
     QApplication::processEvents();
+}
+
+void MainWindow::openCriticalBatteryAlertWindow() {
+    global::battery::showCriticalBatteryAlert = true;
+    global::battery::showLowBatteryDialog = false;
+
+    alertWindow = new alert();
+    alertWindow->setAttribute(Qt::WA_DeleteOnClose);
+    alertWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+    alertWindow->show();
 }
 
 void MainWindow::on_settingsBtn_clicked()
@@ -489,8 +533,10 @@ void MainWindow::on_settingsBtn_clicked()
 void MainWindow::on_appsBtn_clicked()
 {
     appsWindow = new apps();
-    appsWindow->setAttribute(Qt::WA_DeleteOnClose);
-    appsWindow->showFullScreen();
+    //appsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    //appsWindow->showFullScreen();
+    ui->stackedWidget->insertWidget(1, appsWindow);
+    ui->stackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -502,10 +548,13 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_searchBtn_clicked()
 {
-    /*// Testing
-    generalDialogWindow = new generalDialog();
-    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();*/
+    global::battery::showCriticalBatteryAlert = true;
+    global::battery::showLowBatteryDialog = false;
+
+    alertWindow = new alert();
+    alertWindow->setAttribute(Qt::WA_DeleteOnClose);
+    alertWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+    alertWindow->show();
 }
 
 void MainWindow::on_quitBtn_clicked()

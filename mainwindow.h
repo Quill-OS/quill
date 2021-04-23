@@ -27,6 +27,10 @@ public:
     bool reboot_after_update = false;
     int timerTime = 0;
     QString relative_path;
+
+    void openLowBatteryDialog();
+    void openCriticalBatteryAlertWindow();
+
 public slots:
 
 private slots:
@@ -41,7 +45,6 @@ private slots:
     void on_book4Btn_clicked();
     void on_brightnessBtn_clicked();
     void openUpdateDialog();
-    void openLowBatteryDialog();
 
 private:
     Ui::MainWindow *ui;
