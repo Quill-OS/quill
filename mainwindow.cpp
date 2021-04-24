@@ -20,6 +20,7 @@
 #include <QScreen>
 #include <QFont>
 #include <QFontDatabase>
+#include <QPagedPaintDevice>
 
 using namespace std;
 
@@ -36,6 +37,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButton->setProperty("type", "borderless");
     ui->brightnessBtn->setProperty("type", "borderless");
     ui->homeBtn->setProperty("type", "borderless");
+    ui->inkboxSettingsBtn->setProperty("type", "borderless");
+    ui->koboxSettingsBtn->setProperty("type", "borderless");
 
     ui->settingsBtn->setText("");
     ui->appsBtn->setText("");
@@ -44,12 +47,21 @@ MainWindow::MainWindow(QWidget *parent)
     ui->searchBtn->setText("");
     ui->brightnessBtn->setText("");
     ui->homeBtn->setText("");
+    ui->inkboxSettingsBtn->setText("\t\t\tInkBox settings");
+    ui->koboxSettingsBtn->setText("\t\t\tKoBox settings");
+    ui->quoteLabel->setText("");
+
+    ui->quotePictureLabel->setText("");
 
     ui->quoteHeadingLabel->setStyleSheet("padding: 30px");
+    ui->homeBtn->setStyleSheet("padding: 5px");
+    ui->inkboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
+    ui->koboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
 
     // Variables
     global::battery::showLowBatteryDialog = true;
     global::battery::showCriticalBatteryAlert = true;
+    global::mainwindow::tabSwitcher::repaint = true;
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -91,6 +103,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
+
+    ui->inkboxSettingsBtn->setIcon(QIcon(":/resources/settings.png"));
+    ui->inkboxSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
+    ui->koboxSettingsBtn->setIcon(QIcon(":/resources/X11.png"));
+    ui->koboxSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
 
     // Battery
     string_checkconfig_ro("/opt/inkbox_device");
@@ -387,8 +404,9 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
     else {
-        ui->quoteLabel->hide();
-        ui->quotePictureLabel->hide();
+        ui->gridLayout_4->deleteLater();
+        ui->quotePictureLabel->deleteLater();
+        ui->quoteLabel->deleteLater();
         ui->quoteHeadingLabel->setText("Books");
         ui->book1Btn->show();
         ui->book2Btn->show();
@@ -530,26 +548,47 @@ void MainWindow::openCriticalBatteryAlertWindow() {
 
 void MainWindow::on_settingsBtn_clicked()
 {
-    settingsWindow = new settings();
-    settingsWindow->setAttribute(Qt::WA_DeleteOnClose);
-    settingsWindow->showFullScreen();
+    resetWindow(false);
+    if(global::mainwindow::tabSwitcher::settingsWidgetSelected != true) {
+        ui->settingsBtn->setStyleSheet("background: black");
+        ui->settingsBtn->setIcon(QIcon(":/resources/settings-inverted.png"));
+
+        // Switch tab
+        ui->stackedWidget->setCurrentIndex(2);
+        global::mainwindow::tabSwitcher::settingsWidgetSelected = true;
+
+        // Repaint
+        this->repaint();
+    }
+    else {
+        ;
+    }
 }
 
 void MainWindow::on_appsBtn_clicked()
 {
-    ui->appsBtn->setStyleSheet("background: black");
-    ui->appsBtn->setIcon(QIcon(":/resources/apps-inverted.png"));
+    resetWindow(false);
+    if(global::mainwindow::tabSwitcher::appsWidgetSelected != true) {
+        ui->appsBtn->setStyleSheet("background: black");
+        ui->appsBtn->setIcon(QIcon(":/resources/apps-inverted.png"));
 
-    // Create the widget only once
-    if(global::mainwindow::tabSwitcher::appsWidgetCreated != true) {
-        appsWindow = new apps();
-        ui->stackedWidget->insertWidget(1, appsWindow);
-        global::mainwindow::tabSwitcher::appsWidgetCreated = true;
+        // Create the widget only once
+        if(global::mainwindow::tabSwitcher::appsWidgetCreated != true) {
+            appsWindow = new apps();
+            ui->stackedWidget->insertWidget(1, appsWindow);
+            global::mainwindow::tabSwitcher::appsWidgetCreated = true;
+        }
+
+        // Switch tab
+        ui->stackedWidget->setCurrentIndex(1);
+        global::mainwindow::tabSwitcher::appsWidgetSelected = true;
+
+        // Repaint
+        this->repaint();
     }
-
-    // Switch tab
-    ui->stackedWidget->setCurrentIndex(1);
-    global::mainwindow::tabSwitcher::appsWidgetSelected = true;
+    else {
+        ;
+    }
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -563,11 +602,9 @@ void MainWindow::on_searchBtn_clicked()
 {
     /*global::battery::showCriticalBatteryAlert = true;
     global::battery::showLowBatteryDialog = false;
-
-    alertWindow = new alert();
-    alertWindow->setAttribute(Qt::WA_DeleteOnClose);
-    alertWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
-    alertWindow->show();*/
+    settingsWindow = new settings();
+    ui->stackedWidget->insertWidget(2, settingsWindow);
+    ui->stackedWidget->setCurrentIndex(2);*/
 }
 
 void MainWindow::on_quitBtn_clicked()
@@ -626,18 +663,27 @@ void MainWindow::on_brightnessBtn_clicked()
 
 void MainWindow::on_homeBtn_clicked()
 {
-    resetWindow();
+    global::mainwindow::tabSwitcher::repaint = true;
+    resetWindow(true);
 }
 
-void MainWindow::resetWindow() {
+void MainWindow::resetWindow(bool resetStackedWidget) {
     // Reset layout
-    ui->stackedWidget->setCurrentIndex(0);
+    if(resetStackedWidget == true) {
+        ui->stackedWidget->setCurrentIndex(0);
+    }
+    global::mainwindow::tabSwitcher::appsWidgetSelected = false;
+    global::mainwindow::tabSwitcher::settingsWidgetSelected = false;
     resetIcons();
-    this->repaint();
+    if(global::mainwindow::tabSwitcher::repaint == true) {
+        this->repaint();
+    }
 }
 
 void MainWindow::resetIcons() {
     // Reset icons
     ui->appsBtn->setStyleSheet("background: white");
     ui->appsBtn->setIcon(QIcon(":/resources/apps.png"));
+    ui->settingsBtn->setStyleSheet("background: white");
+    ui->settingsBtn->setIcon(QIcon(":/resources/settings.png"));
 }

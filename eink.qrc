@@ -40,5 +40,8 @@
         <file>resources/battery_alert.png</file>
         <file>resources/apps-inverted.png</file>
         <file>resources/home.png</file>
+        <file>resources/settings-inverted.png</file>
+        <file>resources/kobox-icon.png</file>
+        <file>resources/X11.png</file>
     </qresource>
 </RCC>

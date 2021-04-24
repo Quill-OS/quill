@@ -24,8 +24,11 @@ namespace global {
     }
     namespace mainwindow {
         namespace tabSwitcher {
+            inline bool repaint;
+
             inline bool appsWidgetCreated;
             inline bool appsWidgetSelected;
+            inline bool settingsWidgetSelected;
         }
         inline bool updateDialog;
         inline bool lowBatteryDialog;

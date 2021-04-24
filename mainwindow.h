@@ -41,7 +41,7 @@ public:
 
     void openLowBatteryDialog();
     void openCriticalBatteryAlertWindow();
-    void resetWindow();
+    void resetWindow(bool resetStackedWidget);
     void resetIcons();
 
 public slots:
