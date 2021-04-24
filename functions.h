@@ -23,6 +23,10 @@ namespace global {
         inline bool startBatteryWatchdog;
     }
     namespace mainwindow {
+        namespace tabSwitcher {
+            inline bool appsWidgetCreated;
+            inline bool appsWidgetSelected;
+        }
         inline bool updateDialog;
         inline bool lowBatteryDialog;
     }

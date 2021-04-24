@@ -8,7 +8,6 @@ apps::apps(QWidget *parent) :
     ui(new Ui::apps)
 {
     ui->setupUi(this);
-    ui->backBtn->setProperty("type", "borderless");
     ui->scribbleLaunchBtn->setProperty("type", "borderless");
     ui->lightmapsLaunchBtn->setProperty("type", "borderless");
     ui->calendarLaunchBtn->setProperty("type", "borderless");
@@ -25,7 +24,6 @@ apps::apps(QWidget *parent) :
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
-    QObject::connect(ui->backBtn, SIGNAL(clicked()), this, SLOT(exitSlot()));
 }
 
 apps::~apps()

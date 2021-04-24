@@ -35,6 +35,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->searchBtn->setProperty("type", "borderless");
     ui->pushButton->setProperty("type", "borderless");
     ui->brightnessBtn->setProperty("type", "borderless");
+    ui->homeBtn->setProperty("type", "borderless");
 
     ui->settingsBtn->setText("");
     ui->appsBtn->setText("");
@@ -42,35 +43,35 @@ MainWindow::MainWindow(QWidget *parent)
     ui->quitBtn->setText("");
     ui->searchBtn->setText("");
     ui->brightnessBtn->setText("");
+    ui->homeBtn->setText("");
 
-    ui->quoteHeadingLabel->setStyleSheet("padding: 50px");
+    ui->quoteHeadingLabel->setStyleSheet("padding: 30px");
 
     // Variables
     global::battery::showLowBatteryDialog = true;
     global::battery::showCriticalBatteryAlert = true;
 
     // Getting the screen's size
-    float sW = QGuiApplication::screens()[0]->size().width();
-    float sH = QGuiApplication::screens()[0]->size().height();
+    sW = QGuiApplication::screens()[0]->size().width();
+    sH = QGuiApplication::screens()[0]->size().height();
+
     // Defining what the default icon size will be
-
-    float stdIconWidth;
-    float stdIconHeight;
-    float brightnessIconWidth;
-    float brightnessIconHeight;
-
     string_checkconfig("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n") {
         stdIconWidth = sW / 12;
         stdIconHeight = sH / 12;
         brightnessIconWidth = sW / 24;
         brightnessIconHeight = sH / 24;
+        homeIconWidth = sW / 18;
+        homeIconHeight = sW / 18;
     }
     else {
         stdIconWidth = sW / 14;
         stdIconHeight = sH / 14;
         brightnessIconWidth = sW / 26;
         brightnessIconHeight = sH / 26;
+        homeIconWidth = sW / 20;
+        homeIconHeight = sW / 20;
     }
 
     // Setting icons up
@@ -84,6 +85,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->appsBtn->setIconSize(QSize(stdIconWidth, stdIconHeight));
     ui->quitBtn->setIcon(QIcon(":/resources/power.png"));
     ui->quitBtn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+
+    ui->homeBtn->setIcon(QIcon(":/resources/home.png"));
+    ui->homeBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
 
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
@@ -533,11 +537,19 @@ void MainWindow::on_settingsBtn_clicked()
 
 void MainWindow::on_appsBtn_clicked()
 {
-    appsWindow = new apps();
-    //appsWindow->setAttribute(Qt::WA_DeleteOnClose);
-    //appsWindow->showFullScreen();
-    ui->stackedWidget->insertWidget(1, appsWindow);
+    ui->appsBtn->setStyleSheet("background: black");
+    ui->appsBtn->setIcon(QIcon(":/resources/apps-inverted.png"));
+
+    // Create the widget only once
+    if(global::mainwindow::tabSwitcher::appsWidgetCreated != true) {
+        appsWindow = new apps();
+        ui->stackedWidget->insertWidget(1, appsWindow);
+        global::mainwindow::tabSwitcher::appsWidgetCreated = true;
+    }
+
+    // Switch tab
     ui->stackedWidget->setCurrentIndex(1);
+    global::mainwindow::tabSwitcher::appsWidgetSelected = true;
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -610,4 +622,22 @@ void MainWindow::on_brightnessBtn_clicked()
     brightnessDialogWindow = new brightnessDialog();
     brightnessDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     brightnessDialogWindow->show();
+}
+
+void MainWindow::on_homeBtn_clicked()
+{
+    resetWindow();
+}
+
+void MainWindow::resetWindow() {
+    // Reset layout
+    ui->stackedWidget->setCurrentIndex(0);
+    resetIcons();
+    this->repaint();
+}
+
+void MainWindow::resetIcons() {
+    // Reset icons
+    ui->appsBtn->setStyleSheet("background: white");
+    ui->appsBtn->setIcon(QIcon(":/resources/apps.png"));
 }

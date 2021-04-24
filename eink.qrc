@@ -38,5 +38,7 @@
         <file>resources/minus.png</file>
         <file>resources/plus.png</file>
         <file>resources/battery_alert.png</file>
+        <file>resources/apps-inverted.png</file>
+        <file>resources/home.png</file>
     </qresource>
 </RCC>

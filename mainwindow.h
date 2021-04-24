@@ -10,6 +10,7 @@
 #include "usbms_splash.h"
 #include "brightnessdialog.h"
 #include "generaldialog.h"
+
 using namespace std;
 
 QT_BEGIN_NAMESPACE
@@ -23,6 +24,16 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    float stdIconWidth;
+    float stdIconHeight;
+    float brightnessIconWidth;
+    float brightnessIconHeight;
+    float homeIconWidth;
+    float homeIconHeight;
+    float sW;
+    float sH;
+
     bool existing_recent_books = false;
     bool reboot_after_update = false;
     int timerTime = 0;
@@ -30,6 +41,8 @@ public:
 
     void openLowBatteryDialog();
     void openCriticalBatteryAlertWindow();
+    void resetWindow();
+    void resetIcons();
 
 public slots:
 
@@ -45,6 +58,7 @@ private slots:
     void on_book4Btn_clicked();
     void on_brightnessBtn_clicked();
     void openUpdateDialog();
+    void on_homeBtn_clicked();
 
 private:
     Ui::MainWindow *ui;
