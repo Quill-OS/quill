@@ -28,7 +28,8 @@ namespace global {
 
             inline bool appsWidgetCreated;
             inline bool appsWidgetSelected;
-            inline bool settingsWidgetSelected;
+            inline bool settingsChooserWidgetCreated;
+            inline bool settingsChooserWidgetSelected;
         }
         inline bool updateDialog;
         inline bool lowBatteryDialog;

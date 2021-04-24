@@ -22,6 +22,7 @@ SOURCES += \
     reader.cpp \
     savedwords.cpp \
     settings.cpp \
+    settingschooser.cpp \
     usbms_splash.cpp
 
 HEADERS += \
@@ -36,6 +37,7 @@ HEADERS += \
     reader.h \
     savedwords.h \
     settings.h \
+    settingschooser.h \
     usbms_splash.h
 
 FORMS += \
@@ -49,6 +51,7 @@ FORMS += \
     reader.ui \
     savedwords.ui \
     settings.ui \
+    settingschooser.ui \
     usbms_splash.ui
 
 # Default rules for deployment.

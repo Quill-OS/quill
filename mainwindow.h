@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "settings.h"
+#include "settingschooser.h"
 #include "apps.h"
 #include "reader.h"
 #include "quit.h"
@@ -62,7 +63,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    settings *settingsWindow;
+    settingsChooser *settingsChooserWindow;
     apps *appsWindow;
     reader *readerWindow;
     quit *quitWindow;

@@ -37,8 +37,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButton->setProperty("type", "borderless");
     ui->brightnessBtn->setProperty("type", "borderless");
     ui->homeBtn->setProperty("type", "borderless");
-    ui->inkboxSettingsBtn->setProperty("type", "borderless");
-    ui->koboxSettingsBtn->setProperty("type", "borderless");
 
     ui->settingsBtn->setText("");
     ui->appsBtn->setText("");
@@ -47,16 +45,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->searchBtn->setText("");
     ui->brightnessBtn->setText("");
     ui->homeBtn->setText("");
-    ui->inkboxSettingsBtn->setText("\t\t\tInkBox settings");
-    ui->koboxSettingsBtn->setText("\t\t\tKoBox settings");
     ui->quoteLabel->setText("");
 
     ui->quotePictureLabel->setText("");
 
     ui->quoteHeadingLabel->setStyleSheet("padding: 30px");
     ui->homeBtn->setStyleSheet("padding: 5px");
-    ui->inkboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
-    ui->koboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
 
     // Variables
     global::battery::showLowBatteryDialog = true;
@@ -103,11 +97,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
-
-    ui->inkboxSettingsBtn->setIcon(QIcon(":/resources/settings.png"));
-    ui->inkboxSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
-    ui->koboxSettingsBtn->setIcon(QIcon(":/resources/X11.png"));
-    ui->koboxSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
 
     // Battery
     string_checkconfig_ro("/opt/inkbox_device");
@@ -516,10 +505,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::openUpdateDialog() {
     global::mainwindow::updateDialog = true;
-    // We write to a temporary file to show a "Reset" prompt
+    // Write to a temporary file to show a "Reset" prompt
     string_writeconfig("/inkbox/updateDialog", "true");
 
-    // We show the dialog
+    // Show the dialog
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
@@ -549,13 +538,18 @@ void MainWindow::openCriticalBatteryAlertWindow() {
 void MainWindow::on_settingsBtn_clicked()
 {
     resetWindow(false);
-    if(global::mainwindow::tabSwitcher::settingsWidgetSelected != true) {
+    if(global::mainwindow::tabSwitcher::settingsChooserWidgetSelected != true) {
         ui->settingsBtn->setStyleSheet("background: black");
         ui->settingsBtn->setIcon(QIcon(":/resources/settings-inverted.png"));
 
+        // Create widget
+        settingsChooserWindow = new settingsChooser();
+        ui->stackedWidget->insertWidget(2, settingsChooserWindow);
+        global::mainwindow::tabSwitcher::settingsChooserWidgetCreated = true;
+
         // Switch tab
         ui->stackedWidget->setCurrentIndex(2);
-        global::mainwindow::tabSwitcher::settingsWidgetSelected = true;
+        global::mainwindow::tabSwitcher::settingsChooserWidgetSelected = true;
 
         // Repaint
         this->repaint();
@@ -572,12 +566,10 @@ void MainWindow::on_appsBtn_clicked()
         ui->appsBtn->setStyleSheet("background: black");
         ui->appsBtn->setIcon(QIcon(":/resources/apps-inverted.png"));
 
-        // Create the widget only once
-        if(global::mainwindow::tabSwitcher::appsWidgetCreated != true) {
-            appsWindow = new apps();
-            ui->stackedWidget->insertWidget(1, appsWindow);
-            global::mainwindow::tabSwitcher::appsWidgetCreated = true;
-        }
+        // Create widget
+        appsWindow = new apps();
+        ui->stackedWidget->insertWidget(1, appsWindow);
+        global::mainwindow::tabSwitcher::appsWidgetCreated = true;
 
         // Switch tab
         ui->stackedWidget->setCurrentIndex(1);
@@ -600,11 +592,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_searchBtn_clicked()
 {
-    /*global::battery::showCriticalBatteryAlert = true;
-    global::battery::showLowBatteryDialog = false;
-    settingsWindow = new settings();
-    ui->stackedWidget->insertWidget(2, settingsWindow);
-    ui->stackedWidget->setCurrentIndex(2);*/
+    // Hopefully this button will do something one day...
 }
 
 void MainWindow::on_quitBtn_clicked()
@@ -672,8 +660,20 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
     if(resetStackedWidget == true) {
         ui->stackedWidget->setCurrentIndex(0);
     }
+
+    // Destroy widgets
+    if(global::mainwindow::tabSwitcher::appsWidgetCreated == true) {
+        appsWindow->deleteLater();
+    }
+    if(global::mainwindow::tabSwitcher::settingsChooserWidgetCreated == true) {
+        settingsChooserWindow->deleteLater();
+    }
+
+    global::mainwindow::tabSwitcher::appsWidgetCreated = false;
+    global::mainwindow::tabSwitcher::settingsChooserWidgetCreated = false;
     global::mainwindow::tabSwitcher::appsWidgetSelected = false;
-    global::mainwindow::tabSwitcher::settingsWidgetSelected = false;
+    global::mainwindow::tabSwitcher::settingsChooserWidgetSelected = false;
+
     resetIcons();
     if(global::mainwindow::tabSwitcher::repaint == true) {
         this->repaint();
