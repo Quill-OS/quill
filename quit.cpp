@@ -46,11 +46,18 @@ quit::~quit()
 
 void quit::on_pushButton_clicked()
 {
+    // Prevent strange "appearing from nowhere" low battery or critical battery alerts due to sysfs unmount
+    global::battery::showCriticalBatteryAlert = false;
+    global::battery::showLowBatteryDialog = false;
+
     poweroff(true);
 }
 
 void quit::on_pushButton_2_clicked()
 {
+    global::battery::showCriticalBatteryAlert = false;
+    global::battery::showLowBatteryDialog = false;
+
     reboot(true);
 }
 

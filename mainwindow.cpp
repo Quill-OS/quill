@@ -246,6 +246,13 @@ MainWindow::MainWindow(QWidget *parent)
             rootfs_proc->start(rootfs_prog, rootfs_args);
             rootfs_proc->waitForFinished();
 
+            // Removing update directory contents
+            QDir dir("/mnt/onboard/onboard/.inkbox");
+            dir.removeRecursively();
+            // Re-creating update directory
+            QString path("/mnt/onboard/onboard/.inkbox");
+            dir.mkpath(path);
+
             // Rebooting if needed
             if(reboot_after_update == true) {
                 reboot(false);

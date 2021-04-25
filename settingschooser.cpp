@@ -17,6 +17,12 @@ settingsChooser::settingsChooser(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
+    // UI tweaks
+    if(checkconfig("/opt/inkbox_kobox_support") != true) {
+        ui->koboxSettingsBtn->hide();
+        ui->line_3->hide();
+    }
+
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
     sH = QGuiApplication::screens()[0]->size().height();
@@ -35,8 +41,16 @@ settingsChooser::settingsChooser(QWidget *parent) :
     ui->inkboxSettingsBtn->setProperty("type", "borderless");
     ui->koboxSettingsBtn->setProperty("type", "borderless");
 
-    ui->inkboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
-    ui->koboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
+    string_checkconfig("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+        ui->inkboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
+        ui->koboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
+    }
+    else {
+        ui->inkboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
+        ui->koboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
+    }
+
     ui->inkboxSettingsBtn->setText("\t\t\tInkBox settings");
     ui->koboxSettingsBtn->setText("\t\t\tKoBox settings");
 
