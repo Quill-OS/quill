@@ -26,6 +26,11 @@ alert::alert(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
+    // Default icon in case none of the conditions below are met
+    QPixmap pixmap(":/resources/alert.png");
+    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+    ui->alertIconLabel->setPixmap(scaledPixmap);
+
     // Checking if the update's signature is untrusted. The signature error will always take precedence over the downgrade one (c.f. update.sh script)
     if(checkconfig("/external_root/boot/flags/ALERT_SIGN") == true) {
         QPixmap pixmap(":/resources/alert.png");
