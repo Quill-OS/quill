@@ -4,6 +4,7 @@
 #include <QWidget>
 
 #include "settings.h"
+#include "koboxsettings.h"
 
 namespace Ui {
 class settingsChooser;
@@ -25,9 +26,12 @@ public:
 private slots:
     void on_inkboxSettingsBtn_clicked();
 
+    void on_koboxSettingsBtn_clicked();
+
 private:
     Ui::settingsChooser *ui;
     settings *settingsWindow;
+    koboxSettings *koboxSettingsWindow;
 };
 
 #endif // SETTINGSCHOOSER_H

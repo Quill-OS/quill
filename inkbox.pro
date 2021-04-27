@@ -16,6 +16,7 @@ SOURCES += \
     brightnessdialog.cpp \
     calendarapp.cpp \
     generaldialog.cpp \
+    koboxsettings.cpp \
     main.cpp \
     mainwindow.cpp \
     quit.cpp \
@@ -32,6 +33,7 @@ HEADERS += \
     calendarapp.h \
     functions.h \
     generaldialog.h \
+    koboxsettings.h \
     mainwindow.h \
     quit.h \
     reader.h \
@@ -46,6 +48,7 @@ FORMS += \
     brightnessdialog.ui \
     calendarapp.ui \
     generaldialog.ui \
+    koboxsettings.ui \
     mainwindow.ui \
     quit.ui \
     reader.ui \

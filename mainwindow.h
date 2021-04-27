@@ -11,6 +11,7 @@
 #include "usbms_splash.h"
 #include "brightnessdialog.h"
 #include "generaldialog.h"
+#include "koboxsettings.h"
 
 using namespace std;
 
@@ -71,5 +72,6 @@ private:
     usbms_splash *usbmsWindow;
     brightnessDialog *brightnessDialogWindow;
     generalDialog *generalDialogWindow;
+    koboxSettings *koboxSettingsWindow;
 };
 #endif // MAINWINDOW_H

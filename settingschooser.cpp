@@ -67,7 +67,14 @@ settingsChooser::~settingsChooser()
 
 void settingsChooser::on_inkboxSettingsBtn_clicked()
 {
-        settingsWindow = new settings();
-        settingsWindow->setAttribute(Qt::WA_DeleteOnClose);
-        settingsWindow->showFullScreen();
+    settingsWindow = new settings();
+    settingsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    settingsWindow->showFullScreen();
+}
+
+void settingsChooser::on_koboxSettingsBtn_clicked()
+{
+    koboxSettingsWindow = new koboxSettings();
+    koboxSettingsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    koboxSettingsWindow->showFullScreen();
 }
