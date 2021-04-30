@@ -5,6 +5,7 @@
 #include <savedwords.h>
 #include <calendarapp.h>
 #include <koboxappsdialog.h>
+#include <generaldialog.h>
 
 namespace Ui {
 class apps;

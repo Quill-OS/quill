@@ -5,17 +5,18 @@
 
 #include <QStringListModel>
 #include <QScreen>
+#include <QDebug>
+#include <QFontDatabase>
+#include <QMessageBox>
 
 koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
-    QWidget(parent),
+    QDialog(parent),
     ui(new Ui::koboxAppsDialog)
 {
     ui->setupUi(this);
 
     // Preventing outside interaction
-    // this->setModal(true);
-    // For some obscure reason, this returns a "no member named setModal in 'koboxAppsDialog' error"
-    // Instead, I set the modality via GUI in the "Forms" section of Qt Creator
+    this->setModal(true);
 
     // Stylesheet, style & misc.
     QFile stylesheetFile(":/resources/eink.qss");
@@ -27,6 +28,14 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     ui->cancelBtn->setProperty("type", "borderless");
     ui->launchBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->cancelBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
+    ui->appsList->setStyleSheet("font-size: 9pt");
+    ui->headerLabel->setStyleSheet("font-weight: bold");
+
+    // UI fonts
+    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont crimson(family);
+    ui->definitionLabel->setFont(QFont(crimson));
 
     this->adjustSize();
     // Centering dialog
@@ -44,7 +53,7 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
 }
 
 void koboxAppsDialog::checkApps() {
-    QFile apps_list("/external_root/opt/X11/extensions/extensions_list");
+    QFile apps_list("/external_root/opt/X11/extensions_list");
     apps_list.open(QIODevice::ReadWrite);
     QTextStream in (&apps_list);
     apps = in.readAll();
@@ -54,4 +63,22 @@ void koboxAppsDialog::checkApps() {
 koboxAppsDialog::~koboxAppsDialog()
 {
     delete ui;
+}
+
+void koboxAppsDialog::on_cancelBtn_clicked()
+{
+    // Emergency TODO: Fix this giving a "free(): invalid next size(fast)..." error
+    koboxAppsDialog::close();
+}
+
+void koboxAppsDialog::on_launchBtn_clicked()
+{
+    index = ui->appsList->currentIndex();
+    itemText = index.data(Qt::DisplayRole).toString();
+    if(itemText == "") {
+        QMessageBox::critical(this, tr("Invalid argument"), tr("Please select an application."));
+    }
+    else {
+        qDebug() << itemText;
+    }
 }
