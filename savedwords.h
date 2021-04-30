@@ -27,7 +27,6 @@ public:
 
 private slots:
     void on_backBtn_clicked();
-
     void on_clearBtn_clicked();
 
 private:

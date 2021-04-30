@@ -1,5 +1,6 @@
 #include "apps.h"
 #include "ui_apps.h"
+#include "mainwindow.h"
 #include <QFile>
 #include <QProcess>
 
@@ -8,12 +9,14 @@ apps::apps(QWidget *parent) :
     ui(new Ui::apps)
 {
     ui->setupUi(this);
+    ui->koboxAppsOpenButton->setProperty("type", "borderless");
     ui->scribbleLaunchBtn->setProperty("type", "borderless");
     ui->lightmapsLaunchBtn->setProperty("type", "borderless");
     ui->calendarLaunchBtn->setProperty("type", "borderless");
     ui->savedWordsLaunchBtn->setProperty("type", "borderless");
     ui->calculatorLaunchBtn->setProperty("type", "borderless");
 
+    ui->koboxAppsOpenButton->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->scribbleLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->lightmapsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->calendarLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
@@ -68,4 +71,11 @@ void apps::on_calculatorLaunchBtn_clicked()
     QProcess process;
     process.startDetached("calculator", QStringList());
     qApp->quit();
+}
+
+void apps::on_koboxAppsOpenButton_clicked()
+{
+    koboxAppsDialogWindow = new koboxAppsDialog();
+    koboxAppsDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    koboxAppsDialogWindow->show();
 }

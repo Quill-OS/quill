@@ -600,6 +600,9 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_searchBtn_clicked()
 {
     // Hopefully this button will do something one day...
+    koboxAppsDialogWindow = new koboxAppsDialog(this);
+    koboxAppsDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    koboxAppsDialogWindow->show();
 }
 
 void MainWindow::on_quitBtn_clicked()

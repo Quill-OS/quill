@@ -12,6 +12,7 @@
 #include "brightnessdialog.h"
 #include "generaldialog.h"
 #include "koboxsettings.h"
+#include "koboxappsdialog.h"
 
 using namespace std;
 
@@ -73,5 +74,6 @@ private:
     brightnessDialog *brightnessDialogWindow;
     generalDialog *generalDialogWindow;
     koboxSettings *koboxSettingsWindow;
+    koboxAppsDialog *koboxAppsDialogWindow;
 };
 #endif // MAINWINDOW_H

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <savedwords.h>
 #include <calendarapp.h>
+#include <koboxappsdialog.h>
 
 namespace Ui {
 class apps;
@@ -25,10 +26,13 @@ private slots:
     void on_calendarLaunchBtn_clicked();
     void on_calculatorLaunchBtn_clicked();
 
+    void on_koboxAppsOpenButton_clicked();
+
 private:
     Ui::apps *ui;
     savedwords *savedWordsWindow;
     calendarApp *calendarWindow;
+    koboxAppsDialog *koboxAppsDialogWindow;
 };
 
 #endif // APPS_H
