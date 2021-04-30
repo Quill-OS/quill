@@ -20,6 +20,8 @@ public:
 
     QString apps;
     QString itemText;
+    std::string dpiSetting;
+    std::string dpModeSetting;
     QModelIndex index;
 
 private slots:

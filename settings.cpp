@@ -15,6 +15,8 @@
 #include <QTimer>
 #include <QIcon>
 
+#include <cstdio>
+
 using namespace std;
 
 settings::settings(QWidget *parent) :

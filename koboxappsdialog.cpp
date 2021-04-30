@@ -67,7 +67,6 @@ koboxAppsDialog::~koboxAppsDialog()
 
 void koboxAppsDialog::on_cancelBtn_clicked()
 {
-    // Emergency TODO: Fix this giving a "free(): invalid next size(fast)..." error
     koboxAppsDialog::close();
 }
 
@@ -79,6 +78,35 @@ void koboxAppsDialog::on_launchBtn_clicked()
         QMessageBox::critical(this, tr("Invalid argument"), tr("Please select an application."));
     }
     else {
-        qDebug() << itemText;
+        // DPI setting
+        string_checkconfig(".config/00-kobox/dpiSetting");
+        dpiSetting = checkconfig_str_val.toStdString();
+
+        // Fullscreen or windowed (i3)
+        // Mostly windowed except for apps like KTerm which ships its own OSK
+        dpModeSetting = "windowed";
+
+        if(itemText == "Netsurf") {
+            // Bypass standard shell script launch shenanigans
+            string_writeconfig("/external_root/tmp/X_program", "!netsurf");
+        }
+        if(itemText == "KTerm") {
+            string_writeconfig("/external_root/tmp/X_program", "kterm");
+            dpiSetting = "fullscreen";
+
+        }
+        else {
+            QString itemTextLower = itemText.toLower();
+            std::string app = itemTextLower.toStdString();
+            string_writeconfig("/external_root/tmp/X_program", app);
+        }
+
+        string_writeconfig("/external_root/tmp/X_dpmode", dpModeSetting);
+        string_writeconfig("/external_root/tmp/X_dpi", dpiSetting);
+
+        // Wheeee!
+        string_writeconfig("/external_root/opt/ibxd", "x_gui_start");
+
+        qApp->quit();
     }
 }
