@@ -47,6 +47,11 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     checkApps();
     QStringListModel* model = new QStringListModel(this);
     QStringList list = apps.split("\n", QString::SkipEmptyParts);
+
+    if(checkconfig("/external_root/opt/root/rooted") == true) {
+        list.append("KTerm");
+    }
+
     model->setStringList(list);
     ui->appsList->setModel(model);
     ui->appsList->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -80,7 +85,12 @@ void koboxAppsDialog::on_launchBtn_clicked()
     else {
         // DPI setting
         string_checkconfig(".config/00-kobox/dpiSetting");
-        dpiSetting = checkconfig_str_val.toStdString();
+        if(checkconfig_str_val == "") {
+            dpiSetting = "150";
+        }
+        else {
+            dpiSetting = checkconfig_str_val.toStdString();
+        }
 
         // Fullscreen or windowed (i3)
         // Mostly windowed except for apps like KTerm which ships its own OSK
@@ -91,9 +101,9 @@ void koboxAppsDialog::on_launchBtn_clicked()
             string_writeconfig("/external_root/tmp/X_program", "!netsurf");
         }
         if(itemText == "KTerm") {
-            string_writeconfig("/external_root/tmp/X_program", "kterm");
-            dpiSetting = "fullscreen";
-
+            string_writeconfig("/external_root/tmp/X_program", "kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
+            dpModeSetting = "fullscreen";
+            dpiSetting = "175";
         }
         else {
             QString itemTextLower = itemText.toLower();
@@ -105,8 +115,6 @@ void koboxAppsDialog::on_launchBtn_clicked()
         string_writeconfig("/external_root/tmp/X_dpi", dpiSetting);
 
         // Wheeee!
-        string_writeconfig("/external_root/opt/ibxd", "x_gui_start");
-
-        qApp->quit();
+        string_writeconfig("/opt/ibxd", "x_start_gui\n");
     }
 }
