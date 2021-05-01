@@ -5,9 +5,10 @@
 
 #include <QStringListModel>
 #include <QScreen>
-#include <QDebug>
 #include <QFontDatabase>
 #include <QMessageBox>
+#include <QDir>
+#include <QDebug>
 
 koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     QDialog(parent),
@@ -49,7 +50,7 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     QStringList list = apps.split("\n", QString::SkipEmptyParts);
 
     if(checkconfig("/external_root/opt/root/rooted") == true) {
-        list.append("KTerm");
+        list.prepend("KTerm");
     }
 
     model->setStringList(list);
@@ -100,7 +101,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
             // Bypass standard shell script launch shenanigans
             string_writeconfig("/external_root/tmp/X_program", "!netsurf");
         }
-        if(itemText == "KTerm") {
+        else if(itemText == "KTerm") {
             string_writeconfig("/external_root/tmp/X_program", "kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
             dpModeSetting = "fullscreen";
             dpiSetting = "175";

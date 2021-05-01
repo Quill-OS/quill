@@ -53,7 +53,7 @@ generalDialog::generalDialog(QWidget *parent) :
             string_writeconfig("/inkbox/resetDialog", "false");
         }
     }
-    if(checkconfig("/inkbox/updateDialog") == true) {
+    else if(checkconfig("/inkbox/updateDialog") == true) {
         updateDialog = true;
         ui->okBtn->setText("Update");
         ui->cancelBtn->setText("Not now");
@@ -62,7 +62,7 @@ generalDialog::generalDialog(QWidget *parent) :
         this->adjustSize();
         string_writeconfig("/inkbox/updateDialog", "false");
     }
-    if(checkconfig("/inkbox/settingsRebootDialog") == true) {
+    else if(checkconfig("/inkbox/settingsRebootDialog") == true) {
         settingsRebootDialog = true;
         ui->stackedWidget->setCurrentIndex(1);
         ui->bodyLabel->setText("The settings you chose might require a complete reboot of the device for them to work properly.");
@@ -70,7 +70,7 @@ generalDialog::generalDialog(QWidget *parent) :
         this->adjustSize();
         string_writeconfig("/inkbox/settingsRebootDialog", "false");
     }
-    if(global::mainwindow::lowBatteryDialog == true) {
+    else if(global::mainwindow::lowBatteryDialog == true) {
         lowBatteryDialog = true;
         ui->stackedWidget->setCurrentIndex(1);
         get_battery_level();

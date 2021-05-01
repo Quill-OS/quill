@@ -127,10 +127,10 @@ MainWindow::MainWindow(QWidget *parent)
             if(batt_level_int >= 75 && batt_level_int <= 100) {
                 ui->batteryIcon->setPixmap(scaledFullPixmap);
             }
-            if(batt_level_int >= 25 && batt_level_int <= 74) {
+            else if(batt_level_int >= 25 && batt_level_int <= 74) {
                 ui->batteryIcon->setPixmap(scaledHalfPixmap);
             }
-            if(batt_level_int >= 0 && batt_level_int <= 24) {
+            else if(batt_level_int >= 0 && batt_level_int <= 24) {
                 ui->batteryIcon->setPixmap(scaledEmptyPixmap);
             }
         }
@@ -158,10 +158,10 @@ MainWindow::MainWindow(QWidget *parent)
             if(batt_level_int >= 75 && batt_level_int <= 100) {
                 ui->batteryIcon->setPixmap(scaledFullPixmap);
             }
-            if(batt_level_int >= 25 && batt_level_int <= 74) {
+            else if(batt_level_int >= 25 && batt_level_int <= 74) {
                 ui->batteryIcon->setPixmap(scaledHalfPixmap);
             }
-            if(batt_level_int >= 0 && batt_level_int <= 24) {
+            else if(batt_level_int >= 0 && batt_level_int <= 24) {
                 ui->batteryIcon->setPixmap(scaledEmptyPixmap);
             }
         }
@@ -462,14 +462,13 @@ MainWindow::MainWindow(QWidget *parent)
         if(ui->book2Btn->text() == ui->book1Btn->text()) {
             ui->book2Btn->hide();
         }
-        if(ui->book3Btn->text() == ui->book1Btn->text()) {
+        else if(ui->book3Btn->text() == ui->book1Btn->text()) {
             ui->book3Btn->hide();
         }
-        if(ui->book4Btn->text() == ui->book1Btn->text()) {
+        else if(ui->book4Btn->text() == ui->book1Btn->text()) {
             ui->book4Btn->hide();
         }
-
-        if(existing_recent_books == false) {
+        else if(existing_recent_books == false) {
             ui->recentBooksLabel->show();
         }
         else {

@@ -618,7 +618,7 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
         if(checkconfig_str_val == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
-        if(checkconfig_str_val == "n905\n") {
+        else if(checkconfig_str_val == "n905\n") {
             string_writeconfig(".config/09-dpi/config", "160");
         }
         else {
