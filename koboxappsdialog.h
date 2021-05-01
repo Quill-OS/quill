@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QModelIndex>
 
+#include "usbms_splash.h"
+
 namespace Ui {
 class koboxAppsDialog;
 }
@@ -30,6 +32,7 @@ private slots:
 
 private:
     Ui::koboxAppsDialog *ui;
+    usbms_splash *usbmsSplashWindow;
 };
 
 #endif // KOBOXAPPSDIALOG_H

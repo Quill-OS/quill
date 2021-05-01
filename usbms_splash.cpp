@@ -4,6 +4,8 @@
 #include <QPixmap>
 #include <QScreen>
 
+#include "functions.h"
+
 usbms_splash::usbms_splash(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::usbms_splash)
@@ -15,16 +17,36 @@ usbms_splash::usbms_splash(QWidget *parent) :
     float sH = QGuiApplication::screens()[0]->size().height();
 
     // Defining what the default icon size will be
-    float stdIconWidth = sW / 1.15;
-    float stdIconHeight = sH / 1.15;
+    if(global::kobox::showKoboxSplash == true) {
+        float stdIconWidth = sW / 1.30;
+        float stdIconHeight = sH / 1.30;
 
-    this->setStyleSheet("background-color:black;");
-    ui->label->setStyleSheet("QLabel { background-color : black; color : white; }");
-    ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 9pt}");
+        // Stylesheet
+        QFile stylesheetFile(":/resources/eink.qss");
+        stylesheetFile.open(QFile::ReadOnly);
+        this->setStyleSheet(stylesheetFile.readAll());
+        stylesheetFile.close();
 
-    QPixmap pixmap(":/resources/usbms.png");
-    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-    ui->label_2->setPixmap(scaledPixmap);
+        ui->label->setText("Launching KoBox subsystem");
+        ui->label_3->setText("Please wait, this could take a while.");
+        ui->label_3->setStyleSheet("font-size: 9pt");
+
+        QPixmap pixmap(":/resources/kobox-icon.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->label_2->setPixmap(scaledPixmap);
+    }
+    else {
+        float stdIconWidth = sW / 1.15;
+        float stdIconHeight = sH / 1.15;
+
+        this->setStyleSheet("background-color:black;");
+        ui->label->setStyleSheet("QLabel { background-color : black; color : white; }");
+        ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 9pt}");
+
+        QPixmap pixmap(":/resources/usbms.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->label_2->setPixmap(scaledPixmap);
+    }
 }
 
 usbms_splash::~usbms_splash()

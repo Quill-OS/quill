@@ -22,6 +22,9 @@ namespace global {
         inline bool skipOpenDialog;
         inline bool startBatteryWatchdog;
     }
+    namespace kobox {
+        inline bool showKoboxSplash;
+    }
     namespace mainwindow {
         namespace tabSwitcher {
             inline bool repaint;

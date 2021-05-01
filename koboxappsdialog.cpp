@@ -116,6 +116,15 @@ void koboxAppsDialog::on_launchBtn_clicked()
         string_writeconfig("/external_root/tmp/X_dpi", dpiSetting);
 
         // Wheeee!
+        global::kobox::showKoboxSplash = true;
+
+        // Re-use USBMS splash window for KoBox splash, since it's pretty much the same layout
+        usbmsSplashWindow = new usbms_splash();
+        usbmsSplashWindow->setAttribute(Qt::WA_DeleteOnClose);
+        usbmsSplashWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+        usbmsSplashWindow->show();
+        QApplication::processEvents();
+
         string_writeconfig("/opt/ibxd", "x_start_gui\n");
     }
 }

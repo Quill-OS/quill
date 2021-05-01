@@ -14,8 +14,7 @@
 #include <QProcess>
 #include <QTimer>
 #include <QIcon>
-
-#include <cstdio>
+#include <QScreen>
 
 using namespace std;
 
@@ -355,7 +354,8 @@ void settings::on_usbmsBtn_clicked()
 
     usbmsWindow = new usbms_splash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
-    usbmsWindow->showFullScreen();
+    usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+    usbmsWindow->show();
 
     QTimer *usbms_t = new QTimer(this);
     usbms_t->setInterval(1000);
