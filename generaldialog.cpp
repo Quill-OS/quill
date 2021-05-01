@@ -62,13 +62,18 @@ generalDialog::generalDialog(QWidget *parent) :
         this->adjustSize();
         string_writeconfig("/inkbox/updateDialog", "false");
     }
-    else if(checkconfig("/inkbox/settingsRebootDialog") == true) {
+    else if(global::settings::settingsRebootDialog == true) {
         settingsRebootDialog = true;
         ui->stackedWidget->setCurrentIndex(1);
-        ui->bodyLabel->setText("The settings you chose might require a complete reboot of the device for them to work properly.");
+        if(global::kobox::koboxSettingsRebootDialog == true) {
+            koboxSettingsRebootDialog = true;
+            ui->bodyLabel->setText("The device will reboot now, since the settings you chose require it to work properly.");
+        }
+        else {
+            ui->bodyLabel->setText("The settings you chose might require a complete reboot of the device for them to work properly.");
+        }
         ui->headerLabel->setText("Information");
         this->adjustSize();
-        string_writeconfig("/inkbox/settingsRebootDialog", "false");
     }
     else if(global::mainwindow::lowBatteryDialog == true) {
         lowBatteryDialog = true;
@@ -158,9 +163,14 @@ void generalDialog::on_acceptBtn_clicked()
     }
 
     if(settingsRebootDialog == true) {
-        QProcess process;
-        process.startDetached("inkbox.sh", QStringList());
-        qApp->quit();
+        if(koboxSettingsRebootDialog == true) {
+            reboot(true);
+        }
+        else {
+            QProcess process;
+            process.startDetached("inkbox.sh", QStringList());
+            qApp->quit();
+        }
     }
 
     // We don't have any other option ;p

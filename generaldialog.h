@@ -19,6 +19,7 @@ public:
     bool resetDialog = false;
     bool updateDialog = false;
     bool settingsRebootDialog = false;
+    bool koboxSettingsRebootDialog = false;
     bool lowBatteryDialog = false;
 
 private slots:

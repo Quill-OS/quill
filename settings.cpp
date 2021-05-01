@@ -241,7 +241,7 @@ void settings::on_okBtn_clicked() {
     if(launch_sh == true) {
         if(ui_enable_changed == true) {
             ui_enable_changed = false;
-            string_writeconfig("/inkbox/settingsRebootDialog", "true");
+            global::settings::settingsRebootDialog = true;
             generalDialogWindow = new generalDialog();
             generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
             generalDialogWindow->show();

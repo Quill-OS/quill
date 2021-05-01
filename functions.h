@@ -24,6 +24,7 @@ namespace global {
     }
     namespace kobox {
         inline bool showKoboxSplash;
+        inline bool koboxSettingsRebootDialog;
     }
     namespace mainwindow {
         namespace tabSwitcher {
@@ -36,6 +37,9 @@ namespace global {
         }
         inline bool updateDialog;
         inline bool lowBatteryDialog;
+    }
+    namespace settings {
+        inline bool settingsRebootDialog;
     }
 }
 

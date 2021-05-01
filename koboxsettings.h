@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "generaldialog.h"
+
 namespace Ui {
 class koboxSettings;
 }
@@ -15,11 +17,16 @@ public:
     explicit koboxSettings(QWidget *parent = nullptr);
     ~koboxSettings();
 
+    bool not_user_change = false;
+    void openSettingsRebootDialog();
+
 private slots:
     void on_okBtn_clicked();
+    void on_checkBox_toggled(bool checked);
 
 private:
     Ui::koboxSettings *ui;
+    generalDialog *generalDialogWindow;
 };
 
 #endif // KOBOXSETTINGS_H
