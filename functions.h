@@ -37,6 +37,7 @@ namespace global {
         }
         inline bool updateDialog;
         inline bool lowBatteryDialog;
+        inline bool usbmsDialog;
     }
     namespace settings {
         inline bool settingsRebootDialog;

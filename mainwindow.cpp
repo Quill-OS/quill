@@ -350,6 +350,26 @@ MainWindow::MainWindow(QWidget *parent)
     } );
     batteryWatchdog->start();
 
+    // USB mass storage prompt
+    QTimer *usbmsPrompt = new QTimer(this);
+    usbmsPrompt->setInterval(2000);
+    connect(usbmsPrompt, &QTimer::timeout, [&]() {
+        if(global::mainwindow::usbmsDialog != true) {
+            ;
+        }
+        else {
+            string_checkconfig_ro("/sys/devices/platform/fsl-usb2-udc/gadget/suspended");
+            if(checkconfig_str_val != "0\n") {
+                // Loop again...
+                ;
+            }
+            else {
+                // An USB cable is connected!
+
+            }
+        }
+    } );
+
     // We set the brightness level saved in the config file
     int brightness_value = brightness_checkconfig(".config/03-brightness/config");
     set_brightness(brightness_value);

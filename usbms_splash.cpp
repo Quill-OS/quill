@@ -28,8 +28,9 @@ usbms_splash::usbms_splash(QWidget *parent) :
         stylesheetFile.close();
 
         ui->label->setText("Launching KoBox subsystem");
+        ui->label->setStyleSheet("font-size: 14pt");
         ui->label_3->setText("Please wait, this could take a while.");
-        ui->label_3->setStyleSheet("font-size: 9pt");
+        ui->label_3->setStyleSheet("font-size: 10pt");
 
         QPixmap pixmap(":/resources/kobox-icon.png");
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
