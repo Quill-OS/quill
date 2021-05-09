@@ -49,6 +49,9 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     QStringListModel* model = new QStringListModel(this);
     QStringList list = apps.split("\n", QString::SkipEmptyParts);
 
+    // Apps that aren't extensions
+    list.prepend("Geany");
+
     if(checkconfig("/external_root/opt/root/rooted") == true) {
         list.prepend("KTerm");
     }
@@ -87,7 +90,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
         // DPI setting
         string_checkconfig(".config/00-kobox/dpiSetting");
         if(checkconfig_str_val == "") {
-            dpiSetting = "150";
+            dpiSetting = "125";
         }
         else {
             dpiSetting = checkconfig_str_val.toStdString();
@@ -105,6 +108,9 @@ void koboxAppsDialog::on_launchBtn_clicked()
             string_writeconfig("/external_root/tmp/X_program", "kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
             dpModeSetting = "fullscreen";
             dpiSetting = "175";
+        }
+        else if(itemText == "Geany") {
+            string_writeconfig("/external_root/tmp/X_program", "geany");
         }
         else {
             QString itemTextLower = itemText.toLower();

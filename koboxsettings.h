@@ -24,6 +24,8 @@ private slots:
     void on_okBtn_clicked();
     void on_checkBox_toggled(bool checked);
 
+    void on_spinBox_valueChanged(int arg1);
+
 private:
     Ui::koboxSettings *ui;
     generalDialog *generalDialogWindow;

@@ -86,6 +86,14 @@ generalDialog::generalDialog(QWidget *parent) :
         this->adjustSize();
         string_writeconfig("/inkbox/lowBatteryDialog", "false");
     }
+    else if(global::usbms::usbmsDialog == true) {
+        usbmsDialog = true;
+        ui->okBtn->setText("Connect");
+        ui->cancelBtn->setText("Cancel");
+        ui->bodyLabel->setText("Do you want to connect your device to a computer to manage books?");
+        ui->headerLabel->setText("USB cable connected");
+        this->adjustSize();
+    }
     else {
         // We shouldn't be there ;)
         ;
@@ -112,6 +120,9 @@ void generalDialog::on_cancelBtn_clicked()
         string_writeconfig("/tmp/cancelUpdateDialog", "true");
         generalDialog::close();
     }
+    if(usbmsDialog == true) {
+        generalDialog::close();
+    }
 }
 
 void generalDialog::on_okBtn_clicked()
@@ -129,7 +140,7 @@ void generalDialog::on_okBtn_clicked()
             proc->waitForFinished();
         }
         else {
-            // Restore default settings, we're not running on InkBox OS
+            // Restore default settings, we're not on InkBox OS
             QString prog ("sh");
             QStringList args;
             args << "reset-config.sh";
@@ -152,6 +163,15 @@ void generalDialog::on_okBtn_clicked()
         QProcess *proc = new QProcess();
         proc->start(prog, args);
         proc->waitForFinished();
+    }
+    if(usbmsDialog == true) {
+        global::usbms::usbmsDialog = false;
+        global::usbms::launchUsbms = true;
+
+        usbmsWindow = new usbms_splash();
+        usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
+        usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+        usbmsWindow->show();
     }
 }
 void generalDialog::on_acceptBtn_clicked()

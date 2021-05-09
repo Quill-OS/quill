@@ -55,6 +55,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Variables
     global::battery::showLowBatteryDialog = true;
     global::battery::showCriticalBatteryAlert = true;
+    global::usbms::showUsbmsDialog = true;
+    global::usbms::launchUsbms = false;
     global::mainwindow::tabSwitcher::repaint = true;
 
     // Getting the screen's size
@@ -354,21 +356,28 @@ MainWindow::MainWindow(QWidget *parent)
     QTimer *usbmsPrompt = new QTimer(this);
     usbmsPrompt->setInterval(2000);
     connect(usbmsPrompt, &QTimer::timeout, [&]() {
-        if(global::mainwindow::usbmsDialog != true) {
-            ;
-        }
-        else {
-            string_checkconfig_ro("/sys/devices/platform/fsl-usb2-udc/gadget/suspended");
-            if(checkconfig_str_val != "0\n") {
-                // Loop again...
+        if(checkconfig("/opt/inkbox_genuine") == true) {
+            if(global::usbms::showUsbmsDialog != true) {
                 ;
             }
             else {
-                // An USB cable is connected!
-
+                string_checkconfig_ro("/sys/devices/platform/fsl-usb2-udc/gadget/suspended");
+                if(checkconfig_str_val != "0\n") {
+                    // Loop again...
+                    ;
+                }
+                else {
+                    // An USB cable is connected!
+                    openUsbmsDialog();
+                }
             }
         }
+        else {
+            // Do nothing, we're running along with Nickel & friends...
+            ;
+        }
     } );
+    usbmsPrompt->start();
 
     // We set the brightness level saved in the config file
     int brightness_value = brightness_checkconfig(".config/03-brightness/config");
@@ -544,6 +553,16 @@ void MainWindow::openUpdateDialog() {
 void MainWindow::openLowBatteryDialog() {
     global::mainwindow::lowBatteryDialog = true;
     global::battery::batteryAlertLock = true;
+
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
+    QApplication::processEvents();
+}
+
+void MainWindow::openUsbmsDialog() {
+    global::usbms::showUsbmsDialog = false;
+    global::usbms::usbmsDialog = true;
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);

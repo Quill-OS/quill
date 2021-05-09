@@ -3,6 +3,7 @@
 
 #include <QPixmap>
 #include <QScreen>
+#include <QTimer>
 
 #include "functions.h"
 
@@ -48,6 +49,71 @@ usbms_splash::usbms_splash(QWidget *parent) :
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         ui->label_2->setPixmap(scaledPixmap);
     }
+
+    if(global::usbms::launchUsbms == true) {
+        global::usbms::launchUsbms = false;
+        usbms_launch();
+    }
+}
+
+void usbms_splash::usbms_launch()
+{
+    QString umount_prog ("umount");
+    QStringList umount_args;
+    umount_args << "/dev/loop0";
+    QProcess *umount_proc = new QProcess();
+    umount_proc->start(umount_prog, umount_args);
+    umount_proc->waitForFinished();
+
+    QString rmmod ("rmmod");
+    QStringList rmmod_args;
+    rmmod_args << "g_ether.ko";
+    QProcess *rmmod_proc = new QProcess();
+    rmmod_proc->start(rmmod, rmmod_args);
+    rmmod_proc->waitForFinished();
+
+    QString prog ("insmod");
+    QStringList args;
+    args << "/external_root/modules/arcotg_udc.ko";
+    QProcess *proc = new QProcess();
+    proc->start(prog, args);
+    proc->waitForFinished();
+
+    QString prog_1 ("insmod");
+    QStringList args_1;
+    args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/onboard" << "removable=y" << "stall=0";
+    QProcess *proc_1 = new QProcess();
+    proc_1->start(prog_1, args_1);
+    proc_1->waitForFinished();
+
+    QTimer *usbms_t = new QTimer(this);
+    usbms_t->setInterval(1000);
+    connect(usbms_t, &QTimer::timeout, [&]() {
+        QString prog ("mass_storage.sh");
+        QStringList args;
+        QProcess *proc = new QProcess();
+        proc->start(prog, args);
+        proc->waitForFinished();
+
+        QFile modules("/tmp/usbevent");
+        modules.open(QIODevice::ReadWrite);
+        QTextStream in (&modules);
+        const QString content = in.readAll();
+        std::string contentstr = content.toStdString();
+        modules.close();
+        if(contentstr.find("1") != std::string::npos) {
+            QString reboot_prog ("busybox");
+            QStringList reboot_args;
+            reboot_args << "reboot";
+            QProcess *reboot_proc = new QProcess();
+            reboot_proc->start(reboot_prog, reboot_args);
+            reboot_proc->waitForFinished();
+        }
+        else {
+            ;
+        }
+    } );
+    usbms_t->start();
 }
 
 usbms_splash::~usbms_splash()

@@ -27,6 +27,16 @@ koboxSettings::koboxSettings(QWidget *parent) :
     else {
         ui->koboxStatusLabel->setText("KoBox is <b>disabled</b>");
     }
+
+    // DPI setting
+    string_checkconfig(".config/00-kobox/dpiSetting");
+    if(checkconfig_str_val == "") {
+        ;
+    }
+    else {
+        int dpi_setting = checkconfig_str_val.toInt();
+        ui->spinBox->setValue(dpi_setting);
+    }
 }
 
 koboxSettings::~koboxSettings()
@@ -62,4 +72,11 @@ void koboxSettings::openSettingsRebootDialog() {
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
+}
+
+void koboxSettings::on_spinBox_valueChanged(int arg1)
+{
+    QString number = QString::number(arg1);
+    string number_str = number.toStdString();
+    string_writeconfig(".config/00-kobox/dpiSetting", number_str);
 }

@@ -15,6 +15,8 @@ public:
     explicit usbms_splash(QWidget *parent = nullptr);
     ~usbms_splash();
 
+    void usbms_launch();
+
 private:
     Ui::usbms_splash *ui;
 };
