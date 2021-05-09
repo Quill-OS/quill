@@ -23,6 +23,18 @@ apps::apps(QWidget *parent) :
     ui->savedWordsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->calculatorLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
+    // Hiding KoBox apps button and label if X11 isn't enabled/wasn't started
+    string_checkconfig_ro("/external_root/boot/flags/X11_START");
+    if(checkconfig_str_val != "true") {
+        ui->label_5->deleteLater();
+        ui->koboxAppsOpenButton->deleteLater();
+    }
+    string_checkconfig_ro("/external_root/boot/flags/X11_STARTED");
+    if(checkconfig_str_val != "true") {
+        ui->label_5->deleteLater();
+        ui->koboxAppsOpenButton->deleteLater();
+    }
+
     QFile stylesheetFile(":/resources/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());

@@ -25,6 +25,12 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
+    string_checkconfig_ro("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n") {
+        // If we don't do this, the text will clip out of the display.
+        ui->definitionLabel->setText("Please select an application.\nClick on 'Launch' to start it.");
+    }
+
     ui->launchBtn->setProperty("type", "borderless");
     ui->cancelBtn->setProperty("type", "borderless");
     ui->launchBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
@@ -39,6 +45,7 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     ui->definitionLabel->setFont(QFont(crimson));
 
     this->adjustSize();
+
     // Centering dialog
     QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
     int x = (screenGeometry.width() - this->width()) / 2;
