@@ -42,6 +42,7 @@ namespace global {
         inline bool usbmsDialog;
         inline bool showUsbmsDialog;
         inline bool launchUsbms;
+        inline bool koboxExportExtensions;
     }
     namespace settings {
         inline bool settingsRebootDialog;

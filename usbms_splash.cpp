@@ -60,7 +60,12 @@ void usbms_splash::usbms_launch()
 {
     QString umount_prog ("umount");
     QStringList umount_args;
-    umount_args << "/dev/loop0";
+    if(global::usbms::koboxExportExtensions == true) {
+        umount_args << "/dev/loop10";
+    }
+    else {
+        umount_args << "/dev/loop0";
+    }
     QProcess *umount_proc = new QProcess();
     umount_proc->start(umount_prog, umount_args);
     umount_proc->waitForFinished();
@@ -81,7 +86,14 @@ void usbms_splash::usbms_launch()
 
     QString prog_1 ("insmod");
     QStringList args_1;
-    args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/onboard" << "removable=y" << "stall=0";
+
+    if(global::usbms::koboxExportExtensions == true) {
+        args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/extensions.img" << "removable=y" << "stall=0";
+    }
+    else {
+        args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/onboard" << "removable=y" << "stall=0";
+    }
+
     QProcess *proc_1 = new QProcess();
     proc_1->start(prog_1, args_1);
     proc_1->waitForFinished();

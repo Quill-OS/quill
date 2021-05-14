@@ -52,11 +52,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->quoteHeadingLabel->setStyleSheet("padding: 30px");
     ui->homeBtn->setStyleSheet("padding: 5px");
 
-    // Variables
+    // Initializing some variables
     global::battery::showLowBatteryDialog = true;
     global::battery::showCriticalBatteryAlert = true;
     global::usbms::showUsbmsDialog = true;
     global::usbms::launchUsbms = false;
+    global::usbms::koboxExportExtensions = false;
     global::mainwindow::tabSwitcher::repaint = true;
 
     // Getting the screen's size

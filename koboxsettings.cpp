@@ -3,6 +3,7 @@
 #include "functions.h"
 
 #include <QFile>
+#include <QScreen>
 
 koboxSettings::koboxSettings(QWidget *parent) :
     QWidget(parent),
@@ -10,14 +11,15 @@ koboxSettings::koboxSettings(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // UI tweaks
+    ui->okBtn->setProperty("type", "borderless");
+    ui->pushButton->setProperty("type", "borderless");
+
     // Stylesheet
     QFile stylesheetFile(":/resources/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
-
-    // UI tweaks
-    ui->okBtn->setProperty("type", "borderless");
 
     if(checkconfig("/external_root/boot/flags/X11_START") == true) {
         ui->koboxStatusLabel->setText("KoBox is <b>enabled</b>");
@@ -79,4 +81,17 @@ void koboxSettings::on_spinBox_valueChanged(int arg1)
     QString number = QString::number(arg1);
     string number_str = number.toStdString();
     string_writeconfig(".config/00-kobox/dpiSetting", number_str);
+}
+
+void koboxSettings::on_pushButton_clicked()
+{
+    // Export Extensions disk image over USB with g_mass_storage
+    global::usbms::usbmsDialog = false;
+    global::usbms::launchUsbms = true;
+    global::usbms::koboxExportExtensions = true;
+
+    usbmsWindow = new usbms_splash();
+    usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+    usbmsWindow->show();
 }
