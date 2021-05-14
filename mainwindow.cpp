@@ -378,8 +378,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
     } );
     // **** FEATURE WARNING ****
-    // Due to the fsl-usb2-udc/gadget/suspended file which really only changes after a real unplugging of the USB port, further development on this feature is no longer possible and is abandoned unless a fix is found.
-    // Problem encontered: it would prompt to connect after a fresh reboot even if no USB cable is plugged in.
+    // Due to the fsl-usb2-udc/gadget/suspended file which really only changes after a real plug/unplug of the USB cable, further development on this feature is no longer possible and is abandoned unless a fix is found.
+    // Problem encontered: it would prompt to connect after a fresh reboot even if no USB cable was plugged in.
     // usbmsPrompt->start();
     // **** FEATURE WARNING ****
 
@@ -535,6 +535,14 @@ MainWindow::MainWindow(QWidget *parent)
             string_writeconfig("/external_root/opt/update/inkbox_updated", "false");
         }
     }
+
+    // Write current running version to a file for utility purposes
+    {
+        string_checkconfig_ro("/external_root/opt/isa/version");
+        std::string inkbox_version = checkconfig_str_val.toStdString();
+        string_writeconfig("/opt/version", inkbox_version);
+    }
+
 }
 
 MainWindow::~MainWindow()

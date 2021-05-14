@@ -24,13 +24,15 @@ apps::apps(QWidget *parent) :
     ui->calculatorLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     // Hiding KoBox apps button and label if X11 isn't enabled/wasn't started
-    string_checkconfig_ro("/external_root/boot/flags/X11_START");
-    if(checkconfig_str_val != "true") {
+    if(checkconfig("/external_root/boot/flags/X11_START") != true) {
+        ui->label_5->hide();
+        ui->koboxAppsOpenButton->hide();
         ui->label_5->deleteLater();
         ui->koboxAppsOpenButton->deleteLater();
     }
-    string_checkconfig_ro("/external_root/boot/flags/X11_STARTED");
-    if(checkconfig_str_val != "true") {
+    if(checkconfig("/external_root/boot/flags/X11_START") != true) {
+        ui->label_5->hide();
+        ui->koboxAppsOpenButton->hide();
         ui->label_5->deleteLater();
         ui->koboxAppsOpenButton->deleteLater();
     }

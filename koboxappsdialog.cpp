@@ -104,7 +104,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
         }
 
         // Fullscreen or windowed (i3)
-        // Mostly windowed except for apps like KTerm which ships its own OSK
+        // Mostly windowed except for apps like KTerm which ship their own OSK
         dpModeSetting = "windowed";
 
         if(itemText == "Netsurf") {
@@ -112,7 +112,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
             string_writeconfig("/external_root/tmp/X_program", "!netsurf");
         }
         else if(itemText == "KTerm") {
-            string_writeconfig("/external_root/tmp/X_program", "kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
+            string_writeconfig("/external_root/tmp/X_program", "/usr/local/bin/kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
             dpModeSetting = "fullscreen";
             dpiSetting = "175";
         }
@@ -128,7 +128,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
         string_writeconfig("/external_root/tmp/X_dpmode", dpModeSetting);
         string_writeconfig("/external_root/tmp/X_dpi", dpiSetting);
 
-        // Wheeee!
+        /* Wheeee! */
         global::kobox::showKoboxSplash = true;
 
         // Re-use USBMS splash window for KoBox splash, since it's pretty much the same layout
@@ -138,6 +138,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
         usbmsSplashWindow->show();
         QApplication::processEvents();
 
+        // Write to FIFO to start X11
         string_writeconfig("/opt/ibxd", "x_start_gui\n");
     }
 }
