@@ -101,7 +101,7 @@ settings::settings(QWidget *parent) :
     else {
         int dpi_number = checkconfig_str_val.toInt();
         // Checking if it's a Mini or a Touch
-        string_checkconfig("/opt/inkbox_device");
+        string_checkconfig_ro("/opt/inkbox_device");
         if(checkconfig_str_val == "n705\n") {
             if(dpi_number == 187) {
                 ui->uiScalingSlider->setValue(0);
@@ -498,7 +498,7 @@ void settings::on_darkModeCheckBox_toggled(bool checked)
 void settings::on_uiScalingSlider_valueChanged(int value)
 {
     if(value == 0) {
-        string_checkconfig("/opt/inkbox_device");
+        string_checkconfig_ro("/opt/inkbox_device");
         if(checkconfig_str_val == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
@@ -507,7 +507,7 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         }
     }
     if(value == 1) {
-        string_checkconfig("/opt/inkbox_device");
+        string_checkconfig_ro("/opt/inkbox_device");
         if(checkconfig_str_val == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "214");
         }
@@ -516,7 +516,7 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         }
     }
     if(value == 2) {
-        string_checkconfig("/opt/inkbox_device");
+        string_checkconfig_ro("/opt/inkbox_device");
         if(checkconfig_str_val == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "227");
         }
@@ -614,7 +614,7 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
 {
     if(checked == true) {
         // Writing default value depending on the device
-        string_checkconfig("/opt/inkbox_device");
+        string_checkconfig_ro("/opt/inkbox_device");
         if(checkconfig_str_val == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }

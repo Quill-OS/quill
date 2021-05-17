@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     sH = QGuiApplication::screens()[0]->size().height();
 
     // Defining what the default icon size will be
-    string_checkconfig("/opt/inkbox_device");
+    string_checkconfig_ro("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n") {
         stdIconWidth = sW / 12;
         stdIconHeight = sH / 12;

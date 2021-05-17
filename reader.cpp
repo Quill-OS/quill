@@ -872,7 +872,7 @@ void reader::menubar_show() {
     ui->menuBarWidget->setVisible(true);
     ui->statusBarWidget->setVisible(true);
 
-    string_checkconfig("/opt/inkbox_device");
+    string_checkconfig_ro("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         ;
     }
@@ -891,7 +891,7 @@ void reader::menubar_show() {
 }
 
 void reader::menubar_hide() {
-    string_checkconfig("/opt/inkbox_device");
+    string_checkconfig_ro("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         ui->brightnessWidget->setVisible(false);
     }
