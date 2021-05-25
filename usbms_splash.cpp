@@ -94,7 +94,7 @@ void usbms_splash::usbms_launch()
     QStringList args_1;
 
     if(global::usbms::koboxExportExtensions == true) {
-        args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/extensions.img" << "removable=y" << "stall=0";
+        args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/X11/extensions-user.img" << "removable=y" << "stall=0";
     }
     else {
         args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/onboard" << "removable=y" << "stall=0";
