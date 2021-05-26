@@ -266,10 +266,9 @@ void settings::on_aboutBtn_clicked()
         string_checkconfig_ro("/external_root/opt/isa/version");
         aboutmsg.append("\n\nInkBox ");
         aboutmsg.append(checkconfig_str_val);
-        int device_uid = getUID();
-        QString device_uid_qstr = QString::number(device_uid);
-        aboutmsg.append("\n");
-        aboutmsg.append(device_uid_qstr);
+        getUID();
+        aboutmsg.append("\nDevice UID:\n");
+        aboutmsg.append(deviceUID);
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
     else {

@@ -29,7 +29,6 @@ namespace global {
     namespace mainwindow {
         namespace tabSwitcher {
             inline bool repaint;
-
             inline bool appsWidgetCreated;
             inline bool appsWidgetSelected;
             inline bool settingsChooserWidgetCreated;
@@ -52,6 +51,7 @@ namespace global {
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534
 namespace {
     QString checkconfig_str_val;
+    QString deviceUID;
     QString batt_level;
     int batt_level_int;
     bool checked_box = false;
@@ -246,7 +246,7 @@ namespace {
             proc->start(prog, args);
         }
     }
-    int getUID() {
+    void getUID() {
         QString prog ("dd");
         QStringList args;
         args << "if=/dev/mmcblk0" << "bs=512" << "skip=1" << "count=1" << "status=none";
@@ -254,11 +254,8 @@ namespace {
         proc->start(prog, args);
         proc->waitForFinished();
 
-        QString procOutput = proc->readAllStandardOutput();
-        procOutput = procOutput.left(256);
-
-        int deviceUID = procOutput.toInt();
-        return deviceUID;
+        deviceUID = proc->readAllStandardOutput();
+        deviceUID = deviceUID.left(256);
     }
 }
 #endif // FUNCTIONS_H
