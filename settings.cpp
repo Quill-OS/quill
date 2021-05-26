@@ -262,10 +262,14 @@ void settings::on_okBtn_clicked() {
 void settings::on_aboutBtn_clicked()
 {
     if(checkconfig("/opt/inkbox_genuine") == true) {
-        QString aboutmsg = "InkBox is an open-source Qt-based eBook reader. It brings you the latest Qt features while being also fast and responsive.";
+        QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
         string_checkconfig_ro("/external_root/opt/isa/version");
         aboutmsg.append("\n\nInkBox ");
         aboutmsg.append(checkconfig_str_val);
+        int device_uid = getUID();
+        QString device_uid_qstr = QString::number(device_uid);
+        aboutmsg.append("\n");
+        aboutmsg.append(device_uid_qstr);
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
     else {

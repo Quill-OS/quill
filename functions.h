@@ -246,5 +246,19 @@ namespace {
             proc->start(prog, args);
         }
     }
+    int getUID() {
+        QString prog ("dd");
+        QStringList args;
+        args << "if=/dev/mmcblk0" << "bs=512" << "skip=1" << "count=1" << "status=none";
+        QProcess *proc = new QProcess();
+        proc->start(prog, args);
+        proc->waitForFinished();
+
+        QString procOutput = proc->readAllStandardOutput();
+        procOutput = procOutput.left(256);
+
+        int deviceUID = procOutput.toInt();
+        return deviceUID;
+    }
 }
 #endif // FUNCTIONS_H

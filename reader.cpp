@@ -304,9 +304,10 @@ reader::reader(QWidget *parent) :
         if(checkconfig("/opt/inkbox_genuine") == true) {
             QDir::setCurrent("/mnt/onboard/onboard");
             QFileDialog *dialog = new QFileDialog(this);
-            // https://forum.qt.io/topic/29471/solve-how-to-show-qfiledialog-at-center-position-screen/4
-            QDesktopWidget desk;
-            QRect screenres = desk.screenGeometry(0); dialog->setGeometry(QRect(screenres.width()/4,screenres.height() /4,screenres.width()/2,screenres.height()/2));
+
+            // Showing dialog in full screen
+            dialog->setWindowState(Qt::WindowFullScreen);
+
             stylesheetFile.open(QFile::ReadOnly);
             dialog->setStyleSheet(stylesheetFile.readAll());
             stylesheetFile.close();
@@ -761,10 +762,14 @@ void reader::on_brightnessIncBtn_clicked()
 void reader::on_aboutBtn_clicked()
 {
     if(checkconfig("/opt/inkbox_genuine") == true) {
-        QString aboutmsg = "InkBox is an open-source Qt-based eBook reader. It brings you the latest Qt features while being also fast and responsive.";
+        QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
         string_checkconfig_ro("/external_root/opt/isa/version");
         aboutmsg.append("\n\nInkBox ");
         aboutmsg.append(checkconfig_str_val);
+        int device_uid = getUID();
+        QString device_uid_qstr = QString::number(device_uid);
+        aboutmsg.append("\n");
+        aboutmsg.append(device_uid_qstr);
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
     else {
