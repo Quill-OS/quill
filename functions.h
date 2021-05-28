@@ -218,15 +218,15 @@ namespace {
     }
     void poweroff(bool splash) {
         if(splash == true) {
-            QString prog ("poweroff");
+            QString prog ("/sbin/poweroff");
             QStringList args;
             QProcess *proc = new QProcess();
             proc->start(prog, args);
         }
         else {
-            QString prog ("busybox");
+            QString prog ("/sbin/poweroff");
             QStringList args;
-            args << "poweroff";
+            args << "no_splash";
             QProcess *proc = new QProcess();
             proc->start(prog, args);
         }
@@ -239,9 +239,9 @@ namespace {
             proc->start(prog, args);
         }
         else {
-            QString prog ("busybox");
+            QString prog ("reboot");
             QStringList args;
-            args << "reboot";
+            args << "no_splash";
             QProcess *proc = new QProcess();
             proc->start(prog, args);
         }

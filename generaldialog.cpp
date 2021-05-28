@@ -133,7 +133,7 @@ void generalDialog::on_okBtn_clicked()
             // We set a custom boot flag and reboot silently in Diagnostics
             string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
             string_writeconfig("/external_root/boot/flags/DO_SOFT_RESET", "true");
-            QString prog ("reboot");
+            QString prog ("/sbin/reboot");
             QStringList args;
             QProcess *proc = new QProcess();
             proc->start(prog, args);

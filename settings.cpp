@@ -376,9 +376,9 @@ void settings::on_usbmsBtn_clicked()
         string contentstr = content.toStdString();
         modules.close();
         if(contentstr.find("1") != std::string::npos) {
-            QString reboot_prog ("busybox");
+            QString reboot_prog ("/sbin/reboot");
             QStringList reboot_args;
-            reboot_args << "reboot";
+            reboot_args << "no_splash";
             QProcess *reboot_proc = new QProcess();
             reboot_proc->start(reboot_prog, reboot_args);
             reboot_proc->waitForFinished();
@@ -479,7 +479,7 @@ void settings::on_updateBtn_clicked()
     string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "true");
     string_writeconfig("/external_root/opt/update/will_update", "true");
     string_writeconfig("/external_root/boot/flags/WILL_UPDATE", "true");
-    QString prog ("reboot");
+    QString prog ("/sbin/reboot");
     QStringList args;
     QProcess *proc = new QProcess();
     proc->start(prog, args);

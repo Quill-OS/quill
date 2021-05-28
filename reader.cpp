@@ -302,12 +302,11 @@ reader::reader(QWidget *parent) :
     }
     else {
         if(checkconfig("/opt/inkbox_genuine") == true) {
-            QDir::setCurrent("/mnt/onboard/onboard");
+            QDir::setCurrent("/mnt/onboard");
             QFileDialog *dialog = new QFileDialog(this);
-
-            // Showing dialog in full screen
-            dialog->setWindowState(Qt::WindowFullScreen);
-
+            // https://forum.qt.io/topic/29471/solve-how-to-show-qfiledialog-at-center-position-screen/4
+            QDesktopWidget desk;
+            QRect screenres = desk.screenGeometry(0); dialog->setGeometry(QRect(screenres.width()/4,screenres.height() /4,screenres.width()/2,screenres.height()/2));
             stylesheetFile.open(QFile::ReadOnly);
             dialog->setStyleSheet(stylesheetFile.readAll());
             stylesheetFile.close();

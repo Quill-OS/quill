@@ -99,9 +99,9 @@ void alert::on_resetBtn_clicked()
     // We set the DO_FACTORY_RESET flag and we restart the Kobo
     string_writeconfig("/external_root/boot/flags/DO_FACTORY_RESET", "true");
     string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
-    QString reboot_prog ("busybox");
+    QString reboot_prog ("/sbin/reboot");
     QStringList reboot_args;
-    reboot_args << "reboot";
+    reboot_args << "no_splash";
     QProcess *reboot_proc = new QProcess();
     reboot_proc->start(reboot_prog, reboot_args);
     reboot_proc->waitForFinished();

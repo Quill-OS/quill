@@ -120,9 +120,9 @@ void usbms_splash::usbms_launch()
         std::string contentstr = content.toStdString();
         modules.close();
         if(contentstr.find("1") != std::string::npos) {
-            QString reboot_prog ("busybox");
+            QString reboot_prog ("/sbin/reboot");
             QStringList reboot_args;
-            reboot_args << "reboot";
+            reboot_args << "no_splash";
             QProcess *reboot_proc = new QProcess();
             reboot_proc->start(reboot_prog, reboot_args);
             reboot_proc->waitForFinished();
