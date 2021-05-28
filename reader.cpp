@@ -302,7 +302,7 @@ reader::reader(QWidget *parent) :
     }
     else {
         if(checkconfig("/opt/inkbox_genuine") == true) {
-            QDir::setCurrent("/mnt/onboard");
+            QDir::setCurrent("/mnt/onboard/onboard");
             QFileDialog *dialog = new QFileDialog(this);
             // https://forum.qt.io/topic/29471/solve-how-to-show-qfiledialog-at-center-position-screen/4
             QDesktopWidget desk;
