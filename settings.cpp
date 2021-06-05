@@ -272,7 +272,7 @@ void settings::on_aboutBtn_clicked()
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
     else {
-        QMessageBox::information(this, tr("About"), tr("InkBox is an open-source Qt-based eBook reader. It brings you the latest Qt features while being also fast and responsive."));
+        QMessageBox::information(this, tr("About"), tr("InkBox is an open-source Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive."));
     }
 }
 
