@@ -50,6 +50,7 @@ namespace global {
         inline bool textBrowserDialog;
         inline QString textBrowserContents;
     }
+    inline QString systemInfoText;
 }
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534
@@ -260,6 +261,15 @@ namespace {
 
         deviceUID = proc->readAllStandardOutput();
         deviceUID = deviceUID.left(256);
+    }
+    void getSystemInfo() {
+        getUID();
+        global::systemInfoText = "InkBox OS version ";
+        string_checkconfig_ro("/external_root/opt/isa/version");
+        global::systemInfoText.append(checkconfig_str_val);
+        global::systemInfoText.append("Device UID: ");
+        global::systemInfoText.append(deviceUID);
+        global::systemInfoText.append("\n");
     }
 }
 #endif // FUNCTIONS_H

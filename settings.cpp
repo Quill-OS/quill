@@ -30,6 +30,7 @@ settings::settings(QWidget *parent) :
     ui->usbmsBtn->setProperty("type", "borderless");
     ui->updateBtn->setProperty("type", "borderless");
     ui->resetBtn->setProperty("type", "borderless");
+    ui->showSystemInfoBtn->setProperty("type", "borderless");
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
@@ -37,6 +38,7 @@ settings::settings(QWidget *parent) :
     ui->usbmsBtn->setStyleSheet("font-size: 9pt");
     ui->updateBtn->setStyleSheet("font-size: 9pt");
     ui->resetBtn->setStyleSheet("font-size: 9pt");
+    ui->showSystemInfoBtn->setStyleSheet("font-size: 9pt");
     ui->comboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
 
@@ -266,9 +268,6 @@ void settings::on_aboutBtn_clicked()
         string_checkconfig_ro("/external_root/opt/isa/version");
         aboutmsg.append("\n\nInkBox ");
         aboutmsg.append(checkconfig_str_val);
-        getUID();
-        aboutmsg.append("\nDevice UID:\n");
-        aboutmsg.append(deviceUID);
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
     else {
@@ -648,4 +647,10 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
         launch_sh = true;
         ui_enable_changed = true;
     }
+}
+
+void settings::on_showSystemInfoBtn_clicked()
+{
+    getSystemInfo();
+    global::text::textBrowserContents = global::systemInfoText;
 }

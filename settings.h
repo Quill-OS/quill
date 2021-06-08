@@ -47,6 +47,8 @@ private slots:
     void on_enableLockscreenCheckBox_toggled(bool checked);
     void on_enableUiScalingCheckBox_toggled(bool checked);
 
+    void on_showSystemInfoBtn_clicked();
+
 private:
     Ui::settings *ui;
     usbms_splash *usbmsWindow;
