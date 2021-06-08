@@ -13,6 +13,7 @@
 #include "generaldialog.h"
 #include "koboxsettings.h"
 #include "koboxappsdialog.h"
+#include "textwidget.h"
 
 using namespace std;
 
@@ -76,5 +77,6 @@ private:
     generalDialog *generalDialogWindow;
     koboxSettings *koboxSettingsWindow;
     koboxAppsDialog *koboxAppsDialogWindow;
+    textwidget *textwidgetWindow;
 };
 #endif // MAINWINDOW_H

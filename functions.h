@@ -46,6 +46,10 @@ namespace global {
     namespace settings {
         inline bool settingsRebootDialog;
     }
+    namespace text {
+        inline bool textBrowserDialog;
+        inline QString textBrowserContents;
+    }
 }
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534

@@ -4,6 +4,7 @@
 #include <QDialog>
 
 #include "usbms_splash.h"
+#include "textwidget.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ public:
     bool koboxSettingsRebootDialog = false;
     bool lowBatteryDialog = false;
     bool usbmsDialog = false;
+    bool textBrowserDialog = false;
 
 private slots:
     void on_cancelBtn_clicked();
@@ -33,6 +35,7 @@ private slots:
 private:
     Ui::generalDialog *ui;
     usbms_splash *usbmsWindow;
+    textwidget *textwidgetWindow;
 };
 
 #endif // GENERALDIALOG_H

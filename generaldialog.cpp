@@ -94,6 +94,13 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->headerLabel->setText("USB cable connected");
         this->adjustSize();
     }
+    else if(global::text::textBrowserDialog == true) {
+        textwidgetWindow = new textwidget();
+        ui->headerLabel->setText("Information");
+        ui->mainStackedWidget->insertWidget(1, textwidgetWindow);
+        ui->mainStackedWidget->setCurrentIndex(1);
+        this->adjustSize();
+    }
     else {
         // We shouldn't be there ;)
         ;
@@ -113,14 +120,11 @@ generalDialog::~generalDialog()
 
 void generalDialog::on_cancelBtn_clicked()
 {
-    if(resetDialog == true) {
-        generalDialog::close();
-    }
     if(updateDialog == true) {
         string_writeconfig("/tmp/cancelUpdateDialog", "true");
         generalDialog::close();
     }
-    if(usbmsDialog == true) {
+    else {
         generalDialog::close();
     }
 }
@@ -191,6 +195,10 @@ void generalDialog::on_acceptBtn_clicked()
             process.startDetached("inkbox.sh", QStringList());
             qApp->quit();
         }
+    }
+    if(textBrowserDialog == true) {
+        global::text::textBrowserContents = "";
+        global::text::textBrowserDialog = false;
     }
 
     // We don't have any other option ;p
