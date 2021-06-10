@@ -64,7 +64,7 @@ alert::alert(QWidget *parent) :
         criticalBattery = true;
         ui->warningLabel->setText("Please charge your eReader.");
         ui->securityLabel->setText("The battery's charge level is critical.");
-        ui->messageLabel->setText("To prevent filesystem damage, your device has been turned off.\nPlease consider charging it.");
+        ui->messageLabel->setText("To prevent damage, your device has been turned off.\nPlease consider charging it.");
         poweroff(false);
     }
 
