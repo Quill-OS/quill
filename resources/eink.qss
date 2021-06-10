@@ -193,17 +193,17 @@ QLineEdit:edit-focus, QSpinBox:edit-focus, QDoubleSpinBox:edit-focus
 QTextEdit
 {
   background-color:transparent;
-  border:1px solid black;
+  border: 0;
   padding: 1px;
 }
 QTextEdit:focus
 {
-  border: 1px solid black;
+  border: 0;
   padding: 1px;
 }
 QTextEdit:edit-focus
 {
-  border: 3px solid black;
+  border: 0;
   padding: 0px;
 }
 

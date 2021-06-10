@@ -235,7 +235,7 @@ reader::reader(QWidget *parent) :
     }
 
     // Word selection & dictionary lookup feature
-    QString dictionary_position_str = QString::number(dictionary_position);
+    /*QString dictionary_position_str = QString::number(dictionary_position);
     ui->definitionStatusLabel->setText(dictionary_position_str);
     QTimer *select_t = new QTimer(this);
     select_t->setInterval(100);
@@ -271,7 +271,7 @@ reader::reader(QWidget *parent) :
             ;
         }
     } );
-    select_t->start();
+    select_t->start();*/
 
     // We have to get the file's path
     if(global::reader::skipOpenDialog == true) {
