@@ -57,8 +57,8 @@ public:
     QPixmap scaledHalfPixmap;
     QPixmap scaledFullPixmap;
     QPixmap scaledEmptyPixmap;
-    QList<QString> content;
-    int setup_book(QString book, int i, bool run_parser);
+    QString content;
+    int setup_book(QString book);
     void checkwords();
     bool epub_file_match(QString file);
     void dictionary_lookup(string word, QString first_letter, int position);

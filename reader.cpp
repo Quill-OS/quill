@@ -15,6 +15,8 @@
 #include <QFontDatabase>
 #include <QDirIterator>
 #include <QDebug>
+#include <QTextDocument>
+#include <QTextCodec>
 
 using namespace std;
 
@@ -25,6 +27,10 @@ reader::reader(QWidget *parent) :
     // Variables
     global::battery::showLowBatteryDialog = true;
     global::battery::showCriticalBatteryAlert = true;
+
+    // QTextDocument
+    QTextDocument *text = new QTextDocument();
+
 
     ui->setupUi(this);
     ui->previousBtn->setProperty("type", "borderless");
@@ -346,7 +352,7 @@ reader::reader(QWidget *parent) :
     // Checking if we're waking from sleep; if so, do nothing there because the book should have already been parsed
     if(wakeFromSleep != true) {
         // Counting number of parsed files
-        split_total = setup_book(book_file, 0, true);
+        split_total = setup_book(book_file);
         split_files_number = split_total;
         split_total = split_total - 1;
 
@@ -356,12 +362,12 @@ reader::reader(QWidget *parent) :
         // Retrieve split_total from tmpfs
         string_checkconfig("/tmp/inkboxPageNumber");
         split_total = checkconfig_str_val.toInt();
-        setup_book(book_file, 0, true);
+        setup_book(book_file);
     }
 
     // Get text
     QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-    setup_book(book_file, split_total, false);
+    setup_book(book_file);
 
     // Display text
     // Checking saved font size if any
@@ -494,100 +500,13 @@ reader::~reader()
     delete ui;
 }
 
-int reader::setup_book(QString book, int i, bool run_parser) {
-    // Parse ebook
-    if(remount != false) {
-        QString mount_prog ("sh");
-        QStringList mount_args;
-        mount_args << "split.sh";
-        QProcess *mount_proc = new QProcess();
-        mount_proc->start(mount_prog, mount_args);
-        mount_proc->waitForFinished();
-        remount = false;
-    }
-    else {
-        string_writeconfig("/inkbox/remount", "false");
-        QString mount_prog ("sh");
-        QStringList mount_args;
-        mount_args << "split.sh";
-        QProcess *mount_proc = new QProcess();
-        mount_proc->start(mount_prog, mount_args);
-        mount_proc->waitForFinished();
-    }
+int reader::setup_book(QString book) {
+    QFile bookFile = book;
+    bookFile.open(QIODevice::ReadOnly);
+    content = bookFile.readAll();
+    bookFile.close();
 
-    if(booktostr_ran != true) {
-        if(epub_file_match(book) == true) {
-            // Parsing ePUBs with epub2txt, thanks to GitHub:kevinboone
-            QString epubProg ("sh");
-            QStringList epubArgs;
-            epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << book;
-            QProcess *epubProc = new QProcess();
-            epubProc->start(epubProg, epubArgs);
-            epubProc->waitForFinished();
-
-            is_epub = true;
-            booktostr_ran = true;
-        }
-        else {
-            // This is likely not an ePUB.
-            // Copying book specified in the function call
-            QFile::copy(book, "/inkbox/book/book.txt");
-
-            is_epub = false;
-            booktostr_ran = true;
-        }
-    }
-
-    // Checking if the user has defined an option for the number of words per page; if not, then setting the default.
-    QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-    string_checkconfig(".config/07-words_number/config");
-    if(checkconfig_str_val == "") {
-        string_writeconfig(".config/07-words_number/config", "100");
-        string_checkconfig(".config/07-words_number/config");
-    }
-
-    // Parsing file
-    if(parser_ran != true) {
-        if(is_epub == true) {
-            QString parse_prog ("python3");
-            QStringList parse_args;
-            parse_args << "split.py" << checkconfig_str_val;
-            QProcess *parse_proc = new QProcess();
-            parse_proc->start(parse_prog, parse_args);
-            parse_proc->waitForFinished();
-            parser_ran = true;
-        }
-        else {
-            QString parse_prog ("python3");
-            QStringList parse_args;
-            parse_args << "split-txt.py" << checkconfig_str_val;
-            QProcess *parse_proc = new QProcess();
-            parse_proc->start(parse_prog, parse_args);
-            parse_proc->waitForFinished();
-            parser_ran = true;
-        }
-    }
-
-    // Changing current working directory
-    QDir::setCurrent("/inkbox/book");
-
-    // Reading file
-    if(run_parser == true) {
-        QDirIterator it("/inkbox/book/split");
-        while (it.hasNext()) {
-              QFile f(it.next());
-              f.open(QIODevice::ReadOnly);
-              content << f.readAll();
-              f.close();
-        }
-        return content.size();
-        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-    }
-    else {
-        ittext = content[i];
-        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-    }
-    return 0;
+    ittext = content;
 }
 
 void reader::checkwords() {
@@ -672,7 +591,7 @@ void reader::on_nextBtn_clicked()
         parser_ran = true;
         split_total = split_total - 1;
 
-        setup_book(book_file, split_total, false);
+        setup_book(book_file);
         ui->text->setText("");
         ui->text->setText(ittext);
 
@@ -702,7 +621,7 @@ void reader::on_previousBtn_clicked()
     else {
         parser_ran = true;
         split_total = split_total + 1;
-        setup_book(book_file, split_total, false);
+        setup_book(book_file);
         ui->text->setText("");
         ui->text->setText(ittext);
 
