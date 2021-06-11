@@ -16,7 +16,7 @@
 #include <QDirIterator>
 #include <QDebug>
 #include <QTextDocument>
-#include <QTextCodec>
+#include <QSizeF>
 
 using namespace std;
 
@@ -29,8 +29,7 @@ reader::reader(QWidget *parent) :
     global::battery::showCriticalBatteryAlert = true;
 
     // QTextDocument
-    QTextDocument *text = new QTextDocument();
-
+    QTextDocument *textDocument = new QTextDocument();
 
     ui->setupUi(this);
     ui->previousBtn->setProperty("type", "borderless");
@@ -507,6 +506,15 @@ int reader::setup_book(QString book) {
     bookFile.close();
 
     ittext = content;
+    textDocument->setHtml(content);
+
+    // Getting the screen's size
+    float sW = QGuiApplication::screens()[0]->size().width();
+    float sH = QGuiApplication::screens()[0]->size().height();
+    QSizeF textDocumentSize(sW, sH);
+    textDocument->setPageSize(textDocumentSize);
+
+    return 0;
 }
 
 void reader::checkwords() {

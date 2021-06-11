@@ -6,6 +6,7 @@
 #include "generaldialog.h"
 
 #include <QWidget>
+#include <QTextDocument>
 
 using namespace std;
 
@@ -96,6 +97,7 @@ private:
     Ui::reader *ui;
     alert *alertWindow;
     generalDialog *generalDialogWindow;
+    QTextDocument *textDocument;
 };
 
 #endif // READER_H
