@@ -653,4 +653,10 @@ void settings::on_showSystemInfoBtn_clicked()
 {
     getSystemInfo();
     global::text::textBrowserContents = global::systemInfoText;
+    global::text::textBrowserDialog = true;
+
+    // Show a system info dialog
+    generalDialogWindow = new generalDialog();
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
 }

@@ -97,6 +97,7 @@ generalDialog::generalDialog(QWidget *parent) :
     else if(global::text::textBrowserDialog == true) {
         textwidgetWindow = new textwidget();
         ui->headerLabel->setText("Information");
+        ui->stackedWidget->setCurrentIndex(1);
         ui->mainStackedWidget->insertWidget(1, textwidgetWindow);
         ui->mainStackedWidget->setCurrentIndex(1);
         this->adjustSize();

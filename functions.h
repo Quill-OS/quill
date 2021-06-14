@@ -58,6 +58,7 @@ namespace {
     QString checkconfig_str_val;
     QString deviceUID;
     QString batt_level;
+    QString kernelVersion;
     int batt_level_int;
     bool checked_box = false;
     bool checkconfig(QString file) {
@@ -145,6 +146,7 @@ namespace {
         fhandler.close();
     }
     void string_checkconfig(QString file) {
+        checkconfig_str_val = "";
         QFile config(file);
         config.open(QIODevice::ReadWrite);
         QTextStream in (&config);
@@ -152,6 +154,7 @@ namespace {
         config.close();
     }
     void string_checkconfig_ro(QString file) {
+        checkconfig_str_val = "";
         QFile config(file);
         config.open(QIODevice::ReadOnly);
         QTextStream in (&config);
@@ -262,13 +265,28 @@ namespace {
         deviceUID = proc->readAllStandardOutput();
         deviceUID = deviceUID.left(256);
     }
+    void getKernelVersion() {
+        QString prog ("uname");
+        QStringList args;
+        args << "-r";
+        QProcess *proc = new QProcess();
+        proc->start(prog, args);
+        proc->waitForFinished();
+
+        kernelVersion = proc->readAllStandardOutput();
+    }
     void getSystemInfo() {
         getUID();
-        global::systemInfoText = "InkBox OS version ";
+        getKernelVersion();
+        global::systemInfoText = "<b>InkBox OS version ";
         string_checkconfig_ro("/external_root/opt/isa/version");
         global::systemInfoText.append(checkconfig_str_val);
-        global::systemInfoText.append("Device UID: ");
+        global::systemInfoText.append("</b>");
+        global::systemInfoText.append("\n<b>Device UID:</b> ");
         global::systemInfoText.append(deviceUID);
+        global::systemInfoText.append("\n");
+        global::systemInfoText.append("<b>Kernel version:</b> ");
+        global::systemInfoText.append(kernelVersion);
         global::systemInfoText.append("\n");
     }
 }

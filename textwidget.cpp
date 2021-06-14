@@ -17,6 +17,9 @@ textwidget::textwidget(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
+    if(global::text::textBrowserDialog == true) {
+        ui->textBrowser->setStyleSheet("font-size: 9pt");
+    }
     ui->textBrowser->setText(global::text::textBrowserContents);
 }
 
