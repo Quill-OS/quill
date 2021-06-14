@@ -20,12 +20,14 @@ public:
 
     bool not_user_change = false;
     void openSettingsRebootDialog();
+    void openResetKoboxDialog();
 
 private slots:
     void on_okBtn_clicked();
     void on_checkBox_toggled(bool checked);
     void on_spinBox_valueChanged(int arg1);
     void on_pushButton_clicked();
+    void on_resetKoboxBtn_clicked();
 
 private:
     Ui::koboxSettings *ui;

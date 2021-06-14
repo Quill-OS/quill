@@ -26,6 +26,7 @@ public:
     bool lowBatteryDialog = false;
     bool usbmsDialog = false;
     bool textBrowserDialog = false;
+    bool resetKoboxDialog = false;
 
 private slots:
     void on_cancelBtn_clicked();

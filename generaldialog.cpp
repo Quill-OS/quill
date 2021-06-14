@@ -95,11 +95,20 @@ generalDialog::generalDialog(QWidget *parent) :
         this->adjustSize();
     }
     else if(global::text::textBrowserDialog == true) {
+        textBrowserDialog = true;
         textwidgetWindow = new textwidget();
         ui->headerLabel->setText("Information");
         ui->stackedWidget->setCurrentIndex(1);
         ui->mainStackedWidget->insertWidget(1, textwidgetWindow);
         ui->mainStackedWidget->setCurrentIndex(1);
+        this->adjustSize();
+    }
+    else if(global::kobox::resetKoboxDialog == true) {
+        resetKoboxDialog = true;
+        ui->headerLabel->setText("Warning");
+        ui->okBtn->setText("Proceed");
+        ui->cancelBtn->setText("Go back");
+        ui->bodyLabel->setText("This will erase all KoBox user data. KoBox settings will be reset.");
         this->adjustSize();
     }
     else {
@@ -177,6 +186,9 @@ void generalDialog::on_okBtn_clicked()
         usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
         usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
         usbmsWindow->show();
+    }
+    if(resetKoboxDialog == true) {
+        resetKoboxUserData();
     }
 }
 void generalDialog::on_acceptBtn_clicked()

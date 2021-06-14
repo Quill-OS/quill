@@ -14,6 +14,7 @@ koboxSettings::koboxSettings(QWidget *parent) :
     // UI tweaks
     ui->okBtn->setProperty("type", "borderless");
     ui->pushButton->setProperty("type", "borderless");
+    ui->resetKoboxBtn->setProperty("type", "borderless");
 
     // Stylesheet
     QFile stylesheetFile(":/resources/eink.qss");
@@ -75,6 +76,12 @@ void koboxSettings::openSettingsRebootDialog() {
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
 }
+void koboxSettings::openResetKoboxDialog() {
+    global::kobox::resetKoboxDialog = true;
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
+}
 
 void koboxSettings::on_spinBox_valueChanged(int arg1)
 {
@@ -94,4 +101,9 @@ void koboxSettings::on_pushButton_clicked()
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
     usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
     usbmsWindow->show();
+}
+
+void koboxSettings::on_resetKoboxBtn_clicked()
+{
+    openResetKoboxDialog();
 }

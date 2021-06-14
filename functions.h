@@ -25,6 +25,8 @@ namespace global {
     namespace kobox {
         inline bool showKoboxSplash;
         inline bool koboxSettingsRebootDialog;
+        inline bool resetKoboxUserDataBool;
+        inline bool resetKoboxDialog;
     }
     namespace mainwindow {
         namespace tabSwitcher {
@@ -243,13 +245,21 @@ namespace {
         if(splash == true) {
             QString prog ("reboot");
             QStringList args;
+            if(global::kobox::resetKoboxUserDataBool == true) {
+                args << "splash" << "reset_kobox";
+            }
             QProcess *proc = new QProcess();
             proc->start(prog, args);
         }
         else {
             QString prog ("reboot");
             QStringList args;
-            args << "no_splash";
+            if(global::kobox::resetKoboxUserDataBool == true) {
+                args << "no_splash" << "reset_kobox";
+            }
+            else {
+                args << "no_splash";
+            }
             QProcess *proc = new QProcess();
             proc->start(prog, args);
         }
@@ -288,6 +298,10 @@ namespace {
         global::systemInfoText.append("<b>Kernel version:</b> ");
         global::systemInfoText.append(kernelVersion);
         global::systemInfoText.append("\n");
+    }
+    void resetKoboxUserData() {
+        global::kobox::resetKoboxUserDataBool = true;
+        reboot(true);
     }
 }
 #endif // FUNCTIONS_H
