@@ -21,6 +21,7 @@ namespace global {
         inline int bookNumber;
         inline bool skipOpenDialog;
         inline bool startBatteryWatchdog;
+        inline bool bookIsEpub;
     }
     namespace kobox {
         inline bool showKoboxSplash;

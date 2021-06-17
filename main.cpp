@@ -64,6 +64,13 @@ int main(int argc, char *argv[])
         global::reader::startBatteryWatchdog = true;
         global::reader::skipOpenDialog = true;
 
+        if(checkconfig("/inkbox/bookIsEpub") == true) {
+            global::reader::bookIsEpub = true;
+        }
+        else {
+            global::reader::bookIsEpub = false;
+        }
+
         string_writeconfig("/inkbox/skip_opendialog", "true");
         QApplication a(argc, argv);
         reader w;

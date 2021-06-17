@@ -9,6 +9,18 @@
 
 using namespace std;
 
+// ePUB scaling
+namespace mupdf {
+    inline int fontSize;
+    inline int width;
+    inline int height;
+    inline int epubPageNumber;
+    inline QString fontSize_qstr;
+    inline QString width_qstr;
+    inline QString height_qstr;
+    inline QString epubPageNumber_qstr;
+}
+
 namespace Ui {
 class reader;
 }
@@ -37,6 +49,7 @@ public:
     bool is_epub = false;
     bool parser_ran = false;
     bool booktostr_ran = false;
+    bool filematch_ran = false;
     bool neverRefresh = false;
     bool wakeFromSleep = false;
     bool remount = true;
@@ -58,6 +71,7 @@ public:
     QPixmap scaledFullPixmap;
     QPixmap scaledEmptyPixmap;
     QList<QString> content;
+    QString epubPageContent;
     int setup_book(QString book, int i, bool run_parser);
     void checkwords();
     bool epub_file_match(QString file);
@@ -69,6 +83,8 @@ public:
     void wordwidget_hide();
     void openLowBatteryDialog();
     void openCriticalBatteryAlertWindow();
+    void convertMuPdfVars();
+    void refreshScreen();
 
 private slots:
     void on_nextBtn_clicked();

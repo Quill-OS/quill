@@ -25,6 +25,9 @@ reader::reader(QWidget *parent) :
     // Variables
     global::battery::showLowBatteryDialog = true;
     global::battery::showCriticalBatteryAlert = true;
+    if(global::reader::bookIsEpub == true) {
+        is_epub = true;
+    }
 
     ui->setupUi(this);
     ui->previousBtn->setProperty("type", "borderless");
@@ -402,7 +405,12 @@ reader::reader(QWidget *parent) :
     ui->text->setStyleSheet(font_size);
 
     // Wheeee!
-    ui->text->setText(ittext);
+    if(is_epub != true) {
+        ui->text->setText(ittext);
+    }
+    else {
+        ui->text->setText(epubPageContent);
+    }
 
     // Clean up
     string_writeconfig("/inkbox/remount", "true");
@@ -515,30 +523,35 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         mount_proc->waitForFinished();
     }
 
-    if(booktostr_ran != true) {
+    if(filematch_ran != true) {
         if(epub_file_match(book) == true) {
-            // Parsing ePUBs with epub2txt, thanks to GitHub:kevinboone
+            QFile::copy(book, "/inkbox/book/book.epub");
+            QFile::copy(book, "/mutool_rootfs/run/book.epub");
+
+            // Parsing ePUBs with `mutool'
             QString epubProg ("sh");
             QStringList epubArgs;
-            epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << book;
+            convertMuPdfVars();
+            epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << mupdf::fontSize_qstr << mupdf::width_qstr << mupdf::height_qstr << mupdf::epubPageNumber_qstr;
             QProcess *epubProc = new QProcess();
             epubProc->start(epubProg, epubArgs);
             epubProc->waitForFinished();
 
+            filematch_ran = true;
             is_epub = true;
-            booktostr_ran = true;
-        }
-        else {
+         }
+         else {
             // This is likely not an ePUB.
             // Copying book specified in the function call
             QFile::copy(book, "/inkbox/book/book.txt");
 
+            filematch_ran = true;
             is_epub = false;
-            booktostr_ran = true;
         }
     }
 
-    // Checking if the user has defined an option for the number of words per page; if not, then setting the default.
+    // Checking whether the user has defined an option for the number of words per page; if not, then setting the default.
+    // NOTE: This is only for plain text files.
     QDir::setCurrent("/mnt/onboard/.adds/inkbox");
     string_checkconfig(".config/07-words_number/config");
     if(checkconfig_str_val == "") {
@@ -547,44 +560,59 @@ int reader::setup_book(QString book, int i, bool run_parser) {
     }
 
     // Parsing file
-    if(parser_ran != true) {
+    if(filematch_ran != true) {
         if(is_epub == true) {
-            QString parse_prog ("python3");
-            QStringList parse_args;
-            parse_args << "split.py" << checkconfig_str_val;
-            QProcess *parse_proc = new QProcess();
-            parse_proc->start(parse_prog, parse_args);
-            parse_proc->waitForFinished();
-            parser_ran = true;
+            QString epubProg ("sh");
+            QStringList epubArgs;
+            convertMuPdfVars();
+            epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << mupdf::fontSize_qstr << mupdf::width_qstr << mupdf::height_qstr << mupdf::epubPageNumber_qstr;
+            QProcess *epubProc = new QProcess();
+            epubProc->start(epubProg, epubArgs);
+            epubProc->waitForFinished();
         }
         else {
-            QString parse_prog ("python3");
-            QStringList parse_args;
-            parse_args << "split-txt.py" << checkconfig_str_val;
-            QProcess *parse_proc = new QProcess();
-            parse_proc->start(parse_prog, parse_args);
-            parse_proc->waitForFinished();
-            parser_ran = true;
+            if(parser_ran != true) {
+                QString parse_prog ("python3");
+                QStringList parse_args;
+                parse_args << "split-txt.py" << checkconfig_str_val;
+                QProcess *parse_proc = new QProcess();
+                parse_proc->start(parse_prog, parse_args);
+                parse_proc->waitForFinished();
+                parser_ran = true;
+            }
+            else {
+                ;
+            }
         }
     }
 
     // Changing current working directory
     QDir::setCurrent("/inkbox/book");
 
-    // Reading file
-    if(run_parser == true) {
-        QDirIterator it("/inkbox/book/split");
-        while (it.hasNext()) {
-              QFile f(it.next());
-              f.open(QIODevice::ReadOnly);
-              content << f.readAll();
-              f.close();
+    // Reading files
+    if(is_epub != true) {
+        if(run_parser == true) {
+            QDirIterator it("/inkbox/book/split");
+            while (it.hasNext()) {
+                  QFile f(it.next());
+                  f.open(QIODevice::ReadOnly);
+                  content << f.readAll();
+                  f.close();
+            }
+            return content.size();
+            QDir::setCurrent("/mnt/onboard/.adds/inkbox");
         }
-        return content.size();
-        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+        else {
+            ittext = content[i];
+            QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+        }
     }
     else {
-        ittext = content[i];
+        QFile epubPage("/inkbox/book/page");
+        epubPage.open(QIODevice::ReadOnly);
+        QTextStream in(&epubPage);
+        epubPageContent = in.readAll();
+        epubPage.close();
         QDir::setCurrent("/mnt/onboard/.adds/inkbox");
     }
     return 0;
@@ -665,62 +693,79 @@ void reader::save_word(string word, bool remove) {
 
 void reader::on_nextBtn_clicked()
 {
-    if(split_total - 1 == 1 or split_total - 1 == 0) {
-        QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
-    }
-    else {
-        parser_ran = true;
-        split_total = split_total - 1;
-
-        setup_book(book_file, split_total, false);
-        ui->text->setText("");
-        ui->text->setText(ittext);
-
-        pagesTurned = pagesTurned + 1;
-        if(neverRefresh == true) {
-            // Do nothing; "Never refresh" was set
-            ;
+    if(is_epub != true) {
+        if(split_total - 1 == 1 or split_total - 1 == 0) {
+            QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
         }
         else {
-            if(pagesTurned >= pageRefreshSetting) {
-                // Refreshing the screen
-                this->repaint();
-                // Reset count
-                pagesTurned = 0;
-            }
+            parser_ran = true;
+            split_total = split_total - 1;
+
+            setup_book(book_file, split_total, false);
+            ui->text->setText("");
+            ui->text->setText(ittext);
+
+            pagesTurned = pagesTurned + 1;
+            writeconfig_pagenumber();
         }
+    }
+    else {
+        mupdf::epubPageNumber = mupdf::epubPageNumber + 1;
+        setup_book(book_file, mupdf::epubPageNumber, false);
+
+        pagesTurned = pagesTurned + 1;
         writeconfig_pagenumber();
     }
+    refreshScreen();
 }
 
 void reader::on_previousBtn_clicked()
 {
+    if(is_epub != true) {
     // Making sure we won't encounter a "List index out of range" error ;)
-    if(split_total >= split_files_number - 1) {
-        QMessageBox::critical(this, tr("Invalid argument"), tr("No previous page."));
-    }
-    else {
-        parser_ran = true;
-        split_total = split_total + 1;
-        setup_book(book_file, split_total, false);
-        ui->text->setText("");
-        ui->text->setText(ittext);
-
-        // We always increment pagesTurned regardless if we press the Previous or Next button
-        pagesTurned = pagesTurned + 1;
-        if(neverRefresh == true) {
-            // Do nothing; "Never refresh" was set
-            ;
+        if(split_total >= split_files_number - 1) {
+            QMessageBox::critical(this, tr("Invalid argument"), tr("No previous page."));
         }
         else {
-            if(pagesTurned >= pageRefreshSetting) {
-                // Refreshing the screen
-                this->repaint();
-                // Reset count
-                pagesTurned = 0;
+            parser_ran = true;
+            split_total = split_total + 1;
+            setup_book(book_file, split_total, false);
+            ui->text->setText("");
+            if(is_epub != true) {
+                ui->text->setText(ittext);
             }
+            else {
+                ui->text->setText(epubPageContent);
+            }
+
+            // We always increment pagesTurned regardless whether we press the Previous or Next button
+            pagesTurned = pagesTurned + 1;
+            refreshScreen();
+            writeconfig_pagenumber();
         }
+    }
+    else {
+        mupdf::epubPageNumber = mupdf::epubPageNumber - 1;
+        setup_book(book_file, mupdf::epubPageNumber, false);
+
+        // We always increment pagesTurned regardless whether we press the Previous or Next button
+        pagesTurned = pagesTurned + 1;
         writeconfig_pagenumber();
+    }
+}
+
+void reader::refreshScreen() {
+    if(neverRefresh == true) {
+        // Do nothing; "Never refresh" was set
+        ;
+    }
+    else {
+        if(pagesTurned >= pageRefreshSetting) {
+            // Refreshing the screen
+            this->repaint();
+            // Reset count
+            pagesTurned = 0;
+        }
     }
 }
 
@@ -1069,8 +1114,14 @@ void reader::on_sizeSlider_valueChanged(int value)
 
 void reader::writeconfig_pagenumber() {
     // Saving the page number in tmpfs
-    string split_total_str = to_string(split_total);
-    string_writeconfig("/tmp/inkboxPageNumber", split_total_str);
+    if(is_epub != true) {
+        std::string split_total_str = std::to_string(split_total);
+        string_writeconfig("/tmp/inkboxPageNumber", split_total_str);
+    }
+    else {
+        std::string epubPageNumber_str = std::to_string(mupdf::epubPageNumber);
+        string_writeconfig("/tmp/inkboxPageNumber", epubPageNumber_str);
+    }
 }
 
 void reader::quit_restart() {
@@ -1098,4 +1149,10 @@ void reader::openCriticalBatteryAlertWindow() {
     alertWindow->setAttribute(Qt::WA_DeleteOnClose);
     alertWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
     alertWindow->show();
+}
+void reader::convertMuPdfVars() {
+    mupdf::fontSize_qstr = QString::number(mupdf::fontSize);
+    mupdf::width_qstr = QString::number(mupdf::width);
+    mupdf::height_qstr = QString::number(mupdf::height);
+    mupdf::epubPageNumber_qstr = QString::number(mupdf::epubPageNumber);
 }
