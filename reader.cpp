@@ -361,7 +361,6 @@ reader::reader(QWidget *parent) :
         // Retrieve split_total from tmpfs
         string_checkconfig("/tmp/inkboxPageNumber");
         split_total = checkconfig_str_val.toInt();
-        qDebug() << "been there too";
         setup_book(book_file, 0, true);
     }
 
@@ -1156,12 +1155,40 @@ void reader::openCriticalBatteryAlertWindow() {
     alertWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
     alertWindow->show();
 }
+
 void reader::convertMuPdfVars() {
     mupdf::fontSize = 12;
     mupdf::width = 400;
-    mupdf::height = 500;
+    mupdf::height = 460;
     mupdf::fontSize_qstr = QString::number(mupdf::fontSize);
     mupdf::width_qstr = QString::number(mupdf::width);
     mupdf::height_qstr = QString::number(mupdf::height);
     mupdf::epubPageNumber_qstr = QString::number(mupdf::epubPageNumber);
+}
+
+void reader::setPageStyle() {
+    // General page size
+    string_checkconfig_ro("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n") {
+        string_checkconfig_ro(".config/04-book/font");
+        if(checkconfig_str_val == "Crimson Pro") {
+            mupdf::width = 415;
+            mupdf::height = 490;
+        }
+        else {
+            mupdf::width = 400;
+            mupdf::height = 460;
+        }
+    }
+    else if(checkconfig_str_val == "n905\n") {
+        string_checkconfig_ro(".config/04-book/font");
+        if(checkconfig_str_val == "Crimson Pro") {
+            mupdf::width = 415;
+            mupdf::height = 490;
+        }
+        else {
+            mupdf::width = 400;
+            mupdf::height = 460;
+        }
+    }
 }

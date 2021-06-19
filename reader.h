@@ -85,6 +85,7 @@ public:
     void openCriticalBatteryAlertWindow();
     void convertMuPdfVars();
     void refreshScreen();
+    void setPageStyle();
 
 private slots:
     void on_nextBtn_clicked();
