@@ -28,6 +28,7 @@ reader::reader(QWidget *parent) :
     if(global::reader::bookIsEpub == true) {
         is_epub = true;
     }
+    mupdf::epubPageNumber = 22;
 
     ui->setupUi(this);
     ui->previousBtn->setProperty("type", "borderless");
@@ -364,7 +365,7 @@ reader::reader(QWidget *parent) :
 
     // Get text
     QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-    setup_book(book_file, split_total, false);
+    setup_book(book_file, split_total, true);
 
     // Display text
     // Checking saved font size if any
@@ -525,7 +526,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
 
     if(filematch_ran != true) {
         if(epub_file_match(book) == true) {
-            QFile::copy(book, "/inkbox/book/book.epub");
+            QFile::remove("/mutool_rootfs/run/book.epub");
             QFile::copy(book, "/mutool_rootfs/run/book.epub");
 
             // Parsing ePUBs with `mutool'
@@ -539,6 +540,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
 
             filematch_ran = true;
             is_epub = true;
+            qDebug() << "Initial parser ran.";
          }
          else {
             // This is likely not an ePUB.
@@ -560,8 +562,8 @@ int reader::setup_book(QString book, int i, bool run_parser) {
     }
 
     // Parsing file
-    if(filematch_ran != true) {
-        if(is_epub == true) {
+    if(is_epub == true) {
+        if(run_parser == true) {
             QString epubProg ("sh");
             QStringList epubArgs;
             convertMuPdfVars();
@@ -569,20 +571,25 @@ int reader::setup_book(QString book, int i, bool run_parser) {
             QProcess *epubProc = new QProcess();
             epubProc->start(epubProg, epubArgs);
             epubProc->waitForFinished();
+
+            qDebug() << "Standard parser ran.";
         }
         else {
-            if(parser_ran != true) {
-                QString parse_prog ("python3");
-                QStringList parse_args;
-                parse_args << "split-txt.py" << checkconfig_str_val;
-                QProcess *parse_proc = new QProcess();
-                parse_proc->start(parse_prog, parse_args);
-                parse_proc->waitForFinished();
-                parser_ran = true;
-            }
-            else {
-                ;
-            }
+            ;
+        }
+    }
+    else {
+        if(parser_ran != true) {
+            QString parse_prog ("python3");
+            QStringList parse_args;
+            parse_args << "split-txt.py" << checkconfig_str_val;
+            QProcess *parse_proc = new QProcess();
+            parse_proc->start(parse_prog, parse_args);
+            parse_proc->waitForFinished();
+            parser_ran = true;
+        }
+        else {
+            ;
         }
     }
 
@@ -613,6 +620,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         QTextStream in(&epubPage);
         epubPageContent = in.readAll();
         epubPage.close();
+        qDebug() << epubPageContent;
         QDir::setCurrent("/mnt/onboard/.adds/inkbox");
     }
     return 0;
@@ -711,7 +719,10 @@ void reader::on_nextBtn_clicked()
     }
     else {
         mupdf::epubPageNumber = mupdf::epubPageNumber + 1;
-        setup_book(book_file, mupdf::epubPageNumber, false);
+        qDebug() << mupdf::epubPageNumber;
+        setup_book(book_file, mupdf::epubPageNumber, true);
+        ui->text->setText("");
+        ui->text->setText(epubPageContent);
 
         pagesTurned = pagesTurned + 1;
         writeconfig_pagenumber();
@@ -746,7 +757,9 @@ void reader::on_previousBtn_clicked()
     }
     else {
         mupdf::epubPageNumber = mupdf::epubPageNumber - 1;
-        setup_book(book_file, mupdf::epubPageNumber, false);
+        setup_book(book_file, mupdf::epubPageNumber, true);
+        ui->text->setText("");
+        ui->text->setText(epubPageContent);
 
         // We always increment pagesTurned regardless whether we press the Previous or Next button
         pagesTurned = pagesTurned + 1;
@@ -1151,6 +1164,9 @@ void reader::openCriticalBatteryAlertWindow() {
     alertWindow->show();
 }
 void reader::convertMuPdfVars() {
+    mupdf::fontSize = 12;
+    mupdf::width = 400;
+    mupdf::height = 500;
     mupdf::fontSize_qstr = QString::number(mupdf::fontSize);
     mupdf::width_qstr = QString::number(mupdf::width);
     mupdf::height_qstr = QString::number(mupdf::height);
