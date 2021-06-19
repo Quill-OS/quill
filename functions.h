@@ -304,5 +304,8 @@ namespace {
         global::kobox::resetKoboxUserDataBool = true;
         reboot(true);
     }
+    void setDefaultWorkDir() {
+        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+    }
 }
 #endif // FUNCTIONS_H

@@ -248,6 +248,7 @@ reader::reader(QWidget *parent) :
         if(ui->text->hasSelectedText() == true) {
             if(selected_text_lock == false) {
                 selected_text_lock = true;
+                selected_text = selected_text.toLower();
                 QStringList parts = selected_text.split(' ', QString::SkipEmptyParts);
                 for (int i = 0; i < parts.size(); ++i)
                     parts[i].replace(0, 1, parts[i][0].toUpper());
@@ -317,11 +318,11 @@ reader::reader(QWidget *parent) :
             book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
 
             if(book_file != "") {
-                QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+                setDefaultWorkDir();
             }
             else {
                 // User clicked "Cancel" button
-                QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+                setDefaultWorkDir();
                 quit_restart();
             }
         }
@@ -337,11 +338,11 @@ reader::reader(QWidget *parent) :
             book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
 
             if(book_file != "") {
-                QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+                setDefaultWorkDir();
             }
             else {
                 // User clicked "Cancel" button
-                QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+                setDefaultWorkDir();
                 quit_restart();
             }
         }
@@ -360,12 +361,15 @@ reader::reader(QWidget *parent) :
         // Retrieve split_total from tmpfs
         string_checkconfig("/tmp/inkboxPageNumber");
         split_total = checkconfig_str_val.toInt();
+        qDebug() << "been there too";
         setup_book(book_file, 0, true);
     }
 
-    // Get text
-    QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-    setup_book(book_file, split_total, true);
+    // Get text; no need to do it multiple times for ePUB books
+    if(is_epub != true) {
+        setDefaultWorkDir();
+        setup_book(book_file, split_total, true);
+    }
 
     // Display text
     // Checking saved font size if any
@@ -526,8 +530,8 @@ int reader::setup_book(QString book, int i, bool run_parser) {
 
     if(filematch_ran != true) {
         if(epub_file_match(book) == true) {
-            QFile::remove("/mutool_rootfs/run/book.epub");
-            QFile::copy(book, "/mutool_rootfs/run/book.epub");
+            QFile::remove("/run/book.epub");
+            QFile::copy(book, "/run/book.epub");
 
             // Parsing ePUBs with `mutool'
             QString epubProg ("sh");
@@ -540,7 +544,6 @@ int reader::setup_book(QString book, int i, bool run_parser) {
 
             filematch_ran = true;
             is_epub = true;
-            qDebug() << "Initial parser ran.";
          }
          else {
             // This is likely not an ePUB.
@@ -554,7 +557,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
 
     // Checking whether the user has defined an option for the number of words per page; if not, then setting the default.
     // NOTE: This is only for plain text files.
-    QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+    setDefaultWorkDir();
     string_checkconfig(".config/07-words_number/config");
     if(checkconfig_str_val == "") {
         string_writeconfig(".config/07-words_number/config", "100");
@@ -564,37 +567,31 @@ int reader::setup_book(QString book, int i, bool run_parser) {
     // Parsing file
     if(is_epub == true) {
         if(run_parser == true) {
-            QString epubProg ("sh");
-            QStringList epubArgs;
-            convertMuPdfVars();
-            epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << mupdf::fontSize_qstr << mupdf::width_qstr << mupdf::height_qstr << mupdf::epubPageNumber_qstr;
-            QProcess *epubProc = new QProcess();
-            epubProc->start(epubProg, epubArgs);
-            epubProc->waitForFinished();
-
-            qDebug() << "Standard parser ran.";
+            if(filematch_ran != false) {
+                QString epubProg ("sh");
+                QStringList epubArgs;
+                convertMuPdfVars();
+                epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << mupdf::fontSize_qstr << mupdf::width_qstr << mupdf::height_qstr << mupdf::epubPageNumber_qstr;
+                QProcess *epubProc = new QProcess();
+                epubProc->start(epubProg, epubArgs);
+                epubProc->waitForFinished();
+            }
+            else {
+                ;
+            }
         }
         else {
             ;
         }
     }
     else {
-        if(parser_ran != true) {
-            QString parse_prog ("python3");
-            QStringList parse_args;
-            parse_args << "split-txt.py" << checkconfig_str_val;
-            QProcess *parse_proc = new QProcess();
-            parse_proc->start(parse_prog, parse_args);
-            parse_proc->waitForFinished();
-            parser_ran = true;
-        }
-        else {
-            ;
-        }
+        QString parse_prog ("python3");
+        QStringList parse_args;
+        parse_args << "split-txt.py" << checkconfig_str_val;
+        QProcess *parse_proc = new QProcess();
+        parse_proc->start(parse_prog, parse_args);
+        parse_proc->waitForFinished();
     }
-
-    // Changing current working directory
-    QDir::setCurrent("/inkbox/book");
 
     // Reading files
     if(is_epub != true) {
@@ -606,12 +603,11 @@ int reader::setup_book(QString book, int i, bool run_parser) {
                   content << f.readAll();
                   f.close();
             }
+            ittext = content[i];
             return content.size();
-            QDir::setCurrent("/mnt/onboard/.adds/inkbox");
         }
         else {
             ittext = content[i];
-            QDir::setCurrent("/mnt/onboard/.adds/inkbox");
         }
     }
     else {
@@ -621,7 +617,6 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         epubPageContent = in.readAll();
         epubPage.close();
         qDebug() << epubPageContent;
-        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
     }
     return 0;
 }
@@ -674,7 +669,7 @@ void reader::dictionary_lookup(string word, QString first_letter, int position) 
     }
     definition_file.close();
 
-    QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+    setDefaultWorkDir();
 }
 
 void reader::save_word(string word, bool remove) {
@@ -706,7 +701,6 @@ void reader::on_nextBtn_clicked()
             QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
         }
         else {
-            parser_ran = true;
             split_total = split_total - 1;
 
             setup_book(book_file, split_total, false);
@@ -738,7 +732,6 @@ void reader::on_previousBtn_clicked()
             QMessageBox::critical(this, tr("Invalid argument"), tr("No previous page."));
         }
         else {
-            parser_ran = true;
             split_total = split_total + 1;
             setup_book(book_file, split_total, false);
             ui->text->setText("");
