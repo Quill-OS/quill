@@ -14,6 +14,7 @@
 #include <QScreen>
 #include <QFontDatabase>
 #include <QDirIterator>
+#include <QTextCursor>
 #include <QDebug>
 
 using namespace std;
@@ -29,6 +30,7 @@ reader::reader(QWidget *parent) :
         is_epub = true;
     }
     mupdf::epubPageNumber = 22;
+    wordwidgetLock = false;
 
     ui->setupUi(this);
     ui->previousBtn->setProperty("type", "borderless");
@@ -104,26 +106,6 @@ reader::reader(QWidget *parent) :
         }
     }
 
-    // Alignment
-    string_checkconfig(".config/04-book/alignment");
-    if (checkconfig_str_val == "") {
-        ;
-    }
-    else {
-        if(checkconfig_str_val == "Left") {
-            ui->text->setAlignment(Qt::AlignLeft);
-        }
-        if(checkconfig_str_val == "Center") {
-            ui->text->setAlignment(Qt::AlignHCenter);
-        }
-        if(checkconfig_str_val == "Right") {
-            ui->text->setAlignment(Qt::AlignRight);
-        }
-        if(checkconfig_str_val == "Justify") {
-            ui->text->setAlignment(Qt::AlignJustify);
-        }
-    }
-
     // Stylesheet + misc.
     QFile stylesheetFile(":/resources/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
@@ -153,15 +135,9 @@ reader::reader(QWidget *parent) :
     }
 
     // Topbar widget / book info
-    if(checkconfig(".config/13-topbarinfo/config") == true) {
-        ui->topbarStackedWidget->setVisible(true);
-        showTopbarWidget = true;
-        ui->bookInfoLabel->setFont(crimson);
-    }
-    else {
-        ui->topbarStackedWidget->setVisible(false);
-        showTopbarWidget = false;
-    }
+    ui->topbarStackedWidget->setVisible(true);
+    showTopbarWidget = true;
+    ui->bookInfoLabel->setFont(crimson);
 
     // Getting brightness level
     int brightness_value = get_brightness();
@@ -256,46 +232,6 @@ reader::reader(QWidget *parent) :
         } );
         t->start();
     }
-
-    // Word selection & dictionary lookup feature
-    QString dictionary_position_str = QString::number(dictionary_position);
-    ui->definitionStatusLabel->setText(dictionary_position_str);
-    QTimer *select_t = new QTimer(this);
-    select_t->setInterval(100);
-    connect(select_t, &QTimer::timeout, [&]() {
-        selected_text = ui->text->selectedText();
-        if(ui->text->hasSelectedText() == true) {
-            if(selected_text_lock == false) {
-                selected_text_lock = true;
-                selected_text = selected_text.toLower();
-                QStringList parts = selected_text.split(' ', QString::SkipEmptyParts);
-                for (int i = 0; i < parts.size(); ++i)
-                    parts[i].replace(0, 1, parts[i][0].toUpper());
-                word = parts.join(" ");
-                letter = word.left(1);
-                selected_text_str = word.toStdString();
-                dictionary_lookup(selected_text_str, letter, dictionary_position);
-                ui->wordLabel->setText(word);
-                ui->definitionLabel->setText(definition);
-                if(checkconfig_match(".config/06-words/config", selected_text_str) == true) {
-                    ui->saveWordBtn->setText("");
-                    ui->saveWordBtn->setIcon(QIcon(":/resources/starred_star.png"));
-                }
-                else {
-                    ui->saveWordBtn->setText("");
-                    ui->saveWordBtn->setIcon(QIcon(":/resources/star.png"));
-                }
-                wordwidget_show();
-            }
-            else {
-                ;
-            }
-        }
-        else {
-            ;
-        }
-    } );
-    select_t->start();
 
     // We have to get the file's path
     if(global::reader::skipOpenDialog == true) {
@@ -433,6 +369,30 @@ reader::reader(QWidget *parent) :
     }
     else {
         ui->text->setText(epubPageContent);
+    }
+
+    // Alignment
+    string_checkconfig(".config/04-book/alignment");
+    if (checkconfig_str_val == "") {
+        ;
+    }
+    else {
+        if(checkconfig_str_val == "Left") {
+                textAlignment = 0;
+                alignText(0);
+        }
+        if(checkconfig_str_val == "Center") {
+                textAlignment = 1;
+                alignText(1);
+        }
+        if(checkconfig_str_val == "Right") {
+                textAlignment = 2;
+                alignText(2);
+        }
+        if(checkconfig_str_val == "Justify") {
+                textAlignment = 3;
+                alignText(3);
+        }
     }
 
     // Topbar info widget
@@ -756,6 +716,7 @@ void reader::on_nextBtn_clicked()
         pagesTurned = pagesTurned + 1;
         writeconfig_pagenumber();
     }
+    alignText(textAlignment);
     refreshScreen();
 }
 
@@ -770,16 +731,10 @@ void reader::on_previousBtn_clicked()
             split_total = split_total + 1;
             setup_book(book_file, split_total, false);
             ui->text->setText("");
-            if(is_epub != true) {
-                ui->text->setText(ittext);
-            }
-            else {
-                ui->text->setText(epubPageContent);
-            }
+            ui->text->setText(ittext);
 
             // We always increment pagesTurned regardless whether we press the Previous or Next button
             pagesTurned = pagesTurned + 1;
-            refreshScreen();
             writeconfig_pagenumber();
         }
     }
@@ -793,6 +748,8 @@ void reader::on_previousBtn_clicked()
         pagesTurned = pagesTurned + 1;
         writeconfig_pagenumber();
     }
+    alignText(textAlignment);
+    refreshScreen();
 }
 
 void reader::refreshScreen() {
@@ -911,26 +868,108 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
 
 void reader::on_alignLeftBtn_clicked()
 {
-    ui->text->setAlignment(Qt::AlignLeft);
+    if(is_epub != true) {
+        ui->text->setAlignment(Qt::AlignLeft);
+    }
+    else {
+        alignText(0);
+    }
     string_writeconfig(".config/04-book/alignment", "Left");
 }
 
 void reader::on_alignCenterBtn_clicked()
 {
-    ui->text->setAlignment(Qt::AlignHCenter);
+    if(is_epub != true) {
+        ui->text->setAlignment(Qt::AlignHCenter);
+    }
+    else {
+        alignText(1);
+    }
     string_writeconfig(".config/04-book/alignment", "Center");
 }
 
 void reader::on_alignRightBtn_clicked()
 {
-    ui->text->setAlignment(Qt::AlignRight);
+    if(is_epub != true) {
+        ui->text->setAlignment(Qt::AlignRight);
+    }
+    else {
+        alignText(2);
+    }
     string_writeconfig(".config/04-book/alignment", "Right");
 }
 
 void reader::on_alignJustifyBtn_clicked()
 {
-    ui->text->setAlignment(Qt::AlignJustify);
+    if(is_epub != true) {
+        ui->text->setAlignment(Qt::AlignJustify);
+    }
+    else {
+        alignText(3);
+    }
     string_writeconfig(".config/04-book/alignment", "Justify");
+}
+
+void reader::alignText(int alignment) {
+    /*
+     * 0 - Left
+     * 1 - Center
+     * 2 - Right
+     * 3 - Justify
+    */
+    textAlignment = alignment;
+    if(is_epub == true) {
+        if(alignment == 0) {
+            QString epubPageContent_alignChange = epubPageContent;
+            epubPageContent_alignChange.prepend("<div align='left'>");
+            epubPageContent_alignChange.append("</div>");
+            ui->text->setText(epubPageContent_alignChange);
+        }
+        if(alignment == 1) {
+            QString epubPageContent_alignChange = epubPageContent;
+            epubPageContent_alignChange.prepend("<div align='center'>");
+            epubPageContent_alignChange.append("</div>");
+            ui->text->setText(epubPageContent_alignChange);
+        }
+        if(alignment == 2) {
+            QString epubPageContent_alignChange = epubPageContent;
+            epubPageContent_alignChange.prepend("<div align='right'>");
+            epubPageContent_alignChange.append("</div>");
+            ui->text->setText(epubPageContent_alignChange);
+        }
+        if(alignment == 3) {
+            QString epubPageContent_alignChange = epubPageContent;
+            epubPageContent_alignChange.prepend("<div align='justify'>");
+            epubPageContent_alignChange.append("</div>");
+            ui->text->setText(epubPageContent_alignChange);
+        }
+    }
+    else {
+        if(alignment == 0) {
+            QString ittext_alignChange = ittext;
+            ittext_alignChange.prepend("<div align='left'>");
+            ittext_alignChange.append("</div>");
+            ui->text->setText(ittext_alignChange);
+        }
+        if(alignment == 1) {
+            QString ittext_alignChange = ittext;
+            ittext_alignChange.prepend("<div align='center'>");
+            ittext_alignChange.append("</div>");
+            ui->text->setText(ittext_alignChange);
+        }
+        if(alignment == 2) {
+            QString ittext_alignChange = ittext;
+            ittext_alignChange.prepend("<div align='right'>");
+            ittext_alignChange.append("</div>");
+            ui->text->setText(ittext_alignChange);
+        }
+        if(alignment == 3) {
+            QString ittext_alignChange = ittext;
+            ittext_alignChange.prepend("<div align='justify'>");
+            ittext_alignChange.append("</div>");
+            ui->text->setText(ittext_alignChange);
+        }
+    }
 }
 
 void reader::menubar_show() {
@@ -1021,7 +1060,7 @@ void reader::wordwidget_hide() {
     ui->hideOptionsBtn->hide();
     ui->optionsBtn->show();
     ui->line->show();
-    selected_text_lock = false;
+    wordwidgetLock = false;
 }
 
 void reader::on_infoCloseBtn_clicked()
@@ -1030,6 +1069,10 @@ void reader::on_infoCloseBtn_clicked()
     dictionary_position = 1;
     QString dictionary_position_str = QString::number(dictionary_position);
     ui->definitionStatusLabel->setText(dictionary_position_str);
+
+    QTextCursor cursor = ui->text->textCursor();
+    cursor.clearSelection();
+    ui->text->setTextCursor(cursor);
 }
 
 void reader::on_previousDefinitionBtn_clicked()
@@ -1227,4 +1270,47 @@ void reader::setPageStyle() {
             mupdf::height = 460;
         }
     }
+}
+
+void reader::on_text_selectionChanged() {
+    delay(0.1);
+    if(wordwidgetLock != true) {
+        QTextCursor cursor = ui->text->textCursor();
+        selected_text = cursor.selectedText();
+        if(selected_text != "") {
+            QString dictionary_position_str = QString::number(dictionary_position);
+            ui->definitionStatusLabel->setText(dictionary_position_str);
+
+            selected_text = selected_text.toLower();
+            QStringList parts = selected_text.split(' ', QString::SkipEmptyParts);
+            for (int i = 0; i < parts.size(); ++i)
+                parts[i].replace(0, 1, parts[i][0].toUpper());
+            word = parts.join(" ");
+            letter = word.left(1);
+            selected_text_str = word.toStdString();
+            dictionary_lookup(selected_text_str, letter, dictionary_position);
+            ui->wordLabel->setText(word);
+            ui->definitionLabel->setText(definition);
+            if(checkconfig_match(".config/06-words/config", selected_text_str) == true) {
+                ui->saveWordBtn->setText("");
+                ui->saveWordBtn->setIcon(QIcon(":/resources/starred_star.png"));
+            }
+            else {
+                ui->saveWordBtn->setText("");
+                ui->saveWordBtn->setIcon(QIcon(":/resources/star.png"));
+            }
+            wordwidgetLock = true;
+            wordwidget_show();
+        }
+        else {
+            ;
+        }
+    }
+}
+
+void reader::delay(int seconds) {
+    // https://stackoverflow.com/questions/3752742/how-do-i-create-a-pause-wait-function-using-qt
+    QTime dieTime= QTime::currentTime().addSecs(seconds);
+    while (QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }

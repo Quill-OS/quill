@@ -38,13 +38,13 @@ public:
     int page_number;
     int dictionary_position = 1;
     int pagesTurned = 0;
+    int textAlignment;
 
     // -1 : Never refresh | 0 : Refresh every page | 1 : Refresh every 1 page. And so on...
     // Refresh every 3 pages is the default
     int pageRefreshSetting = 3;
 
     bool menubar_shown = false;
-    bool selected_text_lock = false;
     bool nextdefinition_lock = false;
     bool is_epub = false;
     bool parser_ran = false;
@@ -53,6 +53,7 @@ public:
     bool wakeFromSleep = false;
     bool remount = true;
     bool showTopbarWidget;
+    bool wordwidgetLock;
     QString book_1;
     QString book_2;
     QString book_3;
@@ -87,6 +88,8 @@ public:
     void convertMuPdfVars();
     void refreshScreen();
     void setPageStyle();
+    void alignText(int alignment);
+    void delay(int seconds);
 
 private slots:
     void on_nextBtn_clicked();
@@ -109,6 +112,7 @@ private slots:
     void on_sizeSlider_valueChanged(int value);
     void writeconfig_pagenumber();
     void quit_restart();
+    void on_text_selectionChanged();
 
 private:
     Ui::reader *ui;
