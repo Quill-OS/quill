@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>490</width>
-    <height>676</height>
+    <height>726</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="12" column="0">
+     <item row="10" column="0">
       <widget class="QStackedWidget" name="wordWidget">
        <widget class="QWidget" name="page_8">
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -402,6 +402,12 @@
                  </item>
                  <item row="0" column="0">
                   <widget class="QLabel" name="inkboxLabel">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
                    <property name="text">
                     <string>InkBox</string>
                    </property>
@@ -439,43 +445,6 @@
                 </widget>
                </item>
               </layout>
-             </item>
-             <item>
-              <widget class="QStackedWidget" name="spacerWidget">
-               <widget class="QWidget" name="page_10">
-                <layout class="QVBoxLayout" name="verticalLayout_5">
-                 <property name="spacing">
-                  <number>0</number>
-                 </property>
-                 <property name="leftMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="topMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="rightMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item>
-                  <spacer name="verticalSpacer_5">
-                   <property name="orientation">
-                    <enum>Qt::Vertical</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>20</width>
-                     <height>37</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </widget>
-               <widget class="QWidget" name="page_11"/>
-              </widget>
              </item>
             </layout>
            </widget>
@@ -905,7 +874,7 @@
        <widget class="QWidget" name="page_21"/>
       </widget>
      </item>
-     <item row="17" column="0">
+     <item row="15" column="0">
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="4">
         <widget class="Line" name="line_3">
@@ -981,20 +950,7 @@
        </item>
       </layout>
      </item>
-     <item row="11" column="0">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="10" column="0">
+     <item row="9" column="0">
       <widget class="QTextEdit" name="text">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -1022,7 +978,7 @@
        </property>
       </widget>
      </item>
-     <item row="16" column="0">
+     <item row="14" column="0">
       <widget class="Line" name="line_2">
        <property name="frameShadow">
         <enum>QFrame::Plain</enum>
@@ -1034,19 +990,6 @@
         <enum>Qt::Horizontal</enum>
        </property>
       </widget>
-     </item>
-     <item row="9" column="0">
-      <spacer name="verticalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </item>

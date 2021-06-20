@@ -396,7 +396,7 @@ OK
              <item row="1" column="0">
               <widget class="QLabel" name="wordsNumberLabel">
                <property name="text">
-                <string>Words number per page</string>
+                <string>Words number per page (plain text files)</string>
                </property>
               </widget>
              </item>

@@ -293,12 +293,11 @@ namespace {
         string_checkconfig_ro("/external_root/opt/isa/version");
         global::systemInfoText.append(checkconfig_str_val);
         global::systemInfoText.append("</b>");
-        global::systemInfoText.append("\n<b>Device UID:</b> ");
+        global::systemInfoText.append("<br><b>Device UID:</b> ");
         global::systemInfoText.append(deviceUID);
-        global::systemInfoText.append("\n");
-        global::systemInfoText.append("<b>Kernel version:</b> ");
+        global::systemInfoText.append("<br><b>Kernel version:</b> ");
         global::systemInfoText.append(kernelVersion);
-        global::systemInfoText.append("\n");
+        global::systemInfoText.append("<br>");
     }
     void resetKoboxUserData() {
         global::kobox::resetKoboxUserDataBool = true;

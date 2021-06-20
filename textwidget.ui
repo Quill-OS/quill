@@ -36,6 +36,18 @@
          <verstretch>50</verstretch>
         </sizepolicy>
        </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::NoTextInteraction</set>
+       </property>
       </widget>
      </item>
     </layout>

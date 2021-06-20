@@ -125,12 +125,10 @@ reader::reader(QWidget *parent) :
     ui->wordWidget->setVisible(false);
     if(checkconfig(".config/11-menubar/sticky") == true) {
         ui->menuWidget->setVisible(true);
-        ui->spacerWidget->setVisible(true);
         ui->statusBarWidget->setVisible(true);
     }
     else {
         ui->menuWidget->setVisible(false);
-        ui->spacerWidget->setVisible(false);
         ui->statusBarWidget->setVisible(false);
     }
 
@@ -1004,13 +1002,6 @@ void reader::menubar_show() {
     else {
         ui->brightnessWidget->setVisible(true);
     }
-    if(checkconfig(".config/11-menubar/sticky") == true) {
-        ui->spacerWidget->setVisible(false);
-    }
-    else {
-        // Safety measure
-        ui->spacerWidget->setVisible(false);
-    }
 
     menubar_shown = true;
 }
@@ -1028,11 +1019,9 @@ void reader::menubar_hide() {
     ui->optionsBtn->show();
     ui->menuBarWidget->setVisible(false);
     if(checkconfig(".config/11-menubar/sticky") == true) {
-        ui->spacerWidget->setVisible(true);
         ui->statusBarWidget->setVisible(true);
     }
     else {
-        ui->spacerWidget->setVisible(false);
         ui->statusBarWidget->setVisible(false);
         ui->menuWidget->setVisible(false);
     }
