@@ -244,7 +244,7 @@ namespace {
     }
     void reboot(bool splash) {
         if(splash == true) {
-            QString prog ("reboot");
+            QString prog ("/sbin/reboot");
             QStringList args;
             if(global::kobox::resetKoboxUserDataBool == true) {
                 args << "splash" << "reset_kobox";
@@ -253,7 +253,7 @@ namespace {
             proc->start(prog, args);
         }
         else {
-            QString prog ("reboot");
+            QString prog ("/sbin/reboot");
             QStringList args;
             if(global::kobox::resetKoboxUserDataBool == true) {
                 args << "no_splash" << "reset_kobox";
@@ -306,6 +306,18 @@ namespace {
     }
     void setDefaultWorkDir() {
         QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+    }
+    QString findEpubMetadata(QString book_file, QString metadata) {
+        setDefaultWorkDir();
+        QString prog ("sh");
+        QStringList args;
+        args << "find_epub_metadata.sh" << book_file << metadata;
+        QProcess *proc = new QProcess();
+        proc->start(prog, args);
+        proc->waitForFinished();
+
+        QString returnedMetadata = proc->readAllStandardOutput();
+        return returnedMetadata;
     }
 }
 #endif // FUNCTIONS_H

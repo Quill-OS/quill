@@ -460,16 +460,6 @@
                  <property name="bottomMargin">
                   <number>0</number>
                  </property>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="inkboxLabel">
-                   <property name="text">
-                    <string>InkBox</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignCenter</set>
-                   </property>
-                  </widget>
-                 </item>
                  <item row="0" column="1">
                   <spacer name="horizontalSpacer">
                    <property name="orientation">
@@ -483,7 +473,7 @@
                    </property>
                   </spacer>
                  </item>
-                 <item row="0" column="2">
+                 <item row="0" column="4">
                   <widget class="QLabel" name="timeLabel">
                    <property name="font">
                     <font>
@@ -495,6 +485,64 @@
                     <string>time</string>
                    </property>
                   </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QStackedWidget" name="topbarStackedWidget">
+                   <widget class="QWidget" name="page_7">
+                    <layout class="QVBoxLayout" name="verticalLayout_7">
+                     <property name="leftMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="topMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="rightMargin">
+                      <number>0</number>
+                     </property>
+                     <property name="bottomMargin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <layout class="QGridLayout" name="gridLayout_13">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="bookInfoLabel">
+                         <property name="text">
+                          <string>TextLabel</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                    </layout>
+                   </widget>
+                   <widget class="QWidget" name="page_14"/>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="inkboxLabel">
+                   <property name="text">
+                    <string>InkBox</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="3">
+                  <spacer name="horizontalSpacer_9">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
                  </item>
                 </layout>
                </item>

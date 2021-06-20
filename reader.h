@@ -48,11 +48,11 @@ public:
     bool nextdefinition_lock = false;
     bool is_epub = false;
     bool parser_ran = false;
-    bool booktostr_ran = false;
     bool filematch_ran = false;
     bool neverRefresh = false;
     bool wakeFromSleep = false;
     bool remount = true;
+    bool showTopbarWidget;
     QString book_1;
     QString book_2;
     QString book_3;
@@ -72,6 +72,7 @@ public:
     QPixmap scaledEmptyPixmap;
     QList<QString> content;
     QString epubPageContent;
+
     int setup_book(QString book, int i, bool run_parser);
     void checkwords();
     bool epub_file_match(QString file);

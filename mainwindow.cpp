@@ -381,7 +381,9 @@ MainWindow::MainWindow(QWidget *parent)
     // **** FEATURE WARNING ****
     // Due to the fsl-usb2-udc/gadget/suspended file which really only changes after a real plug/unplug of the USB cable, further development on this feature is no longer possible and is abandoned unless a fix is found.
     // Problem encontered: it would prompt to connect after a fresh reboot even if no USB cable was plugged in.
+    //
     // usbmsPrompt->start();
+    //
     // **** FEATURE WARNING ****
 
     // We set the brightness level saved in the config file

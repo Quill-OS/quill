@@ -71,8 +71,16 @@ reader::reader(QWidget *parent) :
     ui->brightnessIncBtn->setText("");
     ui->brightnessIncBtn->setIcon(QIcon(":/resources/plus.png"));
 
+    // Style misc.
+    ui->bookInfoLabel->setStyleSheet("font-style: italic");
+
     // Making text selectable
     ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
+
+    // Font misc.
+    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont crimson(family);
 
     // Custom settings
     // Font
@@ -142,6 +150,17 @@ reader::reader(QWidget *parent) :
         ui->menuWidget->setVisible(false);
         ui->spacerWidget->setVisible(false);
         ui->statusBarWidget->setVisible(false);
+    }
+
+    // Topbar widget / book info
+    if(checkconfig(".config/13-topbarinfo/config") == true) {
+        ui->topbarStackedWidget->setVisible(true);
+        showTopbarWidget = true;
+        ui->bookInfoLabel->setFont(crimson);
+    }
+    else {
+        ui->topbarStackedWidget->setVisible(false);
+        showTopbarWidget = false;
     }
 
     // Getting brightness level
@@ -348,7 +367,7 @@ reader::reader(QWidget *parent) :
         }
     }
 
-    // Checking if we're waking from sleep; if so, do nothing there because the book should have already been parsed
+    // Checking if we're waking from sleep; if so, do nothing there because the book should already have been parsed
     if(wakeFromSleep != true) {
         // Counting number of parsed files
         split_total = setup_book(book_file, 0, true);
@@ -416,6 +435,23 @@ reader::reader(QWidget *parent) :
         ui->text->setText(epubPageContent);
     }
 
+    // Topbar info widget
+    if(is_epub == true) {
+        QString bookCreator = findEpubMetadata(book_file, "creator");
+        QString bookTitle = findEpubMetadata(book_file, "title");
+        bookCreator = bookCreator.trimmed();
+        bookTitle = bookTitle.trimmed();
+
+        QString infoLabelContent = bookCreator;
+        infoLabelContent.append(" ― ");
+        infoLabelContent.append(bookTitle);
+        ui->bookInfoLabel->setText(infoLabelContent);
+    }
+    else {
+        QString bookReadRelativePath = book_file.split("/").last();
+        ui->bookInfoLabel->setText(bookReadRelativePath);
+    }
+
     // Clean up
     string_writeconfig("/inkbox/remount", "true");
 
@@ -434,9 +470,9 @@ reader::reader(QWidget *parent) :
     string str_book_3 = book_3.toStdString();
     string_checkconfig(".config/08-recent_books/4");
     book_4 = checkconfig_str_val;
-    string str_book_4 = book_4.toStdString();
+    std::string str_book_4 = book_4.toStdString();
 
-    string book_file_str;
+    std::string book_file_str;
 
     // Don't mess up "Recently read books" with random "book.txt" buttons...
     if(wakeFromSleep == true) {

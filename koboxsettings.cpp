@@ -26,9 +26,11 @@ koboxSettings::koboxSettings(QWidget *parent) :
         ui->koboxStatusLabel->setText("KoBox is <b>enabled</b>");
         not_user_change = true;
         ui->checkBox->click();
+        ui->runtimeSettingsWidget->setVisible(true);
     }
     else {
         ui->koboxStatusLabel->setText("KoBox is <b>disabled</b>");
+        ui->runtimeSettingsWidget->setVisible(false);
     }
 
     // DPI setting
