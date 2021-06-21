@@ -43,5 +43,6 @@
         <file>resources/settings-inverted.png</file>
         <file>resources/kobox-icon.png</file>
         <file>resources/X11.png</file>
+        <file>resources/info.png</file>
     </qresource>
 </RCC>

@@ -29,7 +29,6 @@ reader::reader(QWidget *parent) :
     if(global::reader::bookIsEpub == true) {
         is_epub = true;
     }
-    mupdf::epubPageNumber = 22;
     wordwidgetLock = false;
 
     ui->setupUi(this);
@@ -72,6 +71,10 @@ reader::reader(QWidget *parent) :
     ui->brightnessDecBtn->setIcon(QIcon(":/resources/minus.png"));
     ui->brightnessIncBtn->setText("");
     ui->brightnessIncBtn->setIcon(QIcon(":/resources/plus.png"));
+    ui->homeBtn->setText("");
+    ui->homeBtn->setIcon(QIcon(":/resources/home.png"));
+    ui->aboutBtn->setText("");
+    ui->aboutBtn->setIcon(QIcon(":/resources/info.png"));
 
     // Style misc.
     ui->bookInfoLabel->setStyleSheet("font-style: italic");
@@ -88,7 +91,7 @@ reader::reader(QWidget *parent) :
     // Font
     string_checkconfig(".config/04-book/font");
     if(checkconfig_str_val == "") {
-        ui->fontChooser->setCurrentText(checkconfig_str_val);
+        ui->fontChooser->setCurrentText("Source Serif Pro");
         ui->text->setFont(QFont("Source Serif Pro"));
     }
     else {
@@ -403,6 +406,13 @@ reader::reader(QWidget *parent) :
         QString infoLabelContent = bookCreator;
         infoLabelContent.append(" ― ");
         infoLabelContent.append(bookTitle);
+        int infoLabelLength = infoLabelContent.length();
+        if(infoLabelLength <= 50) {
+            ui->bookInfoLabel->setWordWrap(false);
+        }
+        else {
+            ui->bookInfoLabel->setWordWrap(true);
+        }
         ui->bookInfoLabel->setText(infoLabelContent);
     }
     else {
@@ -609,7 +619,6 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         QTextStream in(&epubPage);
         epubPageContent = in.readAll();
         epubPage.close();
-        qDebug() << epubPageContent;
     }
     return 0;
 }
@@ -706,7 +715,6 @@ void reader::on_nextBtn_clicked()
     }
     else {
         mupdf::epubPageNumber = mupdf::epubPageNumber + 1;
-        qDebug() << mupdf::epubPageNumber;
         setup_book(book_file, mupdf::epubPageNumber, true);
         ui->text->setText("");
         ui->text->setText(epubPageContent);

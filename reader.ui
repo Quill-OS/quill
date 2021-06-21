@@ -391,6 +391,9 @@
                          <property name="alignment">
                           <set>Qt::AlignCenter</set>
                          </property>
+                         <property name="wordWrap">
+                          <bool>false</bool>
+                         </property>
                         </widget>
                        </item>
                       </layout>
