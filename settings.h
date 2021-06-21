@@ -46,8 +46,9 @@ private slots:
     void on_setPasscodeBtn_clicked();
     void on_enableLockscreenCheckBox_toggled(bool checked);
     void on_enableUiScalingCheckBox_toggled(bool checked);
-
     void on_showSystemInfoBtn_clicked();
+    void on_pageSizeWidthSpinBox_valueChanged(int arg1);
+    void on_pageSizeHeightSpinBox_valueChanged(int arg1);
 
 private:
     Ui::settings *ui;

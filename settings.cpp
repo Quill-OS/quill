@@ -66,6 +66,9 @@ settings::settings(QWidget *parent) :
     ui->uiScalingSlider->hide();
     ui->uiScalingLabel->hide();
 
+    // Variables
+    defineDefaultPageSize();
+
     // Settings tweaking + enabling specific features whether it's running on the provided integrated OS or Kobo firmware
     if(checkconfig(".config/01-demo/config") == true) {
         ui->demoCheckBox->click();
@@ -88,6 +91,32 @@ settings::settings(QWidget *parent) :
     else {
         int words_number = checkconfig_str_val.toInt();
         ui->wordsNumber->setValue(words_number);
+    }
+
+    // ePUB page size
+    if(checkconfig(".config/13-epub_page_size/set") == true) {
+        string_checkconfig_ro(".config/13-epub_page_size/width");
+        if(checkconfig_str_val != "") {
+            int pageWidth = checkconfig_str_val.toInt();
+            ui->pageSizeWidthSpinBox->setValue(pageWidth);
+        }
+        else {
+            // Failsafe: setting default
+            ui->pageSizeWidthSpinBox->setValue(defaultEpubPageWidth);
+        }
+        string_checkconfig_ro(".config/13-epub_page_size/height");
+        if(checkconfig_str_val != "") {
+            int pageHeight = checkconfig_str_val.toInt();
+            ui->pageSizeHeightSpinBox->setValue(pageHeight);
+        }
+        else {
+            // Failsafe: setting default
+            ui->pageSizeHeightSpinBox->setValue(defaultEpubPageHeight);
+        }
+    }
+    else {
+        ui->pageSizeWidthSpinBox->setValue(defaultEpubPageWidth);
+        ui->pageSizeHeightSpinBox->setValue(defaultEpubPageHeight);
     }
 
     // Sticky menubar
@@ -659,4 +688,18 @@ void settings::on_showSystemInfoBtn_clicked()
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
+}
+
+void settings::on_pageSizeWidthSpinBox_valueChanged(int arg1)
+{
+    std::string value = std::to_string(arg1);
+    string_writeconfig(".config/13-epub_page_size/width", value);
+    string_writeconfig(".config/13-epub_page_size/set", "true");
+}
+
+void settings::on_pageSizeHeightSpinBox_valueChanged(int arg1)
+{
+    std::string value = std::to_string(arg1);
+    string_writeconfig(".config/13-epub_page_size/height", value);
+    string_writeconfig(".config/13-epub_page_size/set", "true");
 }

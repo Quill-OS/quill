@@ -89,7 +89,7 @@ reader::reader(QWidget *parent) :
     string_checkconfig(".config/04-book/font");
     if(checkconfig_str_val == "") {
         ui->fontChooser->setCurrentText(checkconfig_str_val);
-        ui->text->setFont(QFont("Inter"));
+        ui->text->setFont(QFont("Source Serif Pro"));
     }
     else {
         if(checkconfig_str_val == "Crimson Pro") {
@@ -1225,9 +1225,8 @@ void reader::openCriticalBatteryAlertWindow() {
 }
 
 void reader::convertMuPdfVars() {
+    setPageStyle();
     mupdf::fontSize = 12;
-    mupdf::width = 400;
-    mupdf::height = 460;
     mupdf::fontSize_qstr = QString::number(mupdf::fontSize);
     mupdf::width_qstr = QString::number(mupdf::width);
     mupdf::height_qstr = QString::number(mupdf::height);
@@ -1236,29 +1235,38 @@ void reader::convertMuPdfVars() {
 
 void reader::setPageStyle() {
     // General page size
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n") {
-        string_checkconfig_ro(".config/04-book/font");
-        if(checkconfig_str_val == "Crimson Pro") {
-            mupdf::width = 415;
-            mupdf::height = 490;
-        }
-        else {
-            mupdf::width = 400;
-            mupdf::height = 460;
-        }
+    defineDefaultPageSize();
+
+    string_checkconfig_ro(".config/13-epub_page_size/width");
+    if(checkconfig_str_val != "") {
+        ;
     }
-    else if(checkconfig_str_val == "n905\n") {
-        string_checkconfig_ro(".config/04-book/font");
-        if(checkconfig_str_val == "Crimson Pro") {
-            mupdf::width = 415;
-            mupdf::height = 490;
-        }
-        else {
-            mupdf::width = 400;
-            mupdf::height = 460;
-        }
+    else {
+        std::string pageWidth = std::to_string(defaultEpubPageWidth);
+        string_writeconfig(".config/13-epub_page_size/width", pageWidth);
+        string_writeconfig(".config/13-epub_page_size/set", "true");
+        string_checkconfig_ro(".config/13-epub_page_size/width");
     }
+    mupdf::width = checkconfig_str_val.toInt();
+
+    string_checkconfig_ro(".config/13-epub_page_size/height");
+    if(checkconfig_str_val != "") {
+        ;
+    }
+    else {
+        std::string pageHeight = std::to_string(defaultEpubPageHeight);
+        string_writeconfig(".config/13-epub_page_size/height", pageHeight);
+        string_writeconfig(".config/13-epub_page_size/set", "true");
+        string_checkconfig_ro(".config/13-epub_page_size/height");
+    }
+    mupdf::height = checkconfig_str_val.toInt();
+}
+
+void reader::delay(int seconds) {
+    // https://stackoverflow.com/questions/3752742/how-do-i-create-a-pause-wait-function-using-qt
+    QTime dieTime= QTime::currentTime().addSecs(seconds);
+    while (QTime::currentTime() < dieTime)
+        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
 void reader::on_text_selectionChanged() {
@@ -1295,11 +1303,4 @@ void reader::on_text_selectionChanged() {
             ;
         }
     }
-}
-
-void reader::delay(int seconds) {
-    // https://stackoverflow.com/questions/3752742/how-do-i-create-a-pause-wait-function-using-qt
-    QTime dieTime= QTime::currentTime().addSecs(seconds);
-    while (QTime::currentTime() < dieTime)
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }

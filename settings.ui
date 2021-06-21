@@ -191,14 +191,7 @@ OK
             <number>0</number>
            </property>
            <item row="7" column="0">
-            <widget class="QCheckBox" name="clockCheckBox">
-             <property name="text">
-              <string>Clock: Show seconds</string>
-             </property>
-            </widget>
-           </item>
-           <item row="15" column="0">
-            <widget class="Line" name="line_7">
+            <widget class="Line" name="line_6">
              <property name="frameShadow">
               <enum>QFrame::Plain</enum>
              </property>
@@ -208,6 +201,26 @@ OK
             </widget>
            </item>
            <item row="16" column="0">
+            <widget class="Line" name="line_7">
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="19" column="0">
+            <widget class="Line" name="line_3">
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="17" column="0">
             <layout class="QGridLayout" name="gridLayout_4">
              <property name="bottomMargin">
               <number>0</number>
@@ -247,27 +260,114 @@ OK
              </item>
             </layout>
            </item>
-           <item row="6" column="0">
-            <widget class="Line" name="line_6">
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
+           <item row="18" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="font">
+              <font>
+               <family>Chivo</family>
+               <italic>true</italic>
+              </font>
              </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="Line" name="line_8">
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+             <property name="text">
+              <string>Networking</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="9" column="0">
+            <widget class="QCheckBox" name="quoteCheckBox">
+             <property name="text">
+              <string>Disable authors quotes</string>
+             </property>
+            </widget>
+           </item>
+           <item row="10" column="0">
+            <widget class="QCheckBox" name="demoCheckBox">
+             <property name="text">
+              <string>Disable &quot;Welcome to InkBox&quot; message</string>
+             </property>
+            </widget>
+           </item>
+           <item row="20" column="0">
+            <layout class="QGridLayout" name="gridLayout_3">
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_4">
+               <property name="text">
+                <string>Request DHCP lease</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="0" column="2">
+              <widget class="QPushButton" name="requestLeaseBtn">
+               <property name="font">
+                <font>
+                 <weight>75</weight>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Request</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item row="5" column="0">
+            <widget class="QCheckBox" name="menuBarCheckBox">
+             <property name="text">
+              <string>Always show status bar</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_7">
+             <property name="font">
+              <font>
+               <family>Chivo</family>
+               <italic>true</italic>
+              </font>
+             </property>
+             <property name="text">
+              <string>Reading</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <widget class="QCheckBox" name="clockCheckBox">
+             <property name="text">
+              <string>Clock: Show seconds</string>
+             </property>
+            </widget>
+           </item>
+           <item row="15" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="font">
+              <font>
+               <family>Chivo</family>
+               <italic>true</italic>
+              </font>
+             </property>
+             <property name="text">
+              <string>Storage</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
             <layout class="QGridLayout" name="gridLayout_9">
              <property name="bottomMargin">
               <number>0</number>
@@ -338,43 +438,6 @@ OK
              </item>
             </layout>
            </item>
-           <item row="18" column="0">
-            <widget class="Line" name="line_3">
-             <property name="frameShadow">
-              <enum>QFrame::Plain</enum>
-             </property>
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-            </widget>
-           </item>
-           <item row="8" column="0">
-            <widget class="QCheckBox" name="quoteCheckBox">
-             <property name="text">
-              <string>Disable authors quotes</string>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QCheckBox" name="menuBarCheckBox">
-             <property name="text">
-              <string>Always show status bar</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_7">
-             <property name="font">
-              <font>
-               <family>Chivo</family>
-               <italic>true</italic>
-              </font>
-             </property>
-             <property name="text">
-              <string>Reading</string>
-             </property>
-            </widget>
-           </item>
            <item row="2" column="0">
             <layout class="QGridLayout" name="gridLayout_6">
              <property name="bottomMargin">
@@ -396,7 +459,7 @@ OK
              <item row="1" column="0">
               <widget class="QLabel" name="wordsNumberLabel">
                <property name="text">
-                <string>Words number per page (plain text files)</string>
+                <string>Words number/page (plain text files)</string>
                </property>
               </widget>
              </item>
@@ -418,7 +481,7 @@ OK
              </item>
             </layout>
            </item>
-           <item row="5" column="0">
+           <item row="6" column="0">
             <widget class="QLabel" name="label_2">
              <property name="font">
               <font>
@@ -431,53 +494,57 @@ OK
              </property>
             </widget>
            </item>
-           <item row="14" column="0">
-            <widget class="QLabel" name="label_5">
-             <property name="font">
-              <font>
-               <family>Chivo</family>
-               <italic>true</italic>
-              </font>
+           <item row="1" column="0">
+            <widget class="Line" name="line_8">
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
              </property>
-             <property name="text">
-              <string>Storage</string>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
-           <item row="17" column="0">
-            <widget class="QLabel" name="label_3">
-             <property name="font">
-              <font>
-               <family>Chivo</family>
-               <italic>true</italic>
-              </font>
-             </property>
-             <property name="text">
-              <string>Networking</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="0">
-            <widget class="QCheckBox" name="demoCheckBox">
-             <property name="text">
-              <string>Disable &quot;Welcome to InkBox&quot; message</string>
-             </property>
-            </widget>
-           </item>
-           <item row="19" column="0">
-            <layout class="QGridLayout" name="gridLayout_3">
+           <item row="3" column="0">
+            <layout class="QGridLayout" name="gridLayout_15">
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_4">
+             <item row="0" column="4">
+              <widget class="QLabel" name="pageSizeHeightLabel">
                <property name="text">
-                <string>Request DHCP lease</string>
+                <string>Height:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="pageSizeWidthLabel">
+               <property name="text">
+                <string>Width:</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QSpinBox" name="pageSizeWidthSpinBox">
+               <property name="minimum">
+                <number>300</number>
+               </property>
+               <property name="maximum">
+                <number>700</number>
+               </property>
+               <property name="singleStep">
+                <number>25</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="epubPageSizeLabel">
+               <property name="text">
+                <string>ePUB page size</string>
                </property>
               </widget>
              </item>
              <item row="0" column="1">
-              <spacer name="horizontalSpacer">
+              <spacer name="horizontalSpacer_11">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
                </property>
@@ -489,16 +556,16 @@ OK
                </property>
               </spacer>
              </item>
-             <item row="0" column="2">
-              <widget class="QPushButton" name="requestLeaseBtn">
-               <property name="font">
-                <font>
-                 <weight>75</weight>
-                 <bold>true</bold>
-                </font>
+             <item row="0" column="5">
+              <widget class="QSpinBox" name="pageSizeHeightSpinBox">
+               <property name="minimum">
+                <number>300</number>
                </property>
-               <property name="text">
-                <string>Request</string>
+               <property name="maximum">
+                <number>700</number>
+               </property>
+               <property name="singleStep">
+                <number>25</number>
                </property>
               </widget>
              </item>
