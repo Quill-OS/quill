@@ -147,11 +147,7 @@ void generalDialog::on_okBtn_clicked()
             // We set a custom boot flag and reboot silently in Diagnostics
             string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
             string_writeconfig("/external_root/boot/flags/DO_SOFT_RESET", "true");
-            QString prog ("/sbin/reboot");
-            QStringList args;
-            QProcess *proc = new QProcess();
-            proc->start(prog, args);
-            proc->waitForFinished();
+            reboot(false);
         }
         else {
             // Restore default settings, we're not on InkBox OS
@@ -172,11 +168,7 @@ void generalDialog::on_okBtn_clicked()
         string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "true");
         string_writeconfig("/external_root/opt/update/will_update", "true");
         string_writeconfig("/external_root/boot/flags/WILL_UPDATE", "true");
-        QString prog ("reboot");
-        QStringList args;
-        QProcess *proc = new QProcess();
-        proc->start(prog, args);
-        proc->waitForFinished();
+        reboot(true);
     }
     if(usbmsDialog == true) {
         global::usbms::usbmsDialog = false;
