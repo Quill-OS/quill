@@ -101,74 +101,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
 
-    // Battery
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
-        // Hide brightness controls; they won't be very useful there anyway...
-        ui->brightnessBtn->hide();
-        ui->line_7->hide();
-
-        // Setting icons up
-        stdIconWidth = sW / 16;
-        stdIconHeight = sH / 16;
-        QPixmap chargingPixmap(":/resources/battery_charging.png");
-        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-        QPixmap fullPixmap(":/resources/battery_full.png");
-        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-        QPixmap halfPixmap(":/resources/battery_half.png");
-        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-        QPixmap emptyPixmap(":/resources/battery_empty.png");
-        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-
-        // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
-        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-        if(checkconfig_str_val == "Charging\n") {
-            ui->batteryIcon->setPixmap(scaledChargingPixmap);
-        }
-        else {
-            get_battery_level();
-            if(batt_level_int >= 75 && batt_level_int <= 100) {
-                ui->batteryIcon->setPixmap(scaledFullPixmap);
-            }
-            else if(batt_level_int >= 25 && batt_level_int <= 74) {
-                ui->batteryIcon->setPixmap(scaledHalfPixmap);
-            }
-            else if(batt_level_int >= 0 && batt_level_int <= 24) {
-                ui->batteryIcon->setPixmap(scaledEmptyPixmap);
-            }
-        }
-    }
-    else {
-        // Setting icons up
-        stdIconWidth = sW / 19;
-        stdIconHeight = sH / 19;
-        QPixmap chargingPixmap(":/resources/battery_charging.png");
-        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-        QPixmap fullPixmap(":/resources/battery_full.png");
-        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-        QPixmap halfPixmap(":/resources/battery_half.png");
-        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-        QPixmap emptyPixmap(":/resources/battery_empty.png");
-        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-
-        // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
-        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-        if(checkconfig_str_val == "Charging\n") {
-            ui->batteryIcon->setPixmap(scaledChargingPixmap);
-        }
-        else {
-            get_battery_level();
-            if(batt_level_int >= 75 && batt_level_int <= 100) {
-                ui->batteryIcon->setPixmap(scaledFullPixmap);
-            }
-            else if(batt_level_int >= 25 && batt_level_int <= 74) {
-                ui->batteryIcon->setPixmap(scaledHalfPixmap);
-            }
-            else if(batt_level_int >= 0 && batt_level_int <= 24) {
-                ui->batteryIcon->setPixmap(scaledEmptyPixmap);
-            }
-        }
-    }
+    setBatteryIcon();
 
     int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
@@ -742,6 +675,7 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
     global::mainwindow::tabSwitcher::settingsChooserWidgetSelected = false;
 
     resetIcons();
+    setBatteryIcon();
     if(global::mainwindow::tabSwitcher::repaint == true) {
         this->repaint();
     }
@@ -753,4 +687,75 @@ void MainWindow::resetIcons() {
     ui->appsBtn->setIcon(QIcon(":/resources/apps.png"));
     ui->settingsBtn->setStyleSheet("background: white");
     ui->settingsBtn->setIcon(QIcon(":/resources/settings.png"));
+}
+
+void MainWindow::setBatteryIcon() {
+    // Battery
+    string_checkconfig_ro("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+        // Hide brightness controls; they won't be very useful there anyway...
+        ui->brightnessBtn->hide();
+        ui->line_7->hide();
+
+        // Setting icons up
+        stdIconWidth = sW / 16;
+        stdIconHeight = sH / 16;
+        QPixmap chargingPixmap(":/resources/battery_charging.png");
+        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap fullPixmap(":/resources/battery_full.png");
+        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap halfPixmap(":/resources/battery_half.png");
+        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap emptyPixmap(":/resources/battery_empty.png");
+        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+
+        // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
+        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+        if(checkconfig_str_val == "Charging\n") {
+            ui->batteryIcon->setPixmap(scaledChargingPixmap);
+        }
+        else {
+            get_battery_level();
+            if(batt_level_int >= 75 && batt_level_int <= 100) {
+                ui->batteryIcon->setPixmap(scaledFullPixmap);
+            }
+            else if(batt_level_int >= 25 && batt_level_int <= 74) {
+                ui->batteryIcon->setPixmap(scaledHalfPixmap);
+            }
+            else if(batt_level_int >= 0 && batt_level_int <= 24) {
+                ui->batteryIcon->setPixmap(scaledEmptyPixmap);
+            }
+        }
+    }
+    else {
+        // Setting icons up
+        stdIconWidth = sW / 19;
+        stdIconHeight = sH / 19;
+        QPixmap chargingPixmap(":/resources/battery_charging.png");
+        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap fullPixmap(":/resources/battery_full.png");
+        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap halfPixmap(":/resources/battery_half.png");
+        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap emptyPixmap(":/resources/battery_empty.png");
+        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+
+        // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
+        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+        if(checkconfig_str_val == "Charging\n") {
+            ui->batteryIcon->setPixmap(scaledChargingPixmap);
+        }
+        else {
+            get_battery_level();
+            if(batt_level_int >= 75 && batt_level_int <= 100) {
+                ui->batteryIcon->setPixmap(scaledFullPixmap);
+            }
+            else if(batt_level_int >= 25 && batt_level_int <= 74) {
+                ui->batteryIcon->setPixmap(scaledHalfPixmap);
+            }
+            else if(batt_level_int >= 0 && batt_level_int <= 24) {
+                ui->batteryIcon->setPixmap(scaledEmptyPixmap);
+            }
+        }
+    }
 }

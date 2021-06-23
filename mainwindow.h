@@ -48,6 +48,7 @@ public:
     void openUsbmsDialog();
     void resetWindow(bool resetStackedWidget);
     void resetIcons();
+    void setBatteryIcon();
 
 public slots:
 
