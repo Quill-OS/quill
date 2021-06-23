@@ -49,6 +49,7 @@ reader::reader(QWidget *parent) :
     ui->saveWordBtn->setProperty("type", "borderless");
     ui->previousDefinitionBtn->setProperty("type", "borderless");
     ui->nextDefinitionBtn->setProperty("type", "borderless");
+    ui->nightModeBtn->setProperty("type", "borderless");
 
     // Icons
     ui->alignLeftBtn->setText("");
@@ -107,6 +108,19 @@ reader::reader(QWidget *parent) :
             ui->text->setFont(config_font);
             ui->fontChooser->setCurrentText(checkconfig_str_val);
         }
+    }
+    // Night mode
+    if(checkconfig(".config/10-dark_mode/config") == true) {
+        string_writeconfig("/tmp/invertScreen", "y");
+        ui->nightModeBtn->setText("");
+        ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-full.png"));
+        isNightModeActive = true;
+    }
+    else {
+        string_writeconfig("/tmp/invertScreen", "n");
+        ui->nightModeBtn->setText("");
+        ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-empty.png"));
+        isNightModeActive = false;
     }
 
     // Stylesheet + misc.
@@ -407,7 +421,16 @@ reader::reader(QWidget *parent) :
         infoLabelContent.append(" ― ");
         infoLabelContent.append(bookTitle);
         int infoLabelLength = infoLabelContent.length();
-        if(infoLabelLength <= 50) {
+        int infoLabelDefinedLength;
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val == "n705\n") {
+            infoLabelDefinedLength = 35;
+        }
+        if(checkconfig_str_val == "n905\n") {
+            infoLabelDefinedLength = 50;
+        }
+
+        if(infoLabelLength <= infoLabelDefinedLength) {
             ui->bookInfoLabel->setWordWrap(false);
         }
         else {
@@ -1310,5 +1333,23 @@ void reader::on_text_selectionChanged() {
         else {
             ;
         }
+    }
+}
+
+void reader::on_nightModeBtn_clicked()
+{
+    if(isNightModeActive == true) {
+        // Disabling night/dark mode
+        string_writeconfig("/tmp/invertScreen", "n");
+        string_writeconfig(".config/10-dark_mode/config", "false");
+        ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-empty.png"));
+        isNightModeActive = false;
+    }
+    else {
+        // Enabling night/dark mode
+        string_writeconfig("/tmp/invertScreen", "y");
+        string_writeconfig(".config/10-dark_mode/config", "true");
+        ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-full.png"));
+        isNightModeActive = true;
     }
 }

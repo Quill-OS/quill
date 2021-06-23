@@ -323,8 +323,8 @@ namespace {
     void defineDefaultPageSize() {
         string_checkconfig_ro("/opt/inkbox_device");
         if(checkconfig_str_val == "n705\n") {
-            defaultEpubPageWidth = 425;
-            defaultEpubPageHeight = 425;
+            defaultEpubPageWidth = 365;
+            defaultEpubPageHeight = 365;
         }
         if(checkconfig_str_val == "n905\n") {
             defaultEpubPageHeight = 425;

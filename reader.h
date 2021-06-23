@@ -54,6 +54,7 @@ public:
     bool remount = true;
     bool showTopbarWidget;
     bool wordwidgetLock;
+    bool isNightModeActive;
     QString book_1;
     QString book_2;
     QString book_3;
@@ -113,6 +114,7 @@ private slots:
     void writeconfig_pagenumber();
     void quit_restart();
     void on_text_selectionChanged();
+    void on_nightModeBtn_clicked();
 
 private:
     Ui::reader *ui;

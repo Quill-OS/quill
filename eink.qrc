@@ -44,5 +44,7 @@
         <file>resources/kobox-icon.png</file>
         <file>resources/X11.png</file>
         <file>resources/info.png</file>
+        <file>resources/nightmode-empty.png</file>
+        <file>resources/nightmode-full.png</file>
     </qresource>
 </RCC>
