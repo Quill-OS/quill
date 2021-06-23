@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QProcess>
 #include <regex>
+#include <QThread>
 
 // WoW, global variables and namespaces are awesome
 namespace global {
@@ -287,6 +288,13 @@ namespace {
         proc->waitForFinished();
 
         kernelVersion = proc->readAllStandardOutput();
+        kernelVersion = kernelVersion.trimmed();
+        string_writeconfig("get_kernel_build_id", "/external_root/run/initrd-fifo");
+        QThread::msleep(100);
+        string_checkconfig_ro("/external_root/run/build_id");
+        QString kernelBuildID = checkconfig_str_val.trimmed();
+        kernelVersion.append(", build ");
+        kernelVersion.append(kernelBuildID);
     }
     void getSystemInfo() {
         getUID();
@@ -299,7 +307,10 @@ namespace {
         global::systemInfoText.append(deviceUID);
         global::systemInfoText.append("<br><b>Kernel version:</b> ");
         global::systemInfoText.append(kernelVersion);
-        global::systemInfoText.append("<br>");
+        global::systemInfoText.append("<br><b>Device:</b> ");
+        string_checkconfig_ro("/opt/inkbox_device");
+        QString device = checkconfig_str_val.trimmed();
+        global::systemInfoText.append(device);
     }
     void resetKoboxUserData() {
         global::kobox::resetKoboxUserDataBool = true;
