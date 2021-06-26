@@ -358,6 +358,10 @@ namespace {
             defaultEpubPageHeight = 425;
             defaultEpubPageWidth = 425;
         }
+        if(checkconfig_str_val == "n613\n") {
+            defaultEpubPageHeight = 450;
+            defaultEpubPageWidth = 450;
+        }
     }
     QString checkDevice() {
         string_checkconfig_ro("/opt/inkbox_device");
