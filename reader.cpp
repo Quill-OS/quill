@@ -832,6 +832,9 @@ void reader::on_brightnessDecBtn_clicked()
         ;
     }
     int set_bval = bval - 1;
+    if(set_bval < 0) {
+        set_bval = 0;
+    }
     pre_set_brightness(set_bval);
     brightness_writeconfig(set_bval);
 
@@ -853,6 +856,9 @@ void reader::on_brightnessIncBtn_clicked()
         ;
     }
     int set_bval = bval + 1;
+    if(set_bval > 100) {
+        set_bval = 100;
+    }
     pre_set_brightness(set_bval);
     brightness_writeconfig(set_bval);
 

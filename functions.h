@@ -106,6 +106,9 @@ namespace {
         config.close();
         return 0;
     };
+    void setDefaultWorkDir() {
+        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
+    }
     int brightness_checkconfig(QString file) {
         QFile config(file);
         config.open(QIODevice::ReadWrite);
@@ -306,8 +309,16 @@ namespace {
 
         kernelVersion = proc->readAllStandardOutput();
         kernelVersion = kernelVersion.trimmed();
-        string_writeconfig("get_kernel_build_id", "/external_root/run/initrd-fifo");
+
+        setDefaultWorkDir();
+        QString fifo_prog("sh");
+        QStringList fifo_args;
+        fifo_args << "get_kernel_build_id.sh";
+        QProcess *fifo_proc = new QProcess();
+        fifo_proc->start(fifo_prog, fifo_args);
+        fifo_proc->waitForFinished();
         QThread::msleep(100);
+
         string_checkconfig_ro("/external_root/run/build_id");
         QString kernelBuildID = checkconfig_str_val.trimmed();
         kernelVersion.append(", build ");
@@ -332,9 +343,6 @@ namespace {
     void resetKoboxUserData() {
         global::kobox::resetKoboxUserDataBool = true;
         reboot(true);
-    }
-    void setDefaultWorkDir() {
-        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
     }
     QString findEpubMetadata(QString book_file, QString metadata) {
         setDefaultWorkDir();

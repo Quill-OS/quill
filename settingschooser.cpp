@@ -46,6 +46,10 @@ settingsChooser::settingsChooser(QWidget *parent) :
         ui->inkboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
     }
+    else if(checkconfig_str_val == "n613\n") {
+        ui->inkboxSettingsBtn->setStyleSheet("padding: 25px; Text-align: left");
+        ui->koboxSettingsBtn->setStyleSheet("padding:25px; Text-align: left");
+    }
     else {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");

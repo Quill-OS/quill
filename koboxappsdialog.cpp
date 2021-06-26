@@ -97,7 +97,17 @@ void koboxAppsDialog::on_launchBtn_clicked()
         // DPI setting
         string_checkconfig(".config/00-kobox/dpiSetting");
         if(checkconfig_str_val == "") {
-            dpiSetting = "125";
+            string_checkconfig_ro("/opt/inkbox_device\n");
+            if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+                dpiSetting = "125";
+            }
+            else if(checkconfig_str_val == "n613\n") {
+                dpiSetting = "175";
+            }
+            else {
+                dpiSetting = "125";
+            }
+
         }
         else {
             dpiSetting = checkconfig_str_val.toStdString();
@@ -114,7 +124,15 @@ void koboxAppsDialog::on_launchBtn_clicked()
         else if(itemText == "KTerm") {
             string_writeconfig("/external_root/tmp/X_program", "/usr/local/bin/kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
             dpModeSetting = "fullscreen";
-            dpiSetting = "175";
+            string_checkconfig_ro("/opt/inkbox_device");
+            if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+                dpiSetting = "175";
+            }
+            else if(checkconfig_str_val == "n613\n")
+                dpiSetting = "225";
+            else {
+                dpiSetting = "175";
+            }
         }
         else if(itemText == "Geany") {
             string_writeconfig("/external_root/tmp/X_program", "geany");
