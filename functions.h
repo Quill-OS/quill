@@ -10,6 +10,10 @@
 #include <regex>
 #include <QThread>
 
+#include <stdio.h>
+#include <fcntl.h>
+#include <sys/ioctl.h>
+
 // WoW, global variables and namespaces are awesome
 namespace global {
     namespace battery {
@@ -61,12 +65,14 @@ namespace global {
 namespace {
     QString checkconfig_str_val;
     QString deviceUID;
+    QString device;
     QString batt_level;
     QString kernelVersion;
     int batt_level_int;
     int defaultEpubPageWidth;
     int defaultEpubPageHeight;
     bool checked_box = false;
+    bool deviceChecked = false;
     bool checkconfig(QString file) {
         QFile config(file);
         config.open(QIODevice::ReadOnly);
@@ -121,6 +127,14 @@ namespace {
         fhandler.open("/var/run/brightness");
         fhandler << value;
         fhandler.close();
+    }
+    void set_brightness_ntxio(int value) {
+        // Thanks to Kevin Short for this (GloLight)
+        int light;
+        if ((light = open("/dev/ntx_io", O_RDWR)) == -1) {
+                printf("Error opening ntx_io device");
+        }
+        ioctl(light, 241, value);
     }
     int int_checkconfig(QString file) {
         QFile int_config(file);
@@ -341,6 +355,10 @@ namespace {
             defaultEpubPageHeight = 425;
             defaultEpubPageWidth = 425;
         }
+    }
+    QString checkDevice() {
+        string_checkconfig_ro("/opt/inkbox_device");
+        return checkconfig_str_val;
     }
 }
 #endif // FUNCTIONS_H

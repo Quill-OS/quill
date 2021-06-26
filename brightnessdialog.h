@@ -16,6 +16,7 @@ class brightnessDialog : public QDialog
 public:
     QString checkconfig_str_val;
     int oldValue;
+    void pre_set_brightness(int brightnessValue);
     explicit brightnessDialog(QWidget *parent = nullptr);
     ~brightnessDialog();
 

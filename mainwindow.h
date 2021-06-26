@@ -49,6 +49,7 @@ public:
     void resetWindow(bool resetStackedWidget);
     void resetIcons();
     void setBatteryIcon();
+    void pre_set_brightness();
 
 public slots:
 
@@ -65,6 +66,7 @@ private slots:
     void on_brightnessBtn_clicked();
     void openUpdateDialog();
     void on_homeBtn_clicked();
+    void pre_set_brightness(int brightnessValue);
 
 private:
     Ui::MainWindow *ui;

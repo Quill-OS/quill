@@ -321,7 +321,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // We set the brightness level saved in the config file
     int brightness_value = brightness_checkconfig(".config/03-brightness/config");
-    set_brightness(brightness_value);
+    pre_set_brightness(brightness_value);
 
     // Display quote if requested; otherwise, display recent books
     string_checkconfig(".config/05-quote/config");
@@ -757,5 +757,19 @@ void MainWindow::setBatteryIcon() {
                 ui->batteryIcon->setPixmap(scaledEmptyPixmap);
             }
         }
+    }
+}
+
+void MainWindow::pre_set_brightness(int brightnessValue) {
+    if(deviceChecked == false) {
+        checkDevice();
+        deviceChecked = true;
+    }
+
+    if(device == "n705\n" or device == "n905\n") {
+        set_brightness(brightnessValue);
+    }
+    else {
+        set_brightness_ntxio(brightnessValue);
     }
 }

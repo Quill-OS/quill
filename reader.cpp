@@ -812,7 +812,7 @@ void reader::on_brightnessDecBtn_clicked()
 {
     int bval = get_brightness();
     int set_bval = bval - 1;
-    set_brightness(set_bval);
+    pre_set_brightness(set_bval);
     brightness_writeconfig(set_bval);
 
     bval = get_brightness();
@@ -823,7 +823,7 @@ void reader::on_brightnessIncBtn_clicked()
 {
     int bval = get_brightness();
     int set_bval = bval + 1;
-    set_brightness(set_bval);
+    pre_set_brightness(set_bval);
     brightness_writeconfig(set_bval);
 
     bval = get_brightness();
@@ -1351,5 +1351,19 @@ void reader::on_nightModeBtn_clicked()
         string_writeconfig(".config/10-dark_mode/config", "true");
         ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-full.png"));
         isNightModeActive = true;
+    }
+}
+
+void reader::pre_set_brightness(int brightnessValue) {
+    if(deviceChecked == false) {
+        checkDevice();
+        deviceChecked = true;
+    }
+
+    if(device == "n705\n" or device == "n905\n") {
+        set_brightness(brightnessValue);
+    }
+    else {
+        set_brightness_ntxio(brightnessValue);
     }
 }

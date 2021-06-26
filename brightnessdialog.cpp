@@ -63,7 +63,7 @@ brightnessDialog::~brightnessDialog()
 void brightnessDialog::on_quitBtn_clicked()
 {
     // Reverting back to the old value
-    set_brightness(oldValue);
+    pre_set_brightness(oldValue);
 
     // Just in case ;)
     brightness_writeconfig(oldValue);
@@ -74,7 +74,7 @@ void brightnessDialog::on_quitBtn_clicked()
 
 void brightnessDialog::on_horizontalSlider_valueChanged(int value)
 {
-    set_brightness(value);
+    pre_set_brightness(value);
     QString valueStr = QString::number(value);
     valueStr = valueStr.append("%");
     ui->valueLabel->setText(valueStr);
@@ -104,4 +104,18 @@ void brightnessDialog::on_okBtn_clicked()
 
     // Leaving
     brightnessDialog::close();
+}
+
+void brightnessDialog::pre_set_brightness(int brightnessValue) {
+    if(deviceChecked == false) {
+        checkDevice();
+        deviceChecked = true;
+    }
+
+    if(device == "n705\n" or device == "n905\n") {
+        set_brightness(brightnessValue);
+    }
+    else {
+        set_brightness_ntxio(brightnessValue);
+    }
 }
