@@ -74,13 +74,21 @@ MainWindow::MainWindow(QWidget *parent)
         homeIconWidth = sW / 18;
         homeIconHeight = sW / 18;
     }
-    else {
+    else if(checkconfig_str_val == "n905\n") {
         stdIconWidth = sW / 14;
         stdIconHeight = sH / 14;
         brightnessIconWidth = sW / 26;
         brightnessIconHeight = sH / 26;
         homeIconWidth = sW / 20;
         homeIconHeight = sW / 20;
+    }
+    else if(checkconfig_str_val == "n613\n") {
+        stdIconWidth = sW / 12.5;
+        stdIconHeight = sH / 12.5;
+        brightnessIconWidth = sW / 24.5;
+        brightnessIconHeight = sH / 24.5;
+        homeIconWidth = sW / 18.5;
+        homeIconHeight = sW / 18.5;
     }
 
     // Setting icons up
@@ -122,6 +130,9 @@ MainWindow::MainWindow(QWidget *parent)
     string_checkconfig_ro("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 1px; padding-right: 1px;");
+    }
+    else if(checkconfig_str_val == "n613\n") {
+        ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;");
     }
     else {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 8px; padding-right: 8px;");
@@ -692,14 +703,17 @@ void MainWindow::resetIcons() {
 void MainWindow::setBatteryIcon() {
     // Battery
     string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
-        // Hide brightness controls; they won't be very useful there anyway...
-        ui->brightnessBtn->hide();
-        ui->line_7->hide();
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n") {
+        // Hide brightness controls; they won't be very useful there anyway (for anything but the Glo) ...
+        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+            ui->brightnessBtn->hide();
+            ui->line_7->hide();
+        }
 
         // Setting icons up
         stdIconWidth = sW / 16;
         stdIconHeight = sH / 16;
+
         QPixmap chargingPixmap(":/resources/battery_charging.png");
         QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         QPixmap fullPixmap(":/resources/battery_full.png");

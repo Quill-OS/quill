@@ -72,6 +72,26 @@ int main(int argc, char *argv[])
         }
 
         string_writeconfig("/inkbox/skip_opendialog", "true");
+        device = checkDevice();
+        if(device == "n705\n") {
+            global::isN705 = true;
+            global::isN905C = false;
+            global::isN613 = false;
+        }
+        else if(device == "n905\n") {
+            global::isN705 = false;
+            global::isN905C = true;
+            global::isN613 = false;
+        }
+        else if(device == "n613\n") {
+            global::isN705 = false;
+            global::isN905C = false;
+            global::isN613 = true;
+        }
+        else {
+            ;
+        }
+
         QApplication a(argc, argv);
         reader w;
 
@@ -90,6 +110,26 @@ int main(int argc, char *argv[])
         stylesheetFile.open(QFile::ReadOnly);
         w.setStyleSheet(stylesheetFile.readAll());
         stylesheetFile.close();
+
+        device = checkDevice();
+        if(device == "n705\n") {
+            global::isN705 = true;
+            global::isN905C = false;
+            global::isN613 = false;
+        }
+        else if(device == "n905\n") {
+            global::isN705 = false;
+            global::isN905C = true;
+            global::isN613 = false;
+        }
+        else if(device == "n613\n") {
+            global::isN705 = false;
+            global::isN905C = false;
+            global::isN613 = true;
+        }
+        else {
+            ;
+        }
 
         const QScreen* screen = qApp->primaryScreen();
         w.setGeometry(QRect(QPoint(0,0), screen->geometry ().size()));

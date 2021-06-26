@@ -19,6 +19,7 @@ public:
     bool signatureError = false;
     bool downgradeError = false;
     bool criticalBattery = false;
+    void updateReset();
 
 private slots:
     void on_continueBtn_clicked();

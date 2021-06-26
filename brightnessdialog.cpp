@@ -19,7 +19,18 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
-    int value = get_brightness();
+    // I know, Mini and Touch don't have frontlights but that's a template to include others later...
+    int value;
+    if(global::isN705 == true or global::isN905C == true) {
+        value = get_brightness();
+    }
+    else if(global::isN613 == true) {
+        setDefaultWorkDir();
+        value = brightness_checkconfig(".config/03-brightness/config");
+    }
+    else {
+        ;
+    }
 
     // Setting the slider to the appropriate position
     ui->horizontalSlider->setValue(value);
@@ -52,7 +63,16 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     ui->brightnessLabel->setFont(QFont(crimson_bold));
 
     // Saving current brightness value in case we want to go backwards
-    oldValue = get_brightness();
+    if(global::isN705 == true or global::isN705 == true) {
+        oldValue = get_brightness();
+    }
+    else if(global::isN613 == true) {
+        setDefaultWorkDir();
+        oldValue = brightness_checkconfig(".config/03-brightness/config");
+    }
+    else {
+        ;
+    }
 }
 
 brightnessDialog::~brightnessDialog()
@@ -112,7 +132,7 @@ void brightnessDialog::pre_set_brightness(int brightnessValue) {
         deviceChecked = true;
     }
 
-    if(device == "n705\n" or device == "n905\n") {
+    if(global::isN705 == true or global::isN905C == true) {
         set_brightness(brightnessValue);
     }
     else {

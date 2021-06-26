@@ -155,7 +155,17 @@ reader::reader(QWidget *parent) :
     ui->bookInfoLabel->setFont(crimson);
 
     // Getting brightness level
-    int brightness_value = get_brightness();
+    int brightness_value;
+    if(global::isN705 == true or global::isN905C == true) {
+        brightness_value = get_brightness();
+    }
+    else if(global::isN613 == true) {
+        setDefaultWorkDir();
+        brightness_value = brightness_checkconfig(".config/03-brightness/config");
+    }
+    else {
+        ;
+    }
     ui->brightnessStatus->setValue(brightness_value);
 
     // Defining pixmaps
@@ -810,24 +820,43 @@ void reader::on_hideOptionsBtn_clicked()
 
 void reader::on_brightnessDecBtn_clicked()
 {
-    int bval = get_brightness();
+    int bval;
+    if(global::isN705 == true or global::isN905C == true) {
+        bval = get_brightness();
+    }
+    else if(global::isN613 == true) {
+        setDefaultWorkDir();
+        bval = brightness_checkconfig(".config/03-brightness/config");
+    }
+    else {
+        ;
+    }
     int set_bval = bval - 1;
     pre_set_brightness(set_bval);
     brightness_writeconfig(set_bval);
 
     bval = get_brightness();
-    ui->brightnessStatus->setValue(bval);
+    ui->brightnessStatus->setValue(set_bval);
 }
 
 void reader::on_brightnessIncBtn_clicked()
 {
-    int bval = get_brightness();
+    int bval;
+    if(global::isN705 == true or global::isN905C == true) {
+        bval = get_brightness();
+    }
+    else if(global::isN613 == true) {
+        setDefaultWorkDir();
+        bval = brightness_checkconfig(".config/03-brightness/config");
+    }
+    else {
+        ;
+    }
     int set_bval = bval + 1;
     pre_set_brightness(set_bval);
     brightness_writeconfig(set_bval);
 
-    bval = get_brightness();
-    ui->brightnessStatus->setValue(bval);
+    ui->brightnessStatus->setValue(set_bval);
 }
 
 void reader::on_aboutBtn_clicked()

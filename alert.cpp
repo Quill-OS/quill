@@ -89,6 +89,7 @@ void alert::on_continueBtn_clicked()
     // We continue anyway and re-set the ALERT flag
     string_writeconfig("/external_root/boot/flags/ALERT", "false");
     string_writeconfig("/external_root/boot/flags/ALERT_SIGN", "false");
+    updateReset();
     QProcess process;
     process.startDetached("inkbox", QStringList());
     qApp->quit();
@@ -111,6 +112,7 @@ void alert::on_continue2Btn_clicked()
 {
     // We continue anyway and re-set the ALERT flag
     string_writeconfig("/external_root/boot/flags/ALERT", "false");
+    updateReset();
 
     if(signatureError == true) {
         string_writeconfig("/external_root/boot/flags/ALERT_SIGN", "false");
@@ -124,4 +126,9 @@ void alert::on_continue2Btn_clicked()
         process.startDetached("inkbox", QStringList());
         qApp->quit();
     }
+}
+
+void alert::updateReset() {
+    string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "false");
+    string_writeconfig("/mnt/onboard/onboard/.inkbox/can_update", "false");
 }
