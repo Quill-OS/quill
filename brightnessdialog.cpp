@@ -29,7 +29,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
         value = brightness_checkconfig(".config/03-brightness/config");
     }
     else {
-        ;
+        value = get_brightness();
     }
 
     // Setting the slider to the appropriate position
@@ -71,7 +71,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
         oldValue = brightness_checkconfig(".config/03-brightness/config");
     }
     else {
-        ;
+        oldValue = get_brightness();
     }
 }
 
@@ -135,7 +135,10 @@ void brightnessDialog::pre_set_brightness(int brightnessValue) {
     if(global::isN705 == true or global::isN905C == true) {
         set_brightness(brightnessValue);
     }
-    else {
+    else if(global::isN613 == true) {
         set_brightness_ntxio(brightnessValue);
+    }
+    else {
+        set_brightness(brightnessValue);
     }
 }

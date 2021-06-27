@@ -87,6 +87,9 @@ reader::reader(QWidget *parent) :
     int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
     QFont crimson(family);
+    int id_1 = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Bold.ttf");
+    QString family_1 = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont crimson_1(family_1);
 
     // Custom settings
     // Font
@@ -164,7 +167,7 @@ reader::reader(QWidget *parent) :
         brightness_value = brightness_checkconfig(".config/03-brightness/config");
     }
     else {
-        ;
+        brightness_value = get_brightness();
     }
     ui->brightnessStatus->setValue(brightness_value);
 
@@ -175,7 +178,7 @@ reader::reader(QWidget *parent) :
     // Defining what the icons' size will be
     if(checkconfig("/opt/inkbox_genuine") == true) {
         string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n") {
             float stdIconWidth = sW / 16;
             float stdIconHeight = sW / 16;
             QPixmap chargingPixmap(":/resources/battery_charging.png");
@@ -829,7 +832,7 @@ void reader::on_brightnessDecBtn_clicked()
         bval = brightness_checkconfig(".config/03-brightness/config");
     }
     else {
-        ;
+        bval = get_brightness();
     }
     int set_bval = bval - 1;
     if(set_bval < 0) {
@@ -838,7 +841,6 @@ void reader::on_brightnessDecBtn_clicked()
     pre_set_brightness(set_bval);
     brightness_writeconfig(set_bval);
 
-    bval = get_brightness();
     ui->brightnessStatus->setValue(set_bval);
 }
 
@@ -853,7 +855,7 @@ void reader::on_brightnessIncBtn_clicked()
         bval = brightness_checkconfig(".config/03-brightness/config");
     }
     else {
-        ;
+        bval = get_brightness();
     }
     int set_bval = bval + 1;
     if(set_bval > 100) {
@@ -1391,14 +1393,17 @@ void reader::on_nightModeBtn_clicked()
 
 void reader::pre_set_brightness(int brightnessValue) {
     if(deviceChecked == false) {
-        checkDevice();
+        string_checkconfig_ro("/opt/inkbox_device");
         deviceChecked = true;
     }
 
-    if(device == "n705\n" or device == "n905\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         set_brightness(brightnessValue);
     }
-    else {
+    else if(checkconfig_str_val == "n613\n") {
         set_brightness_ntxio(brightnessValue);
+    }
+    else {
+        set_brightness(brightnessValue);
     }
 }

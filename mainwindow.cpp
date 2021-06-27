@@ -90,6 +90,14 @@ MainWindow::MainWindow(QWidget *parent)
         homeIconWidth = sW / 18.5;
         homeIconHeight = sW / 18.5;
     }
+    else {
+        stdIconWidth = sW / 14;
+        stdIconHeight = sH / 14;
+        brightnessIconWidth = sW / 26;
+        brightnessIconHeight = sH / 26;
+        homeIconWidth = sW / 20;
+        homeIconHeight = sW / 20;
+    }
 
     // Setting icons up
     ui->pushButton->setIcon(QIcon(":/resources/book.png"));

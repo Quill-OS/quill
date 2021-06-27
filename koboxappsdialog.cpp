@@ -97,7 +97,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
         // DPI setting
         string_checkconfig(".config/00-kobox/dpiSetting");
         if(checkconfig_str_val == "") {
-            string_checkconfig_ro("/opt/inkbox_device\n");
+            string_checkconfig_ro("/opt/inkbox_device");
             if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
                 dpiSetting = "125";
             }
