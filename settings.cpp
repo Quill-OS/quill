@@ -119,6 +119,11 @@ settings::settings(QWidget *parent) :
         ui->pageSizeHeightSpinBox->setValue(defaultEpubPageHeight);
     }
 
+    // QTextEdit scroll bar in Reader framework
+    if(checkconfig(".config/14-reader_scrollbar/config") == true) {
+        ui->readerScrollBarCheckBox->click();
+    }
+
     // Sticky menubar
     if(checkconfig(".config/11-menubar/sticky") == true) {
         ui->menuBarCheckBox->click();
@@ -725,4 +730,14 @@ void settings::on_pageSizeHeightSpinBox_valueChanged(int arg1)
     std::string value = std::to_string(arg1);
     string_writeconfig(".config/13-epub_page_size/height", value);
     string_writeconfig(".config/13-epub_page_size/set", "true");
+}
+
+void settings::on_readerScrollBarCheckBox_toggled(bool checked)
+{
+    if(checked == true) {
+        string_writeconfig(".config/14-reader_scrollbar/config", "true");
+    }
+    else {
+        string_writeconfig(".config/14-reader_scrollbar/config", "false");
+    }
 }

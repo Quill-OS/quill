@@ -75,7 +75,6 @@ namespace {
     int defaultEpubPageWidth;
     int defaultEpubPageHeight;
     bool checked_box = false;
-    bool deviceChecked = false;
     bool checkconfig(QString file) {
         QFile config(file);
         config.open(QIODevice::ReadOnly);
@@ -137,8 +136,8 @@ namespace {
     void set_brightness_ntxio(int value) {
         // Thanks to Kevin Short for this (GloLight)
         int light;
-        if ((light = open("/dev/ntx_io", O_RDWR)) == -1) {
-                printf("Error opening ntx_io device");
+        if((light = open("/dev/ntx_io", O_RDWR)) == -1) {
+                fprintf(stderr, "Error opening ntx_io device\n");
         }
         ioctl(light, 241, value);
     }
@@ -249,6 +248,15 @@ namespace {
             return false;
         }
         return 0;
+    }
+    void zeroBrightness() {
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val != "n613\n") {
+            set_brightness(0);
+        }
+        else {
+            set_brightness_ntxio(0);
+        }
     }
     void poweroff(bool splash) {
         if(splash == true) {
@@ -370,10 +378,6 @@ namespace {
             defaultEpubPageHeight = 450;
             defaultEpubPageWidth = 450;
         }
-    }
-    QString checkDevice() {
-        string_checkconfig_ro("/opt/inkbox_device");
-        return checkconfig_str_val;
     }
 }
 #endif // FUNCTIONS_H

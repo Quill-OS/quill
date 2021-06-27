@@ -34,14 +34,26 @@ koboxSettings::koboxSettings(QWidget *parent) :
     }
 
     // DPI setting
+    QString dpiSetting;
     string_checkconfig(".config/00-kobox/dpiSetting");
     if(checkconfig_str_val == "") {
-        ;
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+            dpiSetting = "125";
+        }
+        else if(checkconfig_str_val == "n613\n") {
+            dpiSetting = "175";
+        }
+        else {
+            dpiSetting = "125";
+        }
+        std::string dpiSetting_str = dpiSetting.toStdString();
+        string_writeconfig(".config/00-kobox/dpiSetting", dpiSetting_str);
     }
-    else {
-        int dpi_setting = checkconfig_str_val.toInt();
-        ui->spinBox->setValue(dpi_setting);
-    }
+
+    string_checkconfig(".config/00-kobox/dpiSetting");
+    int dpi_setting = checkconfig_str_val.toInt();
+    ui->spinBox->setValue(dpi_setting);
 }
 
 koboxSettings::~koboxSettings()

@@ -72,18 +72,18 @@ int main(int argc, char *argv[])
         }
 
         string_writeconfig("/inkbox/skip_opendialog", "true");
-        device = checkDevice();
-        if(device == "n705\n") {
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val == "n705\n") {
             global::isN705 = true;
             global::isN905C = false;
             global::isN613 = false;
         }
-        else if(device == "n905\n") {
+        else if(checkconfig_str_val == "n905\n") {
             global::isN705 = false;
             global::isN905C = true;
             global::isN613 = false;
         }
-        else if(device == "n613\n") {
+        else if(checkconfig_str_val == "n613\n") {
             global::isN705 = false;
             global::isN905C = false;
             global::isN613 = true;
@@ -111,18 +111,18 @@ int main(int argc, char *argv[])
         w.setStyleSheet(stylesheetFile.readAll());
         stylesheetFile.close();
 
-        device = checkDevice();
-        if(device == "n705\n") {
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val == "n705\n") {
             global::isN705 = true;
             global::isN905C = false;
             global::isN613 = false;
         }
-        else if(device == "n905\n") {
+        else if(checkconfig_str_val == "n905\n") {
             global::isN705 = false;
             global::isN905C = true;
             global::isN613 = false;
         }
-        else if(device == "n613\n") {
+        else if(checkconfig_str_val == "n613\n") {
             global::isN705 = false;
             global::isN905C = false;
             global::isN613 = true;

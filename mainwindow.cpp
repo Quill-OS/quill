@@ -783,15 +783,15 @@ void MainWindow::setBatteryIcon() {
 }
 
 void MainWindow::pre_set_brightness(int brightnessValue) {
-    if(deviceChecked == false) {
-        checkDevice();
-        deviceChecked = true;
-    }
+    string_checkconfig_ro("/opt/inkbox_device");
 
-    if(device == "n705\n" or device == "n905\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         set_brightness(brightnessValue);
     }
-    else {
+    else if(checkconfig_str_val == "n613\n") {
         set_brightness_ntxio(brightnessValue);
+    }
+    else {
+        set_brightness(brightnessValue);
     }
 }

@@ -391,6 +391,16 @@ reader::reader(QWidget *parent) :
     font_size = font_size.append("pt");
     ui->text->setStyleSheet(font_size);
 
+    // If needed, show scroll bar when rendering engine isn't doing its job properly
+    if(checkconfig(".config/14-reader_scrollbar/config") == true) {
+        ui->text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        ui->text->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    }
+    else {
+        ui->text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        ui->text->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    }
+
     // Wheeee!
     if(is_epub != true) {
         ui->text->setText(ittext);
@@ -1392,10 +1402,7 @@ void reader::on_nightModeBtn_clicked()
 }
 
 void reader::pre_set_brightness(int brightnessValue) {
-    if(deviceChecked == false) {
-        string_checkconfig_ro("/opt/inkbox_device");
-        deviceChecked = true;
-    }
+    string_checkconfig_ro("/opt/inkbox_device");
 
     if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         set_brightness(brightnessValue);

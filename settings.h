@@ -49,6 +49,7 @@ private slots:
     void on_showSystemInfoBtn_clicked();
     void on_pageSizeWidthSpinBox_valueChanged(int arg1);
     void on_pageSizeHeightSpinBox_valueChanged(int arg1);
+    void on_readerScrollBarCheckBox_toggled(bool checked);
 
 private:
     Ui::settings *ui;

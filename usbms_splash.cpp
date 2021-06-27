@@ -64,6 +64,8 @@ usbms_splash::usbms_splash(QWidget *parent) :
 
 void usbms_splash::usbms_launch()
 {
+    zeroBrightness();
+
     QString umount_prog ("umount");
     QStringList umount_args;
     if(global::usbms::koboxExportExtensions == true) {

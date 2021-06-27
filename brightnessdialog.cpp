@@ -127,11 +127,6 @@ void brightnessDialog::on_okBtn_clicked()
 }
 
 void brightnessDialog::pre_set_brightness(int brightnessValue) {
-    if(deviceChecked == false) {
-        checkDevice();
-        deviceChecked = true;
-    }
-
     if(global::isN705 == true or global::isN905C == true) {
         set_brightness(brightnessValue);
     }
