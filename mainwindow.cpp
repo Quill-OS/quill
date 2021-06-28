@@ -275,8 +275,14 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             if(isBatteryCritical() == true) {
-                qDebug() << "Warning! Battery is at a critical charge level!";
-                openCriticalBatteryAlertWindow();
+                string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+                if(checkconfig_str_val == "Charging\n") {
+                    ;
+                }
+                else {
+                    qDebug() << "Warning! Battery is at a critical charge level!";
+                    openCriticalBatteryAlertWindow();
+                }
             }
         }
 

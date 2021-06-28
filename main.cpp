@@ -30,6 +30,9 @@
 
 int main(int argc, char *argv[])
 {
+    // Tell scripts that we're currently running
+    string_writeconfig("/tmp/inkbox_running", "true");
+
     // Checking if battery level is critical; if true (and if it is not charging), then display a "Please charge your eReader" splash and power off.
     if(isBatteryCritical() == true) {
         string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
