@@ -336,7 +336,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
     } );
     // **** FEATURE WARNING ****
-    // Due to the fsl-usb2-udc/gadget/suspended file which really only changes after a real plug/unplug of the USB cable, further development on this feature is no longer possible and is abandoned unless a fix is found.
+    // Due to the fsl-usb2-udc/gadget/suspended 'file' which really only changes after a real plug/unplug of the USB cable, further development on this feature is no longer possible and is abandoned unless a fix is found.
     // Problem encontered: it would prompt to connect after a fresh reboot even if no USB cable was plugged in.
     //
     // usbmsPrompt->start();
@@ -345,13 +345,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     // We set the brightness level saved in the config file
     int brightness_value = brightness_checkconfig(".config/03-brightness/config");
-    if(checkconfig("/tmp/oobe-inkbox_completed") == true) {
+    if(checkconfig("/tmp/oobe-inkbox_completed") == true or checkconfig("/tmp/inkbox-cinematicBrightness_ran") == true) {
         // Coming from OOBE setup; not doing that fancy stuff again ;p
         QFile::remove("/tmp/oobe-inkbox_completed");
         pre_set_brightness(brightness_value);
     }
     else {
         // Fancy brightness fade-in
+        string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
         cinematicBrightness(brightness_value, 0);
     }
 

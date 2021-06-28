@@ -416,7 +416,7 @@ namespace {
             while(brightness != value) {
                 brightness = brightness + 1;
                 pre_set_brightness(brightness);
-                QThread::msleep(33);
+                QThread::msleep(30);
             }
         }
         else {
@@ -424,7 +424,7 @@ namespace {
             while(brightness != 0) {
                 brightness = brightness - 1;
                 pre_set_brightness(brightness);
-                QThread::msleep(33);
+                QThread::msleep(30);
             }
         }
     }

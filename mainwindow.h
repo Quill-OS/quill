@@ -80,4 +80,5 @@ private:
     koboxAppsDialog *koboxAppsDialogWindow;
     textwidget *textwidgetWindow;
 };
+
 #endif // MAINWINDOW_H
