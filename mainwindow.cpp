@@ -20,7 +20,6 @@
 #include <QScreen>
 #include <QFont>
 #include <QFontDatabase>
-#include <QPagedPaintDevice>
 
 using namespace std;
 
