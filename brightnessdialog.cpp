@@ -83,7 +83,7 @@ brightnessDialog::~brightnessDialog()
 void brightnessDialog::on_quitBtn_clicked()
 {
     // Reverting back to the old value
-    pre_set_brightness(oldValue);
+    brightnessDialog::pre_set_brightness(oldValue);
 
     // Just in case ;)
     brightness_writeconfig(oldValue);
@@ -94,7 +94,7 @@ void brightnessDialog::on_quitBtn_clicked()
 
 void brightnessDialog::on_horizontalSlider_valueChanged(int value)
 {
-    pre_set_brightness(value);
+    brightnessDialog::pre_set_brightness(value);
     QString valueStr = QString::number(value);
     valueStr = valueStr.append("%");
     ui->valueLabel->setText(valueStr);

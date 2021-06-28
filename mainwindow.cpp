@@ -345,7 +345,15 @@ MainWindow::MainWindow(QWidget *parent)
 
     // We set the brightness level saved in the config file
     int brightness_value = brightness_checkconfig(".config/03-brightness/config");
-    pre_set_brightness(brightness_value);
+    if(checkconfig("/tmp/oobe-inkbox_completed") == true) {
+        // Coming from OOBE setup; not doing that fancy stuff again ;p
+        QFile::remove("/tmp/oobe-inkbox_completed");
+        pre_set_brightness(brightness_value);
+    }
+    else {
+        // Fancy brightness fade-in
+        cinematicBrightness(brightness_value, 0);
+    }
 
     // Display quote if requested; otherwise, display recent books
     string_checkconfig(".config/05-quote/config");
@@ -784,19 +792,5 @@ void MainWindow::setBatteryIcon() {
                 ui->batteryIcon->setPixmap(scaledEmptyPixmap);
             }
         }
-    }
-}
-
-void MainWindow::pre_set_brightness(int brightnessValue) {
-    string_checkconfig_ro("/opt/inkbox_device");
-
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
-        set_brightness(brightnessValue);
-    }
-    else if(checkconfig_str_val == "n613\n") {
-        set_brightness_ntxio(brightnessValue);
-    }
-    else {
-        set_brightness(brightnessValue);
     }
 }

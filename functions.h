@@ -117,15 +117,6 @@ namespace {
         return content_int;
         config.close();
         return 0;
-    };
-    int get_brightness() {
-        QFile brightness("/var/run/brightness");
-        brightness.open(QIODevice::ReadOnly);
-        QString valuestr = brightness.readAll();
-        int value = valuestr.toInt();
-        brightness.close();
-        return value;
-        return 0;
     }
     void set_brightness(int value) {
         std::ofstream fhandler;
@@ -191,6 +182,29 @@ namespace {
         fhandler.open(".config/03-brightness/config");
         fhandler << value;
         fhandler.close();
+    }
+    int get_brightness() {
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val == "n613") {
+            string_checkconfig_ro(".config/03-brightness/config");
+            int brightness;
+            if(checkconfig_str_val == "") {
+                brightness = 0;
+            }
+            else {
+                brightness = checkconfig_str_val.toInt();
+            }
+            return brightness;
+        }
+        else {
+            QFile brightness("/var/run/brightness");
+            brightness.open(QIODevice::ReadOnly);
+            QString valuestr = brightness.readAll();
+            int value = valuestr.toInt();
+            brightness.close();
+            return value;
+        }
+        return 0;
     }
     void get_battery_level() {
         QFile batt_level_file("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity");
@@ -377,6 +391,41 @@ namespace {
         if(checkconfig_str_val == "n613\n") {
             defaultEpubPageHeight = 450;
             defaultEpubPageWidth = 450;
+        }
+    }
+    void pre_set_brightness(int brightnessValue) {
+        string_checkconfig_ro("/opt/inkbox_device");
+
+        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+            set_brightness(brightnessValue);
+        }
+        else if(checkconfig_str_val == "n613\n") {
+            set_brightness_ntxio(brightnessValue);
+        }
+        else {
+            set_brightness(brightnessValue);
+        }
+    }
+    void cinematicBrightness(int value, int mode) {
+        /* mode can be 0 or 1, respectively
+         * 0: Bring UP brightness
+         * 1: Bring DOWN brightness
+        */
+        if(mode == 0) {
+            int brightness = 0;
+            while(brightness != value) {
+                brightness = brightness + 1;
+                pre_set_brightness(brightness);
+                QThread::msleep(33);
+            }
+        }
+        else {
+            int brightness = get_brightness();
+            while(brightness != 0) {
+                brightness = brightness - 1;
+                pre_set_brightness(brightness);
+                QThread::msleep(33);
+            }
         }
     }
 }

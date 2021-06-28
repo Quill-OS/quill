@@ -1400,17 +1400,3 @@ void reader::on_nightModeBtn_clicked()
         isNightModeActive = true;
     }
 }
-
-void reader::pre_set_brightness(int brightnessValue) {
-    string_checkconfig_ro("/opt/inkbox_device");
-
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
-        set_brightness(brightnessValue);
-    }
-    else if(checkconfig_str_val == "n613\n") {
-        set_brightness_ntxio(brightnessValue);
-    }
-    else {
-        set_brightness(brightnessValue);
-    }
-}

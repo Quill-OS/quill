@@ -91,7 +91,6 @@ public:
     void setPageStyle();
     void alignText(int alignment);
     void delay(int seconds);
-    void pre_set_brightness(int brightnessValue);
 
 private slots:
     void on_nextBtn_clicked();
