@@ -64,6 +64,7 @@ private slots:
     void on_book4Btn_clicked();
     void on_brightnessBtn_clicked();
     void openUpdateDialog();
+    void setInitialBrightness();
     void on_homeBtn_clicked();
 
 private:

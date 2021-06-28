@@ -40,6 +40,7 @@ settings::settings(QWidget *parent) :
     ui->resetBtn->setStyleSheet("font-size: 9pt");
     ui->showSystemInfoBtn->setStyleSheet("font-size: 9pt");
     ui->comboBox->setStyleSheet("font-size: 9pt");
+    ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
 
     ui->previousBtn->setText("");
@@ -185,11 +186,10 @@ settings::settings(QWidget *parent) :
     }
 
     // Refresh
-    string_checkconfig(".config/04-book/refresh");
+    string_checkconfig_ro(".config/04-book/refresh");
     if(checkconfig_str_val == "") {
         // Set default option, 3
         string_writeconfig(".config/04-book/refresh", "3");
-        string_checkconfig(".config/04-book/refresh");
         ui->comboBox->setCurrentText("3 pages");
     }
     else {
@@ -218,8 +218,37 @@ settings::settings(QWidget *parent) :
         if(refreshInt == 6) {
             ui->comboBox->setCurrentText("6 pages");
         }
-        else {
-            // Something bad (or not ;p) has happened
+    }
+
+    // Sleep mode timeout
+    string_checkconfig_ro(".config/15-sleep_timeout/config");
+    if(checkconfig_str_val == "") {
+        // Set default option, '15 minutes'
+        string_writeconfig(".config/15-sleep_timeout/config", "15");
+        ui->sleepTimeoutComboBox->setCurrentText("15 minutes");
+    }
+    else {
+        int sleepTimeoutInt = checkconfig_str_val.toInt();
+        if(sleepTimeoutInt == -1) {
+            ui->sleepTimeoutComboBox->setCurrentText("Never");
+        }
+        if(sleepTimeoutInt == 2) {
+            ui->sleepTimeoutComboBox->setCurrentText("2 minutes");
+        }
+        if(sleepTimeoutInt == 5) {
+            ui->sleepTimeoutComboBox->setCurrentText("5 minutes");
+        }
+        if(sleepTimeoutInt == 10) {
+            ui->sleepTimeoutComboBox->setCurrentText("10 minutes");
+        }
+        if(sleepTimeoutInt == 15) {
+            ui->sleepTimeoutComboBox->setCurrentText("15 minutes");
+        }
+        if(sleepTimeoutInt == 30) {
+            ui->sleepTimeoutComboBox->setCurrentText("30 minutes");
+        }
+        if(sleepTimeoutInt == 60) {
+            ui->sleepTimeoutComboBox->setCurrentText("60 minutes");
         }
     }
 
@@ -739,5 +768,31 @@ void settings::on_readerScrollBarCheckBox_toggled(bool checked)
     }
     else {
         string_writeconfig(".config/14-reader_scrollbar/config", "false");
+    }
+}
+
+void settings::on_sleepTimeoutComboBox_currentIndexChanged(const QString &arg1)
+{
+    setDefaultWorkDir();
+    if(arg1 == "Never") {
+        string_writeconfig(".config/15-sleep_timeout/config", "-1");
+    }
+    if(arg1 == "2 minutes") {
+        string_writeconfig(".config/15-sleep_timeout/config", "2");
+    }
+    if(arg1 == "5 minutes") {
+        string_writeconfig(".config/15-sleep_timeout/config", "5");
+    }
+    if(arg1 == "10 minutes") {
+        string_writeconfig(".config/15-sleep_timeout/config", "10");
+    }
+    if(arg1 == "15 minutes") {
+        string_writeconfig(".config/15-sleep_timeout/config", "15");
+    }
+    if(arg1 == "30 minutes") {
+        string_writeconfig(".config/15-sleep_timeout/config", "30");
+    }
+    if(arg1 == "60 minutes") {
+        string_writeconfig(".config/15-sleep_timeout/config", "60");
     }
 }

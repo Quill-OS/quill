@@ -344,17 +344,7 @@ MainWindow::MainWindow(QWidget *parent)
     // **** FEATURE WARNING ****
 
     // We set the brightness level saved in the config file
-    int brightness_value = brightness_checkconfig(".config/03-brightness/config");
-    if(checkconfig("/tmp/oobe-inkbox_completed") == true or checkconfig("/tmp/inkbox-cinematicBrightness_ran") == true) {
-        // Coming from OOBE setup; not doing that fancy stuff again ;p
-        QFile::remove("/tmp/oobe-inkbox_completed");
-        pre_set_brightness(brightness_value);
-    }
-    else {
-        // Fancy brightness fade-in
-        string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
-        cinematicBrightness(brightness_value, 0);
-    }
+    QTimer::singleShot(2000, this, SLOT(setInitialBrightness()));
 
     // Display quote if requested; otherwise, display recent books
     string_checkconfig(".config/05-quote/config");
@@ -793,5 +783,19 @@ void MainWindow::setBatteryIcon() {
                 ui->batteryIcon->setPixmap(scaledEmptyPixmap);
             }
         }
+    }
+}
+
+void MainWindow::setInitialBrightness() {
+    int brightness_value = brightness_checkconfig(".config/03-brightness/config");
+    if(checkconfig("/tmp/oobe-inkbox_completed") == true or checkconfig("/tmp/inkbox-cinematicBrightness_ran") == true) {
+        // Coming from OOBE setup; not doing that fancy stuff again ;p
+        QFile::remove("/tmp/oobe-inkbox_completed");
+        pre_set_brightness(brightness_value);
+    }
+    else {
+        // Fancy brightness fade-in
+        string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
+        cinematicBrightness(brightness_value, 0);
     }
 }
