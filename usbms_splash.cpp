@@ -64,6 +64,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
 
 void usbms_splash::usbms_launch()
 {
+    string_writeconfig("/tmp/in_usbms", "true");
     QTimer::singleShot(1500, this, SLOT(brightnessDown()));
 
     QString umount_prog ("umount");

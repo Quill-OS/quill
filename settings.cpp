@@ -400,6 +400,7 @@ void settings::on_requestLeaseBtn_clicked()
 
 void settings::on_usbmsBtn_clicked()
 {
+    string_writeconfig("/tmp/in_usbms", "true");
     QTimer::singleShot(1500, this, SLOT(brightnessDown()));
 
     QString umount_prog ("umount");
