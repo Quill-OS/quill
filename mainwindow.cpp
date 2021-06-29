@@ -505,6 +505,9 @@ MainWindow::MainWindow(QWidget *parent)
         QProcess *proc = new QProcess();
         proc->start(prog, args);
 
+        QFile::remove("/mnt/onboard/onboard/.inkbox/DEVKEY");
+        QFile::remove("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst");
+
         reboot(true);
     }
 }

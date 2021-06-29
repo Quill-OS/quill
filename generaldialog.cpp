@@ -134,6 +134,10 @@ void generalDialog::on_cancelBtn_clicked()
         string_writeconfig("/tmp/cancelUpdateDialog", "true");
         generalDialog::close();
     }
+    else if(usbmsDialog == true) {
+        global::usbms::usbmsDialog = false;
+        generalDialog::close();
+    }
     else {
         generalDialog::close();
     }

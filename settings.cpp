@@ -738,6 +738,7 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
 void settings::on_showSystemInfoBtn_clicked()
 {
     getSystemInfo();
+    global::usbms::usbmsDialog = false;
     global::text::textBrowserContents = global::systemInfoText;
     global::text::textBrowserDialog = true;
 
