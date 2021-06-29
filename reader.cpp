@@ -344,17 +344,10 @@ reader::reader(QWidget *parent) :
         writeconfig_pagenumber();
     }
     else {
-        // TEMPORARY [
-        if(global::reader::bookIsEpub == true) {
-            quit_restart();
-        }
-        // TEMPORARY ]
-        else {
-            // Retrieve split_total from tmpfs
-            string_checkconfig("/tmp/inkboxPageNumber");
-            split_total = checkconfig_str_val.toInt();
-            setup_book(book_file, 0, true);
-        }
+        // Retrieve split_total from tmpfs
+        string_checkconfig("/tmp/inkboxPageNumber");
+        split_total = checkconfig_str_val.toInt();
+        setup_book(book_file, 0, true);
     }
 
     // Get text; no need to do it multiple times for ePUB books
@@ -472,7 +465,14 @@ reader::reader(QWidget *parent) :
         ui->bookInfoLabel->setText(infoLabelContent);
     }
     else {
-        QString bookReadRelativePath = book_file.split("/").last();
+        QString bookReadRelativePath;
+        if(wakeFromSleep == true) {
+            string_checkconfig_ro("/tmp/inkboxBookPath");
+            bookReadRelativePath = checkconfig_str_val.split("/").last();
+        }
+        else {
+            bookReadRelativePath = book_file.split("/").last();
+        }
         ui->bookInfoLabel->setText(bookReadRelativePath);
     }
 
@@ -517,6 +517,39 @@ reader::reader(QWidget *parent) :
         string_writeconfig(".config/08-recent_books/2", str_book_1);
         string_writeconfig(".config/08-recent_books/3", str_book_2);
         string_writeconfig(".config/08-recent_books/4", str_book_3);
+    }
+
+    // USB mass storage prompt
+    if(global::reader::startUsbmsPrompt == true) {
+        QTimer *usbmsPrompt = new QTimer(this);
+        usbmsPrompt->setInterval(500);
+        connect(usbmsPrompt, &QTimer::timeout, [&]() {
+            if(checkconfig("/opt/inkbox_genuine") == true) {
+                if(global::usbms::showUsbmsDialog != true) {
+                    string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+                    if(usbmsStatus != checkconfig_str_val) {
+                        global::usbms::showUsbmsDialog = true;
+                    }
+                }
+                else {
+                    string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+                    usbmsStatus = checkconfig_str_val;
+                    if(usbmsStatus != "Charging\n") {
+                        // Loop again...
+                        ;
+                    }
+                    else {
+                        // An USB cable is connected!
+                        openUsbmsDialog();
+                    }
+                }
+            }
+            else {
+                // Do nothing, we're running along with Nickel & friends...
+                ;
+            }
+        } );
+        usbmsPrompt->start();
     }
 
     // Battery watchdog
@@ -691,9 +724,11 @@ bool reader::epub_file_match(QString file) {
     QString fileExt = file.right(4);
 
     if(fileExt == "epub" or fileExt == "EPUB") {
+        string_writeconfig("/inkbox/bookIsEpub", "true");
         return true;
     }
     else {
+        string_writeconfig("/inkbox/bookIsEpub", "false");
         return false;
     }
 }
@@ -1411,4 +1446,14 @@ void reader::on_nightModeBtn_clicked()
         ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-full.png"));
         isNightModeActive = true;
     }
+}
+
+void reader::openUsbmsDialog() {
+    global::usbms::showUsbmsDialog = false;
+    global::usbms::usbmsDialog = true;
+
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
+    QApplication::processEvents();
 }

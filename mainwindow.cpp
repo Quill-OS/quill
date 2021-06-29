@@ -312,7 +312,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // USB mass storage prompt
     QTimer *usbmsPrompt = new QTimer(this);
-    usbmsPrompt->setInterval(2000);
+    usbmsPrompt->setInterval(500);
     connect(usbmsPrompt, &QTimer::timeout, [&]() {
         if(checkconfig("/opt/inkbox_genuine") == true) {
             if(global::usbms::showUsbmsDialog != true) {

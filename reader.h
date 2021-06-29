@@ -74,6 +74,7 @@ public:
     QPixmap scaledEmptyPixmap;
     QList<QString> content;
     QString epubPageContent;
+    QString usbmsStatus;
 
     int setup_book(QString book, int i, bool run_parser);
     void checkwords();
@@ -91,6 +92,7 @@ public:
     void setPageStyle();
     void alignText(int alignment);
     void delay(int seconds);
+    void openUsbmsDialog();
 
 private slots:
     void on_nextBtn_clicked();

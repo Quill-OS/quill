@@ -33,6 +33,10 @@ int main(int argc, char *argv[])
     // Tell scripts that we're currently running
     string_writeconfig("/tmp/inkbox_running", "true");
 
+    // Variables
+    global::reader::startBatteryWatchdog = false;
+    global::reader::startUsbmsPrompt = false;
+
     // Checking if battery level is critical; if true (and if it is not charging), then display a "Please charge your eReader" splash and power off.
     if(isBatteryCritical() == true) {
         string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
@@ -62,17 +66,11 @@ int main(int argc, char *argv[])
         return a.exec();
     }
     // If we're waking from sleep and we have the lockscreen enabled, we'll "resume" the book from scratch
-    else if(checkconfig("/tmp/suspendBook") == true) {
+    else if(checkconfig("/tmp/suspendBook") == true && checkconfig("/inkbox/bookIsEpub") == false) {
         // Start the low/critical battery alert timer from the Reader framework since MainWindow is not going to be shown
         global::reader::startBatteryWatchdog = true;
+        global::reader::startUsbmsPrompt = true;
         global::reader::skipOpenDialog = true;
-
-        if(checkconfig("/inkbox/bookIsEpub") == true) {
-            global::reader::bookIsEpub = true;
-        }
-        else {
-            global::reader::bookIsEpub = false;
-        }
 
         string_writeconfig("/inkbox/skip_opendialog", "true");
         string_checkconfig_ro("/opt/inkbox_device");
@@ -105,6 +103,13 @@ int main(int argc, char *argv[])
 
     }
     else {
+        if(checkconfig("/inkbox/bookIsEpub") == true) {
+            global::reader::bookIsEpub = true;
+        }
+        else {
+            global::reader::bookIsEpub = false;
+        }
+
         QApplication a(argc, argv);
         MainWindow w;
 
