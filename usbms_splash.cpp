@@ -64,7 +64,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
 
 void usbms_splash::usbms_launch()
 {
-    cinematicBrightness(0, 1);
+    QTimer::singleShot(1500, this, SLOT(brightnessDown()));
 
     QString umount_prog ("umount");
     QStringList umount_args;
@@ -139,4 +139,8 @@ void usbms_splash::usbms_launch()
 usbms_splash::~usbms_splash()
 {
     delete ui;
+}
+
+void usbms_splash::brightnessDown() {
+    cinematicBrightness(0, 1);
 }

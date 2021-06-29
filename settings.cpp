@@ -400,6 +400,8 @@ void settings::on_requestLeaseBtn_clicked()
 
 void settings::on_usbmsBtn_clicked()
 {
+    QTimer::singleShot(1500, this, SLOT(brightnessDown()));
+
     QString umount_prog ("umount");
     QStringList umount_args;
     umount_args << "/dev/loop0";
@@ -796,4 +798,8 @@ void settings::on_sleepTimeoutComboBox_currentIndexChanged(const QString &arg1)
     if(arg1 == "60 minutes") {
         string_writeconfig(".config/15-sleep_timeout/config", "60");
     }
+}
+
+void settings::brightnessDown() {
+    cinematicBrightness(0, 1);
 }

@@ -186,7 +186,7 @@ namespace {
     }
     int get_brightness() {
         string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n613") {
+        if(checkconfig_str_val == "n613\n") {
             string_checkconfig_ro(".config/03-brightness/config");
             int brightness;
             if(checkconfig_str_val == "") {

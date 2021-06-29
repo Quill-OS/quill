@@ -17,6 +17,9 @@ public:
 
     void usbms_launch();
 
+private slots:
+    void brightnessDown();
+
 private:
     Ui::usbms_splash *ui;
 };

@@ -617,13 +617,6 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_searchBtn_clicked()
 {
     // Hopefully this button will do something one day...
-    /*
-    global::text::textBrowserDialog = true;
-    global::text::textBrowserContents = "Hullo";
-    generalDialogWindow = new generalDialog();
-    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
-    */
 }
 
 void MainWindow::on_quitBtn_clicked()
