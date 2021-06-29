@@ -333,6 +333,9 @@ reader::reader(QWidget *parent) :
 
     // Checking if we're waking from sleep; if so, do nothing there because the book should already have been parsed
     if(wakeFromSleep != true) {
+        // Remount tmpfs
+        string_writeconfig("/inkbox/remount", "true");
+
         // Counting number of parsed files
         split_total = setup_book(book_file, 0, true);
         split_files_number = split_total;
@@ -895,6 +898,8 @@ void reader::on_homeBtn_clicked()
 {
     // We're leaving reading mode
     string_writeconfig("/tmp/inkboxReading", "false");
+    // Remount tmpfs
+    string_writeconfig("/inkbox/remount", "true");
 
     // Relaunching process
     quit_restart();
