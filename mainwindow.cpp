@@ -493,13 +493,20 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
-    // Write current running version to a file for utility purposes
-    {
-        string_checkconfig_ro("/external_root/opt/isa/version");
-        std::string inkbox_version = checkconfig_str_val.toStdString();
-        string_writeconfig("/opt/version", inkbox_version);
-    }
+    // If the DEVKEY file is present, install a developer key
+    if(QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY") == true && QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst")) {
+        string_checkconfig_ro("/mnt/onboard/onboard/.inkbox/DEVKEY");
+        QString developerKey = checkconfig_str_val.left(256);
 
+        setDefaultWorkDir();
+        QString prog ("sh");
+        QStringList args;
+        args << "install_developer-key.sh" << developerKey << "/mnt/onboard/onboard/.inkbox/DEVKEY.dgst";
+        QProcess *proc = new QProcess();
+        proc->start(prog, args);
+
+        reboot(true);
+    }
 }
 
 MainWindow::~MainWindow()
