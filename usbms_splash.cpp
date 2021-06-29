@@ -64,7 +64,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
 
 void usbms_splash::usbms_launch()
 {
-    zeroBrightness();
+    cinematicBrightness(0, 1);
 
     QString umount_prog ("umount");
     QStringList umount_args;

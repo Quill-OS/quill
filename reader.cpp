@@ -344,10 +344,17 @@ reader::reader(QWidget *parent) :
         writeconfig_pagenumber();
     }
     else {
-        // Retrieve split_total from tmpfs
-        string_checkconfig("/tmp/inkboxPageNumber");
-        split_total = checkconfig_str_val.toInt();
-        setup_book(book_file, 0, true);
+        // TEMPORARY [
+        if(global::reader::bookIsEpub == true) {
+            quit_restart();
+        }
+        // TEMPORARY ]
+        else {
+            // Retrieve split_total from tmpfs
+            string_checkconfig("/tmp/inkboxPageNumber");
+            split_total = checkconfig_str_val.toInt();
+            setup_book(book_file, 0, true);
+        }
     }
 
     // Get text; no need to do it multiple times for ePUB books

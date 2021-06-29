@@ -42,6 +42,7 @@ public:
     bool reboot_after_update = false;
     int timerTime = 0;
     QString relative_path;
+    QString usbmsStatus;
 
     void openLowBatteryDialog();
     void openCriticalBatteryAlertWindow();

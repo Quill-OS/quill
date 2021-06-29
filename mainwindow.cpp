@@ -316,11 +316,15 @@ MainWindow::MainWindow(QWidget *parent)
     connect(usbmsPrompt, &QTimer::timeout, [&]() {
         if(checkconfig("/opt/inkbox_genuine") == true) {
             if(global::usbms::showUsbmsDialog != true) {
-                ;
+                string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+                if(usbmsStatus != checkconfig_str_val) {
+                    global::usbms::showUsbmsDialog = true;
+                }
             }
             else {
-                string_checkconfig_ro("/sys/devices/platform/fsl-usb2-udc/gadget/suspended");
-                if(checkconfig_str_val != "0\n") {
+                string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+                usbmsStatus = checkconfig_str_val;
+                if(usbmsStatus != "Charging\n") {
                     // Loop again...
                     ;
                 }
@@ -335,13 +339,7 @@ MainWindow::MainWindow(QWidget *parent)
             ;
         }
     } );
-    // **** FEATURE WARNING ****
-    // Due to the fsl-usb2-udc/gadget/suspended 'file' which really only changes after a real plug/unplug of the USB cable, further development on this feature is no longer possible and is abandoned unless a fix is found.
-    // Problem encontered: it would prompt to connect after a fresh reboot even if no USB cable was plugged in.
-    //
-    // usbmsPrompt->start();
-    //
-    // **** FEATURE WARNING ****
+    usbmsPrompt->start();
 
     // We set the brightness level saved in the config file
     QTimer::singleShot(2000, this, SLOT(setInitialBrightness()));
