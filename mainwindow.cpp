@@ -494,7 +494,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // If the DEVKEY file is present, install a developer key
-    if(QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY") == true && QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst")) {
+    if(QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY") == true && QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst") == true) {
         string_checkconfig_ro("/mnt/onboard/onboard/.inkbox/DEVKEY");
         QString developerKey = checkconfig_str_val.left(256);
 
@@ -504,6 +504,7 @@ MainWindow::MainWindow(QWidget *parent)
         args << "install_developer-key.sh" << developerKey << "/mnt/onboard/onboard/.inkbox/DEVKEY.dgst";
         QProcess *proc = new QProcess();
         proc->start(prog, args);
+        proc->waitForFinished();
 
         QFile::remove("/mnt/onboard/onboard/.inkbox/DEVKEY");
         QFile::remove("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst");
