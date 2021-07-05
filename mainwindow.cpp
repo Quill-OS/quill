@@ -618,6 +618,11 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_searchBtn_clicked()
 {
     // Hopefully this button will do something one day...
+    global::keyboard::keyboardDialog = true;
+    generalDialogWindow = new generalDialog();
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+    generalDialogWindow->show();
 }
 
 void MainWindow::on_quitBtn_clicked()
@@ -800,4 +805,8 @@ void MainWindow::setInitialBrightness() {
         string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
         cinematicBrightness(brightness_value, 0);
     }
+}
+
+void MainWindow::refreshScreen() {
+    this->repaint();
 }

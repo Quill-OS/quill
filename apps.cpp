@@ -15,6 +15,7 @@ apps::apps(QWidget *parent) :
     ui->calendarLaunchBtn->setProperty("type", "borderless");
     ui->savedWordsLaunchBtn->setProperty("type", "borderless");
     ui->calculatorLaunchBtn->setProperty("type", "borderless");
+    ui->vncLaunchBtn->setProperty("type", "borderless");
 
     ui->koboxAppsOpenButton->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->scribbleLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
@@ -22,6 +23,7 @@ apps::apps(QWidget *parent) :
     ui->calendarLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->savedWordsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->calculatorLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
+    ui->vncLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     // Hiding KoBox apps button and label if X11 isn't enabled/wasn't started
     if(checkconfig("/external_root/boot/flags/X11_START") != true) {
@@ -92,4 +94,9 @@ void apps::on_koboxAppsOpenButton_clicked()
     koboxAppsDialogWindow = new koboxAppsDialog();
     koboxAppsDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     koboxAppsDialogWindow->show();
+}
+
+void apps::on_vncLaunchBtn_clicked()
+{
+
 }

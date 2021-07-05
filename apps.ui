@@ -56,45 +56,8 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="1" column="1">
-        <widget class="QPushButton" name="scribbleLaunchBtn">
-         <property name="font">
-          <font>
-           <family>Inter</family>
-           <italic>false</italic>
-          </font>
-         </property>
-         <property name="text">
-          <string>Launch</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QPushButton" name="calculatorLaunchBtn">
-         <property name="font">
-          <font>
-           <family>Inter</family>
-          </font>
-         </property>
-         <property name="text">
-          <string>Launch</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QPushButton" name="savedWordsLaunchBtn">
-         <property name="font">
-          <font>
-           <family>Inter</family>
-          </font>
-         </property>
-         <property name="text">
-          <string>Launch</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="label_2">
+       <item row="1" column="0">
+        <widget class="QLabel" name="scribbleLabel">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -102,7 +65,34 @@
           </font>
          </property>
          <property name="text">
-          <string>Light Maps</string>
+          <string>Scribble</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QPushButton" name="calendarLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_5">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>KoBox apps</string>
          </property>
         </widget>
        </item>
@@ -119,25 +109,13 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="scribbleLabel">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Scribble</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QPushButton" name="lightmapsLaunchBtn">
+       <item row="4" column="1">
+        <widget class="QPushButton" name="savedWordsLaunchBtn">
          <property name="font">
           <font>
            <family>Inter</family>
-           <italic>false</italic>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -158,11 +136,27 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="1">
-        <widget class="QPushButton" name="calendarLaunchBtn">
+       <item row="2" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Light Maps</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QPushButton" name="lightmapsLaunchBtn">
          <property name="font">
           <font>
            <family>Inter</family>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
@@ -183,8 +177,51 @@
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QLabel" name="label_5">
+       <item row="0" column="1">
+        <widget class="QPushButton" name="koboxAppsOpenButton">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Open</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QPushButton" name="calculatorLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="scribbleLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="vncViewerLabel">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -192,21 +229,21 @@
           </font>
          </property>
          <property name="text">
-          <string>KoBox apps</string>
+          <string>VNC viewer</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="1">
-        <widget class="QPushButton" name="koboxAppsOpenButton">
+       <item row="6" column="1">
+        <widget class="QPushButton" name="vncLaunchBtn">
          <property name="font">
           <font>
            <family>Inter</family>
-           <weight>50</weight>
-           <bold>false</bold>
+           <weight>75</weight>
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">
-          <string>Open</string>
+          <string>Launch</string>
          </property>
         </widget>
        </item>

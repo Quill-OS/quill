@@ -2,6 +2,7 @@
 #define VIRTUALKEYPAD_H
 
 #include <QWidget>
+#include "functions.h"
 
 namespace Ui {
 class virtualkeypad;

@@ -68,6 +68,7 @@ private slots:
     void openUpdateDialog();
     void setInitialBrightness();
     void on_homeBtn_clicked();
+    void refreshScreen();
 
 private:
     Ui::MainWindow *ui;

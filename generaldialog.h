@@ -5,6 +5,7 @@
 
 #include "usbms_splash.h"
 #include "textwidget.h"
+#include "virtualkeyboard.h"
 #include "virtualkeypad.h"
 
 using namespace std;
@@ -35,15 +36,18 @@ private slots:
     void on_cancelBtn_clicked();
     void on_okBtn_clicked();
     void on_acceptBtn_clicked();
+    void adjust_size();
 
 private:
     Ui::generalDialog *ui;
     usbms_splash *usbmsWindow;
     textwidget *textwidgetWindow;
+    virtualkeyboard *keyboardWidget;
     virtualkeypad *keypadWidget;
 
 signals:
     void gotoPageSelected(int value);
+    void refreshScreen();
 };
 
 #endif // GENERALDIALOG_H

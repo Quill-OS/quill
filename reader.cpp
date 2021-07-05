@@ -602,7 +602,6 @@ reader::reader(QWidget *parent) :
         getTotalEpubPagesNumber();
     }
     setupPageWidget();
-    //connect(this, SIGNAL(gotoPageSelected(int)), this, SLOT(gotoPage(int)));
 }
 
 reader::~reader()

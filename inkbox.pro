@@ -27,6 +27,7 @@ SOURCES += \
     settingschooser.cpp \
     textwidget.cpp \
     usbms_splash.cpp \
+    virtualkeyboard.cpp \
     virtualkeypad.cpp
 
 HEADERS += \
@@ -46,6 +47,7 @@ HEADERS += \
     settingschooser.h \
     textwidget.h \
     usbms_splash.h \
+    virtualkeyboard.h \
     virtualkeypad.h
 
 FORMS += \
@@ -64,6 +66,7 @@ FORMS += \
     settingschooser.ui \
     textwidget.ui \
     usbms_splash.ui \
+    virtualkeyboard.ui \
     virtualkeypad.ui
 
 # Default rules for deployment.

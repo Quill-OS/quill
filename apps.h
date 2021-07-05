@@ -29,6 +29,8 @@ private slots:
 
     void on_koboxAppsOpenButton_clicked();
 
+    void on_vncLaunchBtn_clicked();
+
 private:
     Ui::apps *ui;
     savedwords *savedWordsWindow;

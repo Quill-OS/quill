@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QProcess>
 #include <QScreen>
+#include <QTimer>
 
 generalDialog::generalDialog(QWidget *parent) :
     QDialog(parent),
@@ -110,6 +111,17 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->cancelBtn->setText("Go back");
         ui->bodyLabel->setText("This will erase all KoBox user data. KoBox settings will be reset.");
         this->adjustSize();
+    }
+    else if(global::keyboard::keyboardDialog == true) {
+        keyboardDialog = true;
+        keyboardWidget = new virtualkeyboard();
+        connect(keyboardWidget, SIGNAL(adjust_size()), SLOT(adjust_size()));
+        ui->headerLabel->setText("Enter a string");
+        ui->okBtn->setText("OK");
+        ui->cancelBtn->setText("Cancel");
+        ui->mainStackedWidget->insertWidget(1, keyboardWidget);
+        ui->mainStackedWidget->setCurrentIndex(1);
+        QTimer::singleShot(1000, this, SLOT(adjust_size()));
     }
     else if(global::keyboard::keypadDialog == true) {
         keypadDialog = true;
@@ -232,4 +244,13 @@ void generalDialog::on_acceptBtn_clicked()
 
     // We don't have any other option ;p
     generalDialog::close();
+}
+
+void generalDialog::adjust_size() {
+    this->adjustSize();
+    QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
+    int x = (screenGeometry.width() - this->width()) / 2;
+    int y = (screenGeometry.height() - this->height()) / 2;
+    this->move(x, y);
+    emit refreshScreen();
 }
