@@ -75,6 +75,8 @@ public:
     QList<QString> content;
     QString epubPageContent;
     QString usbmsStatus;
+    int pageNumberInt;
+    int totalPagesInt;
 
     int setup_book(QString book, int i, bool run_parser);
     void checkwords();
@@ -93,6 +95,9 @@ public:
     void alignText(int alignment);
     void delay(int seconds);
     void openUsbmsDialog();
+    QString setPageNumberLabelContent();
+    void setupPageWidget();
+    void getTotalEpubPagesNumber();
 
 private slots:
     void on_nextBtn_clicked();

@@ -50,6 +50,7 @@ reader::reader(QWidget *parent) :
     ui->previousDefinitionBtn->setProperty("type", "borderless");
     ui->nextDefinitionBtn->setProperty("type", "borderless");
     ui->nightModeBtn->setProperty("type", "borderless");
+    ui->gotoBtn->setProperty("type", "borderless");
 
     // Icons
     ui->alignLeftBtn->setText("");
@@ -136,6 +137,8 @@ reader::reader(QWidget *parent) :
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->aboutBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->fontChooser->setStyleSheet("font-size: 9pt");
+    ui->gotoBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
+    ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
 
     // Hiding the menubar + definition widget + brightness widget
     ui->hideOptionsBtn->hide();
@@ -151,6 +154,7 @@ reader::reader(QWidget *parent) :
         ui->menuWidget->setVisible(false);
         ui->statusBarWidget->setVisible(false);
     }
+    ui->pageWidget->hide();
 
     // Topbar widget / book info
     ui->topbarStackedWidget->setVisible(true);
@@ -592,6 +596,12 @@ reader::reader(QWidget *parent) :
         } );
         t->start();
     }
+
+    // Pages number info label
+    if(is_epub == true) {
+        getTotalEpubPagesNumber();
+    }
+    setupPageWidget();
 }
 
 reader::~reader()
@@ -814,6 +824,7 @@ void reader::on_nextBtn_clicked()
         writeconfig_pagenumber();
     }
     alignText(textAlignment);
+    setupPageWidget();
     refreshScreen();
 }
 
@@ -846,6 +857,7 @@ void reader::on_previousBtn_clicked()
         writeconfig_pagenumber();
     }
     alignText(textAlignment);
+    setupPageWidget();
     refreshScreen();
 }
 
@@ -1119,6 +1131,7 @@ void reader::menubar_show() {
     ui->menuWidget->setVisible(true);
     ui->menuBarWidget->setVisible(true);
     ui->statusBarWidget->setVisible(true);
+    ui->pageWidget->setVisible(true);
 
     string_checkconfig_ro("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
@@ -1143,6 +1156,7 @@ void reader::menubar_hide() {
     ui->hideOptionsBtn->hide();
     ui->optionsBtn->show();
     ui->menuBarWidget->setVisible(false);
+    ui->pageWidget->setVisible(false);
     if(checkconfig(".config/11-menubar/sticky") == true) {
         ui->statusBarWidget->setVisible(true);
     }
@@ -1456,4 +1470,51 @@ void reader::openUsbmsDialog() {
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
     QApplication::processEvents();
+}
+
+QString reader::setPageNumberLabelContent() {
+    QString content;
+    if(is_epub == true) {
+        QString pageNumber;
+        QString totalPages;
+        pageNumberInt = mupdf::epubPageNumber;
+        pageNumber = QString::number(pageNumberInt);
+        totalPages = QString::number(totalPagesInt);
+        content.append(pageNumber);
+        content.append(" <i>of</i> ");
+        content.append(totalPages);
+    }
+    else {
+        QString pageNumber;
+        QString totalPages;
+        pageNumberInt = split_files_number - split_total;
+        totalPagesInt = split_files_number - 2;
+        pageNumber = QString::number(pageNumberInt);
+        totalPages = QString::number(totalPagesInt);
+        content.append(pageNumber);
+        content.append(" <i>of</i> ");
+        content.append(totalPages);
+    }
+    return content;
+}
+
+void reader::setupPageWidget() {
+    QString pageNumberInfoLabelContent = setPageNumberLabelContent();
+    ui->pageNumberLabel->setText(pageNumberInfoLabelContent);
+    ui->pageProgressBar->setMaximum(totalPagesInt);
+    ui->pageProgressBar->setMinimum(1);
+    ui->pageProgressBar->setValue(pageNumberInt);
+}
+
+void reader::getTotalEpubPagesNumber() {
+    QString epubProg ("sh");
+    QStringList epubArgs;
+    convertMuPdfVars();
+    epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << mupdf::fontSize_qstr << mupdf::width_qstr << mupdf::height_qstr << mupdf::epubPageNumber_qstr << "get_pages_number";
+    QProcess *epubProc = new QProcess();
+    epubProc->start(epubProg, epubArgs);
+    epubProc->waitForFinished();
+
+    string_checkconfig_ro("/run/epub_total_pages_number");
+    totalPagesInt = checkconfig_str_val.toInt();
 }
