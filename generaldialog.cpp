@@ -111,6 +111,16 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->bodyLabel->setText("This will erase all KoBox user data. KoBox settings will be reset.");
         this->adjustSize();
     }
+    else if(global::keyboard::keypadDialog == true) {
+        keypadDialog = true;
+        keypadWidget = new virtualkeypad();
+        ui->headerLabel->setText("Enter a number");
+        ui->okBtn->setText("OK");
+        ui->cancelBtn->setText("Cancel");
+        ui->mainStackedWidget->insertWidget(1, keypadWidget);
+        ui->mainStackedWidget->setCurrentIndex(1);
+        this->adjustSize();
+    }
     else {
         // We shouldn't be there ;)
         ;
@@ -185,6 +195,16 @@ void generalDialog::on_okBtn_clicked()
     }
     if(resetKoboxDialog == true) {
         resetKoboxUserData();
+    }
+    if(keypadDialog == true) {
+        int number = global::keyboard::keypadText.toInt();
+        emit gotoPageSelected(number);
+        global::keyboard::keypadDialog = false;
+        generalDialog::close();
+    }
+    if(keyboardDialog == true) {
+        global::keyboard::keyboardDialog = false;
+        generalDialog::close();
     }
 }
 void generalDialog::on_acceptBtn_clicked()

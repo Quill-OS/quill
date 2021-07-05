@@ -5,6 +5,7 @@
 
 #include "usbms_splash.h"
 #include "textwidget.h"
+#include "virtualkeypad.h"
 
 using namespace std;
 
@@ -27,6 +28,8 @@ public:
     bool usbmsDialog = false;
     bool textBrowserDialog = false;
     bool resetKoboxDialog = false;
+    bool keyboardDialog = false;
+    bool keypadDialog = false;
 
 private slots:
     void on_cancelBtn_clicked();
@@ -37,6 +40,10 @@ private:
     Ui::generalDialog *ui;
     usbms_splash *usbmsWindow;
     textwidget *textwidgetWindow;
+    virtualkeypad *keypadWidget;
+
+signals:
+    void gotoPageSelected(int value);
 };
 
 #endif // GENERALDIALOG_H

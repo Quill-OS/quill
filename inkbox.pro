@@ -26,7 +26,8 @@ SOURCES += \
     settings.cpp \
     settingschooser.cpp \
     textwidget.cpp \
-    usbms_splash.cpp
+    usbms_splash.cpp \
+    virtualkeypad.cpp
 
 HEADERS += \
     alert.h \
@@ -44,7 +45,8 @@ HEADERS += \
     settings.h \
     settingschooser.h \
     textwidget.h \
-    usbms_splash.h
+    usbms_splash.h \
+    virtualkeypad.h
 
 FORMS += \
     alert.ui \
@@ -61,7 +63,8 @@ FORMS += \
     settings.ui \
     settingschooser.ui \
     textwidget.ui \
-    usbms_splash.ui
+    usbms_splash.ui \
+    virtualkeypad.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -122,6 +122,8 @@ private slots:
     void quit_restart();
     void on_text_selectionChanged();
     void on_nightModeBtn_clicked();
+    void on_gotoBtn_clicked();
+    void gotoPage(int pageNumber);
 
 private:
     Ui::reader *ui;

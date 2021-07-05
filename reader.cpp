@@ -602,6 +602,7 @@ reader::reader(QWidget *parent) :
         getTotalEpubPagesNumber();
     }
     setupPageWidget();
+    //connect(this, SIGNAL(gotoPageSelected(int)), this, SLOT(gotoPage(int)));
 }
 
 reader::~reader()
@@ -1530,4 +1531,48 @@ void reader::getTotalEpubPagesNumber() {
 
     string_checkconfig_ro("/run/epub_total_pages_number");
     totalPagesInt = checkconfig_str_val.toInt();
+}
+
+void reader::on_gotoBtn_clicked()
+{
+    global::keyboard::keypadDialog = true;
+    generalDialogWindow = new generalDialog();
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(generalDialogWindow, SIGNAL(gotoPageSelected(int)), SLOT(gotoPage(int)));
+    generalDialogWindow->show();
+}
+
+void reader::gotoPage(int pageNumber) {
+    if(is_epub == true) {
+        if(pageNumber > totalPagesInt or pageNumber < 1) {
+            QMessageBox::critical(this, tr("Invalid argument"), tr("Request is beyond the page range."));
+        }
+        else {
+            mupdf::epubPageNumber = pageNumber;
+            setup_book(book_file, mupdf::epubPageNumber, true);
+            ui->text->setText("");
+            ui->text->setText(epubPageContent);
+
+            pagesTurned = 0;
+            writeconfig_pagenumber();
+        }
+    }
+    else {
+        if(split_files_number - pageNumber < 2 or split_files_number - pageNumber > split_files_number - 1) {
+            QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
+        }
+        else {
+            split_total = split_files_number - pageNumber;
+
+            setup_book(book_file, split_total, false);
+            ui->text->setText("");
+            ui->text->setText(ittext);
+
+            pagesTurned = 0;
+            writeconfig_pagenumber();
+        }
+    }
+    alignText(textAlignment);
+    setupPageWidget();
+    refreshScreen();
 }

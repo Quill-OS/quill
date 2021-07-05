@@ -14,6 +14,7 @@
 #include "koboxsettings.h"
 #include "koboxappsdialog.h"
 #include "textwidget.h"
+#include "virtualkeypad.h"
 
 using namespace std;
 
@@ -81,6 +82,7 @@ private:
     koboxSettings *koboxSettingsWindow;
     koboxAppsDialog *koboxAppsDialogWindow;
     textwidget *textwidgetWindow;
+    virtualkeypad *keypadWidget;
 };
 
 #endif // MAINWINDOW_H

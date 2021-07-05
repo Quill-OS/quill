@@ -59,10 +59,17 @@ namespace global {
         inline bool textBrowserDialog;
         inline QString textBrowserContents;
     }
+    namespace keyboard {
+        inline bool keyboardDialog;
+        inline bool keypadDialog;
+        inline QString keyboardText;
+        inline QString keypadText;
+    }
     inline QString systemInfoText;
     inline bool isN705;
     inline bool isN905C;
     inline bool isN613;
+    inline int *readerptr;
 }
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534

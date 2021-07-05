@@ -46,5 +46,7 @@
         <file>resources/info.png</file>
         <file>resources/nightmode-empty.png</file>
         <file>resources/nightmode-full.png</file>
+        <file>resources/backspace.png</file>
+        <file>resources/x-circle.png</file>
     </qresource>
 </RCC>
