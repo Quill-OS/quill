@@ -815,13 +815,18 @@ void reader::on_nextBtn_clicked()
         }
     }
     else {
-        mupdf::epubPageNumber = mupdf::epubPageNumber + 1;
-        setup_book(book_file, mupdf::epubPageNumber, true);
-        ui->text->setText("");
-        ui->text->setText(epubPageContent);
+        if(mupdf::epubPageNumber + 1 > totalPagesInt) {
+            QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
+        }
+        else {
+            mupdf::epubPageNumber = mupdf::epubPageNumber + 1;
+            setup_book(book_file, mupdf::epubPageNumber, true);
+            ui->text->setText("");
+            ui->text->setText(epubPageContent);
 
-        pagesTurned = pagesTurned + 1;
-        writeconfig_pagenumber();
+            pagesTurned = pagesTurned + 1;
+            writeconfig_pagenumber();
+        }
     }
     alignText(textAlignment);
     setupPageWidget();
@@ -847,14 +852,19 @@ void reader::on_previousBtn_clicked()
         }
     }
     else {
-        mupdf::epubPageNumber = mupdf::epubPageNumber - 1;
-        setup_book(book_file, mupdf::epubPageNumber, true);
-        ui->text->setText("");
-        ui->text->setText(epubPageContent);
+        if(mupdf::epubPageNumber - 1 <= 0) {
+            QMessageBox::critical(this, tr("Invalid argument"), tr("No previous page."));
+        }
+        else {
+            mupdf::epubPageNumber = mupdf::epubPageNumber - 1;
+            setup_book(book_file, mupdf::epubPageNumber, true);
+            ui->text->setText("");
+            ui->text->setText(epubPageContent);
 
-        // We always increment pagesTurned regardless whether we press the Previous or Next button
-        pagesTurned = pagesTurned + 1;
-        writeconfig_pagenumber();
+            // We always increment pagesTurned regardless whether we press the Previous or Next button
+            pagesTurned = pagesTurned + 1;
+            writeconfig_pagenumber();
+        }
     }
     alignText(textAlignment);
     setupPageWidget();
@@ -1369,6 +1379,9 @@ void reader::convertMuPdfVars() {
     mupdf::fontSize_qstr = QString::number(mupdf::fontSize);
     mupdf::width_qstr = QString::number(mupdf::width);
     mupdf::height_qstr = QString::number(mupdf::height);
+    if(mupdf::epubPageNumber <= 0) {
+        mupdf::epubPageNumber = 1;
+    }
     mupdf::epubPageNumber_qstr = QString::number(mupdf::epubPageNumber);
 }
 
