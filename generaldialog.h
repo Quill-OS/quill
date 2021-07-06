@@ -7,6 +7,7 @@
 #include "textwidget.h"
 #include "virtualkeyboard.h"
 #include "virtualkeypad.h"
+#include "dictionarywidget.h"
 
 using namespace std;
 
@@ -31,12 +32,16 @@ public:
     bool resetKoboxDialog = false;
     bool keyboardDialog = false;
     bool keypadDialog = false;
+    bool dictionaryResults = false;
+    void setupKeyboardDialog();
 
 private slots:
     void on_cancelBtn_clicked();
     void on_okBtn_clicked();
     void on_acceptBtn_clicked();
     void adjust_size();
+    void restartSearchDialog();
+    void refreshScreenNative();
 
 private:
     Ui::generalDialog *ui;
@@ -44,6 +49,7 @@ private:
     textwidget *textwidgetWindow;
     virtualkeyboard *keyboardWidget;
     virtualkeypad *keypadWidget;
+    dictionaryWidget *dictionaryWidgetWindow;
 
 signals:
     void gotoPageSelected(int value);

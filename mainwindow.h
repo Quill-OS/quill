@@ -69,6 +69,7 @@ private slots:
     void setInitialBrightness();
     void on_homeBtn_clicked();
     void refreshScreen();
+    void setupSearchDialog();
 
 private:
     Ui::MainWindow *ui;

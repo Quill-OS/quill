@@ -62,14 +62,15 @@ namespace global {
     namespace keyboard {
         inline bool keyboardDialog;
         inline bool keypadDialog;
+        inline bool searchDialog;
         inline QString keyboardText;
         inline QString keypadText;
     }
     inline QString systemInfoText;
+    inline bool forbidOpenSearchDialog;
     inline bool isN705;
     inline bool isN905C;
     inline bool isN613;
-    inline int *readerptr;
 }
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534
@@ -226,7 +227,7 @@ namespace {
     void writeconfig(std::string file, std::string config) {
             std::ofstream fhandler;
             fhandler.open(file);
-            fhandler << config << std::boolalpha << checked_box << endl;
+            fhandler << config << std::boolalpha << checked_box << std::endl;
             fhandler.close();
     }
     bool checkconfig_match(QString file, std::string pattern) {

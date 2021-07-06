@@ -2,6 +2,7 @@
 #include "ui_virtualkeyboard.h"
 
 #include <QTimer>
+#include <QDebug>
 
 virtualkeyboard::virtualkeyboard(QWidget *parent) :
     QWidget(parent),
@@ -116,7 +117,7 @@ void virtualkeyboard::on_eraseBtn_clicked()
 {
     ui->lineEdit->backspace();
     QString text = ui->lineEdit->text();
-    global::keyboard::keypadText = text;
+    global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_spt_clicked()

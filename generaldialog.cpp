@@ -9,6 +9,7 @@
 #include <QProcess>
 #include <QScreen>
 #include <QTimer>
+#include <QMessageBox>
 
 generalDialog::generalDialog(QWidget *parent) :
     QDialog(parent),
@@ -33,6 +34,7 @@ generalDialog::generalDialog(QWidget *parent) :
     ui->cancelBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->acceptBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->bodyLabel->setStyleSheet("font-size: 9pt");
+    ui->searchComboBox->setStyleSheet("font-size: 9pt");
 
     if(checkconfig("/inkbox/resetDialog") == true) {
         if(checkconfig("/opt/inkbox_genuine") == true) {
@@ -113,15 +115,7 @@ generalDialog::generalDialog(QWidget *parent) :
         this->adjustSize();
     }
     else if(global::keyboard::keyboardDialog == true) {
-        keyboardDialog = true;
-        keyboardWidget = new virtualkeyboard();
-        connect(keyboardWidget, SIGNAL(adjust_size()), SLOT(adjust_size()));
-        ui->headerLabel->setText("Enter a string");
-        ui->okBtn->setText("OK");
-        ui->cancelBtn->setText("Cancel");
-        ui->mainStackedWidget->insertWidget(1, keyboardWidget);
-        ui->mainStackedWidget->setCurrentIndex(1);
-        QTimer::singleShot(1000, this, SLOT(adjust_size()));
+        setupKeyboardDialog();
     }
     else if(global::keyboard::keypadDialog == true) {
         keypadDialog = true;
@@ -161,6 +155,12 @@ void generalDialog::on_cancelBtn_clicked()
         generalDialog::close();
     }
     else {
+        if(global::keyboard::searchDialog == true) {
+            global::keyboard::searchDialog = false;
+            global::forbidOpenSearchDialog = true;
+            global::keyboard::keyboardDialog = false;
+            global::keyboard::keyboardText = "";
+        }
         generalDialog::close();
     }
 }
@@ -215,8 +215,34 @@ void generalDialog::on_okBtn_clicked()
         generalDialog::close();
     }
     if(keyboardDialog == true) {
-        global::keyboard::keyboardDialog = false;
-        generalDialog::close();
+        if(global::keyboard::searchDialog == true) {
+            if(global::keyboard::keyboardText != "") {
+                if(ui->searchComboBox->currentText() == "Dictionary") {
+                    for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {
+                        QWidget * widget = ui->mainStackedWidget->widget(i);
+                        ui->mainStackedWidget->removeWidget(widget);
+                        widget->deleteLater();
+                    }
+                    ui->topStackedWidget->setVisible(false);
+                    ui->stackedWidget->setVisible(false);
+                    dictionaryWidgetWindow = new dictionaryWidget();
+                    dictionaryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+                    connect(dictionaryWidgetWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
+                    connect(dictionaryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
+                    ui->mainStackedWidget->insertWidget(1, dictionaryWidgetWindow);
+                }
+                else {
+                    ;
+                }
+            }
+            else {
+                QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in a search term."));
+            }
+        }
+        else {
+            global::keyboard::keyboardDialog = false;
+            generalDialog::close();
+        }
     }
 }
 void generalDialog::on_acceptBtn_clicked()
@@ -252,5 +278,32 @@ void generalDialog::adjust_size() {
     int x = (screenGeometry.width() - this->width()) / 2;
     int y = (screenGeometry.height() - this->height()) / 2;
     this->move(x, y);
+    emit refreshScreen();
+}
+
+void generalDialog::restartSearchDialog() {
+    generalDialog::close();
+}
+
+void generalDialog::setupKeyboardDialog() {
+    keyboardDialog = true;
+    ui->stackedWidget->setVisible(true);
+    if(global::keyboard::searchDialog == true) {
+        ui->topStackedWidget->setCurrentIndex(1);
+        ui->searchHeaderLabel->setText("Search");
+    }
+    else {
+        ui->headerLabel->setText("Enter a string");
+    }
+    keyboardWidget = new virtualkeyboard();
+    connect(keyboardWidget, SIGNAL(adjust_size()), SLOT(adjust_size()));
+    ui->okBtn->setText("Search");
+    ui->cancelBtn->setText("Close");
+    ui->mainStackedWidget->insertWidget(1, keyboardWidget);
+    ui->mainStackedWidget->setCurrentIndex(1);
+    QTimer::singleShot(1000, this, SLOT(adjust_size()));
+}
+
+void generalDialog::refreshScreenNative() {
     emit refreshScreen();
 }

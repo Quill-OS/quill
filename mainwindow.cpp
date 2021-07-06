@@ -617,12 +617,8 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_searchBtn_clicked()
 {
-    // Hopefully this button will do something one day...
-    global::keyboard::keyboardDialog = true;
-    generalDialogWindow = new generalDialog();
-    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
-    generalDialogWindow->show();
+    global::forbidOpenSearchDialog = false;
+    setupSearchDialog();
 }
 
 void MainWindow::on_quitBtn_clicked()
@@ -809,4 +805,20 @@ void MainWindow::setInitialBrightness() {
 
 void MainWindow::refreshScreen() {
     this->repaint();
+}
+
+void MainWindow::setupSearchDialog() {
+    if(global::forbidOpenSearchDialog == false) {
+        global::keyboard::keyboardDialog = true;
+        global::keyboard::searchDialog = true;
+        global::keyboard::keyboardText = "";
+        generalDialogWindow = new generalDialog();
+        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+        connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
+        generalDialogWindow->show();
+    }
+    else {
+        ;
+    }
 }
