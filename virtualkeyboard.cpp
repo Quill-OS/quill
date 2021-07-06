@@ -99,6 +99,15 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
     ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 10px; border: 1px solid black");
 
     ui->lineEdit->setStyleSheet("border: 3px solid black");
+    if(global::keyboard::vncDialog == true) {
+        ui->lineEdit->setFont(QFont("Noto Mono"));
+    }
+    else if(global::keyboard::searchDialog == true){
+        ui->lineEdit->setFont(QFont("Source Serif Pro"));
+    }
+    else {
+        ui->lineEdit->setFont(QFont("Roboto"));
+    }
 }
 
 virtualkeyboard::~virtualkeyboard()

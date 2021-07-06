@@ -161,6 +161,11 @@ void generalDialog::on_cancelBtn_clicked()
             global::keyboard::keyboardDialog = false;
             global::keyboard::keyboardText = "";
         }
+        else if(global::keyboard::vncDialog == true) {
+            global::keyboard::vncDialog = false;
+            global::keyboard::keyboardDialog = false;
+            global::keyboard::keyboardText = "";
+        }
         generalDialog::close();
     }
 }
@@ -348,6 +353,6 @@ void generalDialog::startVNC(QString server, QString password, QString port) {
     string_writeconfig("/external_root/tmp/app_vnc_server", server_str);
     string_writeconfig("/external_root/tmp/app_vnc_password", password_str);
     string_writeconfig("/external_root/tmp/app_vnc_port", port_str);
-    string_writeconfig("/opt/ibxd", "app_start_vnc");
+    string_writeconfig("/opt/ibxd", "app_start_vnc\n");
     qApp->quit();
 }
