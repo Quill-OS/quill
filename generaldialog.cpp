@@ -239,6 +239,32 @@ void generalDialog::on_okBtn_clicked()
                 QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in a search term."));
             }
         }
+        else if(global::keyboard::vncDialog == true) {
+            if(global::keyboard::keyboardText != "") {
+                if(vncServerSet != true) {
+                    vncServerAddress = global::keyboard::keyboardText;
+                    vncServerSet = true;
+                    keyboardWidget->clearLineEdit();
+                    ui->headerLabel->setText("Enter the server's password");
+                }
+                else if(vncPasswordSet != true) {
+                    vncServerPassword = global::keyboard::keyboardText;
+                    vncPasswordSet = true;
+                    keyboardWidget->clearLineEdit();
+                    ui->headerLabel->setText("Enter the server's port");
+                }
+                else {
+                    vncServerPort = global::keyboard::keyboardText;
+                    global::keyboard::vncDialog = false;
+                    global::keyboard::keyboardDialog = false;
+                    startVNC(vncServerAddress, vncServerPassword, vncServerPort);
+                    generalDialog::close();
+                }
+            }
+            else {
+                QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in the required argument."));
+            }
+        }
         else {
             global::keyboard::keyboardDialog = false;
             generalDialog::close();
@@ -291,14 +317,21 @@ void generalDialog::setupKeyboardDialog() {
     if(global::keyboard::searchDialog == true) {
         ui->topStackedWidget->setCurrentIndex(1);
         ui->searchHeaderLabel->setText("Search");
+        ui->okBtn->setText("Search");
+        ui->cancelBtn->setText("Close");
+    }
+    else if(global::keyboard::vncDialog == true) {
+        ui->headerLabel->setText("Enter the server's IP address");
+        ui->okBtn->setText("OK");
+        ui->cancelBtn->setText("Cancel");
     }
     else {
         ui->headerLabel->setText("Enter a string");
+        ui->okBtn->setText("OK");
+        ui->cancelBtn->setText("Cancel");
     }
     keyboardWidget = new virtualkeyboard();
     connect(keyboardWidget, SIGNAL(adjust_size()), SLOT(adjust_size()));
-    ui->okBtn->setText("Search");
-    ui->cancelBtn->setText("Close");
     ui->mainStackedWidget->insertWidget(1, keyboardWidget);
     ui->mainStackedWidget->setCurrentIndex(1);
     QTimer::singleShot(1000, this, SLOT(adjust_size()));
@@ -306,4 +339,15 @@ void generalDialog::setupKeyboardDialog() {
 
 void generalDialog::refreshScreenNative() {
     emit refreshScreen();
+}
+
+void generalDialog::startVNC(QString server, QString password, QString port) {
+    std::string server_str = server.toStdString();
+    std::string password_str = password.toStdString();
+    std::string port_str = port.toStdString();
+    string_writeconfig("/external_root/tmp/app_vnc_server", server_str);
+    string_writeconfig("/external_root/tmp/app_vnc_password", password_str);
+    string_writeconfig("/external_root/tmp/app_vnc_port", port_str);
+    string_writeconfig("/opt/ibxd", "app_start_vnc");
+    qApp->quit();
 }

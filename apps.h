@@ -26,16 +26,19 @@ private slots:
     void on_savedWordsLaunchBtn_clicked();
     void on_calendarLaunchBtn_clicked();
     void on_calculatorLaunchBtn_clicked();
-
     void on_koboxAppsOpenButton_clicked();
-
     void on_vncLaunchBtn_clicked();
+    void refreshScreenNative();
 
 private:
     Ui::apps *ui;
     savedwords *savedWordsWindow;
     calendarApp *calendarWindow;
     koboxAppsDialog *koboxAppsDialogWindow;
+    generalDialog *generalDialogWindow;
+
+signals:
+    void refreshScreen();
 };
 
 #endif // APPS_H

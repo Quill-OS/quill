@@ -33,7 +33,13 @@ public:
     bool keyboardDialog = false;
     bool keypadDialog = false;
     bool dictionaryResults = false;
+    bool vncServerSet = false;
+    bool vncPasswordSet = false;
+    QString vncServerAddress;
+    QString vncServerPassword;
+    QString vncServerPort;
     void setupKeyboardDialog();
+    void startVNC(QString server, QString password, QString port);
 
 private slots:
     void on_cancelBtn_clicked();

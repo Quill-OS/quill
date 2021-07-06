@@ -594,3 +594,9 @@ void virtualkeyboard::reverseKeys() {
 void virtualkeyboard::adjust_size_function() {
     emit adjust_size();
 }
+
+void virtualkeyboard::clearLineEdit() {
+    ui->lineEdit->clear();
+    QString text = ui->lineEdit->text();
+    global::keyboard::keyboardText = text;
+}

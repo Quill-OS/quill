@@ -593,6 +593,7 @@ void MainWindow::on_appsBtn_clicked()
 
         // Create widget
         appsWindow = new apps();
+        connect(appsWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
         ui->stackedWidget->insertWidget(1, appsWindow);
         global::mainwindow::tabSwitcher::appsWidgetCreated = true;
 

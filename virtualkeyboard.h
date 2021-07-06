@@ -17,6 +17,7 @@ public:
     ~virtualkeyboard();
     bool shift;
     void reverseKeys();
+    void clearLineEdit();
 
 private slots:
     void on_spaceBtn_clicked();

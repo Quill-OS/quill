@@ -63,6 +63,7 @@ namespace global {
         inline bool keyboardDialog;
         inline bool keypadDialog;
         inline bool searchDialog;
+        inline bool vncDialog;
         inline QString keyboardText;
         inline QString keypadText;
     }

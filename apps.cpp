@@ -26,17 +26,15 @@ apps::apps(QWidget *parent) :
     ui->vncLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     // Hiding KoBox apps button and label if X11 isn't enabled/wasn't started
-    if(checkconfig("/external_root/boot/flags/X11_START") != true) {
+    if(checkconfig("/external_root/boot/flags/X11_START") == false) {
         ui->label_5->hide();
         ui->koboxAppsOpenButton->hide();
         ui->label_5->deleteLater();
         ui->koboxAppsOpenButton->deleteLater();
-    }
-    if(checkconfig("/external_root/boot/flags/X11_START") != true) {
-        ui->label_5->hide();
-        ui->koboxAppsOpenButton->hide();
-        ui->label_5->deleteLater();
-        ui->koboxAppsOpenButton->deleteLater();
+        ui->vncViewerLabel->hide();
+        ui->vncLaunchBtn->hide();
+        ui->vncViewerLabel->deleteLater();
+        ui->vncLaunchBtn->deleteLater();
     }
 
     QFile stylesheetFile(":/resources/eink.qss");
@@ -98,5 +96,15 @@ void apps::on_koboxAppsOpenButton_clicked()
 
 void apps::on_vncLaunchBtn_clicked()
 {
+    global::keyboard::keyboardDialog = true;
+    global::keyboard::vncDialog = true;
+    global::keyboard::keyboardText = "";
+    generalDialogWindow = new generalDialog();
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
+    generalDialogWindow->show();
+}
 
+void apps::refreshScreenNative() {
+    emit refreshScreen();
 }
