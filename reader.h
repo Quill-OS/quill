@@ -124,6 +124,9 @@ private slots:
     void on_nightModeBtn_clicked();
     void on_gotoBtn_clicked();
     void gotoPage(int pageNumber);
+    void on_searchBtn_clicked();
+    void searchRefreshScreen();
+    void setupSearchDialog();
 
 private:
     Ui::reader *ui;

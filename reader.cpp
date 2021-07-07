@@ -50,6 +50,7 @@ reader::reader(QWidget *parent) :
     ui->previousDefinitionBtn->setProperty("type", "borderless");
     ui->nextDefinitionBtn->setProperty("type", "borderless");
     ui->nightModeBtn->setProperty("type", "borderless");
+    ui->searchBtn->setProperty("type", "borderless");
     ui->gotoBtn->setProperty("type", "borderless");
 
     // Icons
@@ -77,6 +78,8 @@ reader::reader(QWidget *parent) :
     ui->homeBtn->setIcon(QIcon(":/resources/home.png"));
     ui->aboutBtn->setText("");
     ui->aboutBtn->setIcon(QIcon(":/resources/info.png"));
+    ui->searchBtn->setText("");
+    ui->searchBtn->setIcon(QIcon(":/resources/search.png"));
 
     // Style misc.
     ui->bookInfoLabel->setStyleSheet("font-style: italic");
@@ -1574,4 +1577,30 @@ void reader::gotoPage(int pageNumber) {
     alignText(textAlignment);
     setupPageWidget();
     refreshScreen();
+}
+
+void reader::on_searchBtn_clicked()
+{
+    global::forbidOpenSearchDialog = false;
+    setupSearchDialog();
+}
+
+void reader::setupSearchDialog() {
+    if(global::forbidOpenSearchDialog == false) {
+        global::keyboard::keyboardDialog = true;
+        global::keyboard::searchDialog = true;
+        global::keyboard::keyboardText = "";
+        generalDialogWindow = new generalDialog();
+        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(searchRefreshScreen()));
+        connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
+        generalDialogWindow->show();
+    }
+    else {
+        ;
+    }
+}
+
+void reader::searchRefreshScreen() {
+    this->repaint();
 }

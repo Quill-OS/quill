@@ -558,10 +558,10 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="0">
-                    <widget class="QPushButton" name="homeBtn">
+                   <item row="0" column="11">
+                    <widget class="QLabel" name="batteryIconLabel">
                      <property name="text">
-                      <string>  Home  </string>
+                      <string>Battery Icon</string>
                      </property>
                     </widget>
                    </item>
@@ -572,7 +572,7 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="7">
+                   <item row="0" column="8">
                     <spacer name="horizontalSpacer_2">
                      <property name="orientation">
                       <enum>Qt::Horizontal</enum>
@@ -585,7 +585,41 @@
                      </property>
                     </spacer>
                    </item>
-                   <item row="0" column="9">
+                   <item row="0" column="3">
+                    <widget class="Line" name="line_7">
+                     <property name="frameShadow">
+                      <enum>QFrame::Plain</enum>
+                     </property>
+                     <property name="lineWidth">
+                      <number>1</number>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="2">
+                    <widget class="QPushButton" name="aboutBtn">
+                     <property name="text">
+                      <string>  About  </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="0">
+                    <widget class="QPushButton" name="homeBtn">
+                     <property name="text">
+                      <string>  Home  </string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="6">
+                    <widget class="QPushButton" name="searchBtn">
+                     <property name="text">
+                      <string>Search</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item row="0" column="10">
                     <widget class="QLabel" name="batteryLabel">
                      <property name="font">
                       <font>
@@ -598,27 +632,10 @@
                      </property>
                     </widget>
                    </item>
-                   <item row="0" column="10">
-                    <widget class="QLabel" name="batteryIconLabel">
-                     <property name="text">
-                      <string>Battery Icon</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="2">
-                    <widget class="QPushButton" name="aboutBtn">
-                     <property name="text">
-                      <string>  About  </string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item row="0" column="3">
-                    <widget class="Line" name="line_7">
+                   <item row="0" column="5">
+                    <widget class="Line" name="line_17">
                      <property name="frameShadow">
                       <enum>QFrame::Plain</enum>
-                     </property>
-                     <property name="lineWidth">
-                      <number>1</number>
                      </property>
                      <property name="orientation">
                       <enum>Qt::Vertical</enum>
