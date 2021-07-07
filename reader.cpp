@@ -140,7 +140,7 @@ reader::reader(QWidget *parent) :
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->aboutBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->fontChooser->setStyleSheet("font-size: 9pt");
-    ui->gotoBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
+    ui->gotoBtn->setStyleSheet("font-size: 9pt; padding: 9px; font-weight: bold; background: lightGrey");
     ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
 
     // Hiding the menubar + definition widget + brightness widget
