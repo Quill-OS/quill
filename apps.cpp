@@ -31,6 +31,8 @@ apps::apps(QWidget *parent) :
         ui->koboxAppsOpenButton->hide();
         ui->label_5->deleteLater();
         ui->koboxAppsOpenButton->deleteLater();
+    }
+    if(checkconfig("/external_root/opt/root/rooted") == false or checkconfig("/external_root/boot/flags/X11_START") == false) {
         ui->vncViewerLabel->hide();
         ui->vncLaunchBtn->hide();
         ui->vncViewerLabel->deleteLater();
