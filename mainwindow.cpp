@@ -719,7 +719,7 @@ void MainWindow::resetIcons() {
 void MainWindow::setBatteryIcon() {
     // Battery
     string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n873\n") {
         // Hide brightness controls; they won't be very useful there anyway (for anything but the Glo) ...
         if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
             ui->brightnessBtn->hide();

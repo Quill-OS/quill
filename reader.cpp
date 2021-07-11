@@ -110,6 +110,24 @@ reader::reader(QWidget *parent) :
             ui->text->setFont(crimson);
             ui->fontChooser->setCurrentText(checkconfig_str_val);
         }
+        else if(checkconfig_str_val == "Bitter") {
+            QString family;
+            {
+                int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Medium.ttf");
+                family = QFontDatabase::applicationFontFamilies(id).at(0);
+            }
+            {
+                int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-MediumItalic.ttf");
+                family = QFontDatabase::applicationFontFamilies(id).at(0);
+            }
+            {
+                int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Bold.ttf");
+                family = QFontDatabase::applicationFontFamilies(id).at(0);
+            }
+            QFont bitter(family);
+            ui->text->setFont(bitter);
+            ui->fontChooser->setCurrentText(checkconfig_str_val);
+        }
         else {
             QFont config_font(checkconfig_str_val);
             ui->text->setFont(config_font);
@@ -117,17 +135,26 @@ reader::reader(QWidget *parent) :
         }
     }
     // Night mode
-    if(checkconfig(".config/10-dark_mode/config") == true) {
-        string_writeconfig("/tmp/invertScreen", "y");
-        ui->nightModeBtn->setText("");
-        ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-full.png"));
-        isNightModeActive = true;
+    string_checkconfig_ro("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n") {
+        if(checkconfig(".config/10-dark_mode/config") == true) {
+            string_writeconfig("/tmp/invertScreen", "y");
+            ui->nightModeBtn->setText("");
+            ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-full.png"));
+            isNightModeActive = true;
+        }
+        else {
+            string_writeconfig("/tmp/invertScreen", "n");
+            ui->nightModeBtn->setText("");
+            ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-empty.png"));
+            isNightModeActive = false;
+        }
     }
     else {
-        string_writeconfig("/tmp/invertScreen", "n");
-        ui->nightModeBtn->setText("");
-        ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-empty.png"));
-        isNightModeActive = false;
+        ui->line_7->hide();
+        ui->line_7->deleteLater();
+        ui->nightModeBtn->hide();
+        ui->nightModeBtn->deleteLater();
     }
 
     // Stylesheet + misc.
@@ -166,7 +193,7 @@ reader::reader(QWidget *parent) :
 
     // Getting brightness level
     int brightness_value;
-    if(global::isN705 == true or global::isN905C == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
         brightness_value = get_brightness();
     }
     else if(global::isN613 == true) {
@@ -904,7 +931,7 @@ void reader::on_hideOptionsBtn_clicked()
 void reader::on_brightnessDecBtn_clicked()
 {
     int bval;
-    if(global::isN705 == true or global::isN905C == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
         bval = get_brightness();
     }
     else if(global::isN613 == true) {
@@ -927,7 +954,7 @@ void reader::on_brightnessDecBtn_clicked()
 void reader::on_brightnessIncBtn_clicked()
 {
     int bval;
-    if(global::isN705 == true or global::isN905C == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
         bval = get_brightness();
     }
     else if(global::isN613 == true) {
@@ -1011,6 +1038,11 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
         QFont crimson(family);
         ui->text->setFont(crimson);
         string_writeconfig(".config/04-book/font", "Crimson Pro");
+    }
+    if(arg1 == "Bitter") {
+        QFont bitter("Bitter");
+        ui->text->setFont(bitter);
+        string_writeconfig(".config/04-book/font", "Bitter");
     }
 }
 

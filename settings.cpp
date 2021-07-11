@@ -80,8 +80,16 @@ settings::settings(QWidget *parent) :
     if(checkconfig(".config/05-quote/config") == true) {
         ui->quoteCheckBox->click();
     }
-    if(checkconfig(".config/10-dark_mode/config") == true) {
-        ui->darkModeCheckBox->click();
+
+    string_checkconfig_ro("/opt/inkbox_device");
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n") {
+        if(checkconfig(".config/10-dark_mode/config") == true) {
+            ui->darkModeCheckBox->click();
+        }
+    }
+    else {
+        ui->darkModeCheckBox->hide();
+        ui->darkModeCheckBox->deleteLater();
     }
 
     // Words number
@@ -169,6 +177,17 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(1);
             }
             if(dpi_number == 225) {
+                ui->uiScalingSlider->setValue(2);
+            }
+        }
+        else if(checkconfig_str_val == "n873\n") {
+            if(dpi_number == 285) {
+                ui->uiScalingSlider->setValue(0);
+            }
+            if(dpi_number == 300) {
+                ui->uiScalingSlider->setValue(1);
+            }
+            if(dpi_number == 315) {
                 ui->uiScalingSlider->setValue(2);
             }
         }
@@ -587,6 +606,9 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(checkconfig_str_val == "n613\n") {
             string_writeconfig(".config/09-dpi/config", "195");
         }
+        if(checkconfig_str_val == "n873\n") {
+            string_writeconfig(".config/09-dpi/config", "285");
+        }
     }
     if(value == 1) {
         string_checkconfig_ro("/opt/inkbox_device");
@@ -599,6 +621,9 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(checkconfig_str_val == "n613\n") {
             string_writeconfig(".config/09-dpi/config", "210");
         }
+        if(checkconfig_str_val == "n873\n") {
+            string_writeconfig(".config/09-dpi/config", "300");
+        }
     }
     if(value == 2) {
         string_checkconfig_ro("/opt/inkbox_device");
@@ -610,6 +635,9 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         }
         if(checkconfig_str_val == "n613\n") {
             string_writeconfig(".config/09-dpi/config", "225");
+        }
+        if(checkconfig_str_val == "n873\n") {
+            string_writeconfig(".config/09-dpi/config", "315");
         }
     }
 
@@ -711,6 +739,9 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
         }
         else if(checkconfig_str_val == "n613\n") {
             string_writeconfig(".config/09-dpi/config", "195");
+        }
+        else if(checkconfig_str_val == "n873\n") {
+            string_writeconfig(".config/09-dpi/config", "285");
         }
         else {
             string_writeconfig(".config/09-dpi/config", "187");

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>490</width>
+    <width>549</width>
     <height>750</height>
    </rect>
   </property>
@@ -370,12 +370,17 @@
                      </item>
                      <item>
                       <property name="text">
-                       <string>Crimson Pro</string>
+                       <string>Source Serif Pro</string>
                       </property>
                      </item>
                      <item>
                       <property name="text">
-                       <string>Source Serif Pro</string>
+                       <string>Bitter</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
+                       <string>Crimson Pro</string>
                       </property>
                      </item>
                      <item>

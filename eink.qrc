@@ -48,5 +48,8 @@
         <file>resources/nightmode-full.png</file>
         <file>resources/backspace.png</file>
         <file>resources/x-circle.png</file>
+        <file>resources/fonts/Bitter-MediumItalic.ttf</file>
+        <file>resources/fonts/Bitter-Medium.ttf</file>
+        <file>resources/fonts/Bitter-Bold.ttf</file>
     </qresource>
 </RCC>

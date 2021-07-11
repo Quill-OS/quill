@@ -72,6 +72,7 @@ namespace global {
     inline bool isN705;
     inline bool isN905C;
     inline bool isN613;
+    inline bool isN873;
 }
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534
@@ -401,6 +402,10 @@ namespace {
         if(checkconfig_str_val == "n613\n") {
             defaultEpubPageHeight = 450;
             defaultEpubPageWidth = 450;
+        }
+        if(checkconfig_str_val == "n873\n") {
+            defaultEpubPageHeight = 525;
+            defaultEpubPageWidth = 525;
         }
     }
     void pre_set_brightness(int brightnessValue) {

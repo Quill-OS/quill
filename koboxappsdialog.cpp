@@ -104,6 +104,9 @@ void koboxAppsDialog::on_launchBtn_clicked()
             else if(checkconfig_str_val == "n613\n") {
                 dpiSetting = "175";
             }
+            else if(checkconfig_str_val == "n873\n") {
+                dpiSetting = "250";
+            }
             else {
                 dpiSetting = "125";
             }

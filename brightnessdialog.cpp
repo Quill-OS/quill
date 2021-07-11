@@ -21,7 +21,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
 
     // I know, Mini and Touch don't have frontlights but that's a template to include others later...
     int value;
-    if(global::isN705 == true or global::isN905C == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
         value = get_brightness();
     }
     else if(global::isN613 == true) {
@@ -63,7 +63,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     ui->brightnessLabel->setFont(QFont(crimson_bold));
 
     // Saving current brightness value in case we want to go backwards
-    if(global::isN705 == true or global::isN705 == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
         oldValue = get_brightness();
     }
     else if(global::isN613 == true) {
@@ -127,7 +127,7 @@ void brightnessDialog::on_okBtn_clicked()
 }
 
 void brightnessDialog::pre_set_brightness(int brightnessValue) {
-    if(global::isN705 == true or global::isN905C == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
         set_brightness(brightnessValue);
     }
     else if(global::isN613 == true) {

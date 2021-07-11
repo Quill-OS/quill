@@ -78,16 +78,25 @@ int main(int argc, char *argv[])
             global::isN705 = true;
             global::isN905C = false;
             global::isN613 = false;
+            global::isN873 = false;
         }
         else if(checkconfig_str_val == "n905\n") {
             global::isN705 = false;
             global::isN905C = true;
             global::isN613 = false;
+            global::isN873 = false;
         }
         else if(checkconfig_str_val == "n613\n") {
             global::isN705 = false;
             global::isN905C = false;
             global::isN613 = true;
+            global::isN873 = false;
+        }
+        else if(checkconfig_str_val == "n873\n") {
+            global::isN705 = false;
+            global::isN905C = false;
+            global::isN613 = false;
+            global::isN873 = true;
         }
         else {
             ;
