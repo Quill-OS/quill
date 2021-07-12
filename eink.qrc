@@ -51,5 +51,11 @@
         <file>resources/fonts/Bitter-MediumItalic.ttf</file>
         <file>resources/fonts/Bitter-Medium.ttf</file>
         <file>resources/fonts/Bitter-Bold.ttf</file>
+        <file>resources/fonts/Bitter-BoldItalic.ttf</file>
+        <file>resources/fonts/CrimsonPro-BoldItalic.ttf</file>
+        <file>resources/fonts/IbarraRealNova-MediumItalic.ttf</file>
+        <file>resources/fonts/IbarraRealNova-Medium.ttf</file>
+        <file>resources/fonts/IbarraRealNova-BoldItalic.ttf</file>
+        <file>resources/fonts/IbarraRealNova-Bold.ttf</file>
     </qresource>
 </RCC>

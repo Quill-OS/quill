@@ -91,9 +91,6 @@ reader::reader(QWidget *parent) :
     int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
     QFont crimson(family);
-    int id_1 = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Bold.ttf");
-    QString family_1 = QFontDatabase::applicationFontFamilies(id).at(0);
-    QFont crimson_1(family_1);
 
     // Custom settings
     // Font
@@ -104,29 +101,13 @@ reader::reader(QWidget *parent) :
     }
     else {
         if(checkconfig_str_val == "Crimson Pro") {
-            int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
-            QString family = QFontDatabase::applicationFontFamilies(id).at(0);
-            QFont crimson(family);
-            ui->text->setFont(crimson);
-            ui->fontChooser->setCurrentText(checkconfig_str_val);
+            setCrimsonProFont();
         }
         else if(checkconfig_str_val == "Bitter") {
-            QString family;
-            {
-                int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Medium.ttf");
-                family = QFontDatabase::applicationFontFamilies(id).at(0);
-            }
-            {
-                int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-MediumItalic.ttf");
-                family = QFontDatabase::applicationFontFamilies(id).at(0);
-            }
-            {
-                int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Bold.ttf");
-                family = QFontDatabase::applicationFontFamilies(id).at(0);
-            }
-            QFont bitter(family);
-            ui->text->setFont(bitter);
-            ui->fontChooser->setCurrentText(checkconfig_str_val);
+            setBitterFont();
+        }
+        else if(checkconfig_str_val == "Ibarra Real Nova") {
+            setIbarraFont();
         }
         else {
             QFont config_font(checkconfig_str_val);
@@ -1033,16 +1014,16 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
     }
     if(arg1 == "Crimson Pro") {
         // As adding Crimson Pro to the default fonts bundled along with the Qt libs breaks the general Inter homogeneity, it is incorporated on-demand here.
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
-        QString family = QFontDatabase::applicationFontFamilies(id).at(0);
-        QFont crimson(family);
-        ui->text->setFont(crimson);
+        setCrimsonProFont();
         string_writeconfig(".config/04-book/font", "Crimson Pro");
     }
     if(arg1 == "Bitter") {
-        QFont bitter("Bitter");
-        ui->text->setFont(bitter);
+        setBitterFont();
         string_writeconfig(".config/04-book/font", "Bitter");
+    }
+    if(arg1 == "Ibarra Real Nova") {
+        setIbarraFont();
+        string_writeconfig(".config/04-book/font", "Ibarra Real Nova");
     }
 }
 
@@ -1631,6 +1612,75 @@ void reader::setupSearchDialog() {
     else {
         ;
     }
+}
+
+void reader::setBitterFont() {
+    QString family;
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Medium.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-MediumItalic.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Bold.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-BoldItalic.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    QFont bitter(family);
+    ui->text->setFont(bitter);
+    ui->fontChooser->setCurrentText("Bitter");
+}
+
+void reader::setCrimsonProFont() {
+    QString family;
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Bold.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-BoldItalic.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    QFont crimson(family);
+    ui->text->setFont(crimson);
+    ui->fontChooser->setCurrentText("Crimson Pro");
+}
+
+void reader::setIbarraFont() {
+    QString family;
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-Medium.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-MediumItalic.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-Bold.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-BoldItalic.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    QFont ibarra(family);
+    ui->text->setFont(ibarra);
+    ui->fontChooser->setCurrentText("Ibarra Real Nova");
 }
 
 void reader::searchRefreshScreen() {

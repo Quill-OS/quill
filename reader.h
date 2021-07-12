@@ -98,6 +98,9 @@ public:
     QString setPageNumberLabelContent();
     void setupPageWidget();
     void getTotalEpubPagesNumber();
+    void setBitterFont();
+    void setCrimsonProFont();
+    void setIbarraFont();
 
 private slots:
     void on_nextBtn_clicked();

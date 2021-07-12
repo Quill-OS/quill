@@ -395,6 +395,11 @@
                      </item>
                      <item>
                       <property name="text">
+                       <string>Ibarra Real Nova</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
                        <string>Noto Mono</string>
                       </property>
                      </item>
