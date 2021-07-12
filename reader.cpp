@@ -144,6 +144,13 @@ reader::reader(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
+    string_checkconfig_ro("/opt/inkbox_device");
+    if(checkconfig_str_val == "n873\n") {
+        ui->nextBtn->setStyleSheet("padding: 13.5px");
+        ui->previousBtn->setStyleSheet("padding: 13.5px");
+        ui->optionsBtn->setStyleSheet("padding: 13.5px");
+        ui->hideOptionsBtn->setStyleSheet("padding: 13.5px");
+    }
     ui->sizeValueLabel->setStyleSheet("font-size: 9pt");
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->aboutBtn->setStyleSheet("font-size: 9pt; padding: 5px");
