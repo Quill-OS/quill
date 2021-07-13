@@ -76,5 +76,5 @@ void quit::on_backBtn_clicked()
 void quit::on_pushButton_3_clicked()
 {
     // inotifywait waits for a MODIFY event, so we just do it instead of evtest and the power button
-    string_writeconfig("/external_root/tmp/power", "state changed");
+    string_writeconfig("/external_root/tmp/power", "KEY_POWER");
 }

@@ -29,7 +29,8 @@ SOURCES += \
     textwidget.cpp \
     usbms_splash.cpp \
     virtualkeyboard.cpp \
-    virtualkeypad.cpp
+    virtualkeypad.cpp \
+    wifidialog.cpp
 
 HEADERS += \
     alert.h \
@@ -50,7 +51,8 @@ HEADERS += \
     textwidget.h \
     usbms_splash.h \
     virtualkeyboard.h \
-    virtualkeypad.h
+    virtualkeypad.h \
+    wifidialog.h
 
 FORMS += \
     alert.ui \
@@ -70,7 +72,8 @@ FORMS += \
     textwidget.ui \
     usbms_splash.ui \
     virtualkeyboard.ui \
-    virtualkeypad.ui
+    virtualkeypad.ui \
+    wifidialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
