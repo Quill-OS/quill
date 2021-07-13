@@ -17,60 +17,20 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="5">
-       <spacer name="horizontalSpacer_2">
+      <item row="0" column="14">
+       <widget class="Line" name="line_8">
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="6">
-       <widget class="QPushButton" name="brightnessBtn">
-        <property name="text">
-         <string>Brightness</string>
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
-      <item row="0" column="9">
-       <widget class="QLabel" name="batteryLabel">
-        <property name="font">
-         <font>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="homeBtn">
         <property name="text">
-         <string>batt</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>―</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="11">
-       <widget class="QLabel" name="timeLabel">
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <weight>75</weight>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>time</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
+         <string>Home</string>
         </property>
        </widget>
       </item>
@@ -89,19 +49,63 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="8">
-       <widget class="QLabel" name="batteryIcon">
-        <property name="text">
-         <string>batteryIcon</string>
-        </property>
-       </widget>
-      </item>
       <item row="0" column="2">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>―</string>
         </property>
        </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>―</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="10">
+       <widget class="QPushButton" name="wifiBtn">
+        <property name="text">
+         <string>Wi-Fi</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="8">
+       <widget class="QPushButton" name="brightnessBtn">
+        <property name="text">
+         <string>Brightness</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="11">
+       <widget class="Line" name="line_7">
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="12">
+       <widget class="QLabel" name="batteryIcon">
+        <property name="text">
+         <string>batteryIcon</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item row="0" column="1">
        <spacer name="horizontalSpacer">
@@ -116,30 +120,43 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="7">
-       <widget class="Line" name="line_7">
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
+      <item row="0" column="13">
+       <widget class="QLabel" name="batteryLabel">
+        <property name="font">
+         <font>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
         </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="10">
-       <widget class="Line" name="line_8">
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="homeBtn">
         <property name="text">
-         <string>Home</string>
+         <string>batt</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="15">
+       <widget class="QLabel" name="timeLabel">
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>time</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="9">
+       <widget class="Line" name="line_9">
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>

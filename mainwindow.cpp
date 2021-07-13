@@ -36,6 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->pushButton->setProperty("type", "borderless");
     ui->brightnessBtn->setProperty("type", "borderless");
     ui->homeBtn->setProperty("type", "borderless");
+    ui->wifiBtn->setProperty("type", "borderless");
 
     ui->settingsBtn->setText("");
     ui->appsBtn->setText("");
@@ -45,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setText("");
     ui->homeBtn->setText("");
     ui->quoteLabel->setText("");
+    ui->wifiBtn->setText("");
 
     ui->quotePictureLabel->setText("");
 
@@ -72,6 +74,8 @@ MainWindow::MainWindow(QWidget *parent)
         brightnessIconHeight = sH / 24;
         homeIconWidth = sW / 18;
         homeIconHeight = sW / 18;
+        wifiIconWidth = sW / 20;
+        wifiIconHeight = sH / 20;
     }
     else if(checkconfig_str_val == "n905\n") {
         stdIconWidth = sW / 14;
@@ -80,6 +84,8 @@ MainWindow::MainWindow(QWidget *parent)
         brightnessIconHeight = sH / 26;
         homeIconWidth = sW / 20;
         homeIconHeight = sW / 20;
+        wifiIconWidth = sW / 22;
+        wifiIconHeight = sH / 22;
     }
     else if(checkconfig_str_val == "n613\n") {
         stdIconWidth = sW / 12.5;
@@ -88,6 +94,8 @@ MainWindow::MainWindow(QWidget *parent)
         brightnessIconHeight = sH / 24.5;
         homeIconWidth = sW / 18.5;
         homeIconHeight = sW / 18.5;
+        wifiIconWidth = sW / 20.5;
+        wifiIconHeight = sH / 20.5;
     }
     else {
         stdIconWidth = sW / 14;
@@ -96,6 +104,8 @@ MainWindow::MainWindow(QWidget *parent)
         brightnessIconHeight = sH / 26;
         homeIconWidth = sW / 20;
         homeIconHeight = sW / 20;
+        wifiIconWidth = sW / 22;
+        wifiIconHeight = sH / 22;
     }
 
     // Setting icons up
@@ -116,6 +126,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
 
+    setWifiIcon();
+    updateWifiIcon(0);
     setBatteryIcon();
 
     int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
@@ -132,6 +144,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->book4Btn->setStyleSheet("font-size: 11pt; padding: 25px");
 
     ui->brightnessBtn->setStyleSheet("font-size: 9pt; padding-bottom: 5px; padding-top: 5px; padding-left: 8px; padding-right: 8px;");
+    ui->wifiBtn->setStyleSheet("font-size: 9pt; padding-bottom: 0px; padding-top: 0px; padding-left: 8px; padding-right: 8px");
 
     // Checking if we have a Mini or Touch there
     string_checkconfig_ro("/opt/inkbox_device");
@@ -139,6 +152,9 @@ MainWindow::MainWindow(QWidget *parent)
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 1px; padding-right: 1px;");
     }
     else if(checkconfig_str_val == "n613\n") {
+        ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;");
+    }
+    else if(checkconfig_str_val == "n873\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;");
     }
     else {
@@ -821,5 +837,73 @@ void MainWindow::setupSearchDialog() {
     }
     else {
         ;
+    }
+}
+
+int MainWindow::testPing() {
+    QString pingProg = "ping";
+    QStringList pingArgs;
+    pingArgs << "-c" << "1" << "1.1.1.1";
+    QProcess *pingProcess = new QProcess();
+    pingProcess->start(pingProg, pingArgs);
+    pingProcess->waitForFinished();
+    return pingProcess->exitCode();
+}
+
+void MainWindow::updateWifiIcon(int mode) {
+    /* Usage:
+     * mode 0: auto
+     * mode 1: off
+     * mode 2: standby
+     * mode 3: connected
+    */
+    if(mode == 0) {
+        QTimer *wifiIconTimer = new QTimer(this);
+        wifiIconTimer->setInterval(60000);
+        connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(setWifiIcon()));
+        wifiIconTimer->start();
+    }
+    if(mode == 1) {
+        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
+        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+    }
+    if(mode == 2) {
+        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
+        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+    }
+    if(mode == 3) {
+        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
+        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+    }
+}
+
+bool MainWindow::checkWifiState() {
+    /* Return value:
+     * true: interface UP
+     * false: interface DOWN
+    */
+    string_checkconfig_ro("/sys/class/net/eth0/operstate");
+    if(checkconfig_str_val == "up\n") {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+void MainWindow::setWifiIcon() {
+    if(checkWifiState() == true) {
+        if(testPing() == 0) {
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
+            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        }
+        else {
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
+            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        }
+    }
+    else {
+        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
+        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
     }
 }

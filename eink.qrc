@@ -57,5 +57,8 @@
         <file>resources/fonts/IbarraRealNova-Medium.ttf</file>
         <file>resources/fonts/IbarraRealNova-BoldItalic.ttf</file>
         <file>resources/fonts/IbarraRealNova-Bold.ttf</file>
+        <file>resources/wifi-connected.png</file>
+        <file>resources/wifi-off.png</file>
+        <file>resources/wifi-standby.png</file>
     </qresource>
 </RCC>

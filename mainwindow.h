@@ -36,6 +36,8 @@ public:
     float brightnessIconHeight;
     float homeIconWidth;
     float homeIconHeight;
+    float wifiIconWidth;
+    float wifiIconHeight;
     float sW;
     float sH;
 
@@ -51,6 +53,9 @@ public:
     void resetWindow(bool resetStackedWidget);
     void resetIcons();
     void setBatteryIcon();
+    void updateWifiIcon(int mode);
+    int testPing();
+    bool checkWifiState();
 
 public slots:
 
@@ -70,6 +75,7 @@ private slots:
     void on_homeBtn_clicked();
     void refreshScreen();
     void setupSearchDialog();
+    void setWifiIcon();
 
 private:
     Ui::MainWindow *ui;
