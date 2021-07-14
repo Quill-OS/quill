@@ -464,10 +464,12 @@ namespace {
             if(QFile::exists("/run/wifi_connected_successfully")) {
                 if(checkconfig("/run/wifi_connected_successfully") == true) {
                     QFile::remove("/run/wifi_connected_successfully");
+                    connectionSuccessful = 1;
                     return true;
                 }
                 else {
                     QFile::remove("/run/wifi_connected_successfully");
+                    connectionSuccessful = 0;
                     return false;
                 }
             }
