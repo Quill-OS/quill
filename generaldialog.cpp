@@ -270,6 +270,19 @@ void generalDialog::on_okBtn_clicked()
                 QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in the required argument."));
             }
         }
+        else if(global::keyboard::wifiPassphraseDialog == true) {
+            if(global::keyboard::keyboardText != "") {
+                this->hide();
+                wifiPassphrase = global::keyboard::keyboardText;
+                global::toast::indefiniteToast = true;
+                global::toast::modalToast = true;
+                emit showToast("Connecting");
+                QTimer::singleShot(100, this, SLOT(connectToNetworkSlot()));
+            }
+            else {
+                QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in the required argument."));
+            }
+        }
         else {
             global::keyboard::keyboardDialog = false;
             generalDialog::close();
@@ -330,6 +343,11 @@ void generalDialog::setupKeyboardDialog() {
         ui->okBtn->setText("OK");
         ui->cancelBtn->setText("Cancel");
     }
+    else if(global::keyboard::wifiPassphraseDialog == true) {
+        ui->headerLabel->setText("Enter the network's passphrase");
+        ui->okBtn->setText("Connect");
+        ui->cancelBtn->setText("Cancel");
+    }
     else {
         ui->headerLabel->setText("Enter a string");
         ui->okBtn->setText("OK");
@@ -355,4 +373,18 @@ void generalDialog::startVNC(QString server, QString password, QString port) {
     string_writeconfig("/external_root/tmp/app_vnc_port", port_str);
     string_writeconfig("/opt/ibxd", "app_start_vnc\n");
     qApp->quit();
+}
+
+void generalDialog::connectToNetworkSlot() {
+    if(connectToNetwork(wifiEssid, wifiPassphrase) == true) {
+        emit updateWifiIcon(3);
+        emit closeIndefiniteToast();
+        emit showToast("Connection successful");
+    }
+    else {
+        emit updateWifiIcon(2);
+        emit closeIndefiniteToast();
+        emit showToast("Connection failed");
+    }
+    generalDialog::close();
 }

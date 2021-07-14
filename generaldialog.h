@@ -38,6 +38,8 @@ public:
     QString vncServerAddress;
     QString vncServerPassword;
     QString vncServerPort;
+    QString wifiEssid;
+    QString wifiPassphrase;
     void setupKeyboardDialog();
     void startVNC(QString server, QString password, QString port);
 
@@ -48,6 +50,7 @@ private slots:
     void adjust_size();
     void restartSearchDialog();
     void refreshScreenNative();
+    void connectToNetworkSlot();
 
 private:
     Ui::generalDialog *ui;
@@ -60,6 +63,9 @@ private:
 signals:
     void gotoPageSelected(int value);
     void refreshScreen();
+    void updateWifiIcon(int mode);
+    void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
 };
 
 #endif // GENERALDIALOG_H

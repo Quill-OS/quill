@@ -56,7 +56,6 @@ public:
     void setBatteryIcon();
     int testPing();
     bool checkWifiState();
-    void showToast(QString messageToDisplay);
 
 public slots:
 
@@ -81,6 +80,8 @@ private slots:
     void on_wifiBtn_clicked();
     void updateWifiIcon(int mode);
     void hello(int testNumber);
+    void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
 
 private:
     Ui::MainWindow *ui;

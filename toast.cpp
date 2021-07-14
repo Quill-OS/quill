@@ -4,25 +4,43 @@
 
 #include <QScreen>
 #include <QTimer>
+#include <QDebug>
 
 toast::toast(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::toast)
 {
     ui->setupUi(this);
+
+    if(global::toast::modalToast == true) {
+        global::toast::modalToast = false;
+        this->setModal(true);
+    }
+
     ui->messageLabel->setStyleSheet("padding: 35px");
     ui->messageLabel->setText(global::toast::message);
     this->adjustSize();
     centerToast();
     if(global::toast::wifiToast == true) {
         global::toast::wifiToast = false;
+        this->setModal(true);
         wifiDialogWindow = new wifiDialog(this);
         wifiDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
         connect(wifiDialogWindow, SIGNAL(wifiNetworksListReady(int)), SLOT(showWifiDialog(int)));
-        connect(wifiDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(exitSlot()));
+        connect(wifiDialogWindow, SIGNAL(quit(int)), SLOT(exitSlot(int)));
+        connect(wifiDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
+        connect(wifiDialogWindow, SIGNAL(updateWifiIconSig(int)), SLOT(updateWifiIcon(int)));
+        connect(wifiDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
+        connect(wifiDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
+        connect(wifiDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(close()));
     }
     else {
-        QTimer::singleShot(5000, this, SLOT(exitSlot()));
+        if(global::toast::indefiniteToast == false) {
+            QTimer::singleShot(5000, this, SLOT(close()));
+        }
+        else {
+            global::toast::indefiniteToast = false;
+        }
     }
 }
 
@@ -39,25 +57,42 @@ void toast::showWifiDialog(int networksFound) {
         wifiDialogWindow->adjustSize();
         wifiDialogWindow->centerDialog();
     }
-    else {
-        ui->messageLabel->setText("No networks found");
-        QThread::sleep(5);
-        toast::close();
-    }
 }
 
 void toast::centerToast() {
-    // Centering dialog
+    // Centering toast (https://stackoverflow.com/a/58682351)
     // Get current screen size
     QRect rec = QGuiApplication::screenAt(this->pos())->geometry();
     // Using minimum size of window
     QSize size = this->minimumSize();
     // Set top left point
     QPoint topLeft = QPoint((rec.width() / 2) - (size.width() / 2), (rec.height() / 2) - (size.height() / 2));
-    // set window position
+    // Set window position
     setGeometry(QRect(topLeft, size));
 }
 
-void toast::exitSlot() {
-    toast::close();
+void toast::exitSlot(int exitCode) {
+    if(exitCode == 0) {
+        toast::close();
+    }
+    else {
+        ui->messageLabel->setText("No networks found");
+        QTimer::singleShot(5000, this, SLOT(close()));
+    }
+}
+
+void toast::refreshScreenNative() {
+    emit refreshScreen();
+}
+
+void toast::updateWifiIcon(int mode) {
+    emit updateWifiIconSig(mode);
+}
+
+void toast::showToastNative(QString messageToDisplay) {
+    emit showToast(messageToDisplay);
+}
+
+void toast::closeIndefiniteToastNative() {
+    emit closeIndefiniteToast();
 }

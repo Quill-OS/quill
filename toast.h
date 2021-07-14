@@ -24,10 +24,17 @@ private:
 
 private slots:
     void showWifiDialog(int networksFound);
-    void exitSlot();
+    void exitSlot(int exitCode);
+    void refreshScreenNative();
+    void updateWifiIcon(int mode);
+    void showToastNative(QString messageToDisplay);
+    void closeIndefiniteToastNative();
 
 signals:
     void updateWifiIconSig(int mode);
+    void refreshScreen();
+    void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
 };
 
 #endif // TOAST_H

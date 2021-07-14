@@ -2,6 +2,7 @@
 #include <QStringListModel>
 #include <QScreen>
 #include <QDesktopWidget>
+#include <QMessageBox>
 
 #include "wifidialog.h"
 #include "ui_wifidialog.h"
@@ -52,7 +53,7 @@ void wifiDialog::checkWifiNetworks() {
 void wifiDialog::printWifiNetworks() {
     string_checkconfig_ro("/run/wifi_networks_list");
     if(checkconfig_str_val == "") {
-        emit wifiNetworksListReady(0);
+        emit quit(1);
         wifiDialog::close();
     }
     else {
@@ -87,6 +88,46 @@ void wifiDialog::centerDialog() {
 
 void wifiDialog::on_cancelBtn_clicked()
 {
+    emit quit(0);
     wifiDialog::close();
 }
 
+void wifiDialog::on_connectBtn_clicked()
+{
+    index = ui->networksListWidget->currentIndex();
+    itemText = index.data(Qt::DisplayRole).toString();
+    if(itemText == "") {
+        QMessageBox::critical(this, tr("Invalid argument"), tr("You must select a network."));
+    }
+    else {
+        this->hide();
+        global::keyboard::keyboardDialog = true;
+        global::keyboard::wifiPassphraseDialog = true;
+        global::keyboard::keyboardText = "";
+        generalDialogWindow = new generalDialog();
+        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        generalDialogWindow->wifiEssid = itemText;
+        connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
+        connect(generalDialogWindow, SIGNAL(updateWifiIcon(int)), SLOT(updateWifiIcon(int)));
+        connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
+        connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
+        connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(close()));
+        generalDialogWindow->show();
+    }
+}
+
+void wifiDialog::refreshScreenNative() {
+    emit refreshScreen();
+}
+
+void wifiDialog::updateWifiIcon(int mode) {
+    emit updateWifiIconSig(mode);
+}
+
+void wifiDialog::showToastNative(QString messageToDisplay) {
+    emit showToast(messageToDisplay);
+}
+
+void wifiDialog::closeIndefiniteToastNative() {
+    emit closeIndefiniteToast();
+}

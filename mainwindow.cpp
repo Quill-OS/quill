@@ -742,6 +742,10 @@ void MainWindow::setBatteryIcon() {
             ui->brightnessBtn->hide();
             ui->line_7->hide();
         }
+        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n") {
+            ui->wifiBtn->hide();
+            ui->line_9->hide();
+        }
 
         // Setting icons up
         stdIconWidth = sW / 16;
@@ -924,9 +928,17 @@ void MainWindow::showToast(QString messageToDisplay) {
     toastWindow = new toast(this);
     toastWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(toastWindow, SIGNAL(updateWifiIconSig(int)), SLOT(updateWifiIcon(int)));
+    connect(toastWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+    connect(toastWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+    connect(toastWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
     toastWindow->show();
 }
 
 void MainWindow::hello(int testNumber) {
     qDebug() << "Hello" << testNumber;
+}
+
+void MainWindow::closeIndefiniteToast() {
+    // Warning: use with caution
+    toastWindow->close();
 }

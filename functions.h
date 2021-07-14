@@ -9,6 +9,7 @@
 #include <QProcess>
 #include <regex>
 #include <QThread>
+#include <QTimer>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -64,12 +65,15 @@ namespace global {
         inline bool keypadDialog;
         inline bool searchDialog;
         inline bool vncDialog;
+        inline bool wifiPassphraseDialog;
         inline QString keyboardText;
         inline QString keypadText;
     }
     namespace toast {
         inline QString message;
         inline bool wifiToast;
+        inline bool modalToast;
+        inline bool indefiniteToast;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -444,6 +448,31 @@ namespace {
                 brightness = brightness - 1;
                 pre_set_brightness(brightness);
                 QThread::msleep(30);
+            }
+        }
+    }
+    bool connectToNetwork(QString essid, QString passphrase) {
+        std::string essid_str = essid.toStdString();
+        std::string passphrase_str = passphrase.toStdString();
+        string_writeconfig("/run/wifi_network_essid", essid_str);
+        string_writeconfig("/run/wifi_network_passphrase", passphrase_str);
+        string_writeconfig("/opt/ibxd", "connect_to_wifi_network\n");
+
+        int connectionSuccessful = 0;
+
+        while(connectionSuccessful == 0) {
+            if(QFile::exists("/run/wifi_connected_successfully")) {
+                if(checkconfig("/run/wifi_connected_successfully") == true) {
+                    QFile::remove("/run/wifi_connected_successfully");
+                    return true;
+                }
+                else {
+                    QFile::remove("/run/wifi_connected_successfully");
+                    return false;
+                }
+            }
+            else {
+                QThread::msleep(100);
             }
         }
     }
