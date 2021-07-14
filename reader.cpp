@@ -819,7 +819,7 @@ void reader::on_nextBtn_clicked()
 {
     if(is_epub != true) {
         if(split_total - 1 == 1 or split_total - 1 == 0) {
-            QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
+            showToast("You've reached the end of the document");
         }
         else {
             split_total = split_total - 1;
@@ -834,7 +834,7 @@ void reader::on_nextBtn_clicked()
     }
     else {
         if(mupdf::epubPageNumber + 1 > totalPagesInt) {
-            QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
+            showToast("You've reached the end of the document");
         }
         else {
             mupdf::epubPageNumber = mupdf::epubPageNumber + 1;
@@ -856,7 +856,7 @@ void reader::on_previousBtn_clicked()
     if(is_epub != true) {
     // Making sure we won't encounter a "List index out of range" error ;)
         if(split_total >= split_files_number - 1) {
-            QMessageBox::critical(this, tr("Invalid argument"), tr("No previous page."));
+            showToast("No previous page");
         }
         else {
             split_total = split_total + 1;
@@ -871,7 +871,7 @@ void reader::on_previousBtn_clicked()
     }
     else {
         if(mupdf::epubPageNumber - 1 <= 0) {
-            QMessageBox::critical(this, tr("Invalid argument"), tr("No previous page."));
+            showToast("No previous page");
         }
         else {
             mupdf::epubPageNumber = mupdf::epubPageNumber - 1;
@@ -1567,7 +1567,7 @@ void reader::on_gotoBtn_clicked()
 void reader::gotoPage(int pageNumber) {
     if(is_epub == true) {
         if(pageNumber > totalPagesInt or pageNumber < 1) {
-            QMessageBox::critical(this, tr("Invalid argument"), tr("Request is beyond the page range."));
+            showToast("Request is beyond page range");
         }
         else {
             mupdf::epubPageNumber = pageNumber;
@@ -1581,7 +1581,7 @@ void reader::gotoPage(int pageNumber) {
     }
     else {
         if(split_files_number - pageNumber < 2 or split_files_number - pageNumber > split_files_number - 1) {
-            QMessageBox::critical(this, tr("Invalid argument"), tr("You've reached the end of the document."));
+            showToast("You've reached the end of the document");
         }
         else {
             split_total = split_files_number - pageNumber;
@@ -1692,4 +1692,11 @@ void reader::setIbarraFont() {
 
 void reader::searchRefreshScreen() {
     this->repaint();
+}
+
+void reader::showToast(QString messageToDisplay) {
+    global::toast::message = messageToDisplay;
+    toastWindow = new toast(this);
+    toastWindow->setAttribute(Qt::WA_DeleteOnClose);
+    toastWindow->show();
 }

@@ -74,8 +74,8 @@ MainWindow::MainWindow(QWidget *parent)
         brightnessIconHeight = sH / 24;
         homeIconWidth = sW / 18;
         homeIconHeight = sW / 18;
-        wifiIconWidth = sW / 20;
-        wifiIconHeight = sH / 20;
+        wifiIconWidth = sW / 20.5;
+        wifiIconHeight = sH / 20.5;
     }
     else if(checkconfig_str_val == "n905\n") {
         stdIconWidth = sW / 14;
@@ -84,8 +84,8 @@ MainWindow::MainWindow(QWidget *parent)
         brightnessIconHeight = sH / 26;
         homeIconWidth = sW / 20;
         homeIconHeight = sW / 20;
-        wifiIconWidth = sW / 22;
-        wifiIconHeight = sH / 22;
+        wifiIconWidth = sW / 22.5;
+        wifiIconHeight = sH / 22.5;
     }
     else if(checkconfig_str_val == "n613\n") {
         stdIconWidth = sW / 12.5;
@@ -94,8 +94,8 @@ MainWindow::MainWindow(QWidget *parent)
         brightnessIconHeight = sH / 24.5;
         homeIconWidth = sW / 18.5;
         homeIconHeight = sW / 18.5;
-        wifiIconWidth = sW / 20.5;
-        wifiIconHeight = sH / 20.5;
+        wifiIconWidth = sW / 21;
+        wifiIconHeight = sH / 21;
     }
     else {
         stdIconWidth = sW / 14;
@@ -104,8 +104,8 @@ MainWindow::MainWindow(QWidget *parent)
         brightnessIconHeight = sH / 26;
         homeIconWidth = sW / 20;
         homeIconHeight = sW / 20;
-        wifiIconWidth = sW / 22;
-        wifiIconHeight = sH / 22;
+        wifiIconWidth = sW / 22.5;
+        wifiIconHeight = sH / 22.5;
     }
 
     // Setting icons up
@@ -346,6 +346,7 @@ MainWindow::MainWindow(QWidget *parent)
                 }
                 else {
                     // An USB cable is connected!
+                    setBatteryIcon();
                     openUsbmsDialog();
                 }
             }
@@ -906,4 +907,26 @@ void MainWindow::setWifiIcon() {
         ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
         ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
     }
+}
+
+void MainWindow::openWifiDialog() {
+    global::toast::wifiToast = true;
+    showToast("Searching for networks");
+}
+
+void MainWindow::on_wifiBtn_clicked()
+{
+    openWifiDialog();
+}
+
+void MainWindow::showToast(QString messageToDisplay) {
+    global::toast::message = messageToDisplay;
+    toastWindow = new toast(this);
+    toastWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(toastWindow, SIGNAL(updateWifiIconSig(int)), SLOT(updateWifiIcon(int)));
+    toastWindow->show();
+}
+
+void MainWindow::hello(int testNumber) {
+    qDebug() << "Hello" << testNumber;
 }

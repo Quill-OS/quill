@@ -4,6 +4,7 @@
 #include "functions.h"
 #include "alert.h"
 #include "generaldialog.h"
+#include "toast.h"
 
 #include <QWidget>
 
@@ -101,6 +102,7 @@ public:
     void setBitterFont();
     void setCrimsonProFont();
     void setIbarraFont();
+    void showToast(QString messageToDisplay);
 
 private slots:
     void on_nextBtn_clicked();
@@ -135,6 +137,7 @@ private:
     Ui::reader *ui;
     alert *alertWindow;
     generalDialog *generalDialogWindow;
+    toast *toastWindow;
 };
 
 #endif // READER_H

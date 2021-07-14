@@ -15,6 +15,7 @@
 #include "koboxappsdialog.h"
 #include "textwidget.h"
 #include "virtualkeypad.h"
+#include "toast.h"
 
 using namespace std;
 
@@ -53,9 +54,9 @@ public:
     void resetWindow(bool resetStackedWidget);
     void resetIcons();
     void setBatteryIcon();
-    void updateWifiIcon(int mode);
     int testPing();
     bool checkWifiState();
+    void showToast(QString messageToDisplay);
 
 public slots:
 
@@ -71,11 +72,15 @@ private slots:
     void on_book4Btn_clicked();
     void on_brightnessBtn_clicked();
     void openUpdateDialog();
+    void openWifiDialog();
     void setInitialBrightness();
     void on_homeBtn_clicked();
     void refreshScreen();
     void setupSearchDialog();
     void setWifiIcon();
+    void on_wifiBtn_clicked();
+    void updateWifiIcon(int mode);
+    void hello(int testNumber);
 
 private:
     Ui::MainWindow *ui;
@@ -91,6 +96,7 @@ private:
     koboxAppsDialog *koboxAppsDialogWindow;
     textwidget *textwidgetWindow;
     virtualkeypad *keypadWidget;
+    toast *toastWindow;
 };
 
 #endif // MAINWINDOW_H

@@ -67,6 +67,10 @@ namespace global {
         inline QString keyboardText;
         inline QString keypadText;
     }
+    namespace toast {
+        inline QString message;
+        inline bool wifiToast;
+    }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705;

@@ -27,6 +27,7 @@ SOURCES += \
     settings.cpp \
     settingschooser.cpp \
     textwidget.cpp \
+    toast.cpp \
     usbms_splash.cpp \
     virtualkeyboard.cpp \
     virtualkeypad.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     settings.h \
     settingschooser.h \
     textwidget.h \
+    toast.h \
     usbms_splash.h \
     virtualkeyboard.h \
     virtualkeypad.h \
@@ -70,6 +72,7 @@ FORMS += \
     settings.ui \
     settingschooser.ui \
     textwidget.ui \
+    toast.ui \
     usbms_splash.ui \
     virtualkeyboard.ui \
     virtualkeypad.ui \
