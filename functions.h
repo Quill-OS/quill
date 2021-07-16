@@ -75,6 +75,9 @@ namespace global {
         inline bool modalToast;
         inline bool indefiniteToast;
     }
+    namespace device {
+        inline bool isWifiAble;
+    }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705;
@@ -199,6 +202,12 @@ namespace {
     void brightness_writeconfig(int value) {
         std::ofstream fhandler;
         fhandler.open(".config/03-brightness/config");
+        fhandler << value;
+        fhandler.close();
+    }
+    void warmth_writeconfig(int value) {
+        std::ofstream fhandler;
+        fhandler.open(".config/03-brightness/config-warmth");
         fhandler << value;
         fhandler.close();
     }
@@ -478,5 +487,28 @@ namespace {
             }
         }
     }
+    int get_warmth() {
+        QString sysfsWarmthPath;
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val == "n873\n") {
+            sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
+        }
+        string_checkconfig_ro(sysfsWarmthPath);
+        int warmthValue = checkconfig_str_val.toInt();
+        warmthValue = 10 - warmthValue;
+        return warmthValue;
+    }
+    void set_warmth(int warmthValue) {
+        // Value 0 gives a warmer lighting than value 10
+        warmthValue = 10 - warmthValue;
+        std::string warmthValueStr = std::to_string(warmthValue);
+        std::string sysfsWarmthPath;
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val == "n873\n") {
+            sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
+        }
+        string_writeconfig(sysfsWarmthPath, warmthValueStr);
+    }
 }
+
 #endif // FUNCTIONS_H

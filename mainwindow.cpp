@@ -127,7 +127,9 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
 
     setWifiIcon();
-    updateWifiIcon(0);
+    if(global::device::isWifiAble == true) {
+        updateWifiIcon(0);
+    }
     setBatteryIcon();
 
     int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
@@ -742,10 +744,6 @@ void MainWindow::setBatteryIcon() {
             ui->brightnessBtn->hide();
             ui->line_7->hide();
         }
-        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n") {
-            ui->wifiBtn->hide();
-            ui->line_9->hide();
-        }
 
         // Setting icons up
         stdIconWidth = sW / 16;
@@ -823,6 +821,18 @@ void MainWindow::setInitialBrightness() {
         string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
         cinematicBrightness(brightness_value, 0);
     }
+    string_checkconfig_ro("/opt/inkbox_device");
+    if(checkconfig_str_val == "n873\n") {
+        int warmth;
+        string_checkconfig_ro(".config/03-brightness/config-warmth");
+        if(checkconfig_str_val == "") {
+            warmth = 0;
+        }
+        else {
+            warmth = checkconfig_str_val.toInt();
+        }
+        set_warmth(warmth);
+    }
 }
 
 void MainWindow::refreshScreen() {
@@ -897,19 +907,27 @@ bool MainWindow::checkWifiState() {
 }
 
 void MainWindow::setWifiIcon() {
-    if(checkWifiState() == true) {
-        if(testPing() == 0) {
-            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
-            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+    if(checkconfig("/run/wifi_able") == true) {
+        global::device::isWifiAble = true;
+        if(checkWifiState() == true) {
+            if(testPing() == 0) {
+                ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
+                ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+            }
+            else {
+                ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
+                ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+            }
         }
         else {
-            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
             ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
         }
     }
     else {
-        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
-        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        global::device::isWifiAble = false;
+        ui->wifiBtn->hide();
+        ui->line_9->hide();
     }
 }
 
