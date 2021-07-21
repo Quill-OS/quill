@@ -601,7 +601,8 @@ void MainWindow::on_settingsBtn_clicked()
     else {
         ;
     }
-    showToast("Connection successful");
+    // Testing
+    // showToast("Connection successful");
 }
 
 void MainWindow::on_appsBtn_clicked()
