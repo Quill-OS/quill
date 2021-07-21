@@ -952,11 +952,12 @@ void MainWindow::showToast(QString messageToDisplay) {
     connect(toastWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
     toastWindow->show();
 
-    if(messageToDisplay == "Connection successful") {
+    // Testing
+    /* if(messageToDisplay == "Connection successful") {
         otaManagerWindow = new otaManager(this);
         connect(otaManagerWindow, SIGNAL(canInstallOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
         otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
-    }
+    } */
 }
 
 void MainWindow::hello(int testNumber) {
