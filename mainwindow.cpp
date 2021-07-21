@@ -601,6 +601,7 @@ void MainWindow::on_settingsBtn_clicked()
     else {
         ;
     }
+    showToast("Connection successful");
 }
 
 void MainWindow::on_appsBtn_clicked()
@@ -950,6 +951,12 @@ void MainWindow::showToast(QString messageToDisplay) {
     connect(toastWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
     connect(toastWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
     toastWindow->show();
+
+    if(messageToDisplay == "Connection successful") {
+        otaManagerWindow = new otaManager(this);
+        connect(otaManagerWindow, SIGNAL(canInstallOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
+        otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
+    }
 }
 
 void MainWindow::hello(int testNumber) {
@@ -959,4 +966,13 @@ void MainWindow::hello(int testNumber) {
 void MainWindow::closeIndefiniteToast() {
     // Warning: use with caution
     toastWindow->close();
+}
+
+void MainWindow::openUpdateDialogOTA(bool open) {
+    if(open == true) {
+        openUpdateDialog();
+    }
+    else {
+        ;
+    }
 }

@@ -278,6 +278,8 @@ void generalDialog::on_okBtn_clicked()
                 global::toast::modalToast = true;
                 emit showToast("Connecting");
                 QTimer::singleShot(100, this, SLOT(connectToNetworkSlot()));
+                global::keyboard::wifiPassphraseDialog = false;
+                global::keyboard::keyboardDialog = false;
             }
             else {
                 QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in the required argument."));

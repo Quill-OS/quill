@@ -16,6 +16,7 @@
 #include "textwidget.h"
 #include "virtualkeypad.h"
 #include "toast.h"
+#include "otamanager.h"
 
 using namespace std;
 
@@ -82,6 +83,7 @@ private slots:
     void hello(int testNumber);
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();
+    void openUpdateDialogOTA(bool open);
 
 private:
     Ui::MainWindow *ui;
@@ -98,6 +100,7 @@ private:
     textwidget *textwidgetWindow;
     virtualkeypad *keypadWidget;
     toast *toastWindow;
+    otaManager *otaManagerWindow;
 };
 
 #endif // MAINWINDOW_H

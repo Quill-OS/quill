@@ -374,6 +374,17 @@ namespace {
         kernelVersion.append(", build ");
         kernelVersion.append(kernelBuildID);
     }
+    QString getConnectionInformation() {
+        QString getIpProg ("sh");
+        QStringList getIpArgs;
+        getIpArgs << "-c" << "/sbin/ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'";
+        QProcess *getIpProc = new QProcess();
+        getIpProc->start(getIpProg, getIpArgs);
+        getIpProc->waitForFinished();
+
+        QString ipAddress = getIpProc->readAllStandardOutput();
+        return ipAddress;
+    }
     void getSystemInfo() {
         getUID();
         getKernelVersion();
@@ -389,6 +400,10 @@ namespace {
         string_checkconfig_ro("/opt/inkbox_device");
         QString device = checkconfig_str_val.trimmed();
         global::systemInfoText.append(device);
+        QString ipAddress = getConnectionInformation();
+        global::systemInfoText.append("<br><b>IP address: </b>");
+        global::systemInfoText.append(ipAddress);
+
     }
     void resetKoboxUserData() {
         global::kobox::resetKoboxUserDataBool = true;

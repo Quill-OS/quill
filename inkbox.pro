@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -21,6 +21,7 @@ SOURCES += \
     koboxsettings.cpp \
     main.cpp \
     mainwindow.cpp \
+    otamanager.cpp \
     quit.cpp \
     reader.cpp \
     savedwords.cpp \
@@ -44,6 +45,7 @@ HEADERS += \
     koboxappsdialog.h \
     koboxsettings.h \
     mainwindow.h \
+    otamanager.h \
     quit.h \
     reader.h \
     savedwords.h \
@@ -66,6 +68,7 @@ FORMS += \
     koboxappsdialog.ui \
     koboxsettings.ui \
     mainwindow.ui \
+    otamanager.ui \
     quit.ui \
     reader.ui \
     savedwords.ui \
