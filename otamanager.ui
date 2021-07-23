@@ -2,8 +2,8 @@
  <author/>
  <comment/>
  <exportmacro/>
- <class>otamanager</class>
- <widget name="otamanager" class="QWidget">
+ <class>otaManager</class>
+ <widget name="otaManager" class="QWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
