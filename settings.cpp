@@ -276,6 +276,11 @@ settings::settings(QWidget *parent) :
         ui->enableLockscreenCheckBox->click();
     }
 
+    // Global reading settings
+    if(checkconfig(".config/16-global_reading_settings/config") == true) {
+        ui->globalReadingSettingsCheckBox->click();
+    }
+
     // DPI checkbox
     string_checkconfig(".config/09-dpi/config");
     // Check if the string is a number; else, we don't check the check box
@@ -835,3 +840,16 @@ void settings::on_sleepTimeoutComboBox_currentIndexChanged(const QString &arg1)
 void settings::brightnessDown() {
     cinematicBrightness(0, 1);
 }
+
+void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)
+{
+    if(checked == true) {
+        checked_box = true;
+        writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
+    }
+    else {
+        checked_box = false;
+        writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
+    }
+}
+

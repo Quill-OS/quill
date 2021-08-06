@@ -375,6 +375,14 @@ MainWindow::MainWindow(QWidget *parent)
             writeconfig(".config/05-quote/config", "DisableQuote=");
         }
     }
+
+    // Global reading settings
+    string_checkconfig(".config/16-global_reading_settings/config");
+    if(checkconfig_str_val == "") {
+        checked_box = true;
+        writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
+    }
+
     if(checkconfig(".config/05-quote/config") == false) {
         int quote_value = display_quote();
         if(quote_value == 1) {

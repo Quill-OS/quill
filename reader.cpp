@@ -173,7 +173,7 @@ reader::reader(QWidget *parent) :
     string_writeconfig("/tmp/inkboxBookPath", book_file_str);
 
     // Calling InkBox daemon (ibxd) via FIFO interface to run bookconfig_mount
-    if(checkconfig(".config/16-global_reading_settings/config") == true) {
+    if(checkconfig(".config/16-global_reading_settings/config") == false) {
         string_writeconfig("/opt/ibxd", "bookconfig_mount\n");
         // Callback handler to wait until bookconfig_mount has finished execution
         while(true) {

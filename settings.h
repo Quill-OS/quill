@@ -52,6 +52,7 @@ private slots:
     void on_readerScrollBarCheckBox_toggled(bool checked);
     void on_sleepTimeoutComboBox_currentIndexChanged(const QString &arg1);
     void brightnessDown();
+    void on_globalReadingSettingsCheckBox_toggled(bool checked);
 
 private:
     Ui::settings *ui;
