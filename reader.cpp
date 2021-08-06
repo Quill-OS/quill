@@ -92,6 +92,89 @@ reader::reader(QWidget *parent) :
     QString family = QFontDatabase::applicationFontFamilies(id).at(0);
     QFont crimson(family);
 
+    // Stylesheet + misc.
+    QFile stylesheetFile(":/resources/eink.qss");
+    stylesheetFile.open(QFile::ReadOnly);
+    this->setStyleSheet(stylesheetFile.readAll());
+    stylesheetFile.close();
+
+    // We have to get the file's path
+    if(global::reader::skipOpenDialog == true) {
+        if(checkconfig("/tmp/suspendBook") == true) {
+            wakeFromSleep = true;
+            // Prevent from opening the Reader framework next time unless the condition is reset
+            string_writeconfig("/tmp/suspendBook", "false");
+            book_file = "/inkbox/book/book.txt";
+        }
+        else {
+            if(global::reader::bookNumber == 1) {
+                string_checkconfig(".config/08-recent_books/1");
+                book_file = checkconfig_str_val;
+            }
+            if(global::reader::bookNumber == 2) {
+                string_checkconfig(".config/08-recent_books/2");
+                book_file = checkconfig_str_val;
+            }
+            if(global::reader::bookNumber == 3) {
+                string_checkconfig(".config/08-recent_books/3");
+                book_file = checkconfig_str_val;
+            }
+            if(global::reader::bookNumber == 4) {
+                string_checkconfig(".config/08-recent_books/4");
+                book_file = checkconfig_str_val;
+            }
+        }
+    }
+    else {
+        if(checkconfig("/opt/inkbox_genuine") == true) {
+            QDir::setCurrent("/mnt/onboard/onboard");
+            QFileDialog *dialog = new QFileDialog(this);
+            // https://forum.qt.io/topic/29471/solve-how-to-show-qfiledialog-at-center-position-screen/4
+            QDesktopWidget desk;
+            QRect screenres = desk.screenGeometry(0); dialog->setGeometry(QRect(screenres.width()/4,screenres.height() /4,screenres.width()/2,screenres.height()/2));
+            stylesheetFile.open(QFile::ReadOnly);
+            dialog->setStyleSheet(stylesheetFile.readAll());
+            stylesheetFile.close();
+            book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
+
+            if(book_file != "") {
+                setDefaultWorkDir();
+            }
+            else {
+                // User clicked "Cancel" button
+                setDefaultWorkDir();
+                quit_restart();
+            }
+        }
+        else {
+            QDir::setCurrent("/mnt/onboard");
+            QFileDialog *dialog = new QFileDialog(this);
+            // https://forum.qt.io/topic/29471/solve-how-to-show-qfiledialog-at-center-position-screen/4
+            QDesktopWidget desk;
+            QRect screenres = desk.screenGeometry(0); dialog->setGeometry(QRect(screenres.width()/4,screenres.height() /4,screenres.width()/2,screenres.height()/2));
+            stylesheetFile.open(QFile::ReadOnly);
+            dialog->setStyleSheet(stylesheetFile.readAll());
+            stylesheetFile.close();
+            book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
+
+            if(book_file != "") {
+                setDefaultWorkDir();
+            }
+            else {
+                // User clicked "Cancel" button
+                setDefaultWorkDir();
+                quit_restart();
+            }
+        }
+    }
+
+    // Writing book path to file
+    std::string book_file_str = book_file.toStdString();
+    string_writeconfig("/tmp/inkboxBookPath", book_file_str);
+
+    // Calling InkBox daemon (ibxd) via FIFO interface to run bookconfig_mount
+    string_writeconfig("/opt/ibxd", "bookconfig_mount\n");
+
     // Custom settings
     // Font
     string_checkconfig(".config/04-book/font");
@@ -137,12 +220,6 @@ reader::reader(QWidget *parent) :
         ui->nightModeBtn->hide();
         ui->nightModeBtn->deleteLater();
     }
-
-    // Stylesheet + misc.
-    QFile stylesheetFile(":/resources/eink.qss");
-    stylesheetFile.open(QFile::ReadOnly);
-    this->setStyleSheet(stylesheetFile.readAll());
-    stylesheetFile.close();
 
     string_checkconfig_ro("/opt/inkbox_device");
     if(checkconfig_str_val == "n873\n") {
@@ -281,76 +358,6 @@ reader::reader(QWidget *parent) :
            ui->timeLabel->setText(time);
         } );
         t->start();
-    }
-
-    // We have to get the file's path
-    if(global::reader::skipOpenDialog == true) {
-        if(checkconfig("/tmp/suspendBook") == true) {
-            wakeFromSleep = true;
-            // Prevent from opening the Reader framework next time unless the condition is reset
-            string_writeconfig("/tmp/suspendBook", "false");
-            book_file = "/inkbox/book/book.txt";
-        }
-        else {
-            if(global::reader::bookNumber == 1) {
-                string_checkconfig(".config/08-recent_books/1");
-                book_file = checkconfig_str_val;
-            }
-            if(global::reader::bookNumber == 2) {
-                string_checkconfig(".config/08-recent_books/2");
-                book_file = checkconfig_str_val;
-            }
-            if(global::reader::bookNumber == 3) {
-                string_checkconfig(".config/08-recent_books/3");
-                book_file = checkconfig_str_val;
-            }
-            if(global::reader::bookNumber == 4) {
-                string_checkconfig(".config/08-recent_books/4");
-                book_file = checkconfig_str_val;
-            }
-        }
-    }
-    else {
-        if(checkconfig("/opt/inkbox_genuine") == true) {
-            QDir::setCurrent("/mnt/onboard/onboard");
-            QFileDialog *dialog = new QFileDialog(this);
-            // https://forum.qt.io/topic/29471/solve-how-to-show-qfiledialog-at-center-position-screen/4
-            QDesktopWidget desk;
-            QRect screenres = desk.screenGeometry(0); dialog->setGeometry(QRect(screenres.width()/4,screenres.height() /4,screenres.width()/2,screenres.height()/2));
-            stylesheetFile.open(QFile::ReadOnly);
-            dialog->setStyleSheet(stylesheetFile.readAll());
-            stylesheetFile.close();
-            book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
-
-            if(book_file != "") {
-                setDefaultWorkDir();
-            }
-            else {
-                // User clicked "Cancel" button
-                setDefaultWorkDir();
-                quit_restart();
-            }
-        }
-        else {
-            QDir::setCurrent("/mnt/onboard");
-            QFileDialog *dialog = new QFileDialog(this);
-            // https://forum.qt.io/topic/29471/solve-how-to-show-qfiledialog-at-center-position-screen/4
-            QDesktopWidget desk;
-            QRect screenres = desk.screenGeometry(0); dialog->setGeometry(QRect(screenres.width()/4,screenres.height() /4,screenres.width()/2,screenres.height()/2));
-            stylesheetFile.open(QFile::ReadOnly);
-            dialog->setStyleSheet(stylesheetFile.readAll());
-            stylesheetFile.close();
-            book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
-
-            if(book_file != "") {
-                setDefaultWorkDir();
-            }
-            else {
-                // User clicked "Cancel" button
-                setDefaultWorkDir();
-                quit_restart();
-            }
-        }
     }
 
     // Checking if we're waking from sleep; if so, do nothing there because the book should already have been parsed
@@ -517,8 +524,6 @@ reader::reader(QWidget *parent) :
     string_checkconfig(".config/08-recent_books/4");
     book_4 = checkconfig_str_val;
     std::string str_book_4 = book_4.toStdString();
-
-    std::string book_file_str;
 
     // Don't mess up "Recently read books" with random "book.txt" buttons...
     if(wakeFromSleep == true) {
@@ -1370,6 +1375,9 @@ void reader::writeconfig_pagenumber() {
 }
 
 void reader::quit_restart() {
+    // Cleaning bookconfig_mount mountpoint
+    string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
+
     // Restarting InkBox
     QProcess process;
     process.startDetached("inkbox", QStringList());
