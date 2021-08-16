@@ -174,6 +174,12 @@ reader::reader(QWidget *parent) :
 
     // Calling InkBox daemon (ibxd) via FIFO interface to run bookconfig_mount
     string_writeconfig("/opt/ibxd", "bookconfig_mount\n");
+    // Callback handler to wait until bookconfig_mount has finished execution
+    while(true) {
+        if(QFile::exists("/inkbox/bookConfigSetUp")) {
+            break;
+        }
+    }
 
     // Custom settings
     // Font
