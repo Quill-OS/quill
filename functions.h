@@ -78,6 +78,13 @@ namespace global {
     namespace device {
         inline bool isWifiAble;
     }
+    namespace network {
+        inline bool isConnected;
+    }
+    namespace otaUpdate {
+        inline bool isUpdateOta;
+        inline bool downloadOta;
+    }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705;
@@ -492,11 +499,13 @@ namespace {
                 if(checkconfig("/run/wifi_connected_successfully") == true) {
                     QFile::remove("/run/wifi_connected_successfully");
                     connectionSuccessful = 1;
+                    global::network::isConnected = true;
                     return true;
                 }
                 else {
                     QFile::remove("/run/wifi_connected_successfully");
                     connectionSuccessful = 0;
+                    global::network::isConnected = false;
                     return false;
                 }
             }
@@ -526,6 +535,12 @@ namespace {
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
         string_writeconfig(sysfsWarmthPath, warmthValueStr);
+    }
+    void installUpdate() {
+        string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "true");
+        string_writeconfig("/external_root/opt/update/will_update", "true");
+        string_writeconfig("/external_root/boot/flags/WILL_UPDATE", "true");
+        reboot(true);
     }
 }
 

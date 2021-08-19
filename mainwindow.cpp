@@ -953,12 +953,11 @@ void MainWindow::showToast(QString messageToDisplay) {
     connect(toastWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
     toastWindow->show();
 
-    // Testing
-    /* if(messageToDisplay == "Connection successful") {
+    if(messageToDisplay == "Connection successful") {
         otaManagerWindow = new otaManager(this);
-        connect(otaManagerWindow, SIGNAL(canInstallOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
+        connect(otaManagerWindow, SIGNAL(canOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
         otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
-    } */
+    }
 }
 
 void MainWindow::hello(int testNumber) {
@@ -972,6 +971,7 @@ void MainWindow::closeIndefiniteToast() {
 
 void MainWindow::openUpdateDialogOTA(bool open) {
     if(open == true) {
+        global::otaUpdate::isUpdateOta = true;
         openUpdateDialog();
     }
     else {

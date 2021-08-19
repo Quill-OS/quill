@@ -196,10 +196,15 @@ void generalDialog::on_okBtn_clicked()
         }
     }
     if(updateDialog == true) {
-        string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "true");
-        string_writeconfig("/external_root/opt/update/will_update", "true");
-        string_writeconfig("/external_root/boot/flags/WILL_UPDATE", "true");
-        reboot(true);
+        if(global::otaUpdate::isUpdateOta == true) {
+            global::otaUpdate::downloadOta = true;
+            otaManagerWindow = new otaManager(this);
+            connect(otaManagerWindow, SIGNAL(downloadedOtaUpdate(bool)), SLOT(startOtaUpdate(bool)));
+            otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
+        }
+        else {
+            installUpdate();
+        }
     }
     if(usbmsDialog == true) {
         global::usbms::usbmsDialog = false;
@@ -389,4 +394,15 @@ void generalDialog::connectToNetworkSlot() {
         emit showToast("Connection failed");
     }
     generalDialog::close();
+}
+
+void generalDialog::startOtaUpdate(bool wasDownloadSuccessful) {
+    if(wasDownloadSuccessful == true) {
+        global::otaUpdate::isUpdateOta = false;
+        installUpdate();
+    }
+    else {
+        showToast("Download failed");
+        global::otaUpdate::isUpdateOta = false;
+    }
 }

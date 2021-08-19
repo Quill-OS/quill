@@ -8,6 +8,7 @@
 #include "virtualkeyboard.h"
 #include "virtualkeypad.h"
 #include "dictionarywidget.h"
+#include "otamanager.h"
 
 using namespace std;
 
@@ -51,6 +52,7 @@ private slots:
     void restartSearchDialog();
     void refreshScreenNative();
     void connectToNetworkSlot();
+    void startOtaUpdate(bool wasDownloadSuccessful);
 
 private:
     Ui::generalDialog *ui;
@@ -59,6 +61,7 @@ private:
     virtualkeyboard *keyboardWidget;
     virtualkeypad *keypadWidget;
     dictionaryWidget *dictionaryWidgetWindow;
+    otaManager *otaManagerWindow;
 
 signals:
     void gotoPageSelected(int value);

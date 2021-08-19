@@ -19,7 +19,8 @@ private:
     Ui::otaManager *ui;
 
 signals:
-    void canInstallOtaUpdate(bool yesno);
+    void canOtaUpdate(bool yesno);
+    void downloadedOta(bool wasDownloadSuccessful);
 
 };
 
