@@ -1402,6 +1402,9 @@ void reader::writeconfig_pagenumber(bool persistent) {
 }
 
 void reader::quit_restart() {
+    // Saving current page number
+    saveReadingSettings();
+
     // Cleaning bookconfig_mount mountpoint
     string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
 
@@ -1437,6 +1440,13 @@ void reader::convertMuPdfVars() {
     mupdf::fontSize_qstr = QString::number(mupdf::fontSize);
     mupdf::width_qstr = QString::number(mupdf::width);
     mupdf::height_qstr = QString::number(mupdf::height);
+    if(global::reader::globalReadingSettings == false) {
+        if(goToSavedPageDone == false) {
+            string_checkconfig_ro(".config/A-page_number/config");
+            mupdf::epubPageNumber = checkconfig_str_val.toInt();
+            goToSavedPageDone = true;
+        }
+    }
     if(mupdf::epubPageNumber <= 0) {
         mupdf::epubPageNumber = 1;
     }
@@ -1737,7 +1747,6 @@ void reader::showToast(QString messageToDisplay) {
 }
 
 void reader::saveReadingSettings() {
-    qDebug() << "Got there";
     writeconfig_pagenumber(true);
 }
 

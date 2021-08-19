@@ -56,6 +56,7 @@ public:
     bool showTopbarWidget;
     bool wordwidgetLock;
     bool isNightModeActive;
+    bool goToSavedPageDone;
     QString book_1;
     QString book_2;
     QString book_3;
