@@ -962,10 +962,8 @@ void MainWindow::showToast(QString messageToDisplay) {
     toastWindow->show();
 
     if(messageToDisplay == "Connection successful") {
-
-        otaManagerWindow = new otaManager(this);
-        connect(otaManagerWindow, SIGNAL(canOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
-        otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
+        // Give the toast some time to vanish away
+        QTimer::singleShot(5000, this, SLOT(launchOtaUpdater()));
     }
 }
 
@@ -986,4 +984,10 @@ void MainWindow::openUpdateDialogOTA(bool open) {
     else {
         ;
     }
+}
+
+void MainWindow::launchOtaUpdater() {
+    otaManagerWindow = new otaManager(this);
+    connect(otaManagerWindow, SIGNAL(canOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
+    otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
 }

@@ -84,6 +84,7 @@ private slots:
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();
     void openUpdateDialogOTA(bool open);
+    void launchOtaUpdater();
 
 private:
     Ui::MainWindow *ui;
