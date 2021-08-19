@@ -383,6 +383,9 @@ namespace {
         getIpProc->waitForFinished();
 
         QString ipAddress = getIpProc->readAllStandardOutput();
+        if(ipAddress == "") {
+            ipAddress = "Not available";
+        }
         return ipAddress;
     }
     void getSystemInfo() {
