@@ -954,6 +954,7 @@ void MainWindow::showToast(QString messageToDisplay) {
     toastWindow->show();
 
     if(messageToDisplay == "Connection successful") {
+
         otaManagerWindow = new otaManager(this);
         connect(otaManagerWindow, SIGNAL(canOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
         otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
