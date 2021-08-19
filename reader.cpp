@@ -174,13 +174,18 @@ reader::reader(QWidget *parent) :
 
     // Calling InkBox daemon (ibxd) via FIFO interface to run bookconfig_mount
     if(checkconfig(".config/16-global_reading_settings/config") == false) {
+        global::reader::globalReadingSettings = false;
         string_writeconfig("/opt/ibxd", "bookconfig_mount\n");
         // Callback handler to wait until bookconfig_mount has finished execution
         while(true) {
             if(QFile::exists("/inkbox/bookConfigSetUp")) {
+                setupLocalSettingsEnvironment();
                 break;
             }
         }
+    }
+    else {
+        global::reader::globalReadingSettings = true;
     }
 
     // Custom settings
@@ -378,7 +383,7 @@ reader::reader(QWidget *parent) :
         split_files_number = split_total;
         split_total = split_total - 1;
 
-        writeconfig_pagenumber();
+        writeconfig_pagenumber(false);
     }
     else {
         // Retrieve split_total from tmpfs
@@ -442,11 +447,11 @@ reader::reader(QWidget *parent) :
     }
 
     // Wheeee!
-    if(is_epub != true) {
-        ui->text->setText(ittext);
+    if(is_epub == true) {
+        ui->text->setText(epubPageContent);
     }
     else {
-        ui->text->setText(epubPageContent);
+        ui->text->setText(ittext);
     }
 
     // Alignment
@@ -633,6 +638,14 @@ reader::reader(QWidget *parent) :
         getTotalEpubPagesNumber();
     }
     setupPageWidget();
+
+    // Reading settings auto-save timer
+    if(global::reader::globalReadingSettings == false) {
+        QTimer * saveSettingsTimer = new QTimer(this);
+        saveSettingsTimer->setInterval(900000); // 15 minutes
+        connect(saveSettingsTimer, SIGNAL(timeout()), this, SLOT(saveReadingSettings()));
+        saveSettingsTimer->start();
+    }
 }
 
 reader::~reader()
@@ -842,7 +855,7 @@ void reader::on_nextBtn_clicked()
             ui->text->setText(ittext);
 
             pagesTurned = pagesTurned + 1;
-            writeconfig_pagenumber();
+            writeconfig_pagenumber(false);
         }
     }
     else {
@@ -856,7 +869,7 @@ void reader::on_nextBtn_clicked()
             ui->text->setText(epubPageContent);
 
             pagesTurned = pagesTurned + 1;
-            writeconfig_pagenumber();
+            writeconfig_pagenumber(false);
         }
     }
     alignText(textAlignment);
@@ -879,7 +892,7 @@ void reader::on_previousBtn_clicked()
 
             // We always increment pagesTurned regardless whether we press the Previous or Next button
             pagesTurned = pagesTurned + 1;
-            writeconfig_pagenumber();
+            writeconfig_pagenumber(false);
         }
     }
     else {
@@ -894,7 +907,7 @@ void reader::on_previousBtn_clicked()
 
             // We always increment pagesTurned regardless whether we press the Previous or Next button
             pagesTurned = pagesTurned + 1;
-            writeconfig_pagenumber();
+            writeconfig_pagenumber(false);
         }
     }
     alignText(textAlignment);
@@ -1370,15 +1383,21 @@ void reader::on_sizeSlider_valueChanged(int value)
     }
 }
 
-void reader::writeconfig_pagenumber() {
-    // Saving the page number in tmpfs
+void reader::writeconfig_pagenumber(bool persistent) {
+    // Saving the page number in tmpfs and in persistent storage if requested
     if(is_epub != true) {
         std::string split_total_str = std::to_string(split_total);
         string_writeconfig("/tmp/inkboxPageNumber", split_total_str);
+        if(persistent == true) {
+            string_writeconfig(".config/A-page_number/config", split_total_str);
+        }
     }
     else {
         std::string epubPageNumber_str = std::to_string(mupdf::epubPageNumber);
         string_writeconfig("/tmp/inkboxPageNumber", epubPageNumber_str);
+        if(persistent == true) {
+            string_writeconfig(".config/A-page_number/config", epubPageNumber_str);
+        }
     }
 }
 
@@ -1592,7 +1611,7 @@ void reader::gotoPage(int pageNumber) {
             ui->text->setText(epubPageContent);
 
             pagesTurned = 0;
-            writeconfig_pagenumber();
+            writeconfig_pagenumber(false);
         }
     }
     else {
@@ -1607,7 +1626,7 @@ void reader::gotoPage(int pageNumber) {
             ui->text->setText(ittext);
 
             pagesTurned = 0;
-            writeconfig_pagenumber();
+            writeconfig_pagenumber(false);
         }
     }
     alignText(textAlignment);
@@ -1715,4 +1734,15 @@ void reader::showToast(QString messageToDisplay) {
     toastWindow = new toast(this);
     toastWindow->setAttribute(Qt::WA_DeleteOnClose);
     toastWindow->show();
+}
+
+void reader::saveReadingSettings() {
+    qDebug() << "Got there";
+    writeconfig_pagenumber(true);
+}
+
+void reader::setupLocalSettingsEnvironment() {
+    QString pageNumberDirPath = ".config/A-page_number";
+    QDir pageNumberDir;
+    pageNumberDir.mkpath(pageNumberDirPath);
 }

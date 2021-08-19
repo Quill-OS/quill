@@ -123,7 +123,7 @@ private slots:
     void on_nextDefinitionBtn_clicked();
     void on_saveWordBtn_clicked();
     void on_sizeSlider_valueChanged(int value);
-    void writeconfig_pagenumber();
+    void writeconfig_pagenumber(bool persistent);
     void quit_restart();
     void on_text_selectionChanged();
     void on_nightModeBtn_clicked();
@@ -132,6 +132,8 @@ private slots:
     void on_searchBtn_clicked();
     void searchRefreshScreen();
     void setupSearchDialog();
+    void saveReadingSettings();
+    void setupLocalSettingsEnvironment();
 
 private:
     Ui::reader *ui;

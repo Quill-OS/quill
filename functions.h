@@ -29,6 +29,7 @@ namespace global {
         inline bool startBatteryWatchdog;
         inline bool startUsbmsPrompt;
         inline bool bookIsEpub;
+        inline bool globalReadingSettings;
     }
     namespace kobox {
         inline bool showKoboxSplash;
