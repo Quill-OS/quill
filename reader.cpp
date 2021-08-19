@@ -395,6 +395,12 @@ reader::reader(QWidget *parent) :
     // Get text; no need to do it multiple times for ePUB books
     if(is_epub != true) {
         setDefaultWorkDir();
+        if(global::reader::globalReadingSettings == false) {
+            string_checkconfig_ro(".config/A-page_number/config");
+            if(checkconfig_str_val != "") {
+                split_total = checkconfig_str_val.toInt();
+            }
+        }
         setup_book(book_file, split_total, true);
     }
 
@@ -1389,6 +1395,7 @@ void reader::writeconfig_pagenumber(bool persistent) {
         std::string split_total_str = std::to_string(split_total);
         string_writeconfig("/tmp/inkboxPageNumber", split_total_str);
         if(persistent == true) {
+            split_total_str.append("\n");
             string_writeconfig(".config/A-page_number/config", split_total_str);
         }
     }
@@ -1396,6 +1403,7 @@ void reader::writeconfig_pagenumber(bool persistent) {
         std::string epubPageNumber_str = std::to_string(mupdf::epubPageNumber);
         string_writeconfig("/tmp/inkboxPageNumber", epubPageNumber_str);
         if(persistent == true) {
+            epubPageNumber_str.append("\n");
             string_writeconfig(".config/A-page_number/config", epubPageNumber_str);
         }
     }
