@@ -154,6 +154,10 @@ void generalDialog::on_cancelBtn_clicked()
         global::usbms::usbmsDialog = false;
         generalDialog::close();
     }
+    else if(resetKoboxDialog == true) {
+        global::kobox::resetKoboxDialog = false;
+        generalDialog::close();
+    }
     else {
         if(global::keyboard::searchDialog == true) {
             global::keyboard::searchDialog = false;
