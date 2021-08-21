@@ -53,6 +53,7 @@ otaManager::otaManager(QWidget *parent) :
     }
     else {
         qDebug() << "Skip OTA update check!";
+        otaManager::close();
     }
 }
 
