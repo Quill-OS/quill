@@ -547,7 +547,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::openUpdateDialog() {
     global::mainwindow::updateDialog = true;
-    // Write to a temporary file to show a "Reset" prompt
+    // Write to a temporary file to show an "Update" prompt
     string_writeconfig("/inkbox/updateDialog", "true");
 
     // Show the dialog
@@ -609,8 +609,6 @@ void MainWindow::on_settingsBtn_clicked()
     else {
         ;
     }
-    // Testing
-    // showToast("Connection successful");
 }
 
 void MainWindow::on_appsBtn_clicked()
@@ -962,7 +960,7 @@ void MainWindow::showToast(QString messageToDisplay) {
     toastWindow->show();
 
     if(messageToDisplay == "Connection successful") {
-        // Give the toast some time to vanish away
+        // Give the toast some time to vanish away, then launch OTA updater
         QTimer::singleShot(5000, this, SLOT(launchOtaUpdater()));
     }
 }

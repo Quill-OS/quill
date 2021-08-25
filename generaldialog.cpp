@@ -201,10 +201,16 @@ void generalDialog::on_okBtn_clicked()
     }
     if(updateDialog == true) {
         if(global::otaUpdate::isUpdateOta == true) {
+            this->hide();
+
             global::otaUpdate::downloadOta = true;
             otaManagerWindow = new otaManager(this);
             connect(otaManagerWindow, SIGNAL(downloadedOtaUpdate(bool)), SLOT(startOtaUpdate(bool)));
             otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
+
+            global::toast::indefiniteToast = true;
+            global::toast::modalToast = true;
+            emit showToast("Downloading update");
         }
         else {
             installUpdate();
@@ -401,12 +407,14 @@ void generalDialog::connectToNetworkSlot() {
 }
 
 void generalDialog::startOtaUpdate(bool wasDownloadSuccessful) {
+    emit closeIndefiniteToast();
     if(wasDownloadSuccessful == true) {
         global::otaUpdate::isUpdateOta = false;
         installUpdate();
     }
     else {
-        showToast("Download failed");
+        emit showToast("Download failed");
         global::otaUpdate::isUpdateOta = false;
     }
+    generalDialog::close();
 }

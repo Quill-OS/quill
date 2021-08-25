@@ -20,8 +20,7 @@ private:
 
 signals:
     void canOtaUpdate(bool yesno);
-    void downloadedOta(bool wasDownloadSuccessful);
-
+    void downloadedOtaUpdate(bool wasDownloadSuccessful);
 };
 
 #endif // OTAMANAGER_H

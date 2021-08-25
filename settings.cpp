@@ -31,6 +31,7 @@ settings::settings(QWidget *parent) :
     ui->updateBtn->setProperty("type", "borderless");
     ui->resetBtn->setProperty("type", "borderless");
     ui->showSystemInfoBtn->setProperty("type", "borderless");
+    ui->checkOtaUpdateBtn->setProperty("type", "borderless");
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
@@ -39,6 +40,7 @@ settings::settings(QWidget *parent) :
     ui->updateBtn->setStyleSheet("font-size: 9pt");
     ui->resetBtn->setStyleSheet("font-size: 9pt");
     ui->showSystemInfoBtn->setStyleSheet("font-size: 9pt");
+    ui->checkOtaUpdateBtn->setStyleSheet("font-size: 9pt");
     ui->comboBox->setStyleSheet("font-size: 9pt");
     ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
@@ -324,6 +326,9 @@ settings::settings(QWidget *parent) :
         ui->label_8->setText("Reset InkBox");
     }
 
+    if(global::device::isWifiAble == false) {
+        ui->checkOtaUpdateGridLayout->deleteLater();
+    }
 
     QFile stylesheetFile(":/resources/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
@@ -853,3 +858,51 @@ void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)
     }
 }
 
+void settings::on_checkOtaUpdateBtn_clicked()
+{
+    launchOtaUpdater();
+}
+
+void settings::openUpdateDialog() {
+    global::mainwindow::updateDialog = true;
+    // Write to a temporary file to show an "Update" prompt
+    string_writeconfig("/inkbox/updateDialog", "true");
+
+    // Show the dialog
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+    connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
+    generalDialogWindow->show();
+    QApplication::processEvents();
+}
+
+void settings::launchOtaUpdater() {
+    otaManagerWindow = new otaManager(this);
+    connect(otaManagerWindow, SIGNAL(canOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
+    otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
+}
+
+void settings::openUpdateDialogOTA(bool open) {
+    if(open == true) {
+        global::otaUpdate::isUpdateOta = true;
+        openUpdateDialog();
+    }
+    else {
+        ;
+    }
+}
+
+void settings::showToast(QString messageToDisplay) {
+    global::toast::message = messageToDisplay;
+    toastWindow = new toast(this);
+    toastWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(toastWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+    connect(toastWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
+    toastWindow->show();
+}
+
+void settings::closeIndefiniteToast() {
+    // Warning: use with caution
+    toastWindow->close();
+}

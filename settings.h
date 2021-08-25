@@ -5,6 +5,8 @@
 
 #include <usbms_splash.h>
 #include "generaldialog.h"
+#include "otamanager.h"
+#include "toast.h"
 
 using namespace std;
 
@@ -53,11 +55,19 @@ private slots:
     void on_sleepTimeoutComboBox_currentIndexChanged(const QString &arg1);
     void brightnessDown();
     void on_globalReadingSettingsCheckBox_toggled(bool checked);
+    void on_checkOtaUpdateBtn_clicked();
+    void openUpdateDialog();
+    void launchOtaUpdater();
+    void openUpdateDialogOTA(bool open);
+    void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
 
 private:
     Ui::settings *ui;
     usbms_splash *usbmsWindow;
     generalDialog *generalDialogWindow;
+    otaManager *otaManagerWindow;
+    toast *toastWindow;
 };
 
 #endif // SETTINGS_H
