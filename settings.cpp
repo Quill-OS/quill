@@ -327,6 +327,10 @@ settings::settings(QWidget *parent) :
     }
 
     if(global::device::isWifiAble == false) {
+        ui->checkOtaUpdateLabel->hide();
+        ui->checkOtaUpdateBtn->hide();
+        ui->checkOtaUpdateLabel->deleteLater();
+        ui->checkOtaUpdateBtn->deleteLater();
         ui->checkOtaUpdateGridLayout->deleteLater();
     }
 
@@ -871,8 +875,8 @@ void settings::openUpdateDialog() {
     // Show the dialog
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
-    connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
+    connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
+    connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
     generalDialogWindow->show();
     QApplication::processEvents();
 }
@@ -893,16 +897,10 @@ void settings::openUpdateDialogOTA(bool open) {
     }
 }
 
-void settings::showToast(QString messageToDisplay) {
-    global::toast::message = messageToDisplay;
-    toastWindow = new toast(this);
-    toastWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(toastWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
-    connect(toastWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
-    toastWindow->show();
+void settings::showToastNative(QString messageToDisplay) {
+    emit showToast(messageToDisplay);
 }
 
-void settings::closeIndefiniteToast() {
-    // Warning: use with caution
-    toastWindow->close();
+void settings::closeIndefiniteToastNative() {
+    emit closeIndefiniteToast();
 }

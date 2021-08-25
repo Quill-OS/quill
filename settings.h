@@ -59,6 +59,10 @@ private slots:
     void openUpdateDialog();
     void launchOtaUpdater();
     void openUpdateDialogOTA(bool open);
+    void showToastNative(QString messageToDisplay);
+    void closeIndefiniteToastNative();
+
+signals:
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();
 

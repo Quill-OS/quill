@@ -18,7 +18,7 @@ settingsChooser::settingsChooser(QWidget *parent) :
     stylesheetFile.close();
 
     // UI tweaks
-    if(checkconfig("/opt/inkbox_kobox_support") != true) {
+    if(checkconfig("/opt/inkbox_kobox_support") == false) {
         ui->koboxSettingsBtn->hide();
         ui->line_3->hide();
     }
@@ -73,6 +73,8 @@ void settingsChooser::on_inkboxSettingsBtn_clicked()
 {
     settingsWindow = new settings();
     settingsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(settingsWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
+    connect(settingsWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
     settingsWindow->showFullScreen();
 }
 
@@ -81,4 +83,12 @@ void settingsChooser::on_koboxSettingsBtn_clicked()
     koboxSettingsWindow = new koboxSettings();
     koboxSettingsWindow->setAttribute(Qt::WA_DeleteOnClose);
     koboxSettingsWindow->showFullScreen();
+}
+
+void settingsChooser::showToastNative(QString messageToDisplay) {
+    emit showToast(messageToDisplay);
+}
+
+void settingsChooser::closeIndefiniteToastNative() {
+    emit closeIndefiniteToast();
 }

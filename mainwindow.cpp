@@ -594,8 +594,10 @@ void MainWindow::on_settingsBtn_clicked()
         ui->settingsBtn->setStyleSheet("background: black");
         ui->settingsBtn->setIcon(QIcon(":/resources/settings-inverted.png"));
 
-        // Create widget
+        // Create widget and make necessary connections
         settingsChooserWindow = new settingsChooser();
+        connect(settingsChooserWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+        connect(settingsChooserWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
         ui->stackedWidget->insertWidget(2, settingsChooserWindow);
         global::mainwindow::tabSwitcher::settingsChooserWidgetCreated = true;
 

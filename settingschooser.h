@@ -25,8 +25,13 @@ public:
 
 private slots:
     void on_inkboxSettingsBtn_clicked();
-
     void on_koboxSettingsBtn_clicked();
+    void showToastNative(QString messageToDisplay);
+    void closeIndefiniteToastNative();
+
+signals:
+    void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
 
 private:
     Ui::settingsChooser *ui;
