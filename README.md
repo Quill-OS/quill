@@ -11,7 +11,7 @@ It features:
 - X11 apps seamless integration (KoBox)
 - Fast dictionary search
 - Dark mode
-- Strict security policy ensuring that only signed software can be run on the device (this, however, can be adapted to your needs by recompiling the [kernel](https://github.com/Kobo-InkBox/kernel)
+- Strict security policy ensuring that only signed software can be run on the device (this, however, can be adapted to your needs by recompiling the [kernel](https://github.com/Kobo-InkBox/kernel))
 - Full factory reset option if needed
 - Seamless update process
 - VNC viewer app
