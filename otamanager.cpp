@@ -14,41 +14,41 @@ otaManager::otaManager(QWidget *parent) :
         qDebug() << "Checking for available OTA update ...";
         if(global::otaUpdate::downloadOta != true) {
             string_writeconfig("/opt/ibxd", "ota_update_check\n");
-            while(true) {
+            QTimer * otaCheckTimer = new QTimer(this);
+            otaCheckTimer->setInterval(100);
+            connect(otaCheckTimer, &QTimer::timeout, [&]() {
                 if(QFile::exists("/run/can_ota_update") == true) {
                     if(checkconfig("/run/can_ota_update") == true) {
-                        emit canOtaUpdate(true);
                         qDebug() << "OTA update is available!";
-                        break;
+                        emit canOtaUpdate(true);
                     }
                     else {
-                        emit canOtaUpdate(false);
                         qDebug() << "No OTA update available.";
-                        break;
+                        emit canOtaUpdate(false);
                     }
+                    otaManager::close();
                 }
-            }
-            QThread::msleep(500);
-            otaManager::close();
+            } );
+            otaCheckTimer->start();
         }
         else {
             string_writeconfig("/opt/ibxd", "ota_update_download\n");
-            while(true) {
+            QTimer * otaDownloadTimer = new QTimer(this);
+            otaDownloadTimer->setInterval(500);
+            connect(otaDownloadTimer, &QTimer::timeout,  [&]() {
                 if(QFile::exists("/run/can_install_ota_update") == true) {
                     if(checkconfig("/run/can_install_ota_update") == true) {
                         emit downloadedOta(true);
                         global::otaUpdate::downloadOta = false;
-                        break;
                     }
                     else {
                         emit downloadedOta(false);
                         global::otaUpdate::downloadOta = false;
-                        break;
                     }
+                    otaManager::close();
                 }
-            }
-            QThread::msleep(500);
-            otaManager::close();
+            } );
+            otaDownloadTimer->start();
         }
     }
     else {
