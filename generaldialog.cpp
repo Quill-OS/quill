@@ -192,6 +192,7 @@ void generalDialog::on_okBtn_clicked()
             QProcess *proc = new QProcess();
             proc->start(prog, args);
             proc->waitForFinished();
+            proc->deleteLater();
 
             // Relaunching InkBox
             QProcess process;

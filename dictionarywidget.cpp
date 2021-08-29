@@ -72,6 +72,7 @@ void dictionaryWidget::dictionaryLookup(std::string word, QString first_letter, 
     QProcess *lookup_proc = new QProcess();
     lookup_proc->start(lookup_prog, lookup_args);
     lookup_proc->waitForFinished();
+    lookup_proc->deleteLater();
 
     QFile definition_file("/inkbox/dictionary/definition");
     definition_file.open(QIODevice::ReadWrite);

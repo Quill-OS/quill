@@ -70,7 +70,8 @@ settings::settings(QWidget *parent) :
     ui->uiScalingLabel->hide();
 
     // Variables
-    defineDefaultPageSize();
+    defineDefaultPageSize(0);
+    defineDefaultPageSize(1);
 
     // Settings tweaking + enabling specific features whether it's running on the provided integrated OS or Kobo firmware
     if(checkconfig(".config/01-demo/config") == true) {
@@ -429,6 +430,7 @@ void settings::on_requestLeaseBtn_clicked()
     QProcess *proc = new QProcess();
     proc->start(prog, args);
     proc->waitForFinished();
+    proc->deleteLater();
 }
 
 void settings::on_usbmsBtn_clicked()
@@ -442,6 +444,7 @@ void settings::on_usbmsBtn_clicked()
     QProcess *umount_proc = new QProcess();
     umount_proc->start(umount_prog, umount_args);
     umount_proc->waitForFinished();
+    umount_proc->deleteLater();
 
     QString rmmod ("rmmod");
     QStringList rmmod_args;
@@ -449,6 +452,7 @@ void settings::on_usbmsBtn_clicked()
     QProcess *rmmod_proc = new QProcess();
     rmmod_proc->start(rmmod, rmmod_args);
     rmmod_proc->waitForFinished();
+    rmmod_proc->deleteLater();
 
     QString prog ("insmod");
     QStringList args;
@@ -456,6 +460,7 @@ void settings::on_usbmsBtn_clicked()
     QProcess *proc = new QProcess();
     proc->start(prog, args);
     proc->waitForFinished();
+    proc->deleteLater();
 
     QString prog_1 ("insmod");
     QStringList args_1;
@@ -463,6 +468,7 @@ void settings::on_usbmsBtn_clicked()
     QProcess *proc_1 = new QProcess();
     proc_1->start(prog_1, args_1);
     proc_1->waitForFinished();
+    proc_1->deleteLater();
 
     usbmsWindow = new usbms_splash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -477,6 +483,7 @@ void settings::on_usbmsBtn_clicked()
         QProcess *proc = new QProcess();
         proc->start(prog, args);
         proc->waitForFinished();
+        proc->deleteLater();
 
         QFile modules("/tmp/usbevent");
         modules.open(QIODevice::ReadWrite);
@@ -491,6 +498,7 @@ void settings::on_usbmsBtn_clicked()
             QProcess *reboot_proc = new QProcess();
             reboot_proc->start(reboot_prog, reboot_args);
             reboot_proc->waitForFinished();
+            reboot_proc->deleteLater();
         }
         else {
             ;
@@ -593,6 +601,7 @@ void settings::on_updateBtn_clicked()
     QProcess *proc = new QProcess();
     proc->start(prog, args);
     proc->waitForFinished();
+    proc->deleteLater();
 }
 
 void settings::on_darkModeCheckBox_toggled(bool checked)

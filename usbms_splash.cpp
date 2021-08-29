@@ -78,6 +78,7 @@ void usbms_splash::usbms_launch()
     QProcess *umount_proc = new QProcess();
     umount_proc->start(umount_prog, umount_args);
     umount_proc->waitForFinished();
+    umount_proc->deleteLater();
 
     QString rmmod ("rmmod");
     QStringList rmmod_args;
@@ -85,6 +86,7 @@ void usbms_splash::usbms_launch()
     QProcess *rmmod_proc = new QProcess();
     rmmod_proc->start(rmmod, rmmod_args);
     rmmod_proc->waitForFinished();
+    rmmod_proc->deleteLater();
 
     QString prog ("insmod");
     QStringList args;
@@ -92,6 +94,7 @@ void usbms_splash::usbms_launch()
     QProcess *proc = new QProcess();
     proc->start(prog, args);
     proc->waitForFinished();
+    proc->deleteLater();
 
     QString prog_1 ("insmod");
     QStringList args_1;
@@ -106,6 +109,7 @@ void usbms_splash::usbms_launch()
     QProcess *proc_1 = new QProcess();
     proc_1->start(prog_1, args_1);
     proc_1->waitForFinished();
+    proc_1->deleteLater();
 
     QTimer *usbms_t = new QTimer(this);
     usbms_t->setInterval(1000);
@@ -115,6 +119,7 @@ void usbms_splash::usbms_launch()
         QProcess *proc = new QProcess();
         proc->start(prog, args);
         proc->waitForFinished();
+        proc->deleteLater();
 
         QFile modules("/tmp/usbevent");
         modules.open(QIODevice::ReadWrite);
@@ -129,6 +134,7 @@ void usbms_splash::usbms_launch()
             QProcess *reboot_proc = new QProcess();
             reboot_proc->start(reboot_prog, reboot_args);
             reboot_proc->waitForFinished();
+            reboot_proc->deleteLater();
         }
         else {
             ;

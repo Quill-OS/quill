@@ -7,19 +7,30 @@
 #include "toast.h"
 
 #include <QWidget>
+#include <QGraphicsScene>
 
 using namespace std;
 
 // ePUB scaling
 namespace mupdf {
-    inline int fontSize;
-    inline int width;
-    inline int height;
-    inline int epubPageNumber;
-    inline QString fontSize_qstr;
-    inline QString width_qstr;
-    inline QString height_qstr;
-    inline QString epubPageNumber_qstr;
+    namespace epub {
+        inline int fontSize;
+        inline int width;
+        inline int height;
+        inline int epubPageNumber;
+        inline QString fontSize_qstr;
+        inline QString width_qstr;
+        inline QString height_qstr;
+        inline QString epubPageNumber_qstr;
+    }
+    namespace pdf {
+        inline int width;
+        inline int height;
+        inline int pdfPageNumber;
+        inline QString width_qstr;
+        inline QString height_qstr;
+        inline QString pdfPageNumber_qstr;
+    }
 }
 
 namespace Ui {
@@ -48,6 +59,7 @@ public:
     bool menubar_shown = false;
     bool nextdefinition_lock = false;
     bool is_epub = false;
+    bool is_pdf = false;
     bool parser_ran = false;
     bool filematch_ran = false;
     bool neverRefresh = false;
@@ -91,19 +103,21 @@ public:
     void wordwidget_hide();
     void openLowBatteryDialog();
     void openCriticalBatteryAlertWindow();
-    void convertMuPdfVars();
+    void convertMuPdfVars(int fileType);
     void refreshScreen();
-    void setPageStyle();
+    void setPageStyle(int fileType);
     void alignText(int alignment);
     void delay(int seconds);
     void openUsbmsDialog();
     QString setPageNumberLabelContent();
     void setupPageWidget();
     void getTotalEpubPagesNumber();
+    void getTotalPdfPagesNumber();
     void setBitterFont();
     void setCrimsonProFont();
     void setIbarraFont();
     void showToast(QString messageToDisplay);
+    bool pdf_file_match(QString file);
 
 private slots:
     void on_nextBtn_clicked();
@@ -135,12 +149,14 @@ private slots:
     void setupSearchDialog();
     void saveReadingSettings();
     void setupLocalSettingsEnvironment();
+    void setupPng();
 
 private:
-    Ui::reader *ui;
-    alert *alertWindow;
-    generalDialog *generalDialogWindow;
-    toast *toastWindow;
+    Ui::reader * ui;
+    alert * alertWindow;
+    generalDialog * generalDialogWindow;
+    toast * toastWindow;
+    QGraphicsScene * graphicsScene;
 };
 
 #endif // READER_H

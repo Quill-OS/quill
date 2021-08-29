@@ -106,6 +106,7 @@ void alert::on_resetBtn_clicked()
     QProcess *reboot_proc = new QProcess();
     reboot_proc->start(reboot_prog, reboot_args);
     reboot_proc->waitForFinished();
+    reboot_proc->deleteLater();
 }
 
 void alert::on_continue2Btn_clicked()

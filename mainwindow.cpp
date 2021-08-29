@@ -207,6 +207,7 @@ MainWindow::MainWindow(QWidget *parent)
             QProcess *rootfs_internal_proc = new QProcess();
             rootfs_internal_proc->start(rootfs_internal_prog, rootfs_internal_args);
             rootfs_internal_proc->waitForFinished();
+            rootfs_internal_proc->deleteLater();
 
             // Second script
             QString rootfs_prog ("chroot");
@@ -217,6 +218,7 @@ MainWindow::MainWindow(QWidget *parent)
             QProcess *rootfs_proc = new QProcess();
             rootfs_proc->start(rootfs_prog, rootfs_args);
             rootfs_proc->waitForFinished();
+            rootfs_proc->deleteLater();
 
             // Removing update directory contents
             QDir dir("/mnt/onboard/onboard/.inkbox");
@@ -532,6 +534,7 @@ MainWindow::MainWindow(QWidget *parent)
         QProcess *proc = new QProcess();
         proc->start(prog, args);
         proc->waitForFinished();
+        proc->deleteLater();
 
         QFile::remove("/mnt/onboard/onboard/.inkbox/DEVKEY");
         QFile::remove("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst");

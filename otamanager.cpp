@@ -37,7 +37,7 @@ otaManager::otaManager(QWidget *parent) :
         string_writeconfig("/opt/ibxd", "ota_update_download\n");
         QTimer * otaDownloadTimer = new QTimer(this);
         otaDownloadTimer->setInterval(100);
-        connect(otaDownloadTimer, &QTimer::timeout,  [&]() {
+        connect(otaDownloadTimer, &QTimer::timeout, [&]() {
             if(QFile::exists("/run/can_install_ota_update") == true) {
                 if(checkconfig("/run/can_install_ota_update") == true) {
                     emit downloadedOtaUpdate(true);

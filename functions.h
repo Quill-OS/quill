@@ -104,6 +104,8 @@ namespace {
     int batt_level_int;
     int defaultEpubPageWidth;
     int defaultEpubPageHeight;
+    int defaultPdfPageWidth;
+    int defaultPdfPageHeight;
     bool checked_box = false;
     bool checkconfig(QString file) {
         QFile config(file);
@@ -179,6 +181,7 @@ namespace {
         QProcess *quote_proc = new QProcess();
         quote_proc->start(quote_prog, quote_args);
         quote_proc->waitForFinished();
+        quote_proc->deleteLater();
         QDir::setCurrent("/mnt/onboard/.adds/inkbox");
 
         int quote_value = int_checkconfig(".config/05-quote/quote");
@@ -314,6 +317,8 @@ namespace {
             QStringList args;
             QProcess *proc = new QProcess();
             proc->start(prog, args);
+            proc->waitForFinished();
+            proc->deleteLater();
         }
         else {
             QString prog ("/sbin/poweroff");
@@ -321,6 +326,8 @@ namespace {
             args << "no_splash";
             QProcess *proc = new QProcess();
             proc->start(prog, args);
+            proc->waitForFinished();
+            proc->deleteLater();
         }
     }
     void reboot(bool splash) {
@@ -332,6 +339,8 @@ namespace {
             }
             QProcess *proc = new QProcess();
             proc->start(prog, args);
+            proc->waitForFinished();
+            proc->deleteLater();
         }
         else {
             QString prog ("/sbin/reboot");
@@ -344,6 +353,8 @@ namespace {
             }
             QProcess *proc = new QProcess();
             proc->start(prog, args);
+            proc->waitForFinished();
+            proc->deleteLater();
         }
     }
     void getUID() {
@@ -356,6 +367,8 @@ namespace {
 
         deviceUID = proc->readAllStandardOutput();
         deviceUID = deviceUID.left(256);
+
+        proc->deleteLater();
     }
     void getKernelVersion() {
         QString prog ("uname");
@@ -375,6 +388,7 @@ namespace {
         QProcess *fifo_proc = new QProcess();
         fifo_proc->start(fifo_prog, fifo_args);
         fifo_proc->waitForFinished();
+        fifo_proc->deleteLater();
         QThread::msleep(100);
 
         string_checkconfig_ro("/external_root/run/build_id");
@@ -394,6 +408,8 @@ namespace {
         if(ipAddress == "") {
             ipAddress = "Not available";
         }
+
+        getIpProc->deleteLater();
         return ipAddress;
     }
     void getSystemInfo() {
@@ -432,23 +448,44 @@ namespace {
         QString returnedMetadata = proc->readAllStandardOutput();
         return returnedMetadata;
     }
-    void defineDefaultPageSize() {
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
-            defaultEpubPageWidth = 365;
-            defaultEpubPageHeight = 365;
+    void defineDefaultPageSize(int fileType) {
+        /* fileType can be:
+         * 0: ePUB
+         * 1: PDF
+        */
+        if(fileType == 0) {
+            string_checkconfig_ro("/opt/inkbox_device");
+            if(checkconfig_str_val == "n705\n") {
+                defaultEpubPageHeight = 365;
+                defaultEpubPageWidth = 365;
+            }
+            if(checkconfig_str_val == "n905\n") {
+                defaultEpubPageHeight = 425;
+                defaultEpubPageWidth = 425;
+            }
+            if(checkconfig_str_val == "n613\n") {
+                defaultEpubPageHeight = 450;
+                defaultEpubPageWidth = 450;
+            }
+            if(checkconfig_str_val == "n873\n") {
+                defaultEpubPageHeight = 525;
+                defaultEpubPageWidth = 525;
+            }
         }
-        if(checkconfig_str_val == "n905\n") {
-            defaultEpubPageHeight = 425;
-            defaultEpubPageWidth = 425;
-        }
-        if(checkconfig_str_val == "n613\n") {
-            defaultEpubPageHeight = 450;
-            defaultEpubPageWidth = 450;
-        }
-        if(checkconfig_str_val == "n873\n") {
-            defaultEpubPageHeight = 525;
-            defaultEpubPageWidth = 525;
+        else if(fileType == 1) {
+            string_checkconfig_ro("/opt/inkbox_device");
+            if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+                defaultPdfPageHeight = 750;
+                defaultPdfPageWidth = 550;
+            }
+            else if(checkconfig_str_val == "n613\n") {
+                defaultPdfPageHeight = 974;
+                defaultPdfPageWidth = 708;
+            }
+            else if(checkconfig_str_val == "n873\n") {
+                defaultPdfPageHeight = 1630;
+                defaultPdfPageWidth = 1214;
+            }
         }
     }
     void pre_set_brightness(int brightnessValue) {
