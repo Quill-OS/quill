@@ -154,9 +154,7 @@ private slots:
     void setupLocalSettingsEnvironment();
     void setupPng();
     void on_pdfScaleSlider_valueChanged(int value);
-
     void on_decreaseScaleBtn_clicked();
-
     void on_increaseScaleBtn_clicked();
 
 private:

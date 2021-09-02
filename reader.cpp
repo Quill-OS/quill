@@ -1953,8 +1953,8 @@ void reader::setupLocalSettingsEnvironment() {
 
 void reader::setupPng() {
     // Note: Output file is supposed to be '/run/page.png', but somehow mutool puts it in '/run/page1.png'
-    // QGraphicsScene * graphicsScene = new QGraphicsScene();
     QPixmap pixmap("/run/page1.png");
+    // Initialized above
     graphicsScene->addPixmap(pixmap);
     ui->graphicsView->items().clear();
     ui->graphicsView->setScene(graphicsScene);
@@ -2021,7 +2021,6 @@ void reader::on_pdfScaleSlider_valueChanged(int value)
         }
     }
 
-    mupdf::pdf::pdfPageNumber = mupdf::pdf::pdfPageNumber + 1;
     setup_book(book_file, mupdf::pdf::pdfPageNumber, true);
     setupPng();
 }

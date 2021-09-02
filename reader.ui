@@ -705,10 +705,19 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="0">
-                <widget class="QPushButton" name="decreaseScaleBtn">
-                 <property name="text">
-                  <string>Decrease scale</string>
+               <item row="2" column="1">
+                <widget class="QSlider" name="pdfScaleSlider">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum">
+                  <number>4</number>
+                 </property>
+                 <property name="pageStep">
+                  <number>1</number>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -728,19 +737,10 @@
                  </property>
                 </widget>
                </item>
-               <item row="2" column="1">
-                <widget class="QSlider" name="pdfScaleSlider">
-                 <property name="minimum">
-                  <number>1</number>
-                 </property>
-                 <property name="maximum">
-                  <number>4</number>
-                 </property>
-                 <property name="pageStep">
-                  <number>1</number>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+               <item row="2" column="0">
+                <widget class="QPushButton" name="decreaseScaleBtn">
+                 <property name="text">
+                  <string>Decrease scale</string>
                  </property>
                 </widget>
                </item>
