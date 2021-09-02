@@ -60,5 +60,7 @@
         <file>resources/wifi-connected.png</file>
         <file>resources/wifi-off.png</file>
         <file>resources/wifi-standby.png</file>
+        <file>resources/zoom-in.png</file>
+        <file>resources/zoom-out.png</file>
     </qresource>
 </RCC>

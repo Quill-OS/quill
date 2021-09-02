@@ -675,6 +675,100 @@
           </widget>
          </item>
          <item>
+          <widget class="QStackedWidget" name="pdfScaleWidget">
+           <widget class="QWidget" name="page_15">
+            <layout class="QVBoxLayout" name="verticalLayout_10">
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_21"/>
+             </item>
+             <item>
+              <layout class="QGridLayout" name="gridLayout_20">
+               <property name="topMargin">
+                <number>0</number>
+               </property>
+               <item row="2" column="2">
+                <widget class="QPushButton" name="increaseScaleBtn">
+                 <property name="text">
+                  <string>Increase scale</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <widget class="QPushButton" name="decreaseScaleBtn">
+                 <property name="text">
+                  <string>Decrease scale</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="QLabel" name="pdfScaleLabel">
+                 <property name="font">
+                  <font>
+                   <family>Chivo</family>
+                   <italic>true</italic>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Scale</string>
+                 </property>
+                 <property name="alignment">
+                  <set>Qt::AlignCenter</set>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="1">
+                <widget class="QSlider" name="pdfScaleSlider">
+                 <property name="minimum">
+                  <number>1</number>
+                 </property>
+                 <property name="maximum">
+                  <number>4</number>
+                 </property>
+                 <property name="pageStep">
+                  <number>1</number>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="Line" name="line_18">
+               <property name="frameShadow">
+                <enum>QFrame::Plain</enum>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="Line" name="line_19">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="page_16"/>
+          </widget>
+         </item>
+         <item>
           <layout class="QGridLayout" name="gridLayout_19">
            <item row="0" column="0">
             <widget class="QStackedWidget" name="menuBarWidget">

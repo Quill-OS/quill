@@ -56,6 +56,8 @@ reader::reader(QWidget *parent) :
     ui->nightModeBtn->setProperty("type", "borderless");
     ui->searchBtn->setProperty("type", "borderless");
     ui->gotoBtn->setProperty("type", "borderless");
+    ui->increaseScaleBtn->setProperty("type", "borderless");
+    ui->decreaseScaleBtn->setProperty("type", "borderless");
 
     // Icons
     ui->alignLeftBtn->setText("");
@@ -84,6 +86,10 @@ reader::reader(QWidget *parent) :
     ui->aboutBtn->setIcon(QIcon(":/resources/info.png"));
     ui->searchBtn->setText("");
     ui->searchBtn->setIcon(QIcon(":/resources/search.png"));
+    ui->increaseScaleBtn->setText("");
+    ui->increaseScaleBtn->setIcon(QIcon(":/resources/zoom-in.png"));
+    ui->decreaseScaleBtn->setText("");
+    ui->decreaseScaleBtn->setIcon(QIcon(":/resources/zoom-out.png"));
 
     // Style misc.
     ui->bookInfoLabel->setStyleSheet("font-style: italic");
@@ -258,6 +264,7 @@ reader::reader(QWidget *parent) :
     ui->brightnessWidget->setVisible(false);
     ui->menuBarWidget->setVisible(false);
     ui->buttonsBarWidget->setVisible(false);
+    ui->pdfScaleWidget->setVisible(false);
     ui->wordWidget->setVisible(false);
     if(checkconfig(".config/11-menubar/sticky") == true) {
         ui->menuWidget->setVisible(true);
@@ -1283,6 +1290,11 @@ void reader::menubar_show() {
     if(is_pdf == false) {
         ui->menuBarWidget->setVisible(true);
     }
+    else {
+        ui->pdfScaleWidget->setVisible(true);
+        ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    }
     ui->buttonsBarWidget->setVisible(true);
     ui->statusBarWidget->setVisible(true);
     ui->pageWidget->setVisible(true);
@@ -1311,6 +1323,17 @@ void reader::menubar_hide() {
     ui->optionsBtn->show();
     if(is_pdf == false) {
         ui->menuBarWidget->setVisible(false);
+    }
+    else {
+        ui->pdfScaleWidget->setVisible(false);
+        if(checkconfig(".config/14-reader_scrollbar/config") == true) {
+            ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+            ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        }
+        else {
+            ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        }
     }
     ui->buttonsBarWidget->setVisible(false);
     ui->pageWidget->setVisible(false);
@@ -1539,6 +1562,12 @@ void reader::convertMuPdfVars(int fileType) {
      * 0: ePUB
      * 1: PDF
     */
+    bool convertRelativeValuesNative;
+    if(mupdf::convertRelativeValues == true) {
+        // Safer approach; local bool gets destroyed when getting out of scope
+        convertRelativeValuesNative = true;
+        mupdf::convertRelativeValues = false;
+    }
     if(fileType == 0) {
         setPageStyle(0);
         mupdf::epub::fontSize = 12;
@@ -1561,8 +1590,16 @@ void reader::convertMuPdfVars(int fileType) {
         setPageStyle(1);
         mupdf::pdf::width = defaultPdfPageWidth;
         mupdf::pdf::height = defaultPdfPageHeight;
-        mupdf::pdf::width_qstr = QString::number(mupdf::pdf::width);
-        mupdf::pdf::height_qstr = QString::number(mupdf::pdf::height);
+        if(convertRelativeValuesNative == true) {
+            // For scaling
+            mupdf::pdf::width_qstr = QString::number(mupdf::pdf::relativeHeight);
+            mupdf::pdf::height_qstr = QString::number(mupdf::pdf::relativeWidth);
+        }
+        else {
+            // Default
+            mupdf::pdf::width_qstr = QString::number(mupdf::pdf::width);
+            mupdf::pdf::height_qstr = QString::number(mupdf::pdf::height);
+        }
         if(global::reader::globalReadingSettings == false) {
             if(goToSavedPageDone == false) {
                 string_checkconfig_ro(".config/A-page_number/config");
@@ -1948,4 +1985,72 @@ void reader::getTotalPdfPagesNumber() {
 
     string_checkconfig_ro("/run/pdf_total_pages_number");
     totalPagesInt = checkconfig_str_val.toInt();
+}
+
+void reader::on_pdfScaleSlider_valueChanged(int value)
+{
+    if(value == 1) {
+        mupdf::pdf::relativeWidth = 1 * mupdf::pdf::width;
+        mupdf::pdf::relativeHeight = 1 * mupdf::pdf::height;
+    }
+    else if(value == 2) {
+        mupdf::pdf::relativeWidth = 1.50 * mupdf::pdf::width;
+        mupdf::pdf::relativeHeight = 1.50 * mupdf::pdf::height;
+    }
+    else if(value == 3) {
+        mupdf::pdf::relativeWidth = 2 * mupdf::pdf::width;
+        mupdf::pdf::relativeHeight = 2 * mupdf::pdf::height;
+    }
+    else if(value == 4) {
+        mupdf::pdf::relativeWidth = 2.50 * mupdf::pdf::width;
+        mupdf::pdf::relativeHeight = 2.50 * mupdf::pdf::height;
+    }
+
+    if(value != 1) {
+        ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    }
+    else {
+        if(checkconfig(".config/14-reader_scrollbar/config") == true) {
+            ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+            ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        }
+        else {
+            ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+            ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        }
+    }
+
+    mupdf::pdf::pdfPageNumber = mupdf::pdf::pdfPageNumber + 1;
+    setup_book(book_file, mupdf::pdf::pdfPageNumber, true);
+    setupPng();
+}
+
+void reader::on_decreaseScaleBtn_clicked()
+{
+    int sliderCurrentValue;
+    int sliderWantedValue;
+    sliderCurrentValue = ui->pdfScaleSlider->value();
+    sliderWantedValue = sliderCurrentValue - 1;
+    if(sliderWantedValue < ui->pdfScaleSlider->QAbstractSlider::minimum()) {
+        showToast("Minimum scale reached");
+    }
+    else {
+        ui->pdfScaleSlider->setValue(sliderWantedValue);
+    }
+}
+
+
+void reader::on_increaseScaleBtn_clicked()
+{
+    int sliderCurrentValue;
+    int sliderWantedValue;
+    sliderCurrentValue = ui->pdfScaleSlider->value();
+    sliderWantedValue = sliderCurrentValue + 1;
+    if(sliderWantedValue > ui->pdfScaleSlider->QAbstractSlider::maximum()) {
+        showToast("Maximum scale reached");
+    }
+    else {
+        ui->pdfScaleSlider->setValue(sliderWantedValue);
+    }
 }

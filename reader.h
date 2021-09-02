@@ -13,6 +13,7 @@ using namespace std;
 
 // ePUB scaling
 namespace mupdf {
+    inline bool convertRelativeValues;
     namespace epub {
         inline int fontSize;
         inline int width;
@@ -26,6 +27,8 @@ namespace mupdf {
     namespace pdf {
         inline int width;
         inline int height;
+        inline int relativeWidth;
+        inline int relativeHeight;
         inline int pdfPageNumber;
         inline QString width_qstr;
         inline QString height_qstr;
@@ -150,6 +153,11 @@ private slots:
     void saveReadingSettings();
     void setupLocalSettingsEnvironment();
     void setupPng();
+    void on_pdfScaleSlider_valueChanged(int value);
+
+    void on_decreaseScaleBtn_clicked();
+
+    void on_increaseScaleBtn_clicked();
 
 private:
     Ui::reader * ui;

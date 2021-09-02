@@ -875,7 +875,9 @@ int MainWindow::testPing() {
     QProcess *pingProcess = new QProcess();
     pingProcess->start(pingProg, pingArgs);
     pingProcess->waitForFinished();
-    return pingProcess->exitCode();
+    int exitCode = pingProcess->exitCode();
+    pingProcess->deleteLater();
+    return exitCode;
 }
 
 void MainWindow::updateWifiIcon(int mode) {
