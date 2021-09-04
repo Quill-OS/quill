@@ -33,6 +33,7 @@ reader::reader(QWidget *parent) :
     if(global::reader::bookIsEpub == true) {
         is_epub = true;
     }
+    mupdf::convertRelativeValues = false;
     wordwidgetLock = false;
 
     ui->setupUi(this);
@@ -1562,12 +1563,6 @@ void reader::convertMuPdfVars(int fileType) {
      * 0: ePUB
      * 1: PDF
     */
-    bool convertRelativeValuesNative;
-    if(mupdf::convertRelativeValues == true) {
-        // Safer approach; local bool gets destroyed when getting out of scope
-        convertRelativeValuesNative = true;
-        mupdf::convertRelativeValues = false;
-    }
     if(fileType == 0) {
         setPageStyle(0);
         mupdf::epub::fontSize = 12;
@@ -1590,10 +1585,10 @@ void reader::convertMuPdfVars(int fileType) {
         setPageStyle(1);
         mupdf::pdf::width = defaultPdfPageWidth;
         mupdf::pdf::height = defaultPdfPageHeight;
-        if(convertRelativeValuesNative == true) {
+        if(mupdf::convertRelativeValues == true) {
             // For scaling
-            mupdf::pdf::width_qstr = QString::number(mupdf::pdf::relativeHeight);
-            mupdf::pdf::height_qstr = QString::number(mupdf::pdf::relativeWidth);
+            mupdf::pdf::width_qstr = QString::number(mupdf::pdf::relativeWidth);
+            mupdf::pdf::height_qstr = QString::number(mupdf::pdf::relativeHeight);
         }
         else {
             // Default
@@ -1611,6 +1606,9 @@ void reader::convertMuPdfVars(int fileType) {
             mupdf::pdf::pdfPageNumber = 1;
         }
         mupdf::pdf::pdfPageNumber_qstr = QString::number(mupdf::pdf::pdfPageNumber);
+    }
+    if(mupdf::convertRelativeValues == true) {
+        mupdf::convertRelativeValues = false;
     }
 }
 
@@ -1652,15 +1650,15 @@ void reader::setPageStyle(int fileType) {
     }
 }
 
-void reader::delay(int seconds) {
+void reader::delay(int mseconds) {
     // https://stackoverflow.com/questions/3752742/how-do-i-create-a-pause-wait-function-using-qt
-    QTime dieTime= QTime::currentTime().addSecs(seconds);
+    QTime dieTime= QTime::currentTime().addMSecs(mseconds);
     while (QTime::currentTime() < dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
 
 void reader::on_text_selectionChanged() {
-    delay(0.1);
+    delay(100);
     if(wordwidgetLock != true) {
         QTextCursor cursor = ui->text->textCursor();
         selected_text = cursor.selectedText();
@@ -1955,6 +1953,7 @@ void reader::setupPng() {
     // Note: Output file is supposed to be '/run/page.png', but somehow mutool puts it in '/run/page1.png'
     QPixmap pixmap("/run/page1.png");
     // Initialized above
+    graphicsScene->clear();
     graphicsScene->addPixmap(pixmap);
     ui->graphicsView->items().clear();
     ui->graphicsView->setScene(graphicsScene);
@@ -2021,6 +2020,7 @@ void reader::on_pdfScaleSlider_valueChanged(int value)
         }
     }
 
+    mupdf::convertRelativeValues = true;
     setup_book(book_file, mupdf::pdf::pdfPageNumber, true);
     setupPng();
 }
@@ -2038,7 +2038,6 @@ void reader::on_decreaseScaleBtn_clicked()
         ui->pdfScaleSlider->setValue(sliderWantedValue);
     }
 }
-
 
 void reader::on_increaseScaleBtn_clicked()
 {
