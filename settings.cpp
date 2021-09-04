@@ -891,6 +891,9 @@ void settings::openUpdateDialog() {
 }
 
 void settings::launchOtaUpdater() {
+    global::toast::modalToast = true;
+    global::toast::indefiniteToast = true;
+    emit showToast("Checking for updates");
     otaManagerWindow = new otaManager(this);
     connect(otaManagerWindow, SIGNAL(canOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
     otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);

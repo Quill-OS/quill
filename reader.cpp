@@ -1955,6 +1955,9 @@ void reader::setupPng() {
     // Initialized above
     graphicsScene->clear();
     graphicsScene->addPixmap(pixmap);
+    // Shrinking scene if item is smaller than previous one
+    QRectF rect = graphicsScene->itemsBoundingRect();
+    graphicsScene->setSceneRect(rect);
     ui->graphicsView->items().clear();
     ui->graphicsView->setScene(graphicsScene);
 }
