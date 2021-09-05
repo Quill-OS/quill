@@ -301,6 +301,7 @@ void generalDialog::on_okBtn_clicked()
                         ui->stackedWidget->setVisible(false);
                         searchResultsWidgetWindow = new searchResultsWidget(this);
                         searchResultsWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+                        global::forbidOpenSearchDialog = true;
                         connect(searchResultsWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
                         connect(searchResultsWidgetWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFileNative(QString, bool)));
                         searchResultsWidgetWindow->setListViewContents(storageSearchResults);

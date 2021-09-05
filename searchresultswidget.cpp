@@ -1,5 +1,6 @@
 #include "searchresultswidget.h"
 #include "ui_searchresultswidget.h"
+#include "functions.h"
 
 #include <QMessageBox>
 
@@ -42,6 +43,7 @@ void searchResultsWidget::on_openBtn_clicked()
 
 void searchResultsWidget::on_backBtn_clicked()
 {
+    global::forbidOpenSearchDialog = false;
     searchResultsWidget::close();
 }
 
