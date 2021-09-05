@@ -33,6 +33,8 @@ void searchResultsWidget::on_openBtn_clicked()
     itemText = index.data(Qt::DisplayRole).toString();
     if(!itemText.isEmpty()) {
         emit openBookFile(itemText, true);
+        global::keyboard::searchDialog = false;
+        global::keyboard::keyboardDialog = false;
         searchResultsWidget::close();
     }
     else {

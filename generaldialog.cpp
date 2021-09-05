@@ -253,7 +253,7 @@ void generalDialog::on_okBtn_clicked()
     }
     if(keyboardDialog == true) {
         if(global::keyboard::searchDialog == true) {
-            if(global::keyboard::keyboardText != "") {
+            if(!global::keyboard::keyboardText.isEmpty()) {
                 if(ui->searchComboBox->currentText() == "Dictionary") {
                     string_writeconfig("/inkbox/searchComboBoxFunction", "Dictionary");
                     for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {

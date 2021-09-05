@@ -156,6 +156,7 @@ private slots:
     void on_pdfScaleSlider_valueChanged(int value);
     void on_decreaseScaleBtn_clicked();
     void on_increaseScaleBtn_clicked();
+    void openBookFile(QString book, bool relativePath);
 
 private:
     Ui::reader * ui;

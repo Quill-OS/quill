@@ -1856,6 +1856,8 @@ void reader::setupSearchDialog() {
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
         connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(searchRefreshScreen()));
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
+        connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
+        connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
         generalDialogWindow->show();
     }
     else {
@@ -2058,4 +2060,8 @@ void reader::on_increaseScaleBtn_clicked()
     else {
         ui->pdfScaleSlider->setValue(sliderWantedValue);
     }
+}
+
+void reader::openBookFile(QString book, bool relativePath) {
+    qDebug() << "Open book:" << book;
 }
