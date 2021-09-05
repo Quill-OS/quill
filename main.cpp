@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
         QApplication a(argc, argv);
         alert w;
 
-        const QScreen* screen = qApp->primaryScreen();
+        const QScreen * screen = qApp->primaryScreen();
         w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
         w.show();
         return a.exec();
@@ -68,6 +68,7 @@ int main(int argc, char *argv[])
     // If we're waking from sleep and we have the lockscreen enabled, we'll "resume" the book from scratch
     else if(checkconfig("/tmp/suspendBook") == true && checkconfig("/inkbox/bookIsEpub") == false) {
         // Start the low/critical battery alert timer from the Reader framework since MainWindow is not going to be shown
+        global::runningInstanceIsReaderOnly = true;
         global::reader::startBatteryWatchdog = true;
         global::reader::startUsbmsPrompt = true;
         global::reader::skipOpenDialog = true;
@@ -154,7 +155,7 @@ int main(int argc, char *argv[])
             ;
         }
 
-        const QScreen* screen = qApp->primaryScreen();
+        const QScreen * screen = qApp->primaryScreen();
         w.setGeometry(QRect(QPoint(0,0), screen->geometry ().size()));
         w.show();
         return a.exec();

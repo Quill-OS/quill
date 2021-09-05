@@ -94,6 +94,7 @@ namespace global {
     inline bool isN905C;
     inline bool isN613;
     inline bool isN873;
+    inline bool runningInstanceIsReaderOnly;
 }
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534

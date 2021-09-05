@@ -1856,7 +1856,7 @@ void reader::setupSearchDialog() {
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
         connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(searchRefreshScreen()));
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
-        connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
+        connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFileNative(QString, bool)));
         connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
         generalDialogWindow->show();
     }
@@ -2062,6 +2062,11 @@ void reader::on_increaseScaleBtn_clicked()
     }
 }
 
-void reader::openBookFile(QString book, bool relativePath) {
-    qDebug() << "Open book:" << book;
+void reader::openBookFileNative(QString book, bool relativePath) {
+    if(global::runningInstanceIsReaderOnly == false) {
+        emit openBookFile(book, relativePath);
+    }
+    else {
+        showToast("Not supported");
+    }
 }

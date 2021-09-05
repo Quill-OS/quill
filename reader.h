@@ -119,7 +119,6 @@ public:
     void setBitterFont();
     void setCrimsonProFont();
     void setIbarraFont();
-    void showToast(QString messageToDisplay);
     bool pdf_file_match(QString file);
 
 private slots:
@@ -156,6 +155,10 @@ private slots:
     void on_pdfScaleSlider_valueChanged(int value);
     void on_decreaseScaleBtn_clicked();
     void on_increaseScaleBtn_clicked();
+    void openBookFileNative(QString book, bool relativePath);
+    void showToast(QString messageToDisplay);
+
+signals:
     void openBookFile(QString book, bool relativePath);
 
 private:

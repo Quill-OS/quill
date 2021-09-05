@@ -643,9 +643,7 @@ void MainWindow::on_appsBtn_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
-    readerWindow = new reader();
-    readerWindow->setAttribute(Qt::WA_DeleteOnClose);
-    readerWindow->showFullScreen();
+    openReaderFramework();
 }
 
 void MainWindow::on_searchBtn_clicked()
@@ -666,9 +664,7 @@ void MainWindow::on_book1Btn_clicked()
     global::reader::skipOpenDialog = true;
     global::reader::bookNumber = 1;
 
-    readerWindow = new reader();
-    readerWindow->setAttribute(Qt::WA_DeleteOnClose);
-    readerWindow->showFullScreen();
+    openReaderFramework();
 }
 
 void MainWindow::on_book2Btn_clicked()
@@ -676,9 +672,7 @@ void MainWindow::on_book2Btn_clicked()
     global::reader::skipOpenDialog = true;
     global::reader::bookNumber = 2;
 
-    readerWindow = new reader();
-    readerWindow->setAttribute(Qt::WA_DeleteOnClose);
-    readerWindow->showFullScreen();
+    openReaderFramework();
 }
 
 void MainWindow::on_book3Btn_clicked()
@@ -686,9 +680,7 @@ void MainWindow::on_book3Btn_clicked()
     global::reader::skipOpenDialog = true;
     global::reader::bookNumber = 3;
 
-    readerWindow = new reader();
-    readerWindow->setAttribute(Qt::WA_DeleteOnClose);
-    readerWindow->showFullScreen();
+    openReaderFramework();
 }
 
 void MainWindow::on_book4Btn_clicked()
@@ -696,9 +688,7 @@ void MainWindow::on_book4Btn_clicked()
     global::reader::skipOpenDialog = true;
     global::reader::bookNumber = 4;
 
-    readerWindow = new reader();
-    readerWindow->setAttribute(Qt::WA_DeleteOnClose);
-    readerWindow->showFullScreen();
+    openReaderFramework();
 }
 
 void MainWindow::on_brightnessBtn_clicked()
@@ -1011,7 +1001,12 @@ void MainWindow::openBookFile(QString book, bool relativePath) {
 
     global::reader::skipOpenDialog = true;
     global::reader::bookFile = book;
+    openReaderFramework();
+}
+
+void MainWindow::openReaderFramework() {
     readerWindow = new reader();
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(readerWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
     readerWindow->showFullScreen();
 }
