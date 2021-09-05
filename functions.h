@@ -76,6 +76,7 @@ namespace global {
         inline bool wifiToast;
         inline bool modalToast;
         inline bool indefiniteToast;
+        inline int delay;
     }
     namespace device {
         inline bool isWifiAble;

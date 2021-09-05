@@ -27,7 +27,7 @@ private:
     Ui::searchResultsWidget *ui;
 
 signals:
-    void openBookFile(QString book);
+    void openBookFile(QString book, bool relativePath);
 };
 
 #endif // SEARCHRESULTSWIDGET_H

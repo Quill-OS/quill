@@ -413,7 +413,7 @@ reader::reader(QWidget *parent) :
     }
 
     // Get text; no need to do it multiple times for ePUB books
-    if(is_epub != true) {
+    if(is_epub == false or is_pdf == false) {
         setDefaultWorkDir();
         if(global::reader::globalReadingSettings == false) {
             string_checkconfig_ro(".config/A-page_number/config");

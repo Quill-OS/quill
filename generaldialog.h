@@ -54,7 +54,7 @@ private slots:
     void refreshScreenNative();
     void connectToNetworkSlot();
     void startOtaUpdate(bool wasDownloadSuccessful);
-    void openBookFileNative(QString book);
+    void openBookFileNative(QString book, bool relativePath);
 
 private:
     Ui::generalDialog *ui;
@@ -72,7 +72,7 @@ signals:
     void updateWifiIcon(int mode);
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();
-    void openBookFile(QString book);
+    void openBookFile(QString book, bool relativePath);
 };
 
 #endif // GENERALDIALOG_H

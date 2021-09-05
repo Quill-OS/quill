@@ -31,7 +31,7 @@ void searchResultsWidget::on_openBtn_clicked()
     index = ui->listView->currentIndex();
     itemText = index.data(Qt::DisplayRole).toString();
     if(!itemText.isEmpty()) {
-        emit openBookFile(itemText);
+        emit openBookFile(itemText, true);
         searchResultsWidget::close();
     }
     else {

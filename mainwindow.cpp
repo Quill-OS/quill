@@ -859,9 +859,10 @@ void MainWindow::setupSearchDialog() {
         global::keyboard::keyboardText = "";
         generalDialogWindow = new generalDialog();
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-        connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
-        connect(generalDialogWindow, SIGNAL(openBookFile(QString)), SLOT(openBookFile(QString)));
+        connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+        connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+        connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
         generalDialogWindow->show();
     }
     else {
@@ -998,7 +999,16 @@ void MainWindow::launchOtaUpdater() {
     otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
 }
 
-void MainWindow::openBookFile(QString book) {
+void MainWindow::openBookFile(QString book, bool relativePath) {
+    if(relativePath == true) {
+        if(checkconfig("/opt/inkbox_genuine") == true) {
+            book.prepend("/mnt/onboard/onboard/");
+        }
+        else {
+            book.prepend("/mnt/onboard/");
+        }
+    }
+
     global::reader::skipOpenDialog = true;
     global::reader::bookFile = book;
     readerWindow = new reader();

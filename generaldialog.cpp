@@ -302,12 +302,15 @@ void generalDialog::on_okBtn_clicked()
                         searchResultsWidgetWindow = new searchResultsWidget(this);
                         searchResultsWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
                         connect(searchResultsWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
-                        connect(searchResultsWidgetWindow, SIGNAL(openBookFile(QString)), SLOT(openBookFileNative(QString)));
+                        connect(searchResultsWidgetWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFileNative(QString, bool)));
                         searchResultsWidgetWindow->setListViewContents(storageSearchResults);
                         ui->mainStackedWidget->insertWidget(1, searchResultsWidgetWindow);
                     }
                     else {
+                        global::toast::delay = 3000;
                         emit showToast("No results found");
+                        keyboardWidget->clearLineEdit();
+                        global::keyboard::keyboardText = "";
                     }
                 }
                 else {
@@ -478,6 +481,6 @@ void generalDialog::startOtaUpdate(bool wasDownloadSuccessful) {
     generalDialog::close();
 }
 
-void generalDialog::openBookFileNative(QString book) {
-    emit openBookFile(book);
+void generalDialog::openBookFileNative(QString book, bool relativePath) {
+    emit openBookFile(book, relativePath);
 }

@@ -21,6 +21,12 @@ toast::toast(QWidget *parent) :
     ui->messageLabel->setText(global::toast::message);
     this->adjustSize();
     centerToast();
+    qDebug() << global::toast::delay;
+    if(global::toast::indefiniteToast == false) {
+        if(global::toast::delay == 0) {
+            global::toast::delay = 5000;
+        }
+    }
     if(global::toast::wifiToast == true) {
         global::toast::wifiToast = false;
         this->setModal(true);
@@ -36,7 +42,8 @@ toast::toast(QWidget *parent) :
     }
     else {
         if(global::toast::indefiniteToast == false) {
-            QTimer::singleShot(5000, this, SLOT(close()));
+            QTimer::singleShot(global::toast::delay, this, SLOT(close()));
+            global::toast::delay = 0;
         }
         else {
             global::toast::indefiniteToast = false;
@@ -77,7 +84,7 @@ void toast::exitSlot(int exitCode) {
     }
     else {
         ui->messageLabel->setText("No networks found");
-        QTimer::singleShot(5000, this, SLOT(close()));
+        QTimer::singleShot(global::toast::delay, this, SLOT(close()));
     }
 }
 
