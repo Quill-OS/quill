@@ -906,7 +906,7 @@ void settings::openUpdateDialogOTA(bool open) {
         openUpdateDialog();
     }
     else {
-        ;
+        emit showToast("No update available");
     }
 }
 
