@@ -16,9 +16,18 @@ public:
     explicit searchResultsWidget(QWidget *parent = nullptr);
     ~searchResultsWidget();
     void setListViewContents(QStringList searchResults);
+    QModelIndex index;
+    QString itemText;
+
+private slots:
+    void on_openBtn_clicked();
+    void on_backBtn_clicked();
 
 private:
     Ui::searchResultsWidget *ui;
+
+signals:
+    void openBookFile(QString book);
 };
 
 #endif // SEARCHRESULTSWIDGET_H

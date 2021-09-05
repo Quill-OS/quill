@@ -861,6 +861,7 @@ void MainWindow::setupSearchDialog() {
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
         connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
+        connect(generalDialogWindow, SIGNAL(openBookFile(QString)), SLOT(openBookFile(QString)));
         generalDialogWindow->show();
     }
     else {
@@ -995,4 +996,12 @@ void MainWindow::launchOtaUpdater() {
     otaManagerWindow = new otaManager(this);
     connect(otaManagerWindow, SIGNAL(canOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
     otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
+}
+
+void MainWindow::openBookFile(QString book) {
+    global::reader::skipOpenDialog = true;
+    global::reader::bookFile = book;
+    readerWindow = new reader();
+    readerWindow->setAttribute(Qt::WA_DeleteOnClose);
+    readerWindow->showFullScreen();
 }

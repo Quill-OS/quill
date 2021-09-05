@@ -85,6 +85,7 @@ private slots:
     void closeIndefiniteToast();
     void openUpdateDialogOTA(bool open);
     void launchOtaUpdater();
+    void openBookFile(QString book);
 
 private:
     Ui::MainWindow *ui;

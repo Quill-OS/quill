@@ -23,6 +23,7 @@ namespace global {
         inline bool batteryAlertLock;
     }
     namespace reader {
+        inline QString bookFile;
         inline int pageNumber;
         inline int bookNumber;
         inline bool skipOpenDialog;

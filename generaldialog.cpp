@@ -39,6 +39,19 @@ generalDialog::generalDialog(QWidget *parent) :
     ui->bodyLabel->setStyleSheet("font-size: 9pt");
     ui->searchComboBox->setStyleSheet("font-size: 9pt");
 
+    if(QFile::exists("/inkbox/searchComboBoxFunction") == true) {
+        string_checkconfig_ro("/inkbox/searchComboBoxFunction");
+        if(checkconfig_str_val == "Dictionary") {
+            ui->searchComboBox->setCurrentIndex(0);
+        }
+        else if(checkconfig_str_val == "Local storage") {
+            ui->searchComboBox->setCurrentIndex(1);
+        }
+        else {
+            ui->searchComboBox->setCurrentIndex(0);
+        }
+    }
+
     if(checkconfig("/inkbox/resetDialog") == true) {
         if(checkconfig("/opt/inkbox_genuine") == true) {
             resetDialog = true;
@@ -242,6 +255,7 @@ void generalDialog::on_okBtn_clicked()
         if(global::keyboard::searchDialog == true) {
             if(global::keyboard::keyboardText != "") {
                 if(ui->searchComboBox->currentText() == "Dictionary") {
+                    string_writeconfig("/inkbox/searchComboBoxFunction", "Dictionary");
                     for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {
                         QWidget * widget = ui->mainStackedWidget->widget(i);
                         ui->mainStackedWidget->removeWidget(widget);
@@ -256,6 +270,7 @@ void generalDialog::on_okBtn_clicked()
                     ui->mainStackedWidget->insertWidget(1, dictionaryWidgetWindow);
                 }
                 else if(ui->searchComboBox->currentText() == "Local storage") {
+                    string_writeconfig("/inkbox/searchComboBoxFunction", "Local storage");
                     QString onboardPath;
                     QStringList storageSearchResults;
                     if(checkconfig("/opt/inkbox_genuine") == true) {
@@ -285,6 +300,9 @@ void generalDialog::on_okBtn_clicked()
                         ui->topStackedWidget->setVisible(false);
                         ui->stackedWidget->setVisible(false);
                         searchResultsWidgetWindow = new searchResultsWidget(this);
+                        searchResultsWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+                        connect(searchResultsWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
+                        connect(searchResultsWidgetWindow, SIGNAL(openBookFile(QString)), SLOT(openBookFileNative(QString)));
                         searchResultsWidgetWindow->setListViewContents(storageSearchResults);
                         ui->mainStackedWidget->insertWidget(1, searchResultsWidgetWindow);
                     }
@@ -458,4 +476,8 @@ void generalDialog::startOtaUpdate(bool wasDownloadSuccessful) {
         global::otaUpdate::isUpdateOta = false;
     }
     generalDialog::close();
+}
+
+void generalDialog::openBookFileNative(QString book) {
+    emit openBookFile(book);
 }

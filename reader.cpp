@@ -117,6 +117,10 @@ reader::reader(QWidget *parent) :
             string_writeconfig("/tmp/suspendBook", "false");
             book_file = "/inkbox/book/book.txt";
         }
+        else if(global::reader::bookFile.isEmpty() == false) {
+            book_file = global::reader::bookFile;
+            global::reader::bookFile = "";
+        }
         else {
             if(global::reader::bookNumber == 1) {
                 string_checkconfig(".config/08-recent_books/1");
