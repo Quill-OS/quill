@@ -21,7 +21,6 @@ toast::toast(QWidget *parent) :
     ui->messageLabel->setText(global::toast::message);
     this->adjustSize();
     centerToast();
-    qDebug() << global::toast::delay;
     if(global::toast::indefiniteToast == false) {
         if(global::toast::delay == 0) {
             global::toast::delay = 5000;

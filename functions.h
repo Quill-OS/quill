@@ -110,46 +110,61 @@ namespace {
     int defaultPdfPageHeight;
     bool checked_box = false;
     bool checkconfig(QString file) {
-        QFile config(file);
-        config.open(QIODevice::ReadOnly);
-        QTextStream in (&config);
-        const QString content = in.readAll();
-        std::string contentstr = content.toStdString();
-        if(contentstr.find("true") != std::string::npos) {
-            return true;
+        if(QFile::exists(file)) {
+            QFile config(file);
+            config.open(QIODevice::ReadOnly);
+            QTextStream in (&config);
+            const QString content = in.readAll();
+            std::string contentstr = content.toStdString();
+            if(contentstr.find("true") != std::string::npos) {
+                return true;
+            }
+            else {
+                return false;
+            }
+            config.close();
         }
         else {
             return false;
         }
-        config.close();
         return 0;
     };
     bool checkconfig_rw(QString file) {
-        QFile config(file);
-        config.open(QIODevice::ReadWrite);
-        QTextStream in (&config);
-        const QString content = in.readAll();
-        std::string contentstr = content.toStdString();
-        if(contentstr.find("true") != std::string::npos) {
-            return true;
+        if(QFile::exists(file)) {
+            QFile config(file);
+            config.open(QIODevice::ReadWrite);
+            QTextStream in (&config);
+            const QString content = in.readAll();
+            std::string contentstr = content.toStdString();
+            if(contentstr.find("true") != std::string::npos) {
+                return true;
+            }
+            else {
+                return false;
+            }
+            config.close();
         }
         else {
             return false;
         }
-        config.close();
         return 0;
     };
     void setDefaultWorkDir() {
         QDir::setCurrent("/mnt/onboard/.adds/inkbox");
     }
     int brightness_checkconfig(QString file) {
-        QFile config(file);
-        config.open(QIODevice::ReadWrite);
-        QTextStream in (&config);
-        const QString content = in.readAll();
-        int content_int = content.toInt();
-        return content_int;
-        config.close();
+        if(QFile::exists(file)) {
+            QFile config(file);
+            config.open(QIODevice::ReadWrite);
+            QTextStream in (&config);
+            const QString content = in.readAll();
+            int content_int = content.toInt();
+            return content_int;
+            config.close();
+        }
+        else {
+           return EXIT_FAILURE;
+        }
         return 0;
     }
     void set_brightness(int value) {
@@ -167,12 +182,17 @@ namespace {
         ioctl(light, 241, value);
     }
     int int_checkconfig(QString file) {
-        QFile int_config(file);
-        int_config.open(QIODevice::ReadOnly);
-        QString valuestr = int_config.readAll();
-        int value = valuestr.toInt();
-        int_config.close();
-        return value;
+        if(QFile::exists(file)) {
+            QFile int_config(file);
+            int_config.open(QIODevice::ReadOnly);
+            QString valuestr = int_config.readAll();
+            int value = valuestr.toInt();
+            int_config.close();
+            return value;
+        }
+        else {
+            return EXIT_FAILURE;
+        }
         return 0;
     }
     int display_quote() {
@@ -197,20 +217,30 @@ namespace {
         fhandler.close();
     }
     void string_checkconfig(QString file) {
-        checkconfig_str_val = "";
-        QFile config(file);
-        config.open(QIODevice::ReadWrite);
-        QTextStream in (&config);
-        checkconfig_str_val = in.readAll();
-        config.close();
+        if(QFile::exists(file)) {
+            checkconfig_str_val = "";
+            QFile config(file);
+            config.open(QIODevice::ReadWrite);
+            QTextStream in (&config);
+            checkconfig_str_val = in.readAll();
+            config.close();
+        }
+        else {
+            checkconfig_str_val = "";
+        }
     }
     void string_checkconfig_ro(QString file) {
-        checkconfig_str_val = "";
-        QFile config(file);
-        config.open(QIODevice::ReadOnly);
-        QTextStream in (&config);
-        checkconfig_str_val = in.readAll();
-        config.close();
+        if(QFile::exists(file)) {
+            checkconfig_str_val = "";
+            QFile config(file);
+            config.open(QIODevice::ReadOnly);
+            QTextStream in (&config);
+            checkconfig_str_val = in.readAll();
+            config.close();
+        }
+        else {
+            checkconfig_str_val = "";
+        }
     }
     void brightness_writeconfig(int value) {
         std::ofstream fhandler;
@@ -257,10 +287,10 @@ namespace {
         batt_level_file.close();
     }
     void writeconfig(std::string file, std::string config) {
-            std::ofstream fhandler;
-            fhandler.open(file);
-            fhandler << config << std::boolalpha << checked_box << std::endl;
-            fhandler.close();
+        std::ofstream fhandler;
+        fhandler.open(file);
+        fhandler << config << std::boolalpha << checked_box << std::endl;
+        fhandler.close();
     }
     bool checkconfig_match(QString file, std::string pattern) {
         QFile config(file);
