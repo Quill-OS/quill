@@ -900,6 +900,7 @@ void settings::launchOtaUpdater() {
 }
 
 void settings::openUpdateDialogOTA(bool open) {
+    emit closeIndefiniteToast();
     if(open == true) {
         global::otaUpdate::isUpdateOta = true;
         openUpdateDialog();

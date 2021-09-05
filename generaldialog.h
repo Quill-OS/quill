@@ -9,6 +9,7 @@
 #include "virtualkeypad.h"
 #include "dictionarywidget.h"
 #include "otamanager.h"
+#include "searchresultswidget.h"
 
 using namespace std;
 
@@ -62,6 +63,7 @@ private:
     virtualkeypad *keypadWidget;
     dictionaryWidget *dictionaryWidgetWindow;
     otaManager *otaManagerWindow;
+    searchResultsWidget * searchResultsWidgetWindow;
 
 signals:
     void gotoPageSelected(int value);

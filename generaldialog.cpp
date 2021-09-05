@@ -10,6 +10,9 @@
 #include <QScreen>
 #include <QTimer>
 #include <QMessageBox>
+#include <QDirIterator>
+#include <QStringListModel>
+#include <QListView>
 
 generalDialog::generalDialog(QWidget *parent) :
     QDialog(parent),
@@ -251,6 +254,43 @@ void generalDialog::on_okBtn_clicked()
                     connect(dictionaryWidgetWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
                     connect(dictionaryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
                     ui->mainStackedWidget->insertWidget(1, dictionaryWidgetWindow);
+                }
+                else if(ui->searchComboBox->currentText() == "Local storage") {
+                    QString onboardPath;
+                    QStringList storageSearchResults;
+                    if(checkconfig("/opt/inkbox_genuine") == true) {
+                        onboardPath = "/mnt/onboard/onboard/";
+                    }
+                    else {
+                        onboardPath = "/mnt/onboard/";
+                    }
+                    QDirIterator dirIt(onboardPath, QDirIterator::Subdirectories);
+                    while(dirIt.hasNext()) {
+                        dirIt.next();
+                        if(QFileInfo(dirIt.filePath()).isFile()) {
+                            QString suffix = QFileInfo(dirIt.filePath()).suffix();
+                            if(suffix == "txt" or suffix == "TXT" or suffix == "epub" or suffix == "pdf" or suffix == "PDF") {
+                                if(dirIt.fileName().contains(global::keyboard::keyboardText) == true) {
+                                    storageSearchResults.append(dirIt.fileName());
+                                }
+                            }
+                        }
+                    }
+                    if(!storageSearchResults.isEmpty()) {
+                        for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {
+                            QWidget * widget = ui->mainStackedWidget->widget(i);
+                            ui->mainStackedWidget->removeWidget(widget);
+                            widget->deleteLater();
+                        }
+                        ui->topStackedWidget->setVisible(false);
+                        ui->stackedWidget->setVisible(false);
+                        searchResultsWidgetWindow = new searchResultsWidget(this);
+                        searchResultsWidgetWindow->setListViewContents(storageSearchResults);
+                        ui->mainStackedWidget->insertWidget(1, searchResultsWidgetWindow);
+                    }
+                    else {
+                        emit showToast("No results found");
+                    }
                 }
                 else {
                     ;

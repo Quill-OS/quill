@@ -25,6 +25,7 @@ SOURCES += \
     quit.cpp \
     reader.cpp \
     savedwords.cpp \
+    searchresultswidget.cpp \
     settings.cpp \
     settingschooser.cpp \
     textwidget.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     quit.h \
     reader.h \
     savedwords.h \
+    searchresultswidget.h \
     settings.h \
     settingschooser.h \
     textwidget.h \
@@ -72,6 +74,7 @@ FORMS += \
     quit.ui \
     reader.ui \
     savedwords.ui \
+    searchresultswidget.ui \
     settings.ui \
     settingschooser.ui \
     textwidget.ui \

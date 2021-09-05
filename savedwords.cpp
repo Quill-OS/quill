@@ -18,7 +18,7 @@ savedwords::savedwords(QWidget *parent) :
 
     checkwords();
 
-    QStringListModel* model = new QStringListModel(this);
+    QStringListModel * model = new QStringListModel(this);
     QStringList list = words.split("\n", QString::SkipEmptyParts);
     model->setStringList(list);
     ui->wordsList->setModel(model);

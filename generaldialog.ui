@@ -218,6 +218,11 @@
                  <string>Dictionary</string>
                 </property>
                </item>
+               <item>
+                <property name="text">
+                 <string>Local storage</string>
+                </property>
+               </item>
               </widget>
              </item>
             </layout>
