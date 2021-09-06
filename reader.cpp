@@ -1511,20 +1511,28 @@ void reader::on_sizeSlider_valueChanged(int value)
 
 void reader::writeconfig_pagenumber(bool persistent) {
     // Saving the page number in tmpfs and in persistent storage if requested
-    if(is_epub != true) {
-        std::string split_total_str = std::to_string(split_total);
-        string_writeconfig("/tmp/inkboxPageNumber", split_total_str);
-        if(persistent == true) {
-            split_total_str.append("\n");
-            string_writeconfig(".config/A-page_number/config", split_total_str);
-        }
-    }
-    else {
+    if(is_epub == true) {
         std::string epubPageNumber_str = std::to_string(mupdf::epub::epubPageNumber);
         string_writeconfig("/tmp/inkboxPageNumber", epubPageNumber_str);
         if(persistent == true) {
             epubPageNumber_str.append("\n");
             string_writeconfig(".config/A-page_number/config", epubPageNumber_str);
+        }
+    }
+    else if(is_pdf == true) {
+        std::string pdfPageNumber_str = std::to_string(mupdf::pdf::pdfPageNumber);
+        string_writeconfig("/tmp/inkboxPageNumber", pdfPageNumber_str);
+        if(persistent == true) {
+            pdfPageNumber_str.append("\n");
+            string_writeconfig(".config/A-page_number/config", pdfPageNumber_str);
+        }
+    }
+    else {
+        std::string split_total_str = std::to_string(split_total);
+        string_writeconfig("/tmp/inkboxPageNumber", split_total_str);
+        if(persistent == true) {
+            split_total_str.append("\n");
+            string_writeconfig(".config/A-page_number/config", split_total_str);
         }
     }
 }
