@@ -571,6 +571,9 @@ namespace {
                     QFile::remove("/run/wifi_connected_successfully");
                     connectionSuccessful = 1;
                     global::network::isConnected = true;
+                    setDefaultWorkDir();
+                    string_writeconfig(".config/17-wifi_connection_information/essid", essid_str);
+                    string_writeconfig(".config/17-wifi_connection_information/passphrase", passphrase_str);
                     return true;
                 }
                 else {
