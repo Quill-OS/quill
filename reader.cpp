@@ -194,6 +194,7 @@ reader::reader(QWidget *parent) :
         // Callback handler to wait until bookconfig_mount has finished execution
         while(true) {
             if(QFile::exists("/inkbox/bookConfigSetUp")) {
+                QFile::remove("/inkbox/bookConfigSetUp");
                 setupLocalSettingsEnvironment();
                 break;
             }
