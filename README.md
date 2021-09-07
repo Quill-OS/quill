@@ -27,6 +27,7 @@ Flashing InkBox OS to your Kobo's SD card is as simple as doing, on most *nix ma
 ```
 xzcat inkbox.xz | dd of=/dev/mmcblk0
 ```
+For Windows users (and command line-reluctant *nix fellows), use [balenaEtcher](https://www.balena.io/etcher/).
 If you install the Nickel add-on, unpack the 'base' archive in the root of the onboard storage, not in any subfolder inside it.
 ## How can I contribute?
 If you like this project and want to improve it in some way, feel free to fork this repository or [one of the subprojects this organization hosts](https://github.com/Kobo-InkBox), then make a [pull request](https://github.com/Kobo-InkBox/inkbox/pulls). I'll be happy to review it.
