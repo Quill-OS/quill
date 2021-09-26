@@ -67,26 +67,16 @@ void usbms_splash::usbms_launch()
     string_writeconfig("/tmp/in_usbms", "true");
     QTimer::singleShot(1500, this, SLOT(brightnessDown()));
 
-    QString umount_prog ("umount");
-    QStringList umount_args;
     if(global::usbms::koboxExportExtensions == true) {
-        umount_args << "/dev/loop10";
+        string_writeconfig("/opt/ibxd", "kobox_extensions_storage_unmount\n");
     }
     else {
-        umount_args << "/dev/loop0";
+        string_writeconfig("/opt/ibxd", "onboard_unmount\n");
     }
-    QProcess *umount_proc = new QProcess();
-    umount_proc->start(umount_prog, umount_args);
-    umount_proc->waitForFinished();
-    umount_proc->deleteLater();
+    QThread::msleep(500);
 
-    QString rmmod ("rmmod");
-    QStringList rmmod_args;
-    rmmod_args << "g_ether.ko";
-    QProcess *rmmod_proc = new QProcess();
-    rmmod_proc->start(rmmod, rmmod_args);
-    rmmod_proc->waitForFinished();
-    rmmod_proc->deleteLater();
+    string_writeconfig("/opt/ibxd", "usbnet_stop\n");
+    QThread::msleep(200);
 
     QString prog ("insmod");
     QStringList args;
@@ -128,13 +118,25 @@ void usbms_splash::usbms_launch()
         std::string contentstr = content.toStdString();
         modules.close();
         if(contentstr.find("1") != std::string::npos) {
-            QString reboot_prog ("/sbin/reboot");
-            QStringList reboot_args;
-            reboot_args << "no_splash";
-            QProcess *reboot_proc = new QProcess();
-            reboot_proc->start(reboot_prog, reboot_args);
-            reboot_proc->waitForFinished();
-            reboot_proc->deleteLater();
+            if(global::usbms::koboxExportExtensions == true) {
+                reboot(false);
+            }
+            else {
+                QString prog("rmmod");
+                QStringList args;
+                args << "g_mass_storage";
+                QProcess * proc = new QProcess();
+                proc->start(prog, args);
+                proc->waitForFinished();
+                proc->deleteLater();
+
+                // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet.sh)
+                string_writeconfig("/opt/ibxd", "usbnet_start\n");
+                string_writeconfig("/opt/ibxd", "onboard_mount\n");
+                QThread::msleep(500);
+
+                quit_restart();
+            }
         }
         else {
             ;
@@ -150,4 +152,14 @@ usbms_splash::~usbms_splash()
 
 void usbms_splash::brightnessDown() {
     cinematicBrightness(0, 1);
+}
+
+void usbms_splash::quit_restart() {
+    // If existing, cleaning bookconfig_mount mountpoint
+    string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
+
+    // Restarting InkBox
+    QProcess process;
+    process.startDetached("inkbox", QStringList());
+    qApp->quit();
 }

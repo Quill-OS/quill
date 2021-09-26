@@ -87,6 +87,7 @@ private slots:
     void launchOtaUpdater();
     void openBookFile(QString book, bool relativePath);
     void openReaderFramework();
+    void checkForUpdate();
 
 private:
     Ui::MainWindow *ui;

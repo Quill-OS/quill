@@ -19,6 +19,7 @@ public:
 
 private slots:
     void brightnessDown();
+    void quit_restart();
 
 private:
     Ui::usbms_splash *ui;

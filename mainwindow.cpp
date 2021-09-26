@@ -496,16 +496,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // Check for an update and ask if the user wants to install it
-    if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
-        if(checkconfig("/tmp/cancelUpdateDialog") == false) {
-            // I'm sorry.
-            qDebug() << "An update is available.";
-            QTimer::singleShot(2000, this, SLOT(openUpdateDialog()));
-        }
-        else {
-            qDebug() << "Not showing update dialog, user dismissed it...";
-        }
-    }
+    checkForUpdate();
 
     // Check if it's the first boot since an update and confirm that it installed successfully
     if(checkconfig("/opt/inkbox_genuine") == true) {
@@ -1009,4 +1000,17 @@ void MainWindow::openReaderFramework() {
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(readerWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
     readerWindow->showFullScreen();
+}
+
+void MainWindow::checkForUpdate() {
+    if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
+        if(checkconfig("/tmp/cancelUpdateDialog") == false) {
+            // I'm sorry.
+            qDebug() << "An update is available.";
+            QTimer::singleShot(2000, this, SLOT(openUpdateDialog()));
+        }
+        else {
+            qDebug() << "Not showing update dialog, user dismissed it...";
+        }
+    }
 }
