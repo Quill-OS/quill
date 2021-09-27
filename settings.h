@@ -61,6 +61,8 @@ private slots:
     void openUpdateDialogOTA(bool open);
     void showToastNative(QString messageToDisplay);
     void closeIndefiniteToastNative();
+    void usbms_launch();
+    void quit_restart();
 
 signals:
     void showToast(QString messageToDisplay);

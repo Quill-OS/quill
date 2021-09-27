@@ -435,76 +435,7 @@ void settings::on_requestLeaseBtn_clicked()
 
 void settings::on_usbmsBtn_clicked()
 {
-    string_writeconfig("/tmp/in_usbms", "true");
-    QTimer::singleShot(1500, this, SLOT(brightnessDown()));
-
-    QString umount_prog ("umount");
-    QStringList umount_args;
-    umount_args << "/dev/loop0";
-    QProcess *umount_proc = new QProcess();
-    umount_proc->start(umount_prog, umount_args);
-    umount_proc->waitForFinished();
-    umount_proc->deleteLater();
-
-    QString rmmod ("rmmod");
-    QStringList rmmod_args;
-    rmmod_args << "g_ether.ko";
-    QProcess *rmmod_proc = new QProcess();
-    rmmod_proc->start(rmmod, rmmod_args);
-    rmmod_proc->waitForFinished();
-    rmmod_proc->deleteLater();
-
-    QString prog ("insmod");
-    QStringList args;
-    args << "/external_root/modules/arcotg_udc.ko";
-    QProcess *proc = new QProcess();
-    proc->start(prog, args);
-    proc->waitForFinished();
-    proc->deleteLater();
-
-    QString prog_1 ("insmod");
-    QStringList args_1;
-    args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/onboard" << "removable=y" << "stall=0";
-    QProcess *proc_1 = new QProcess();
-    proc_1->start(prog_1, args_1);
-    proc_1->waitForFinished();
-    proc_1->deleteLater();
-
-    usbmsWindow = new usbms_splash();
-    usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
-    usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
-    usbmsWindow->show();
-
-    QTimer *usbms_t = new QTimer(this);
-    usbms_t->setInterval(1000);
-    connect(usbms_t, &QTimer::timeout, [&]() {
-        QString prog ("mass_storage.sh");
-        QStringList args;
-        QProcess *proc = new QProcess();
-        proc->start(prog, args);
-        proc->waitForFinished();
-        proc->deleteLater();
-
-        QFile modules("/tmp/usbevent");
-        modules.open(QIODevice::ReadWrite);
-        QTextStream in (&modules);
-        const QString content = in.readAll();
-        string contentstr = content.toStdString();
-        modules.close();
-        if(contentstr.find("1") != std::string::npos) {
-            QString reboot_prog ("/sbin/reboot");
-            QStringList reboot_args;
-            reboot_args << "no_splash";
-            QProcess *reboot_proc = new QProcess();
-            reboot_proc->start(reboot_prog, reboot_args);
-            reboot_proc->waitForFinished();
-            reboot_proc->deleteLater();
-        }
-        else {
-            ;
-        }
-    } );
-    usbms_t->start();
+    usbms_launch();
 }
 
 // Now I know that QStackedWidgets exist... ;p
@@ -916,4 +847,24 @@ void settings::showToastNative(QString messageToDisplay) {
 
 void settings::closeIndefiniteToastNative() {
     emit closeIndefiniteToast();
+}
+
+void settings::usbms_launch()
+{
+    global::usbms::launchUsbms = true;
+
+    usbmsWindow = new usbms_splash();
+    usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+    usbmsWindow->show();
+}
+
+void settings::quit_restart() {
+    // If existing, cleaning bookconfig_mount mountpoint
+    string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
+
+    // Restarting InkBox
+    QProcess process;
+    process.startDetached("inkbox", QStringList());
+    qApp->quit();
 }

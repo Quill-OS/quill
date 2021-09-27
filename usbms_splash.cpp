@@ -76,15 +76,7 @@ void usbms_splash::usbms_launch()
     QThread::msleep(500);
 
     string_writeconfig("/opt/ibxd", "usbnet_stop\n");
-    QThread::msleep(200);
-
-    QString prog ("insmod");
-    QStringList args;
-    args << "/external_root/modules/arcotg_udc.ko";
-    QProcess *proc = new QProcess();
-    proc->start(prog, args);
-    proc->waitForFinished();
-    proc->deleteLater();
+    QThread::msleep(1000);
 
     QString prog_1 ("insmod");
     QStringList args_1;
@@ -130,10 +122,11 @@ void usbms_splash::usbms_launch()
                 proc->waitForFinished();
                 proc->deleteLater();
 
-                // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet.sh)
+                // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet)
                 string_writeconfig("/opt/ibxd", "usbnet_start\n");
+                QThread::msleep(1000);
                 string_writeconfig("/opt/ibxd", "onboard_mount\n");
-                QThread::msleep(500);
+                QThread::msleep(1000);
 
                 quit_restart();
             }
