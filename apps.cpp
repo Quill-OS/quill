@@ -26,14 +26,14 @@ apps::apps(QWidget *parent) :
     ui->vncLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     // Hiding KoBox apps button and label if X11 isn't enabled/wasn't started
-    if(checkconfig("/external_root/boot/flags/X11_START") == false) {
+    if(checkconfig("/external_root/boot/flags/X11_START") == false or checkconfig("/external_root/boot/flags/X11_STARTED") == false) {
         ui->label_5->hide();
         ui->koboxAppsOpenButton->hide();
         ui->label_5->deleteLater();
         ui->koboxAppsOpenButton->deleteLater();
     }
     if(checkconfig("/external_root/opt/root/rooted") == false) {
-        if(global::device::isWifiAble == false or checkconfig("/external_root/boot/flags/X11_START") == false) {
+        if(global::device::isWifiAble == false or checkconfig("/external_root/boot/flags/X11_START") == false or checkconfig("/external_root/boot/flags/X11_STARTED") == false) {
             ui->vncViewerLabel->hide();
             ui->vncLaunchBtn->hide();
             ui->vncViewerLabel->deleteLater();
