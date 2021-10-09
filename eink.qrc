@@ -63,5 +63,8 @@
         <file>resources/zoom-in.png</file>
         <file>resources/zoom-out.png</file>
         <file>resources/encryption.png</file>
+        <file>resources/check-display.png</file>
+        <file>resources/hourglass-bottom.png</file>
+        <file>resources/hourglass-top.png</file>
     </qresource>
 </RCC>

@@ -5,6 +5,7 @@
 #include <QScreen>
 #include <QDebug>
 #include <QDir>
+#include <QTimer>
 #include "functions.h"
 
 encryptionManager::encryptionManager(QWidget *parent) :
@@ -21,18 +22,35 @@ encryptionManager::encryptionManager(QWidget *parent) :
 
     ui->encryptionSetupLabel->setStyleSheet("font-size: 15pt");
     ui->descriptionLabel->setStyleSheet("font-size: 9pt");
+    ui->successLabel->setStyleSheet("font-size: 15pt");
+    ui->successDescriptionLabel->setStyleSheet("font-size: 9pt");
     ui->setupContinueBtn->setStyleSheet("font-size: 10pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->setupAbortBtn->setStyleSheet("font-size: 10pt; padding: 10px; font-weight: bold; background: lightGrey");
+    ui->exitSuccessBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
 
     // Getting the screen's size
     float sW = QGuiApplication::screens()[0]->size().width();
     float sH = QGuiApplication::screens()[0]->size().height();
-    float stdIconWidth = sW / 1.50;
-    float stdIconHeight = sH / 1.50;
+    float stdIconWidth;
+    float stdIconHeight;
+    {
+        stdIconWidth = sW / 1.50;
+        stdIconHeight = sH / 1.50;
+        QPixmap pixmap(":/resources/encryption.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->encryptionImageLabel->setPixmap(scaledPixmap);
+    }
+    {
+        stdIconWidth = sW / 1.65;
+        stdIconHeight = sH / 1.65;
+        QPixmap pixmap(":/resources/check-display.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->checkImageLabel->setPixmap(scaledPixmap);
+    }
 
-    QPixmap pixmap(":/resources/encryption.png");
-    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-    ui->encryptionImageLabel->setPixmap(scaledPixmap);
+    hourglassAnimationWidgetWindow = new hourglassAnimationWidget();
+    ui->hourglassWidget->insertWidget(0, hourglassAnimationWidgetWindow);
+    ui->hourglassWidget->setCurrentIndex(0);
 }
 
 encryptionManager::~encryptionManager()
@@ -42,7 +60,7 @@ encryptionManager::~encryptionManager()
 
 void encryptionManager::on_setupContinueBtn_clicked()
 {
-    ui->activityWidget->hide();
+    ui->activityWidget->setCurrentIndex(3);
     this->setStyleSheet("background-color: black");
     global::keyboard::keyboardDialog = true;
     global::keyboard::encfsDialog = true;
@@ -74,6 +92,7 @@ void encryptionManager::refreshScreen() {
 }
 
 void encryptionManager::showToast(QString messageToDisplay) {
+    qDebug() << "showToast";
     global::toast::message = messageToDisplay;
     toastWindow = new toast(this);
     toastWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -82,6 +101,8 @@ void encryptionManager::showToast(QString messageToDisplay) {
 }
 
 void encryptionManager::setupEncryptedStorage() {
+    this->setStyleSheet("background-color: white");
+    ui->activityWidget->show();
     mkEncfsDirs();
     std::string bootstrapPassphrase = global::encfs::passphrase.toStdString();
     global::encfs::passphrase = "";
@@ -90,6 +111,18 @@ void encryptionManager::setupEncryptedStorage() {
     string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_archive_location", "/data/onboard/data.encfs");
     string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_passphrase", bootstrapPassphrase);
     string_writeconfig("/opt/ibxd", "encfs_restart\n");
+    bool exitStatus;
+    ui->activityWidget->setCurrentIndex(3);
+    QTimer * t = new QTimer(this);
+    t->setInterval(1000);
+    connect(t, &QTimer::timeout, [&]() {
+        if(QFile::exists("/external_root/run/encrypted_storage_bootstrap_setup")) {
+            exitStatus = checkconfig("/external_root/run/encrypted_storage_bootstrap_setup");
+            QFile::remove("/external_root/run/encrypted_storage_bootstrap_setup");
+            setupExitWidget(exitStatus);
+        }
+    } );
+    t->start();
 }
 
 void encryptionManager::mkEncfsDirs() {
@@ -101,4 +134,25 @@ void encryptionManager::mkEncfsDirs() {
     dumpDir.mkpath(dumpPath);
     QDir decDir;
     QString decPath("/mnt/onboard/onboard/encfs-decrypted");
+}
+
+void encryptionManager::on_exitSuccessBtn_clicked()
+{
+
+}
+
+void encryptionManager::setupExitWidget(bool exitStatus) {
+    if(setupExitWidgetRan == false) {
+        if(exitStatus == true) {
+            ui->activityWidget->setCurrentIndex(1);
+        }
+        else {
+            string_writeconfig(".config/18-encrypted_storage/status", "false");
+            ui->activityWidget->setCurrentIndex(2);
+        }
+        setupExitWidgetRan = true;
+    }
+    else {
+        qDebug() << "setupExitWidgetRan";
+    }
 }
