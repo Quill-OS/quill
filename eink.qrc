@@ -62,5 +62,6 @@
         <file>resources/wifi-standby.png</file>
         <file>resources/zoom-in.png</file>
         <file>resources/zoom-out.png</file>
+        <file>resources/encryption.png</file>
     </qresource>
 </RCC>

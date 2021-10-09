@@ -20,6 +20,7 @@
 #include "generaldialog.h"
 #include "functions.h"
 #include "reader.h"
+#include "encryptionmanager.h"
 
 #include <QApplication>
 #include <QFile>
@@ -30,134 +31,150 @@
 
 int main(int argc, char *argv[])
 {
-    // Tell scripts that we're currently running
-    string_writeconfig("/tmp/inkbox_running", "true");
+    setDefaultWorkDir();
+    string_checkconfig_ro(".config/18-encrypted_storage/status");
+    if(checkconfig_str_val.isEmpty() == true) {
+        string_writeconfig(".config/18-encrypted_storage/status", "true");
+    }
+    if(checkconfig(".config/18-encrypted_storage/status") == true and checkconfig("/run/encfs_mounted") == false) {
+        // Open Encryption Manager to unlock encrypted storage
+        QApplication a(argc, argv);
+        encryptionManager w;
+        const QScreen * screen = qApp->primaryScreen();
+        w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
+        w.show();
+        return a.exec();
+    }
+    else {
+        // Tell scripts that we're currently running
+        string_writeconfig("/tmp/inkbox_running", "true");
 
-    // Variables
-    global::reader::startBatteryWatchdog = false;
-    global::reader::startUsbmsPrompt = false;
+        // Variables
+        global::reader::startBatteryWatchdog = false;
+        global::reader::startUsbmsPrompt = false;
 
-    // Checking if battery level is critical; if true (and if it is not charging), then display a "Please charge your eReader" splash and power off.
-    if(isBatteryCritical() == true) {
-        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-        if(checkconfig_str_val == "Charging\n") {
-            ;
+        // Checking if battery level is critical; if true (and if it is not charging), then display a "Please charge your eReader" splash and power off.
+        if(isBatteryCritical() == true) {
+            string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+            if(checkconfig_str_val == "Charging\n") {
+                ;
+            }
+            else {
+                global::battery::showCriticalBatteryAlert = true;
+                QApplication a(argc, argv);
+                alert w;
+
+                const QScreen* screen = qApp->primaryScreen();
+                w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
+                w.show();
+                return a.exec();
+            }
         }
-        else {
-            global::battery::showCriticalBatteryAlert = true;
+
+        // Checking if there has been an ALERT flag set up, and if there is, show a big warning
+        if(checkconfig("/external_root/boot/flags/ALERT") == true) {
             QApplication a(argc, argv);
             alert w;
+
+            const QScreen * screen = qApp->primaryScreen();
+            w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
+            w.show();
+            return a.exec();
+        }
+        // If we're waking from sleep and we have the lockscreen enabled, we'll "resume" the book from scratch
+        else if(checkconfig("/tmp/suspendBook") == true && checkconfig("/inkbox/bookIsEpub") == false) {
+            // Start the low/critical battery alert timer from the Reader framework since MainWindow is not going to be shown
+            global::runningInstanceIsReaderOnly = true;
+            global::reader::startBatteryWatchdog = true;
+            global::reader::startUsbmsPrompt = true;
+            global::reader::skipOpenDialog = true;
+
+            string_writeconfig("/inkbox/skip_opendialog", "true");
+            string_checkconfig_ro("/opt/inkbox_device");
+            if(checkconfig_str_val == "n705\n") {
+                global::isN705 = true;
+                global::isN905C = false;
+                global::isN613 = false;
+                global::isN873 = false;
+            }
+            else if(checkconfig_str_val == "n905\n") {
+                global::isN705 = false;
+                global::isN905C = true;
+                global::isN613 = false;
+                global::isN873 = false;
+            }
+            else if(checkconfig_str_val == "n613\n") {
+                global::isN705 = false;
+                global::isN905C = false;
+                global::isN613 = true;
+                global::isN873 = false;
+            }
+            else if(checkconfig_str_val == "n873\n") {
+                global::isN705 = false;
+                global::isN905C = false;
+                global::isN613 = false;
+                global::isN873 = true;
+            }
+            else {
+                ;
+            }
+
+            QApplication a(argc, argv);
+            reader w;
 
             const QScreen* screen = qApp->primaryScreen();
             w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
             w.show();
             return a.exec();
-        }
-    }
 
-    // Checking if there has been an ALERT flag set up, and if there is, show a big warning
-    if(checkconfig("/external_root/boot/flags/ALERT") == true) {
-        QApplication a(argc, argv);
-        alert w;
-
-        const QScreen * screen = qApp->primaryScreen();
-        w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
-        w.show();
-        return a.exec();
-    }
-    // If we're waking from sleep and we have the lockscreen enabled, we'll "resume" the book from scratch
-    else if(checkconfig("/tmp/suspendBook") == true && checkconfig("/inkbox/bookIsEpub") == false) {
-        // Start the low/critical battery alert timer from the Reader framework since MainWindow is not going to be shown
-        global::runningInstanceIsReaderOnly = true;
-        global::reader::startBatteryWatchdog = true;
-        global::reader::startUsbmsPrompt = true;
-        global::reader::skipOpenDialog = true;
-
-        string_writeconfig("/inkbox/skip_opendialog", "true");
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
-            global::isN705 = true;
-            global::isN905C = false;
-            global::isN613 = false;
-            global::isN873 = false;
-        }
-        else if(checkconfig_str_val == "n905\n") {
-            global::isN705 = false;
-            global::isN905C = true;
-            global::isN613 = false;
-            global::isN873 = false;
-        }
-        else if(checkconfig_str_val == "n613\n") {
-            global::isN705 = false;
-            global::isN905C = false;
-            global::isN613 = true;
-            global::isN873 = false;
-        }
-        else if(checkconfig_str_val == "n873\n") {
-            global::isN705 = false;
-            global::isN905C = false;
-            global::isN613 = false;
-            global::isN873 = true;
         }
         else {
-            ;
-        }
+            if(checkconfig("/inkbox/bookIsEpub") == true) {
+                global::reader::bookIsEpub = true;
+            }
+            else {
+                global::reader::bookIsEpub = false;
+            }
 
-        QApplication a(argc, argv);
-        reader w;
+            QApplication a(argc, argv);
+            MainWindow w;
 
-        const QScreen* screen = qApp->primaryScreen();
-        w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
-        w.show();
-        return a.exec();
+            QApplication::setStyle("windows");
+            QFile stylesheetFile(":/resources/eink.qss");
+            stylesheetFile.open(QFile::ReadOnly);
+            w.setStyleSheet(stylesheetFile.readAll());
+            stylesheetFile.close();
 
-    }
-    else {
-        if(checkconfig("/inkbox/bookIsEpub") == true) {
-            global::reader::bookIsEpub = true;
-        }
-        else {
-            global::reader::bookIsEpub = false;
-        }
+            string_checkconfig_ro("/opt/inkbox_device");
+            if(checkconfig_str_val == "n705\n") {
+                global::isN705 = true;
+                global::isN905C = false;
+                global::isN613 = false;
+            }
+            else if(checkconfig_str_val == "n905\n") {
+                global::isN705 = false;
+                global::isN905C = true;
+                global::isN613 = false;
+            }
+            else if(checkconfig_str_val == "n613\n") {
+                global::isN705 = false;
+                global::isN905C = false;
+                global::isN613 = true;
+            }
+            else if(checkconfig_str_val == "n873\n") {
+                global::isN705 = false;
+                global::isN905C = false;
+                global::isN613 = false;
+                global::isN873 = true;
+            }
+            else {
+                ;
+            }
 
-        QApplication a(argc, argv);
-        MainWindow w;
-
-        QApplication::setStyle("windows");
-        QFile stylesheetFile(":/resources/eink.qss");
-        stylesheetFile.open(QFile::ReadOnly);
-        w.setStyleSheet(stylesheetFile.readAll());
-        stylesheetFile.close();
-
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
-            global::isN705 = true;
-            global::isN905C = false;
-            global::isN613 = false;
+            const QScreen * screen = qApp->primaryScreen();
+            w.setGeometry(QRect(QPoint(0,0), screen->geometry ().size()));
+            w.show();
+            return a.exec();
         }
-        else if(checkconfig_str_val == "n905\n") {
-            global::isN705 = false;
-            global::isN905C = true;
-            global::isN613 = false;
-        }
-        else if(checkconfig_str_val == "n613\n") {
-            global::isN705 = false;
-            global::isN905C = false;
-            global::isN613 = true;
-        }
-        else if(checkconfig_str_val == "n873\n") {
-            global::isN705 = false;
-            global::isN905C = false;
-            global::isN613 = false;
-            global::isN873 = true;
-        }
-        else {
-            ;
-        }
-
-        const QScreen * screen = qApp->primaryScreen();
-        w.setGeometry(QRect(QPoint(0,0), screen->geometry ().size()));
-        w.show();
-        return a.exec();
     }
 }

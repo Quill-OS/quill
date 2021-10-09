@@ -66,6 +66,7 @@ namespace global {
         inline bool keyboardDialog;
         inline bool keypadDialog;
         inline bool searchDialog;
+        inline bool encfsDialog;
         inline bool vncDialog;
         inline bool wifiPassphraseDialog;
         inline QString keyboardText;
@@ -87,6 +88,9 @@ namespace global {
     namespace otaUpdate {
         inline bool isUpdateOta;
         inline bool downloadOta;
+    }
+    namespace encfs {
+        inline QString passphrase;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;

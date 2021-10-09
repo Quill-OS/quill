@@ -323,7 +323,7 @@ void generalDialog::on_okBtn_clicked()
             }
         }
         else if(global::keyboard::vncDialog == true) {
-            if(global::keyboard::keyboardText != "") {
+            if(!global::keyboard::keyboardText.isEmpty()) {
                 if(vncServerSet != true) {
                     vncServerAddress = global::keyboard::keyboardText;
                     vncServerSet = true;
@@ -349,7 +349,7 @@ void generalDialog::on_okBtn_clicked()
             }
         }
         else if(global::keyboard::wifiPassphraseDialog == true) {
-            if(global::keyboard::keyboardText != "") {
+            if(!global::keyboard::keyboardText.isEmpty()) {
                 this->hide();
                 wifiPassphrase = global::keyboard::keyboardText;
                 global::toast::indefiniteToast = true;
@@ -357,6 +357,18 @@ void generalDialog::on_okBtn_clicked()
                 emit showToast("Connecting");
                 QTimer::singleShot(100, this, SLOT(connectToNetworkSlot()));
                 global::keyboard::wifiPassphraseDialog = false;
+                global::keyboard::keyboardDialog = false;
+            }
+            else {
+                QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in the required argument."));
+            }
+        }
+        else if(global::keyboard::encfsDialog == true) {
+            if(!global::keyboard::keyboardText.isEmpty()) {
+                this->close();
+                global::encfs::passphrase = global::keyboard::keyboardText;
+                global::keyboard::encfsDialog = false;
+                global::keyboard::keyboardText = "";
                 global::keyboard::keyboardDialog = false;
             }
             else {
@@ -426,6 +438,11 @@ void generalDialog::setupKeyboardDialog() {
     else if(global::keyboard::wifiPassphraseDialog == true) {
         ui->headerLabel->setText("Enter the network's passphrase");
         ui->okBtn->setText("Connect");
+        ui->cancelBtn->setText("Cancel");
+    }
+    else if(global::keyboard::encfsDialog == true) {
+        ui->headerLabel->setText("Enter a new encryption key");
+        ui->okBtn->setText("OK");
         ui->cancelBtn->setText("Cancel");
     }
     else {

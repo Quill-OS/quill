@@ -16,6 +16,7 @@ SOURCES += \
     brightnessdialog.cpp \
     calendarapp.cpp \
     dictionarywidget.cpp \
+    encryptionmanager.cpp \
     generaldialog.cpp \
     koboxappsdialog.cpp \
     koboxsettings.cpp \
@@ -41,6 +42,7 @@ HEADERS += \
     brightnessdialog.h \
     calendarapp.h \
     dictionarywidget.h \
+    encryptionmanager.h \
     functions.h \
     generaldialog.h \
     koboxappsdialog.h \
@@ -66,6 +68,7 @@ FORMS += \
     brightnessdialog.ui \
     calendarapp.ui \
     dictionarywidget.ui \
+    encryptionmanager.ui \
     generaldialog.ui \
     koboxappsdialog.ui \
     koboxsettings.ui \
