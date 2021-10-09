@@ -73,7 +73,7 @@
           <widget class="QLabel" name="descriptionLabel">
            <property name="text">
             <string>Encrypted storage permits you to keep your most important files and data safe from anyone else than you.
-Would you want to enable it?</string>
+Would you like to enable it?</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>

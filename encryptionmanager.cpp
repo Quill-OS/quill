@@ -59,7 +59,7 @@ void encryptionManager::on_setupContinueBtn_clicked()
 void encryptionManager::on_setupAbortBtn_clicked()
 {
     setDefaultWorkDir();
-    string_writeconfig(".config/18-encrypted_storage/config", "false");
+    string_writeconfig(".config/18-encrypted_storage/status", "false");
     quit_restart();
 }
 
