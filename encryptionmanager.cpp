@@ -64,7 +64,9 @@ encryptionManager::encryptionManager(QWidget *parent) :
 
     setDefaultWorkDir();
     if(checkconfig(".config/18-encrypted_storage/initial_setup_done") == true) {
-        setupPassphraseDialog(1);
+        ui->activityWidget->hide();
+        setupPassphraseDialogMode = 1;
+        QTimer::singleShot(1000, this, SLOT(setupPassphraseDialog()));
     }
 }
 
@@ -75,12 +77,13 @@ encryptionManager::~encryptionManager()
 
 void encryptionManager::on_setupContinueBtn_clicked()
 {
-    setupPassphraseDialog(0);
+    setupPassphraseDialogMode = 0;
+    setupPassphraseDialog();
 }
 
-void encryptionManager::setupPassphraseDialog(int mode) {
+void encryptionManager::setupPassphraseDialog() {
     /*
-     * Mode can be:
+     * setupPassphraseDialogMode can be:
      * 0: Initial setup
      * 1: Normal behavior
     */
@@ -92,7 +95,7 @@ void encryptionManager::setupPassphraseDialog(int mode) {
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
-    if(mode == 0) {
+    if(setupPassphraseDialogMode == 0) {
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupEncryptedStorage()));
     }
     else {
@@ -121,7 +124,6 @@ void encryptionManager::refreshScreen() {
 }
 
 void encryptionManager::showToast(QString messageToDisplay) {
-    qDebug() << "showToast";
     global::toast::message = messageToDisplay;
     toastWindow = new toast(this);
     toastWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -139,6 +141,8 @@ void encryptionManager::setupEncryptedStorage() {
     string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_files_location", "/data/onboard/encfs-dropbox");
     string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_archive_location", "/data/onboard/data.encfs");
     string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_passphrase", bootstrapPassphrase);
+    setDefaultWorkDir();
+    string_writeconfig(".config/18-encrypted_storage/storage_list", "/data/onboard/encfs-decrypted");
     string_writeconfig("/opt/ibxd", "encfs_restart\n");
     bool exitStatus;
     ui->activityWidget->setCurrentIndex(3);
@@ -161,8 +165,10 @@ void encryptionManager::unlockEncryptedStorage() {
     std::string passphrase = global::encfs::passphrase.toStdString();
     global::encfs::passphrase = "";
     string_writeconfig("/external_root/run/encfs/encrypted_storage_archive", "/data/onboard/data.encfs");
-    string_writeconfig("/external_root/run/encfs/encrypted_storage_mountpoint", "/data/onboard/books");
+    string_writeconfig("/external_root/run/encfs/encrypted_storage_mountpoint", "/data/onboard/encfs-decrypted");
+    string_writeconfig("/external_root/run/encfs/encrypted_storage_bindmount", "/kobo/mnt/onboard/onboard/encfs-decrypted");
     string_writeconfig("/external_root/run/encfs/encrypted_storage_passphrase", passphrase);
+    string_writeconfig("/opt/ibxd", "encfs_restart\n");
     bool exitStatus;
     ui->activityWidget->setCurrentIndex(3);
     QTimer * t = new QTimer(this);
@@ -185,6 +191,7 @@ void encryptionManager::mkEncfsDirs() {
     dumpDir.mkpath(dumpPath);
     QDir decDir;
     QString decPath("/mnt/onboard/onboard/encfs-decrypted");
+    decDir.mkpath(decPath);
 }
 
 void encryptionManager::on_exitSuccessBtn_clicked()

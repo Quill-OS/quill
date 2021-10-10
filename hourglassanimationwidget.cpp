@@ -32,7 +32,7 @@ hourglassAnimationWidget::hourglassAnimationWidget(QWidget *parent) :
         ui->hourglassBottomLabel->setPixmap(scaledPixmap);
     }
 
-    int i = 0;
+    i = 0;
     QTimer * t = new QTimer();
     t->setInterval(500);
     connect(t, &QTimer::timeout, [&]() {

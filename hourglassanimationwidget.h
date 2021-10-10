@@ -14,6 +14,7 @@ class hourglassAnimationWidget : public QWidget
 public:
     explicit hourglassAnimationWidget(QWidget *parent = nullptr);
     ~hourglassAnimationWidget();
+    int i;
 
 private:
     Ui::hourglassAnimationWidget *ui;

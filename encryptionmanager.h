@@ -18,6 +18,7 @@ public:
     explicit encryptionManager(QWidget *parent = nullptr);
     ~encryptionManager();
     bool setupExitWidgetRan = false;
+    int setupPassphraseDialogMode;
 
 private slots:
     void on_setupContinueBtn_clicked();
@@ -30,7 +31,7 @@ private slots:
     void on_exitSuccessBtn_clicked();
     void setupExitWidget(bool exitStatus);
     void on_failureContinueBtn_clicked();
-    void setupPassphraseDialog(int mode);
+    void setupPassphraseDialog();
     void unlockEncryptedStorage();
 
 private:
