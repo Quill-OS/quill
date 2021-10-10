@@ -24,9 +24,12 @@ encryptionManager::encryptionManager(QWidget *parent) :
     ui->descriptionLabel->setStyleSheet("font-size: 9pt");
     ui->successLabel->setStyleSheet("font-size: 15pt");
     ui->successDescriptionLabel->setStyleSheet("font-size: 9pt");
+    ui->failureLabel->setStyleSheet("font-size: 15pt");
+    ui->failureDescriptionLabel->setStyleSheet("font-size: 9pt");
     ui->setupContinueBtn->setStyleSheet("font-size: 10pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->setupAbortBtn->setStyleSheet("font-size: 10pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->exitSuccessBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
+    ui->failureContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
 
     // Getting the screen's size
     float sW = QGuiApplication::screens()[0]->size().width();
@@ -47,10 +50,22 @@ encryptionManager::encryptionManager(QWidget *parent) :
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         ui->checkImageLabel->setPixmap(scaledPixmap);
     }
+    {
+        stdIconWidth = sW / 1.65;
+        stdIconHeight = sH / 1.65;
+        QPixmap pixmap(":/resources/error.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->failureImageLabel->setPixmap(scaledPixmap);
+    }
 
     hourglassAnimationWidgetWindow = new hourglassAnimationWidget();
     ui->hourglassWidget->insertWidget(0, hourglassAnimationWidgetWindow);
     ui->hourglassWidget->setCurrentIndex(0);
+
+    setDefaultWorkDir();
+    if(checkconfig(".config/18-encrypted_storage/initial_setup_done") == true) {
+        setupPassphraseDialog(1);
+    }
 }
 
 encryptionManager::~encryptionManager()
@@ -60,7 +75,16 @@ encryptionManager::~encryptionManager()
 
 void encryptionManager::on_setupContinueBtn_clicked()
 {
-    ui->activityWidget->setCurrentIndex(3);
+    setupPassphraseDialog(0);
+}
+
+void encryptionManager::setupPassphraseDialog(int mode) {
+    /*
+     * Mode can be:
+     * 0: Initial setup
+     * 1: Normal behavior
+    */
+    ui->activityWidget->hide();
     this->setStyleSheet("background-color: black");
     global::keyboard::keyboardDialog = true;
     global::keyboard::encfsDialog = true;
@@ -68,7 +92,12 @@ void encryptionManager::on_setupContinueBtn_clicked()
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
-    connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupEncryptedStorage()));
+    if(mode == 0) {
+        connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupEncryptedStorage()));
+    }
+    else {
+        connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(unlockEncryptedStorage()));
+    }
     connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
     generalDialogWindow->show();
 }
@@ -125,6 +154,28 @@ void encryptionManager::setupEncryptedStorage() {
     t->start();
 }
 
+void encryptionManager::unlockEncryptedStorage() {
+    this->setStyleSheet("background-color: white");
+    ui->activityWidget->show();
+    mkEncfsDirs();
+    std::string passphrase = global::encfs::passphrase.toStdString();
+    global::encfs::passphrase = "";
+    string_writeconfig("/external_root/run/encfs/encrypted_storage_archive", "/data/onboard/data.encfs");
+    string_writeconfig("/external_root/run/encfs/encrypted_storage_mountpoint", "/data/onboard/books");
+    string_writeconfig("/external_root/run/encfs/encrypted_storage_passphrase", passphrase);
+    bool exitStatus;
+    ui->activityWidget->setCurrentIndex(3);
+    QTimer * t = new QTimer(this);
+    t->setInterval(1000);
+    connect(t, &QTimer::timeout, [&]() {
+        if(QFile::exists("/external_root/run/encfs_mounted")) {
+            exitStatus = checkconfig("/external_root/run/encfs_mounted");
+            quit_restart();
+        }
+    } );
+    t->start();
+}
+
 void encryptionManager::mkEncfsDirs() {
     QDir encfsDir;
     QString encfsPath("/external_root/run/encfs");
@@ -138,7 +189,9 @@ void encryptionManager::mkEncfsDirs() {
 
 void encryptionManager::on_exitSuccessBtn_clicked()
 {
-
+    setDefaultWorkDir();
+    string_writeconfig(".config/18-encrypted_storage/initial_setup_done", "true");
+    quit_restart();
 }
 
 void encryptionManager::setupExitWidget(bool exitStatus) {
@@ -152,7 +205,12 @@ void encryptionManager::setupExitWidget(bool exitStatus) {
         }
         setupExitWidgetRan = true;
     }
-    else {
-        qDebug() << "setupExitWidgetRan";
-    }
 }
+
+void encryptionManager::on_failureContinueBtn_clicked()
+{
+    setDefaultWorkDir();
+    string_writeconfig(".config/18-encrypted_storage/initial_setup_done", "true");
+    quit_restart();
+}
+

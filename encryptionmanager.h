@@ -29,6 +29,9 @@ private slots:
     void mkEncfsDirs();
     void on_exitSuccessBtn_clicked();
     void setupExitWidget(bool exitStatus);
+    void on_failureContinueBtn_clicked();
+    void setupPassphraseDialog(int mode);
+    void unlockEncryptedStorage();
 
 private:
     Ui::encryptionManager *ui;

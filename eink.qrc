@@ -66,5 +66,6 @@
         <file>resources/check-display.png</file>
         <file>resources/hourglass-bottom.png</file>
         <file>resources/hourglass-top.png</file>
+        <file>resources/error.png</file>
     </qresource>
 </RCC>
