@@ -142,7 +142,12 @@ reader::reader(QWidget *parent) :
     }
     else {
         if(checkconfig("/opt/inkbox_genuine") == true) {
-            QDir::setCurrent("/mnt/onboard/onboard");
+            if(checkconfig("/external_root/run/encfs_mounted") == true) {
+                QDir::setCurrent("/mnt/onboard/onboard/encfs-decrypted");
+            }
+            else {
+                QDir::setCurrent("/mnt/onboard/onboard");
+            }
             QFileDialog *dialog = new QFileDialog(this);
             // https://forum.qt.io/topic/29471/solve-how-to-show-qfiledialog-at-center-position-screen/4
             QDesktopWidget desk;
@@ -162,6 +167,12 @@ reader::reader(QWidget *parent) :
             }
         }
         else {
+            if(checkconfig("/external_root/run/encfs_mounted") == true) {
+                QDir::setCurrent("/mnt/onboard/onboard/encfs-decrypted");
+            }
+            else {
+                QDir::setCurrent("/mnt/onboard/onboard");
+            }
             QDir::setCurrent("/mnt/onboard");
             QFileDialog *dialog = new QFileDialog(this);
             // https://forum.qt.io/topic/29471/solve-how-to-show-qfiledialog-at-center-position-screen/4

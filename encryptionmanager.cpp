@@ -214,9 +214,10 @@ void encryptionManager::unlockEncryptedStorage() {
                             string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "3");
                             unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
                             currentEpoch += 86400;
+                            std::string unlockTime_str = to_string(currentEpoch);
                             global::encfs::unlockTime = QDateTime::fromTime_t(currentEpoch).toString();
-                            std::string unlockTime_str = global::encfs::unlockTime.toStdString();
-                            qDebug() << "FATAL: 4 invalid passphrase tries, locking down device until " + global::encfs::unlockTime;
+                            QString message = "FATAL: 4 invalid passphrase tries, locking down device until " + global::encfs::unlockTime;
+                            qDebug() << message;
                             string_writeconfig("/external_root/boot/flags/ENCRYPT_LOCK", unlockTime_str);
                             global::encfs::lockdown = true;
                             setupMessageBoxRan = true;
@@ -224,6 +225,7 @@ void encryptionManager::unlockEncryptedStorage() {
                             alertWindow = new alert();
                             alertWindow->setAttribute(Qt::WA_DeleteOnClose);
                             alertWindow->showFullScreen();
+                            poweroff(false);
                         }
 
                         if(passphraseTries <= 2) {
