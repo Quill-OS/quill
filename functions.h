@@ -91,6 +91,10 @@ namespace global {
     }
     namespace encfs {
         inline QString passphrase;
+        inline QString unlockTime;
+        inline bool cancelSetup;
+        inline bool cancelUnlock;
+        inline bool lockdown;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;

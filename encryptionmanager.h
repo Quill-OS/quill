@@ -5,6 +5,7 @@
 #include "generaldialog.h"
 #include "toast.h"
 #include "hourglassanimationwidget.h"
+#include "alert.h"
 
 namespace Ui {
 class encryptionManager;
@@ -19,6 +20,8 @@ public:
     ~encryptionManager();
     bool setupExitWidgetRan = false;
     int setupPassphraseDialogMode;
+    bool setupMessageBoxRan = false;
+    int passphraseTries;
 
 private slots:
     void on_setupContinueBtn_clicked();
@@ -33,12 +36,14 @@ private slots:
     void on_failureContinueBtn_clicked();
     void setupPassphraseDialog();
     void unlockEncryptedStorage();
+    void setupFailedAuthenticationMessageBox();
 
 private:
     Ui::encryptionManager *ui;
     generalDialog * generalDialogWindow;
     toast * toastWindow;
     hourglassAnimationWidget * hourglassAnimationWidgetWindow;
+    alert * alertWindow;
 };
 
 #endif // ENCRYPTIONMANAGER_H

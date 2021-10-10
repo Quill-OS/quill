@@ -52,6 +52,18 @@ alert::alert(QWidget *parent) :
         ui->messageLabel->setText("An error occured during the update process.\nThe update package's version is lower than the actual installed version.");
         ui->stackedWidget->setCurrentIndex(1);
     }
+    if(global::encfs::lockdown == true) {
+        ui->stackedWidget->setVisible(false);
+        ui->stackedWidget->deleteLater();
+        QPixmap pixmap(":/resources/alert.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->alertIconLabel->setPixmap(scaledPixmap);
+
+        ui->warningLabel->setText("Fatal error");
+        ui->securityLabel->setText("Device lockdown");
+        QString message = "Due to multiple incorrect passphrase attempts, this device is locked down until\n" + global::encfs::unlockTime + "\nand won't boot.";
+        ui->messageLabel->setText(message);
+    }
     if(global::battery::showCriticalBatteryAlert == true) {
         global::battery::showCriticalBatteryAlert = false;
         ui->stackedWidget->setVisible(false);

@@ -6,6 +6,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QTimer>
+#include <QMessageBox>
+#include <QDateTime>
 #include "functions.h"
 
 encryptionManager::encryptionManager(QWidget *parent) :
@@ -26,8 +28,8 @@ encryptionManager::encryptionManager(QWidget *parent) :
     ui->successDescriptionLabel->setStyleSheet("font-size: 9pt");
     ui->failureLabel->setStyleSheet("font-size: 15pt");
     ui->failureDescriptionLabel->setStyleSheet("font-size: 9pt");
-    ui->setupContinueBtn->setStyleSheet("font-size: 10pt; padding: 10px; font-weight: bold; background: lightGrey");
-    ui->setupAbortBtn->setStyleSheet("font-size: 10pt; padding: 10px; font-weight: bold; background: lightGrey");
+    ui->setupContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
+    ui->setupAbortBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
     ui->exitSuccessBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
     ui->failureContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
 
@@ -66,7 +68,7 @@ encryptionManager::encryptionManager(QWidget *parent) :
     if(checkconfig(".config/18-encrypted_storage/initial_setup_done") == true) {
         ui->activityWidget->hide();
         setupPassphraseDialogMode = 1;
-        QTimer::singleShot(1000, this, SLOT(setupPassphraseDialog()));
+        QTimer::singleShot(500, this, SLOT(setupPassphraseDialog()));
     }
 }
 
@@ -134,28 +136,34 @@ void encryptionManager::showToast(QString messageToDisplay) {
 void encryptionManager::setupEncryptedStorage() {
     this->setStyleSheet("background-color: white");
     ui->activityWidget->show();
-    mkEncfsDirs();
-    std::string bootstrapPassphrase = global::encfs::passphrase.toStdString();
-    global::encfs::passphrase = "";
-    string_writeconfig("/external_root/run/encfs/encrypted_storage_create", "true");
-    string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_files_location", "/data/onboard/encfs-dropbox");
-    string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_archive_location", "/data/onboard/data.encfs");
-    string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_passphrase", bootstrapPassphrase);
-    setDefaultWorkDir();
-    string_writeconfig(".config/18-encrypted_storage/storage_list", "/data/onboard/encfs-decrypted");
-    string_writeconfig("/opt/ibxd", "encfs_restart\n");
-    bool exitStatus;
-    ui->activityWidget->setCurrentIndex(3);
-    QTimer * t = new QTimer(this);
-    t->setInterval(1000);
-    connect(t, &QTimer::timeout, [&]() {
-        if(QFile::exists("/external_root/run/encrypted_storage_bootstrap_setup")) {
-            exitStatus = checkconfig("/external_root/run/encrypted_storage_bootstrap_setup");
-            QFile::remove("/external_root/run/encrypted_storage_bootstrap_setup");
-            setupExitWidget(exitStatus);
-        }
-    } );
-    t->start();
+    if(global::encfs::cancelSetup == true) {
+        global::encfs::cancelSetup = false;
+        ui->activityWidget->setCurrentIndex(0);
+    }
+    else {
+        mkEncfsDirs();
+        std::string bootstrapPassphrase = global::encfs::passphrase.toStdString();
+        global::encfs::passphrase = "";
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_create", "true");
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_files_location", "/data/onboard/encfs-dropbox");
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_archive_location", "/data/onboard/data.encfs");
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_passphrase", bootstrapPassphrase);
+        setDefaultWorkDir();
+        string_writeconfig(".config/18-encrypted_storage/storage_list", "/data/onboard/encfs-decrypted");
+        string_writeconfig("/opt/ibxd", "encfs_restart\n");
+        bool exitStatus;
+        ui->activityWidget->setCurrentIndex(3);
+        QTimer * t = new QTimer(this);
+        t->setInterval(1000);
+        connect(t, &QTimer::timeout, [&]() {
+            if(QFile::exists("/external_root/run/encrypted_storage_bootstrap_setup")) {
+                exitStatus = checkconfig("/external_root/run/encrypted_storage_bootstrap_setup");
+                QFile::remove("/external_root/run/encrypted_storage_bootstrap_setup");
+                setupExitWidget(exitStatus);
+            }
+        } );
+        t->start();
+    }
 }
 
 void encryptionManager::unlockEncryptedStorage() {
@@ -170,13 +178,64 @@ void encryptionManager::unlockEncryptedStorage() {
     string_writeconfig("/external_root/run/encfs/encrypted_storage_passphrase", passphrase);
     string_writeconfig("/opt/ibxd", "encfs_restart\n");
     bool exitStatus;
+
+    string_checkconfig_ro("/inkbox/encryptedStoragePassphraseTries");
+    if(checkconfig_str_val.isEmpty()) {
+        passphraseTries = 0;
+    }
+    else {
+        passphraseTries = checkconfig_str_val.toInt();
+        passphraseTries++;
+    }
+
     ui->activityWidget->setCurrentIndex(3);
     QTimer * t = new QTimer(this);
     t->setInterval(1000);
     connect(t, &QTimer::timeout, [&]() {
         if(QFile::exists("/external_root/run/encfs_mounted")) {
             exitStatus = checkconfig("/external_root/run/encfs_mounted");
-            quit_restart();
+            if(exitStatus == false) {
+                if(setupMessageBoxRan == false) {
+                    int delay = 0;
+                    if(passphraseTries <= 3) {
+                        if(passphraseTries == 0) {
+                            string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "0");
+                            delay = 5000;
+                        }
+                        else if(passphraseTries == 1) {
+                            string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "1");
+                            delay = 10000;
+                        }
+                        else if(passphraseTries == 2) {
+                            string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "2");
+                            delay = 20000;
+                        }
+                        else if(passphraseTries >= 3) {
+                            string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "3");
+                            unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
+                            currentEpoch += 86400;
+                            global::encfs::unlockTime = QDateTime::fromTime_t(currentEpoch).toString();
+                            std::string unlockTime_str = global::encfs::unlockTime.toStdString();
+                            qDebug() << "FATAL: 4 invalid passphrase tries, locking down device until " + global::encfs::unlockTime;
+                            string_writeconfig("/external_root/boot/flags/ENCRYPT_LOCK", unlockTime_str);
+                            global::encfs::lockdown = true;
+                            setupMessageBoxRan = true;
+
+                            alertWindow = new alert();
+                            alertWindow->setAttribute(Qt::WA_DeleteOnClose);
+                            alertWindow->showFullScreen();
+                        }
+
+                        if(passphraseTries <= 2) {
+                            QTimer::singleShot(delay, this, SLOT(setupFailedAuthenticationMessageBox()));
+                            setupMessageBoxRan = true;
+                        }
+                    }
+                }
+            }
+            else {
+                quit_restart();
+            }
         }
     } );
     t->start();
@@ -221,3 +280,9 @@ void encryptionManager::on_failureContinueBtn_clicked()
     quit_restart();
 }
 
+void encryptionManager::setupFailedAuthenticationMessageBox() {
+    ui->activityWidget->hide();
+    QMessageBox::critical(this, tr("Invalid argument"), tr("Invalid passphrase. Please try again."));
+    QFile::remove("/external_root/run/encfs_mounted");
+    quit_restart();
+}

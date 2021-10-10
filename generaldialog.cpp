@@ -186,6 +186,11 @@ void generalDialog::on_cancelBtn_clicked()
             global::keyboard::keyboardDialog = false;
             global::keyboard::keyboardText = "";
         }
+        else if(global::keyboard::encfsDialog == true) {
+            global::keyboard::encfsDialog = false;
+            global::encfs::cancelSetup = true;
+            global::keyboard::keyboardText = "";
+        }
         generalDialog::close();
     }
 }
@@ -441,7 +446,7 @@ void generalDialog::setupKeyboardDialog() {
         ui->cancelBtn->setText("Cancel");
     }
     else if(global::keyboard::encfsDialog == true) {
-        ui->headerLabel->setText("Enter a new encryption key");
+        ui->headerLabel->setText("Enter your encrypted storage's passphrase");
         ui->okBtn->setText("OK");
         ui->cancelBtn->setText("Cancel");
     }
