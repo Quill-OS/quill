@@ -24,6 +24,7 @@ public:
     bool ui_enable_changed = false;
     bool ui_not_user_change = false;
     bool not_user_change = true;
+    bool enableEncryptedStorageUserChange = false;
 
     explicit settings(QWidget *parent = nullptr);
     ~settings();
@@ -63,6 +64,10 @@ private slots:
     void closeIndefiniteToastNative();
     void usbms_launch();
     void quit_restart();
+    void on_encryptedStorageChangePasswordBtn_clicked();
+    void on_enableEncryptedStorageCheckBox_toggled(bool checked);
+    void disableStorageEncryption();
+    void cancelDisableStorageEncryption();
 
 signals:
     void showToast(QString messageToDisplay);

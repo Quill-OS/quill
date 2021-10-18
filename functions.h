@@ -95,6 +95,8 @@ namespace global {
         inline bool cancelSetup;
         inline bool cancelUnlock;
         inline bool lockdown;
+        inline bool disableStorageEncryptionDialog;
+        inline bool disableStorageEncryption;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;

@@ -73,6 +73,8 @@ signals:
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();
     void openBookFile(QString book, bool relativePath);
+    void cancelDisableStorageEncryption();
+    void disableStorageEncryption();
 };
 
 #endif // GENERALDIALOG_H

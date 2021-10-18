@@ -32,6 +32,7 @@ settings::settings(QWidget *parent) :
     ui->resetBtn->setProperty("type", "borderless");
     ui->showSystemInfoBtn->setProperty("type", "borderless");
     ui->checkOtaUpdateBtn->setProperty("type", "borderless");
+    ui->encryptedStorageChangePasswordBtn->setProperty("type", "borderless");
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
@@ -44,6 +45,7 @@ settings::settings(QWidget *parent) :
     ui->comboBox->setStyleSheet("font-size: 9pt");
     ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
+    ui->encryptedStorageChangePasswordBtn->setStyleSheet("font-size: 9pt");
 
     ui->previousBtn->setText("");
     ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
@@ -282,6 +284,11 @@ settings::settings(QWidget *parent) :
     // Global reading settings
     if(checkconfig(".config/16-global_reading_settings/config") == true) {
         ui->globalReadingSettingsCheckBox->click();
+    }
+
+    // Encrypted storage
+    if(checkconfig(".config/18-encrypted_storage/status") == true) {
+        ui->enableEncryptedStorageCheckBox->click();
     }
 
     // DPI checkbox
@@ -867,4 +874,65 @@ void settings::quit_restart() {
     QProcess process;
     process.startDetached("inkbox", QStringList());
     qApp->quit();
+}
+
+void settings::on_encryptedStorageChangePasswordBtn_clicked()
+{
+
+}
+
+void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
+{
+    if(checked == true) {
+        if(enableEncryptedStorageUserChange == true) {
+            setDefaultWorkDir();
+            string_writeconfig(".config/18-encrypted_storage/initial_setup_done", "false");
+            string_writeconfig(".config/18-encrypted_storage/status", "true");
+            if(QFile::exists(".config/18-encrypted_storage/storage_list")) {
+                QFile::remove(".config/18-encrypted_storage/storage_list");
+            }
+            global::settings::settingsRebootDialog = true;
+            generalDialogWindow = new generalDialog(this);
+            generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+            generalDialogWindow->show();
+        }
+        else {
+            enableEncryptedStorageUserChange = true;
+        }
+    }
+    else {
+        global::encfs::disableStorageEncryptionDialog = true;
+        generalDialogWindow = new generalDialog(this);
+        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        connect(generalDialogWindow, SIGNAL(cancelDisableStorageEncryption()), SLOT(cancelDisableStorageEncryption()));
+        connect(generalDialogWindow, SIGNAL(disableStorageEncryption()), SLOT(disableStorageEncryption()));
+        generalDialogWindow->show();
+    }
+}
+
+void settings::disableStorageEncryption() {
+    setDefaultWorkDir();
+    string_writeconfig("/opt/ibxd", "encfs_stop\n");
+    QThread::msleep(5000);
+
+    string_writeconfig(".config/18-encrypted_storage/status", "false");
+    QFile::remove(".config/18-encrypted_storage/initial_setup_done");
+    QFile::remove(".config/18-encrypted_storage/storage_list");
+    QFile::remove("/mnt/onboard/onboard/data.encfs");
+
+    QDir dumpDir("/mnt/onboard/onboard/encfs-dropbox");
+    dumpDir.removeRecursively();
+    QDir decDir("/mnt/onboard/onboard/encfs-decrypted");
+    decDir.removeRecursively();
+
+    global::settings::settingsRebootDialog = true;
+    global::encfs::disableStorageEncryption = true;
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
+}
+
+void settings::cancelDisableStorageEncryption() {
+    enableEncryptedStorageUserChange = false;
+    ui->enableEncryptedStorageCheckBox->click();
 }

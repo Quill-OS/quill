@@ -143,6 +143,13 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->mainStackedWidget->setCurrentIndex(1);
         this->adjustSize();
     }
+    else if(global::encfs::disableStorageEncryptionDialog == true) {
+        ui->headerLabel->setText("Warning");
+        ui->okBtn->setText("Proceed");
+        ui->cancelBtn->setText("Go back");
+        ui->bodyLabel->setText("This will delete all the files you have encrypted. Are you sure you want to continue?");
+        this->adjustSize();
+    }
     else {
         // We shouldn't be there ;)
         ;
@@ -172,6 +179,11 @@ void generalDialog::on_cancelBtn_clicked()
     }
     else if(resetKoboxDialog == true) {
         global::kobox::resetKoboxDialog = false;
+        generalDialog::close();
+    }
+    else if(global::encfs::disableStorageEncryptionDialog == true) {
+        emit cancelDisableStorageEncryption();
+        global::encfs::disableStorageEncryptionDialog = false;
         generalDialog::close();
     }
     else {
@@ -370,11 +382,11 @@ void generalDialog::on_okBtn_clicked()
         }
         else if(global::keyboard::encfsDialog == true) {
             if(!global::keyboard::keyboardText.isEmpty()) {
-                this->close();
                 global::encfs::passphrase = global::keyboard::keyboardText;
                 global::keyboard::encfsDialog = false;
                 global::keyboard::keyboardText = "";
                 global::keyboard::keyboardDialog = false;
+                this->close();
             }
             else {
                 QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in the required argument."));
@@ -384,6 +396,11 @@ void generalDialog::on_okBtn_clicked()
             global::keyboard::keyboardDialog = false;
             generalDialog::close();
         }
+    }
+    if(global::encfs::disableStorageEncryptionDialog == true) {
+        global::encfs::disableStorageEncryptionDialog = false;
+        emit disableStorageEncryption();
+        this->close();
     }
 }
 void generalDialog::on_acceptBtn_clicked()
