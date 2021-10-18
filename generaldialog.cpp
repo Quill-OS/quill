@@ -84,7 +84,7 @@ generalDialog::generalDialog(QWidget *parent) :
     else if(global::settings::settingsRebootDialog == true) {
         settingsRebootDialog = true;
         ui->stackedWidget->setCurrentIndex(1);
-        if(global::kobox::koboxSettingsRebootDialog == true) {
+        if(global::kobox::koboxSettingsRebootDialog == true or global::encfs::enableStorageEncryptionDialog) {
             koboxSettingsRebootDialog = true;
             ui->bodyLabel->setText("The device will reboot now, since the settings you chose require it to work properly.");
         }
@@ -412,7 +412,7 @@ void generalDialog::on_acceptBtn_clicked()
     }
 
     if(settingsRebootDialog == true) {
-        if(koboxSettingsRebootDialog == true) {
+        if(koboxSettingsRebootDialog == true or global::encfs::enableStorageEncryptionDialog) {
             reboot(true);
         }
         else {

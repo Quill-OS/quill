@@ -88,6 +88,7 @@ private slots:
     void openBookFile(QString book, bool relativePath);
     void openReaderFramework();
     void checkForUpdate();
+    void openEncfsEncryptDialog();
 
 private:
     Ui::MainWindow *ui;

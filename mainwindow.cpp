@@ -365,6 +365,14 @@ MainWindow::MainWindow(QWidget *parent)
     // We set the brightness level saved in the config file
     QTimer::singleShot(2000, this, SLOT(setInitialBrightness()));
 
+    // If new files are found in /mnt/onboard/onboard/encfs-dropbox, ask if user wants to encrypt them
+    if(checkconfig(".config/18-encrypted_storage/status") == true) {
+        QDir encfsDropboxDir("/mnt/onboard/onboard/encfs-dropbox");
+        if(encfsDropboxDir.isEmpty()) {
+            QTimer::singleShot(1000, this, SLOT(openEncfsEncryptDialog()));
+        }
+    }
+
     // Display quote if requested; otherwise, display recent books
     string_checkconfig(".config/05-quote/config");
     if(checkconfig_str_val == "") {
@@ -1013,4 +1021,8 @@ void MainWindow::checkForUpdate() {
             qDebug() << "Not showing update dialog, user dismissed it...";
         }
     }
+}
+
+void MainWindow::openEncfsEncryptDialog() {
+
 }

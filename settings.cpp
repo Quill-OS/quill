@@ -290,6 +290,10 @@ settings::settings(QWidget *parent) :
     if(checkconfig(".config/18-encrypted_storage/status") == true) {
         ui->enableEncryptedStorageCheckBox->click();
     }
+    else {
+        // Next interaction will be by the user
+        enableEncryptedStorageUserChange = true;
+    }
 
     // DPI checkbox
     string_checkconfig(".config/09-dpi/config");
@@ -892,6 +896,7 @@ void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
                 QFile::remove(".config/18-encrypted_storage/storage_list");
             }
             global::settings::settingsRebootDialog = true;
+            global::encfs::enableStorageEncryptionDialog = true;
             generalDialogWindow = new generalDialog(this);
             generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
             generalDialogWindow->show();
@@ -926,7 +931,6 @@ void settings::disableStorageEncryption() {
     decDir.removeRecursively();
 
     global::settings::settingsRebootDialog = true;
-    global::encfs::disableStorageEncryption = true;
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     generalDialogWindow->show();
