@@ -64,7 +64,6 @@ private slots:
     void closeIndefiniteToastNative();
     void usbms_launch();
     void quit_restart();
-    void on_encryptedStorageChangePasswordBtn_clicked();
     void on_enableEncryptedStorageCheckBox_toggled(bool checked);
     void disableStorageEncryption();
     void cancelDisableStorageEncryption();

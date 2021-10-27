@@ -32,7 +32,6 @@ settings::settings(QWidget *parent) :
     ui->resetBtn->setProperty("type", "borderless");
     ui->showSystemInfoBtn->setProperty("type", "borderless");
     ui->checkOtaUpdateBtn->setProperty("type", "borderless");
-    ui->encryptedStorageChangePasswordBtn->setProperty("type", "borderless");
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
@@ -45,7 +44,6 @@ settings::settings(QWidget *parent) :
     ui->comboBox->setStyleSheet("font-size: 9pt");
     ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
-    ui->encryptedStorageChangePasswordBtn->setStyleSheet("font-size: 9pt");
 
     ui->previousBtn->setText("");
     ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
@@ -878,11 +876,6 @@ void settings::quit_restart() {
     QProcess process;
     process.startDetached("inkbox", QStringList());
     qApp->quit();
-}
-
-void settings::on_encryptedStorageChangePasswordBtn_clicked()
-{
-
 }
 
 void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
