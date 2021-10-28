@@ -167,80 +167,86 @@ void encryptionManager::setupEncryptedStorage() {
 }
 
 void encryptionManager::unlockEncryptedStorage() {
-    this->setStyleSheet("background-color: white");
-    ui->activityWidget->show();
-    mkEncfsDirs();
-    std::string passphrase = global::encfs::passphrase.toStdString();
-    global::encfs::passphrase = "";
-    string_writeconfig("/external_root/run/encfs/encrypted_storage_archive", "/data/onboard/data.encfs");
-    string_writeconfig("/external_root/run/encfs/encrypted_storage_mountpoint", "/data/onboard/encfs-decrypted");
-    string_writeconfig("/external_root/run/encfs/encrypted_storage_bindmount", "/kobo/mnt/onboard/onboard/encfs-decrypted");
-    string_writeconfig("/external_root/run/encfs/encrypted_storage_passphrase", passphrase);
-    string_writeconfig("/opt/ibxd", "encfs_restart\n");
-    bool exitStatus;
-
-    string_checkconfig_ro("/inkbox/encryptedStoragePassphraseTries");
-    if(checkconfig_str_val.isEmpty()) {
-        passphraseTries = 0;
+    if(global::encfs::cancelSetup == true) {
+        global::encfs::cancelSetup = false;
+        poweroff(true);
     }
     else {
-        passphraseTries = checkconfig_str_val.toInt();
-        passphraseTries++;
-    }
+        this->setStyleSheet("background-color: white");
+        ui->activityWidget->show();
+        mkEncfsDirs();
+        std::string passphrase = global::encfs::passphrase.toStdString();
+        global::encfs::passphrase = "";
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_archive", "/data/onboard/data.encfs");
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_mountpoint", "/data/onboard/encfs-decrypted");
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_bindmount", "/kobo/mnt/onboard/onboard/encfs-decrypted");
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_passphrase", passphrase);
+        string_writeconfig("/opt/ibxd", "encfs_restart\n");
+        bool exitStatus;
 
-    ui->activityWidget->setCurrentIndex(3);
-    QTimer * t = new QTimer(this);
-    t->setInterval(1000);
-    connect(t, &QTimer::timeout, [&]() {
-        if(QFile::exists("/external_root/run/encfs_mounted")) {
-            exitStatus = checkconfig("/external_root/run/encfs_mounted");
-            if(exitStatus == false) {
-                if(setupMessageBoxRan == false) {
-                    int delay = 0;
-                    if(passphraseTries <= 3) {
-                        if(passphraseTries == 0) {
-                            string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "0");
-                            delay = 5000;
-                        }
-                        else if(passphraseTries == 1) {
-                            string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "1");
-                            delay = 10000;
-                        }
-                        else if(passphraseTries == 2) {
-                            string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "2");
-                            delay = 20000;
-                        }
-                        else if(passphraseTries >= 3) {
-                            string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "3");
-                            unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
-                            currentEpoch += 86400;
-                            std::string unlockTime_str = to_string(currentEpoch);
-                            global::encfs::unlockTime = QDateTime::fromTime_t(currentEpoch).toString();
-                            QString message = "FATAL: 4 invalid passphrase tries, locking down device until " + global::encfs::unlockTime;
-                            qDebug() << message;
-                            string_writeconfig("/external_root/boot/flags/ENCRYPT_LOCK", unlockTime_str);
-                            global::encfs::lockdown = true;
-                            setupMessageBoxRan = true;
+        string_checkconfig_ro("/inkbox/encryptedStoragePassphraseTries");
+        if(checkconfig_str_val.isEmpty()) {
+            passphraseTries = 0;
+        }
+        else {
+            passphraseTries = checkconfig_str_val.toInt();
+            passphraseTries++;
+        }
 
-                            alertWindow = new alert();
-                            alertWindow->setAttribute(Qt::WA_DeleteOnClose);
-                            alertWindow->showFullScreen();
-                            poweroff(false);
-                        }
+        ui->activityWidget->setCurrentIndex(3);
+        QTimer * t = new QTimer(this);
+        t->setInterval(1000);
+        connect(t, &QTimer::timeout, [&]() {
+            if(QFile::exists("/external_root/run/encfs_mounted")) {
+                exitStatus = checkconfig("/external_root/run/encfs_mounted");
+                if(exitStatus == false) {
+                    if(setupMessageBoxRan == false) {
+                        int delay = 0;
+                        if(passphraseTries <= 3) {
+                            if(passphraseTries == 0) {
+                                string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "0");
+                                delay = 5000;
+                            }
+                            else if(passphraseTries == 1) {
+                                string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "1");
+                                delay = 10000;
+                            }
+                            else if(passphraseTries == 2) {
+                                string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "2");
+                                delay = 20000;
+                            }
+                            else if(passphraseTries >= 3) {
+                                string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "3");
+                                unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
+                                currentEpoch += 86400;
+                                std::string unlockTime_str = to_string(currentEpoch);
+                                global::encfs::unlockTime = QDateTime::fromTime_t(currentEpoch).toString();
+                                QString message = "FATAL: 4 invalid passphrase tries, locking down device until " + global::encfs::unlockTime;
+                                qDebug() << message;
+                                string_writeconfig("/external_root/boot/flags/ENCRYPT_LOCK", unlockTime_str);
+                                global::encfs::lockdown = true;
+                                setupMessageBoxRan = true;
 
-                        if(passphraseTries <= 2) {
-                            QTimer::singleShot(delay, this, SLOT(setupFailedAuthenticationMessageBox()));
-                            setupMessageBoxRan = true;
+                                alertWindow = new alert();
+                                alertWindow->setAttribute(Qt::WA_DeleteOnClose);
+                                alertWindow->showFullScreen();
+                                poweroff(false);
+                            }
+
+                            if(passphraseTries <= 2) {
+                                QTimer::singleShot(delay, this, SLOT(setupFailedAuthenticationMessageBox()));
+                                setupMessageBoxRan = true;
+                            }
                         }
                     }
                 }
+                else {
+                    quit_restart();
+                }
             }
-            else {
-                quit_restart();
-            }
-        }
-    } );
-    t->start();
+        } );
+        t->start();
+    }
 }
 
 void encryptionManager::mkEncfsDirs() {
