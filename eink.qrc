@@ -67,5 +67,6 @@
         <file>resources/hourglass-bottom.png</file>
         <file>resources/hourglass-top.png</file>
         <file>resources/error.png</file>
+        <file>resources/alert-triangle.png</file>
     </qresource>
 </RCC>

@@ -37,6 +37,8 @@ private slots:
     void setupPassphraseDialog();
     void unlockEncryptedStorage();
     void setupFailedAuthenticationMessageBox();
+    void on_acceptBtn_clicked();
+    void on_usbmsBtn_clicked();
 
 private:
     Ui::encryptionManager *ui;
@@ -44,6 +46,7 @@ private:
     toast * toastWindow;
     hourglassAnimationWidget * hourglassAnimationWidgetWindow;
     alert * alertWindow;
+    usbms_splash *usbmsWindow;
 };
 
 #endif // ENCRYPTIONMANAGER_H

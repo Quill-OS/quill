@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QDateTime>
+#include "usbms_splash.h"
 #include "functions.h"
 
 encryptionManager::encryptionManager(QWidget *parent) :
@@ -32,6 +33,10 @@ encryptionManager::encryptionManager(QWidget *parent) :
     ui->setupAbortBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
     ui->exitSuccessBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
     ui->failureContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
+    ui->acceptBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
+    ui->usbmsBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
+    ui->warningLabel->setStyleSheet("font-size: 15pt");
+    ui->warningDescriptionLabel->setStyleSheet("font-size: 9pt");
 
     // Getting the screen's size
     float sW = QGuiApplication::screens()[0]->size().width();
@@ -59,6 +64,13 @@ encryptionManager::encryptionManager(QWidget *parent) :
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         ui->failureImageLabel->setPixmap(scaledPixmap);
     }
+    {
+        stdIconWidth = sW / 1.50;
+        stdIconHeight = sH / 1.50;
+        QPixmap pixmap(":/resources/alert-triangle.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        ui->warningImageLabel->setPixmap(scaledPixmap);
+    }
 
     hourglassAnimationWidgetWindow = new hourglassAnimationWidget();
     ui->hourglassWidget->insertWidget(0, hourglassAnimationWidgetWindow);
@@ -69,6 +81,12 @@ encryptionManager::encryptionManager(QWidget *parent) :
         ui->activityWidget->hide();
         setupPassphraseDialogMode = 1;
         QTimer::singleShot(500, this, SLOT(setupPassphraseDialog()));
+    }
+    else {
+        QDir dir("/mnt/onboard/onboard/encfs-dropbox");
+        if(dir.isEmpty()) {
+            ui->activityWidget->setCurrentIndex(4);
+        }
     }
 }
 
@@ -294,3 +312,20 @@ void encryptionManager::setupFailedAuthenticationMessageBox() {
     QFile::remove("/external_root/run/encfs_mounted");
     quit_restart();
 }
+
+void encryptionManager::on_acceptBtn_clicked()
+{
+    string_writeconfig(".config/18-encrypted_storage/status", "false");
+    quit_restart();
+}
+
+
+void encryptionManager::on_usbmsBtn_clicked()
+{
+    global::usbms::launchUsbms = true;
+    usbmsWindow = new usbms_splash();
+    usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+    usbmsWindow->show();
+}
+
