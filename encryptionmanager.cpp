@@ -86,6 +86,7 @@ encryptionManager::encryptionManager(QWidget *parent) :
         QDir dir("/mnt/onboard/onboard/encfs-dropbox");
         if(dir.isEmpty()) {
             ui->activityWidget->setCurrentIndex(4);
+            mkEncfsDirs();
         }
     }
 }
