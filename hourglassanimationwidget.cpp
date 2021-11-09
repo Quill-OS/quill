@@ -18,15 +18,15 @@ hourglassAnimationWidget::hourglassAnimationWidget(QWidget *parent) :
     float stdIconWidth;
     float stdIconHeight;
     {
-        stdIconWidth = sW / 2;
-        stdIconHeight = sH / 2;
+        stdIconWidth = sW / 2.5;
+        stdIconHeight = sH / 2.5;
         QPixmap pixmap(":/resources/hourglass-top.png");
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         ui->hourglassTopLabel->setPixmap(scaledPixmap);
     }
     {
-        stdIconWidth = sW / 2;
-        stdIconHeight = sH / 2;
+        stdIconWidth = sW / 2.5;
+        stdIconHeight = sH / 2.5;
         QPixmap pixmap(":/resources/hourglass-bottom.png");
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         ui->hourglassBottomLabel->setPixmap(scaledPixmap);
