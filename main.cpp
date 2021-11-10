@@ -32,10 +32,6 @@
 int main(int argc, char *argv[])
 {
     setDefaultWorkDir();
-    string_checkconfig_ro(".config/18-encrypted_storage/status");
-    if(checkconfig_str_val.isEmpty() == true) {
-        string_writeconfig(".config/18-encrypted_storage/status", "true");
-    }
     if(checkconfig(".config/18-encrypted_storage/status") == true and checkconfig("/external_root/run/encfs_mounted") == false) {
         // Open Encryption Manager to unlock encrypted storage
         QApplication a(argc, argv);
