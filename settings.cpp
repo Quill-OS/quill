@@ -910,6 +910,7 @@ void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
 
 void settings::disableStorageEncryption() {
     setDefaultWorkDir();
+    string_writeconfig("/external_root/run/encfs_stop_cleanup", "true");
     string_writeconfig("/opt/ibxd", "encfs_stop\n");
     QThread::msleep(5000);
 
