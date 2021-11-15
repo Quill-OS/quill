@@ -77,7 +77,7 @@ encryptionManager::encryptionManager(QWidget *parent) :
     ui->hourglassWidget->setCurrentIndex(0);
 
     setDefaultWorkDir();
-    if(checkconfig(".config/18-encrypted_storage/initial_setup_done") == true) {
+    if(checkconfig(".config/18-encrypted_storage/initial_setup_done") == true or checkconfig("/run/encfs_repack") == true) {
         ui->activityWidget->hide();
         setupPassphraseDialogMode = 1;
         QTimer::singleShot(500, this, SLOT(setupPassphraseDialog()));
@@ -107,6 +107,7 @@ void encryptionManager::setupPassphraseDialog() {
      * setupPassphraseDialogMode can be:
      * 0: Initial setup
      * 1: Normal behavior
+     * 2: Repack
     */
     ui->activityWidget->hide();
     this->setStyleSheet("background-color: black");
@@ -119,8 +120,11 @@ void encryptionManager::setupPassphraseDialog() {
     if(setupPassphraseDialogMode == 0) {
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupEncryptedStorage()));
     }
-    else {
+    else if(setupPassphraseDialogMode == 1) {
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(unlockEncryptedStorage()));
+    }
+    else {
+        connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(repackEncryptedStorage()));
     }
     connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
     generalDialogWindow->show();
@@ -330,3 +334,30 @@ void encryptionManager::on_usbmsBtn_clicked()
     usbmsWindow->show();
 }
 
+void encryptionManager::repackEncryptedStorage() {
+    if(global::encfs::cancelSetup == true) {
+        global::encfs::cancelSetup = false;
+        quit_restart();
+    }
+    else {
+        this->setStyleSheet("background-color: white");
+        ui->activityWidget->show();
+        mkEncfsDirs();
+        std::string passphrase = global::encfs::passphrase.toStdString();
+        global::encfs::passphrase = "";
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_passphrase", passphrase);
+        string_writeconfig("/opt/ibxd", "encfs_restart\n");
+        bool exitStatus;
+        ui->activityWidget->setCurrentIndex(3);
+        QTimer * t = new QTimer(this);
+        t->setInterval(1000);
+        connect(t, &QTimer::timeout, [&]() {
+            if(QFile::exists("/external_root/run/encfs_repack_status")) {
+                exitStatus = checkconfig("/external_root/run/encfs_repack_status");
+                QFile::remove("/external_root/run/encfs_repack_status");
+                setupExitWidget(exitStatus);
+            }
+        } );
+        t->start();
+    }
+}

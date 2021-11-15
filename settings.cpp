@@ -34,6 +34,7 @@ settings::settings(QWidget *parent) :
     ui->checkOtaUpdateBtn->setProperty("type", "borderless");
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
+    ui->repackBtn->setProperty("type", "borderless");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
     ui->requestLeaseBtn->setStyleSheet("font-size: 9pt");
     ui->usbmsBtn->setStyleSheet("font-size: 9pt");
@@ -44,6 +45,7 @@ settings::settings(QWidget *parent) :
     ui->comboBox->setStyleSheet("font-size: 9pt");
     ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
+    ui->repackBtn->setStyleSheet("font-size: 9pt");
 
     ui->previousBtn->setText("");
     ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
@@ -291,6 +293,10 @@ settings::settings(QWidget *parent) :
     else {
         // Next interaction will be by the user
         enableEncryptedStorageUserChange = true;
+    }
+    if(getEncFSStatus() == true) {
+        ui->repackLabel->hide();
+        ui->repackBtn->hide();
     }
 
     // DPI checkbox
@@ -934,3 +940,18 @@ void settings::cancelDisableStorageEncryption() {
     enableEncryptedStorageUserChange = false;
     ui->enableEncryptedStorageCheckBox->click();
 }
+
+void settings::on_repackBtn_clicked()
+{
+    QDir dir("/data/onboard/encfs-dropbox");
+    if(dir.isEmpty()) {
+        global::encfs::errorNoBooksInDropboxDialog = true;
+        generalDialogWindow = new generalDialog(this);
+        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        generalDialogWindow->show();
+    }
+    else {
+        string_writeconfig("/external_root/run/encfs_repack", "true");
+    }
+}
+

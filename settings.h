@@ -67,6 +67,7 @@ private slots:
     void on_enableEncryptedStorageCheckBox_toggled(bool checked);
     void disableStorageEncryption();
     void cancelDisableStorageEncryption();
+    void on_repackBtn_clicked();
 
 signals:
     void showToast(QString messageToDisplay);

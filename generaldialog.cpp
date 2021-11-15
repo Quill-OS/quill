@@ -150,6 +150,12 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->bodyLabel->setText("This will delete all the files you have encrypted. Are you sure you want to continue?");
         this->adjustSize();
     }
+    else if(global::encfs::errorNoBooksInDropboxDialog == true) {
+        ui->stackedWidget->setCurrentIndex(1);
+        ui->headerLabel->setText("Error");
+        ui->bodyLabel->setText("Please put books in the 'encfs-dropbox' folder to repack your encrypted storage.");
+        this->adjustSize();
+    }
     else {
         // We shouldn't be there ;)
         ;

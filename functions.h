@@ -97,6 +97,7 @@ namespace global {
         inline bool lockdown;
         inline bool enableStorageEncryptionDialog;
         inline bool disableStorageEncryptionDialog;
+        inline bool errorNoBooksInDropboxDialog;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -625,6 +626,9 @@ namespace {
         string_writeconfig("/external_root/opt/update/will_update", "true");
         string_writeconfig("/external_root/boot/flags/WILL_UPDATE", "true");
         reboot(true);
+    }
+    bool getEncFSStatus() {
+        return checkconfig("/run/encfs_mounted");
     }
 }
 

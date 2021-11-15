@@ -39,6 +39,7 @@ private slots:
     void setupFailedAuthenticationMessageBox();
     void on_acceptBtn_clicked();
     void on_usbmsBtn_clicked();
+    void repackEncryptedStorage();
 
 private:
     Ui::encryptionManager *ui;
