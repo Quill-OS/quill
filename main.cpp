@@ -41,6 +41,14 @@ int main(int argc, char *argv[])
         w.show();
         return a.exec();
     }
+    else if(checkconfig("/external_root/run/encfs_mounted") == true and checkconfig("/external_root/run/encfs_repack") == true) {
+        QApplication a(argc, argv);
+        encryptionManager w;
+        const QScreen * screen = qApp->primaryScreen();
+        w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
+        w.show();
+        return a.exec();
+    }
     else {
         // Tell scripts that we're currently running
         string_writeconfig("/tmp/inkbox_running", "true");

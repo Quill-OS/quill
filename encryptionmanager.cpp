@@ -77,9 +77,14 @@ encryptionManager::encryptionManager(QWidget *parent) :
     ui->hourglassWidget->setCurrentIndex(0);
 
     setDefaultWorkDir();
-    if(checkconfig(".config/18-encrypted_storage/initial_setup_done") == true or checkconfig("/run/encfs_repack") == true) {
+    if(checkconfig(".config/18-encrypted_storage/initial_setup_done") == true or checkconfig("/external_root/run/encfs_repack") == true) {
         ui->activityWidget->hide();
-        setupPassphraseDialogMode = 1;
+        if(checkconfig("/external_root/run/encfs_repack") == false) {
+            setupPassphraseDialogMode = 1;
+        }
+        else {
+            setupPassphraseDialogMode = 2;
+        }
         QTimer::singleShot(500, this, SLOT(setupPassphraseDialog()));
     }
     else {
@@ -345,7 +350,7 @@ void encryptionManager::repackEncryptedStorage() {
         mkEncfsDirs();
         std::string passphrase = global::encfs::passphrase.toStdString();
         global::encfs::passphrase = "";
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_passphrase", passphrase);
+        string_writeconfig("/external_root/run/encfs/encrypted_storage_repack_passphrase", passphrase);
         string_writeconfig("/opt/ibxd", "encfs_restart\n");
         bool exitStatus;
         ui->activityWidget->setCurrentIndex(3);

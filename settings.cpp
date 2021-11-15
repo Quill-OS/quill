@@ -294,7 +294,7 @@ settings::settings(QWidget *parent) :
         // Next interaction will be by the user
         enableEncryptedStorageUserChange = true;
     }
-    if(getEncFSStatus() == true) {
+    if(getEncFSStatus() == false) {
         ui->repackLabel->hide();
         ui->repackBtn->hide();
     }
@@ -943,7 +943,7 @@ void settings::cancelDisableStorageEncryption() {
 
 void settings::on_repackBtn_clicked()
 {
-    QDir dir("/data/onboard/encfs-dropbox");
+    QDir dir("/mnt/onboard/onboard/encfs-dropbox");
     if(dir.isEmpty()) {
         global::encfs::errorNoBooksInDropboxDialog = true;
         generalDialogWindow = new generalDialog(this);
@@ -952,6 +952,6 @@ void settings::on_repackBtn_clicked()
     }
     else {
         string_writeconfig("/external_root/run/encfs_repack", "true");
+        quit_restart();
     }
 }
-

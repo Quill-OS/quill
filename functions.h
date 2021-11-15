@@ -628,7 +628,7 @@ namespace {
         reboot(true);
     }
     bool getEncFSStatus() {
-        return checkconfig("/run/encfs_mounted");
+        return checkconfig("/external_root/run/encfs_mounted");
     }
 }
 
