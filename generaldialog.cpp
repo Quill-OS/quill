@@ -209,6 +209,9 @@ void generalDialog::on_cancelBtn_clicked()
             global::encfs::cancelSetup = true;
             global::keyboard::keyboardText = "";
         }
+        else if(global::encfs::errorNoBooksInDropboxDialog == true) {
+            global::encfs::errorNoBooksInDropboxDialog = false;
+        }
         generalDialog::close();
     }
 }
