@@ -70,9 +70,13 @@ void usbms_splash::usbms_launch()
     if(global::usbms::koboxExportExtensions == true) {
         string_writeconfig("/opt/ibxd", "kobox_extensions_storage_unmount\n");
     }
-    else {
-        string_writeconfig("/opt/ibxd", "onboard_unmount\n");
+    if(checkconfig("/external_root/run/encfs_mounted") == true) {
+        string_writeconfig("/external_root/run/encfs_stop_cleanup", "true");
+        string_writeconfig("/opt/ibxd", "encfs_stop\n");
+        QThread::msleep(1500);
     }
+
+    string_writeconfig("/opt/ibxd", "onboard_unmount\n");
     QThread::msleep(500);
 
     string_writeconfig("/opt/ibxd", "usbnet_stop\n");

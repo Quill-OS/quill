@@ -351,7 +351,7 @@ void encryptionManager::repackEncryptedStorage() {
         std::string passphrase = global::encfs::passphrase.toStdString();
         global::encfs::passphrase = "";
         string_writeconfig("/external_root/run/encfs/encrypted_storage_repack_passphrase", passphrase);
-        string_writeconfig("/external_root/run/encfs_dry_stop", "true");
+        QFile::remove("/external_root/run/openrc/started/encfs");
         string_writeconfig("/opt/ibxd", "encfs_restart\n");
         bool exitStatus;
         ui->activityWidget->setCurrentIndex(3);
