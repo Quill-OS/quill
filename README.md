@@ -4,12 +4,13 @@
 InkBox is an open-source, Qt-based eBook reader for Kobo devices. It also comes as an entire [native open-source OS](https://github.com/Kobo-InkBox/rootfs) support for a number of devices.
 <br>
 It features:
-- ePUB and plain text support
+- ePUB, PDF and plain text support
 - Versatile configuration options for reading
 - muPDF rendering engine for ePUB (and soon PDFs)
 - Wi-Fi support and web browser
 - X11 apps seamless integration (KoBox)
-- Fast dictionary search
+- Encrypted storage with EncFS
+- Fast dictionary & local storage search
 - Dark mode
 - Strict security policy ensuring that only signed software can be run on the device (this, however, can be adapted to your needs by recompiling the [kernel](https://github.com/Kobo-InkBox/kernel))
 - Full factory reset option if needed
