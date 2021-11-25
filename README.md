@@ -3,7 +3,8 @@
 ## About InkBox
 InkBox is an open-source, Qt-based eBook reader for Kobo devices. It also comes as an entire [native open-source OS](https://github.com/Kobo-InkBox/rootfs) support for a number of devices.
 <br>
-It features:
+InkBox features:
+- Full integrated KoBox X11 subsystem
 - ePUB, PDF and plain text support
 - Versatile configuration options for reading
 - muPDF rendering engine for ePUB (and soon PDFs)
@@ -26,7 +27,7 @@ You can download precompiled OS/binaries [here](http://pkgs.kobox.fermino.me/bun
 <br>
 On PC, use [balenaEtcher](https://www.balena.io/etcher/) to flash the InkBox image file to the Kobo's SD card.
 
-On UNIX-like machines, you can also use balenaEtcher but flashing InkBox OS to your Kobo's SD card is as simple as doing, assuming that `inkbox.xz` is the file you downloaded and that `/dev/mmcblk0` is your SD card's device node (check with `sudo fdisk -l`:
+On UNIX-like machines, you can also use balenaEtcher but flashing InkBox OS to your Kobo's SD card is as simple as entering in a terminal session, assuming that `inkbox.xz` is the file you downloaded and that `/dev/mmcblk0` is your SD card's device node (check with `sudo fdisk -l`:
 ```
 xzcat inkbox.xz | dd of=/dev/mmcblk0
 ```
