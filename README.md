@@ -1,7 +1,7 @@
 # inkbox
 
 ## About InkBox
-InkBox is an open-source, Qt-based eBook reader for Kobo devices. It also comes as an entire [native open-source OS](https://github.com/Kobo-InkBox/rootfs) support for a number of devices.
+InkBox is an open-source, Qt-based eBook reader for Kobo devices. It also comes as an entire [native open-source OS](https://github.com/Kobo-InkBox/rootfs) and provides support for a number of devices.
 <br>
 InkBox features:
 - Full integrated KoBox X11 subsystem
@@ -9,7 +9,6 @@ InkBox features:
 - Versatile configuration options for reading
 - muPDF rendering engine for ePUB (and soon PDFs)
 - Wi-Fi support and web browser
-- X11 apps seamless integration (KoBox)
 - Encrypted storage with EncFS
 - Fast dictionary & local storage search
 - Dark mode
@@ -35,4 +34,4 @@ If you install the Nickel add-on, unpack the 'base' archive in the root of the o
 ## How can I contribute?
 If you like this project and want to improve it in some way, feel free to fork this repository or [one of the subprojects this organization hosts](https://github.com/Kobo-InkBox), then make a [pull request](https://github.com/Kobo-InkBox/inkbox/pulls). I'll be happy to review it.
 <br><br>
-On the other hand, if you don't have the appropriate coding skills or just want to help in some way, feel free to [make a donation here](https://liberapay.com/tux-linux/). I'm a student and motivation has been the only thing that has helped me maintain this project for the last months. Developing an entire operating system on my own was not an easy task. I have time, but I like to spend it wisely.
+On the other hand, if you don't have the appropriate coding skills or just want to help in some way, feel free to [make a donation here](https://liberapay.com/tux-linux/) or at my [PayPal account](nicomailloux@icloud.com). I'm a student and motivation has been the only thing that has helped me maintain this project for the last months. Developing an entire operating system on my own was not an easy task. I have time, but I like to spend it wisely.
