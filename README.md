@@ -22,7 +22,7 @@ InkBox features:
 - Lock screen/passcode
 - User-friendly experience
 ## How do I install InkBox?
-You can download precompiled OS/binaries [here](http://pkgs.kobox.fermino.me/bundles/inkbox/native/) and standard Nickel add-ons are available [there](http://pkgs.kobox.fermino.me/bundles/inkbox/nickel/), although support for them has been stopped until further notice. Huge thanks to [@fermino](https://github.com/fermino) for providing free hosting.
+You can download precompiled OS/binaries [here](http://23.163.0.39/bundles/inkbox/native/) and standard Nickel add-ons are available [there](http://23.163.0.39/bundles/inkbox/nickel/), although support for them has been stopped until further notice. Huge thanks to [@fermino](https://github.com/fermino) for providing free hosting.
 <br>
 On PC, use [balenaEtcher](https://www.balena.io/etcher/) to flash the InkBox image file to the Kobo's SD card.
 
