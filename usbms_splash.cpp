@@ -126,11 +126,16 @@ void usbms_splash::usbms_launch()
                 proc->waitForFinished();
                 proc->deleteLater();
 
+                // Restarting USBNet
                 // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet)
                 string_writeconfig("/opt/ibxd", "usbnet_start\n");
                 QThread::msleep(1000);
+                // Mounting onboard storage
                 string_writeconfig("/opt/ibxd", "onboard_mount\n");
                 QThread::msleep(1000);
+                // Checking for updates
+                string_writeconfig("/opt/ibxd", "update_inkbox_restart");
+                QThread::msleep(2500);
 
                 quit_restart();
             }
