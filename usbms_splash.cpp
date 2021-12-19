@@ -134,7 +134,7 @@ void usbms_splash::usbms_launch()
                 string_writeconfig("/opt/ibxd", "onboard_mount\n");
                 QThread::msleep(1000);
                 // Checking for updates
-                string_writeconfig("/opt/ibxd", "update_inkbox_restart");
+                string_writeconfig("/opt/ibxd", "update_inkbox_restart\n");
                 QThread::msleep(2500);
 
                 quit_restart();
