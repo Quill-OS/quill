@@ -675,7 +675,10 @@ reader::reader(QWidget *parent) :
                 }
             }
         } );
-        t->start();
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val != "emu\n") {
+            t->start();
+        }
     }
 
     // Pages number info label

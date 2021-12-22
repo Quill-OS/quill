@@ -58,20 +58,23 @@ int main(int argc, char *argv[])
         global::reader::startUsbmsPrompt = false;
 
         // Checking if battery level is critical; if true (and if it is not charging), then display a "Please charge your eReader" splash and power off.
-        if(isBatteryCritical() == true) {
-            string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-            if(checkconfig_str_val == "Charging\n") {
-                ;
-            }
-            else {
-                global::battery::showCriticalBatteryAlert = true;
-                QApplication a(argc, argv);
-                alert w;
+        string_checkconfig_ro("/opt/inkbox_device");
+        if(checkconfig_str_val != "emu\n") {
+            if(isBatteryCritical() == true) {
+                string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
+                if(checkconfig_str_val == "Charging\n") {
+                    ;
+                }
+                else {
+                    global::battery::showCriticalBatteryAlert = true;
+                    QApplication a(argc, argv);
+                    alert w;
 
-                const QScreen* screen = qApp->primaryScreen();
-                w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
-                w.show();
-                return a.exec();
+                    const QScreen* screen = qApp->primaryScreen();
+                    w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
+                    w.show();
+                    return a.exec();
+                }
             }
         }
 
