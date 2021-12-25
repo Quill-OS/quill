@@ -87,7 +87,7 @@ MainWindow::MainWindow(QWidget *parent)
         wifiIconWidth = sW / 22.5;
         wifiIconHeight = sH / 22.5;
     }
-    else if(checkconfig_str_val == "n613\n") {
+    else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "emu\n") {
         stdIconWidth = sW / 12.5;
         stdIconHeight = sH / 12.5;
         brightnessIconWidth = sW / 24.5;

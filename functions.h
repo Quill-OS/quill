@@ -10,6 +10,7 @@
 #include <regex>
 #include <QThread>
 #include <QTimer>
+#include <QDebug>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -513,7 +514,7 @@ namespace {
                 defaultEpubPageHeight = 425;
                 defaultEpubPageWidth = 425;
             }
-            if(checkconfig_str_val == "n613\n") {
+            if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "emu\n") {
                 defaultEpubPageHeight = 450;
                 defaultEpubPageWidth = 450;
             }
@@ -528,7 +529,7 @@ namespace {
                 defaultPdfPageHeight = 750;
                 defaultPdfPageWidth = 550;
             }
-            else if(checkconfig_str_val == "n613\n") {
+            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "emu\n") {
                 defaultPdfPageHeight = 974;
                 defaultPdfPageWidth = 708;
             }
