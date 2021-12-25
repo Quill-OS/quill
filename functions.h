@@ -291,12 +291,18 @@ namespace {
     }
     void get_battery_level() {
         QFile batt_level_file("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity");
-        batt_level_file.open(QIODevice::ReadOnly);
-        batt_level = batt_level_file.readAll();
-        batt_level = batt_level.trimmed();
-        batt_level_int = batt_level.toInt();
-        batt_level = batt_level.append("%");
-        batt_level_file.close();
+        if(batt_level_file.exists()) {
+            batt_level_file.open(QIODevice::ReadOnly);
+            batt_level = batt_level_file.readAll();
+            batt_level = batt_level.trimmed();
+            batt_level_int = batt_level.toInt();
+            batt_level = batt_level.append("%");
+            batt_level_file.close();
+        }
+        else {
+            batt_level_int = 100;
+            batt_level = "100%";
+        }
     }
     void writeconfig(std::string file, std::string config) {
         std::ofstream fhandler;

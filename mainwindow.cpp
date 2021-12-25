@@ -328,10 +328,7 @@ MainWindow::MainWindow(QWidget *parent)
             }
         }
     } );
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val != "emu\n") {
-        batteryWatchdog->start();
-    }
+    batteryWatchdog->start();
 
     // USB mass storage prompt
     QTimer *usbmsPrompt = new QTimer(this);
