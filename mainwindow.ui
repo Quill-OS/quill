@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>649</width>
+    <width>706</width>
     <height>601</height>
    </rect>
   </property>
@@ -34,7 +34,10 @@
        <widget class="QLabel" name="batteryLabel">
         <property name="font">
          <font>
+          <family>Inter</family>
+          <pointsize>11</pointsize>
           <weight>75</weight>
+          <italic>false</italic>
           <bold>true</bold>
          </font>
         </property>
@@ -91,7 +94,11 @@
        <widget class="QLabel" name="inkboxLabel">
         <property name="font">
          <font>
+          <family>Inter</family>
           <pointsize>11</pointsize>
+          <weight>50</weight>
+          <italic>false</italic>
+          <bold>false</bold>
          </font>
         </property>
         <property name="text">
@@ -120,8 +127,10 @@
        <widget class="QLabel" name="timeLabel">
         <property name="font">
          <font>
+          <family>Inter</family>
           <pointsize>11</pointsize>
           <weight>75</weight>
+          <italic>false</italic>
           <bold>true</bold>
          </font>
         </property>
@@ -201,7 +210,10 @@
            <widget class="QLabel" name="quoteHeadingLabel">
             <property name="font">
              <font>
+              <family>Inter</family>
+              <pointsize>11</pointsize>
               <weight>75</weight>
+              <italic>false</italic>
               <bold>true</bold>
              </font>
             </property>
@@ -264,7 +276,10 @@
                 <property name="font">
                  <font>
                   <family>Chivo</family>
+                  <pointsize>11</pointsize>
+                  <weight>50</weight>
                   <italic>true</italic>
+                  <bold>false</bold>
                  </font>
                 </property>
                 <property name="text">
@@ -310,7 +325,10 @@
             <property name="font">
              <font>
               <family>Chivo</family>
+              <pointsize>11</pointsize>
+              <weight>50</weight>
               <italic>true</italic>
+              <bold>false</bold>
              </font>
             </property>
             <property name="text">
@@ -432,19 +450,57 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="pushButton">
-      <property name="font">
-       <font>
-        <weight>75</weight>
-        <bold>true</bold>
-       </font>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <property name="bottomMargin">
+       <number>0</number>
       </property>
-      <property name="text">
-       <string>
+      <item row="0" column="4">
+       <widget class="QPushButton" name="libraryButton">
+        <property name="font">
+         <font>
+          <family>Inter</family>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <italic>false</italic>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>
+Library
+</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="pushButton">
+        <property name="font">
+         <font>
+          <family>Inter</family>
+          <pointsize>11</pointsize>
+          <weight>75</weight>
+          <italic>false</italic>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>
 Reader
 </string>
-      </property>
-     </widget>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="Line" name="line_10">
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
     <item>
      <widget class="Line" name="line_5">
@@ -471,8 +527,10 @@ Reader
         </property>
         <property name="font">
          <font>
+          <family>Inter</family>
           <pointsize>10</pointsize>
           <weight>75</weight>
+          <italic>false</italic>
           <bold>true</bold>
          </font>
         </property>
@@ -503,8 +561,10 @@ Search
         </property>
         <property name="font">
          <font>
+          <family>Inter</family>
           <pointsize>10</pointsize>
           <weight>75</weight>
+          <italic>false</italic>
           <bold>true</bold>
          </font>
         </property>
@@ -535,8 +595,10 @@ Settings
         </property>
         <property name="font">
          <font>
+          <family>Inter</family>
           <pointsize>10</pointsize>
           <weight>75</weight>
+          <italic>false</italic>
           <bold>true</bold>
          </font>
         </property>
@@ -573,8 +635,10 @@ Apps
         </property>
         <property name="font">
          <font>
+          <family>Inter</family>
           <pointsize>10</pointsize>
           <weight>75</weight>
+          <italic>false</italic>
           <bold>true</bold>
          </font>
         </property>

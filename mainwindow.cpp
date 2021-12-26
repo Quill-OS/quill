@@ -34,13 +34,15 @@ MainWindow::MainWindow(QWidget *parent)
     ui->quitBtn->setProperty("type", "borderless");
     ui->searchBtn->setProperty("type", "borderless");
     ui->pushButton->setProperty("type", "borderless");
+    ui->libraryButton->setProperty("type", "borderless");
     ui->brightnessBtn->setProperty("type", "borderless");
     ui->homeBtn->setProperty("type", "borderless");
     ui->wifiBtn->setProperty("type", "borderless");
 
     ui->settingsBtn->setText("");
     ui->appsBtn->setText("");
-    ui->pushButton->setText("");
+    ui->pushButton->setText("\t\tReader");
+    ui->libraryButton->setText("\t\tLibrary");
     ui->quitBtn->setText("");
     ui->searchBtn->setText("");
     ui->brightnessBtn->setText("");
@@ -111,6 +113,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Setting icons up
     ui->pushButton->setIcon(QIcon(":/resources/book.png"));
     ui->pushButton->setIconSize(QSize(stdIconWidth, stdIconHeight));
+    ui->libraryButton->setIcon(QIcon(":/resources/online-library.png"));
+    ui->libraryButton->setIconSize(QSize(stdIconWidth, stdIconHeight));
     ui->searchBtn->setIcon(QIcon(":/resources/search.png"));
     ui->searchBtn->setIconSize(QSize(stdIconWidth, stdIconHeight));
     ui->settingsBtn->setIcon(QIcon(":/resources/settings.png"));
