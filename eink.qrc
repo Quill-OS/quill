@@ -69,5 +69,6 @@
         <file>resources/error.png</file>
         <file>resources/alert-triangle.png</file>
         <file>resources/online-library.png</file>
+        <file>resources/online-library-inverted.png</file>
     </qresource>
 </RCC>

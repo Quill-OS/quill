@@ -21,6 +21,7 @@ SOURCES += \
     hourglassanimationwidget.cpp \
     koboxappsdialog.cpp \
     koboxsettings.cpp \
+    librarywidget.cpp \
     main.cpp \
     mainwindow.cpp \
     otamanager.cpp \
@@ -49,6 +50,7 @@ HEADERS += \
     hourglassanimationwidget.h \
     koboxappsdialog.h \
     koboxsettings.h \
+    librarywidget.h \
     mainwindow.h \
     otamanager.h \
     quit.h \
@@ -75,6 +77,7 @@ FORMS += \
     hourglassanimationwidget.ui \
     koboxappsdialog.ui \
     koboxsettings.ui \
+    librarywidget.ui \
     mainwindow.ui \
     otamanager.ui \
     quit.ui \

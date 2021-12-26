@@ -720,11 +720,16 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
     if(global::mainwindow::tabSwitcher::settingsChooserWidgetCreated == true) {
         settingsChooserWindow->deleteLater();
     }
+    if(global::mainwindow::tabSwitcher::libraryWidgetCreated == true) {
+        libraryWidgetWindow->deleteLater();
+    }
 
     global::mainwindow::tabSwitcher::appsWidgetCreated = false;
     global::mainwindow::tabSwitcher::settingsChooserWidgetCreated = false;
     global::mainwindow::tabSwitcher::appsWidgetSelected = false;
     global::mainwindow::tabSwitcher::settingsChooserWidgetSelected = false;
+    global::mainwindow::tabSwitcher::libraryWidgetCreated = false;
+    global::mainwindow::tabSwitcher::libraryWidgetSelected = false;
 
     resetIcons();
     setBatteryIcon();
@@ -739,6 +744,8 @@ void MainWindow::resetIcons() {
     ui->appsBtn->setIcon(QIcon(":/resources/apps.png"));
     ui->settingsBtn->setStyleSheet("background: white");
     ui->settingsBtn->setIcon(QIcon(":/resources/settings.png"));
+    ui->libraryButton->setStyleSheet("background: white");
+    ui->libraryButton->setIcon(QIcon(":/resources/online-library.png"));
 }
 
 void MainWindow::setBatteryIcon() {
@@ -1029,4 +1036,28 @@ void MainWindow::checkForUpdate() {
 
 void MainWindow::openEncfsEncryptDialog() {
 
+}
+
+void MainWindow::on_libraryButton_clicked()
+{
+    resetWindow(false);
+    if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
+        ui->libraryButton->setStyleSheet("background: black; color: white");
+        ui->libraryButton->setIcon(QIcon(":/resources/online-library-inverted.png"));
+
+        // Create widget
+        libraryWidgetWindow = new libraryWidget();
+        ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
+        global::mainwindow::tabSwitcher::libraryWidgetCreated = true;
+
+        // Switch tab
+        ui->stackedWidget->setCurrentIndex(3);
+        global::mainwindow::tabSwitcher::libraryWidgetSelected = true;
+
+        // Repaint
+        this->repaint();
+    }
+    else {
+        ;
+    }
 }

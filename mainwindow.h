@@ -17,6 +17,7 @@
 #include "virtualkeypad.h"
 #include "toast.h"
 #include "otamanager.h"
+#include "librarywidget.h"
 
 using namespace std;
 
@@ -90,22 +91,25 @@ private slots:
     void checkForUpdate();
     void openEncfsEncryptDialog();
 
+    void on_libraryButton_clicked();
+
 private:
-    Ui::MainWindow *ui;
-    settingsChooser *settingsChooserWindow;
-    apps *appsWindow;
-    reader *readerWindow;
-    quit *quitWindow;
-    alert *alertWindow;
-    usbms_splash *usbmsWindow;
-    brightnessDialog *brightnessDialogWindow;
-    generalDialog *generalDialogWindow;
-    koboxSettings *koboxSettingsWindow;
-    koboxAppsDialog *koboxAppsDialogWindow;
-    textwidget *textwidgetWindow;
-    virtualkeypad *keypadWidget;
-    toast *toastWindow;
-    otaManager *otaManagerWindow;
+    Ui::MainWindow * ui;
+    settingsChooser * settingsChooserWindow;
+    apps * appsWindow;
+    reader * readerWindow;
+    quit * quitWindow;
+    alert * alertWindow;
+    usbms_splash * usbmsWindow;
+    brightnessDialog * brightnessDialogWindow;
+    generalDialog * generalDialogWindow;
+    koboxSettings * koboxSettingsWindow;
+    koboxAppsDialog * koboxAppsDialogWindow;
+    textwidget * textwidgetWindow;
+    virtualkeypad * keypadWidget;
+    toast * toastWindow;
+    otaManager * otaManagerWindow;
+    libraryWidget * libraryWidgetWindow;
 };
 
 #endif // MAINWINDOW_H
