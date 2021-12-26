@@ -2,6 +2,7 @@
 #define LIBRARYWIDGET_H
 
 #include <QWidget>
+#include <toast.h>
 
 namespace Ui {
 class libraryWidget;
@@ -16,7 +17,13 @@ public:
     ~libraryWidget();
 
 private:
-    Ui::libraryWidget *ui;
+    Ui::libraryWidget * ui;
+    toast * toastWindow;
+
+private slots:
+    void setupView();
+    void showToast(QString messageToDisplay);
+
 };
 
 #endif // LIBRARYWIDGET_H
