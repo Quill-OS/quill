@@ -13,7 +13,6 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui(new Ui::libraryWidget)
 {
     ui->setupUi(this);
-    ui->recentlyAddedLabel->hide();
     ui->booksStackedWidget->hide();
 
     QString family;
@@ -121,7 +120,6 @@ libraryWidget::~libraryWidget()
 }
 
 void libraryWidget::setupView() {
-    ui->recentlyAddedLabel->show();
     ui->booksStackedWidget->show();
 
     stdIconWidth = sW / 5.5;
