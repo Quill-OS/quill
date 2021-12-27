@@ -257,6 +257,18 @@ namespace {
             checkconfig_str_val = "";
         }
     }
+    QString readFile(QString file) {
+        if(QFile::exists(file)) {
+            QFile fileToRead(file);
+            fileToRead.open(QIODevice::ReadOnly);
+            QTextStream in (&fileToRead);
+            QString content = in.readAll();
+            return content;
+        }
+        else {
+            return NULL;
+        }
+    }
     void brightness_writeconfig(int value) {
         std::ofstream fhandler;
         fhandler.open(".config/03-brightness/config");

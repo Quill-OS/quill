@@ -15,12 +15,17 @@ class libraryWidget : public QWidget
 public:
     explicit libraryWidget(QWidget *parent = nullptr);
     ~libraryWidget();
+    float sH;
+    float sW;
+    float stdIconHeight;
+    float stdIconWidth;
 
 private:
     Ui::libraryWidget * ui;
     toast * toastWindow;
 
 private slots:
+    void syncCatalog();
     void setupView();
     void showToast(QString messageToDisplay);
 
