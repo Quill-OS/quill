@@ -347,7 +347,6 @@ QSlider::handle:horizontal::focus {
 QScrollBar {
     background: white;
     border: 5px solid lightGrey;
-    border-radius: 10px;
 }
 
 QScrollBar:vertical {
@@ -386,6 +385,7 @@ QProgressBar {
 QProgressBar::chunk {
     background: black;
     color: white;
+    border-radius: 7px;
 }
 
 
