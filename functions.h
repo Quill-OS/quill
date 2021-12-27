@@ -102,6 +102,13 @@ namespace global {
         inline bool disableStorageEncryptionDialog;
         inline bool errorNoBooksInDropboxDialog;
     }
+    namespace library {
+        inline unsigned long bookId;
+        inline bool isLatestBook;
+        inline int latestBookNumber;
+        inline QString bookTitle;
+        inline bool librarySearchDialog;
+    }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705;

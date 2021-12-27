@@ -29,16 +29,21 @@ void searchResultsWidget::setListViewContents(QStringList searchResults) {
 
 void searchResultsWidget::on_openBtn_clicked()
 {
-    index = ui->listView->currentIndex();
-    itemText = index.data(Qt::DisplayRole).toString();
-    if(!itemText.isEmpty()) {
-        emit openBookFile(itemText, true);
-        global::keyboard::searchDialog = false;
-        global::keyboard::keyboardDialog = false;
-        searchResultsWidget::close();
+    if(global::library::librarySearchDialog == true) {
+
     }
     else {
-        QMessageBox::critical(this, tr("Invalid argument"), tr("Please select a search result."));
+        index = ui->listView->currentIndex();
+        itemText = index.data(Qt::DisplayRole).toString();
+        if(!itemText.isEmpty()) {
+            emit openBookFile(itemText, true);
+            global::keyboard::searchDialog = false;
+            global::keyboard::keyboardDialog = false;
+            searchResultsWidget::close();
+        }
+        else {
+            QMessageBox::critical(this, tr("Invalid argument"), tr("Please select a search result."));
+        }
     }
 }
 

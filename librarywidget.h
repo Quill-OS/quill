@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <toast.h>
+#include <bookinfodialog.h>
 
 namespace Ui {
 class libraryWidget;
@@ -23,6 +24,7 @@ public:
 private:
     Ui::libraryWidget * ui;
     toast * toastWindow;
+    bookInfoDialog * bookInfoDialogWindow;
 
 private slots:
     void syncCatalog();

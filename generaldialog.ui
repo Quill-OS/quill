@@ -223,6 +223,11 @@
                  <string>Local storage</string>
                 </property>
                </item>
+               <item>
+                <property name="text">
+                 <string>Online library</string>
+                </property>
+               </item>
               </widget>
              </item>
             </layout>

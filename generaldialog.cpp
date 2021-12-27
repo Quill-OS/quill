@@ -47,6 +47,9 @@ generalDialog::generalDialog(QWidget *parent) :
         else if(checkconfig_str_val == "Local storage") {
             ui->searchComboBox->setCurrentIndex(1);
         }
+        else if(checkconfig_str_val == "Online library") {
+            ui->searchComboBox->setCurrentIndex(2);
+        }
         else {
             ui->searchComboBox->setCurrentIndex(0);
         }
@@ -198,6 +201,7 @@ void generalDialog::on_cancelBtn_clicked()
             global::forbidOpenSearchDialog = true;
             global::keyboard::keyboardDialog = false;
             global::keyboard::keyboardText = "";
+            global::library::librarySearchDialog = false;
         }
         else if(global::keyboard::vncDialog == true) {
             global::keyboard::vncDialog = false;
@@ -339,6 +343,9 @@ void generalDialog::on_okBtn_clicked()
                         keyboardWidget->clearLineEdit();
                         global::keyboard::keyboardText = "";
                     }
+                }
+                else if(ui->searchComboBox->currentText() == "Online library") {
+
                 }
                 else {
                     ;

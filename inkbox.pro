@@ -13,6 +13,7 @@ QMAKE_CXXFLAGS += -Wno-unused-function -Wno-unused-parameter
 SOURCES += \
     alert.cpp \
     apps.cpp \
+    bookinfodialog.cpp \
     brightnessdialog.cpp \
     calendarapp.cpp \
     dictionarywidget.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
 HEADERS += \
     alert.h \
     apps.h \
+    bookinfodialog.h \
     brightnessdialog.h \
     calendarapp.h \
     dictionarywidget.h \
@@ -69,6 +71,7 @@ HEADERS += \
 FORMS += \
     alert.ui \
     apps.ui \
+    bookinfodialog.ui \
     brightnessdialog.ui \
     calendarapp.ui \
     dictionarywidget.ui \

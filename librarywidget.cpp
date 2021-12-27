@@ -228,13 +228,23 @@ QString libraryWidget::getTitle(int bookNumber) {
     QString fullTitlePath = "/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/";
     fullTitlePath = fullTitlePath.append(bookNumberQstr);
     fullTitlePath = fullTitlePath.append("/title_full");
-    qDebug() << fullTitlePath;
 
     return readFile(fullTitlePath);
 }
 
 void libraryWidget::openLatestBookInfoDialog(int bookNumber, QString title) {
+    QString idPath = "/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/";
+    idPath = idPath.append(bookNumber);
+    idPath = idPath.append("/id");
+    global::library::isLatestBook = true;
+    global::library::bookId = readFile(idPath).toULong();
+    global::library::latestBookNumber = bookNumber;
+    global::library::bookTitle = title;
 
+    bookInfoDialogWindow = new bookInfoDialog(this);
+    bookInfoDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    bookInfoDialogWindow->setModal(true);
+    bookInfoDialogWindow->show();
 }
 
 
