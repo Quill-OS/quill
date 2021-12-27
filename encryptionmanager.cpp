@@ -29,12 +29,12 @@ encryptionManager::encryptionManager(QWidget *parent) :
     ui->successDescriptionLabel->setStyleSheet("font-size: 9pt");
     ui->failureLabel->setStyleSheet("font-size: 15pt");
     ui->failureDescriptionLabel->setStyleSheet("font-size: 9pt");
-    ui->setupContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
-    ui->setupAbortBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
-    ui->exitSuccessBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
-    ui->failureContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
-    ui->acceptBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
-    ui->usbmsBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold");
+    ui->setupContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
+    ui->setupAbortBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
+    ui->exitSuccessBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
+    ui->failureContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
+    ui->acceptBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
+    ui->usbmsBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
     ui->warningLabel->setStyleSheet("font-size: 15pt");
     ui->warningDescriptionLabel->setStyleSheet("font-size: 9pt");
 
