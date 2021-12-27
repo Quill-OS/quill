@@ -29,6 +29,8 @@ private slots:
     void setupView();
     void showToast(QString messageToDisplay);
 
+    void on_previousBtn_clicked();
+    void on_nextBtn_clicked();
 };
 
 #endif // LIBRARYWIDGET_H

@@ -16,9 +16,33 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui->recentlyAddedLabel->hide();
     ui->booksStackedWidget->hide();
 
-    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
-    QFont crimson_italic(family);
+    QString family;
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Bold.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    {
+        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-BoldItalic.ttf");
+        family = QFontDatabase::applicationFontFamilies(id).at(0);
+    }
+    QFont crimson(family);
+
+    ui->previousBtn->setText("");
+    ui->previousBtn->setProperty("type", "borderless");
+    ui->nextBtn->setText("");
+    ui->nextBtn->setProperty("type", "borderless");
+    ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
+    ui->nextBtn->setIcon(QIcon(":/resources/chevron-right.png"));
+    ui->pageLabel->setText("1 <i>of</i> 2");
+    ui->pageLabel->setFont(QFont("Source Serif Pro"));
 
     ui->book1Btn->setText("");
     ui->book2Btn->setText("");
@@ -28,38 +52,46 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui->book6Btn->setText("");
     ui->book7Btn->setText("");
     ui->book8Btn->setText("");
-    ui->book1Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book2Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book3Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book4Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book5Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book6Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book7Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book8Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book9Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book10Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book11Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book12Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book13Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book14Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book15Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book16Label->setStyleSheet("font-size: 9pt; font-style: italic");
-    ui->book1Label->setFont(crimson_italic);
-    ui->book2Label->setFont(crimson_italic);
-    ui->book3Label->setFont(crimson_italic);
-    ui->book4Label->setFont(crimson_italic);
-    ui->book5Label->setFont(crimson_italic);
-    ui->book6Label->setFont(crimson_italic);
-    ui->book7Label->setFont(crimson_italic);
-    ui->book8Label->setFont(crimson_italic);
-    ui->book9Label->setFont(crimson_italic);
-    ui->book10Label->setFont(crimson_italic);
-    ui->book11Label->setFont(crimson_italic);
-    ui->book12Label->setFont(crimson_italic);
-    ui->book13Label->setFont(crimson_italic);
-    ui->book14Label->setFont(crimson_italic);
-    ui->book15Label->setFont(crimson_italic);
-    ui->book16Label->setFont(crimson_italic);
+    ui->book9Btn->setText("");
+    ui->book10Btn->setText("");
+    ui->book11Btn->setText("");
+    ui->book12Btn->setText("");
+    ui->book13Btn->setText("");
+    ui->book14Btn->setText("");
+    ui->book15Btn->setText("");
+    ui->book16Btn->setText("");
+    ui->book1Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book2Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book3Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book4Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book5Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book6Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book7Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book8Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book9Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book10Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book11Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book12Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book13Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book14Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book15Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book16Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    ui->book1Label->setFont(crimson);
+    ui->book2Label->setFont(crimson);
+    ui->book3Label->setFont(crimson);
+    ui->book4Label->setFont(crimson);
+    ui->book5Label->setFont(crimson);
+    ui->book6Label->setFont(crimson);
+    ui->book7Label->setFont(crimson);
+    ui->book8Label->setFont(crimson);
+    ui->book9Label->setFont(crimson);
+    ui->book10Label->setFont(crimson);
+    ui->book11Label->setFont(crimson);
+    ui->book12Label->setFont(crimson);
+    ui->book13Label->setFont(crimson);
+    ui->book14Label->setFont(crimson);
+    ui->book15Label->setFont(crimson);
+    ui->book16Label->setFont(crimson);
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -179,3 +211,17 @@ void libraryWidget::syncCatalog() {
     } );
     syncCheckTimer->start();
 }
+
+void libraryWidget::on_previousBtn_clicked()
+{
+    ui->booksStackedWidget->setCurrentIndex(0);
+    ui->pageLabel->setText("1 <i>of</i> 2");
+}
+
+
+void libraryWidget::on_nextBtn_clicked()
+{
+    ui->booksStackedWidget->setCurrentIndex(1);
+    ui->pageLabel->setText("2 <i>of</i> 2");
+}
+

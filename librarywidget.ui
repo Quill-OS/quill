@@ -65,7 +65,7 @@
          </property>
          <item>
           <layout class="QGridLayout" name="gridLayout_2">
-           <item row="4" column="3">
+           <item row="4" column="2">
             <widget class="QLabel" name="book7Label">
              <property name="text">
               <string>Book 7</string>
@@ -78,34 +78,21 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="3">
+           <item row="1" column="2">
             <widget class="QPushButton" name="book3Btn">
              <property name="text">
               <string>Book 3</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="4">
+           <item row="1" column="3">
             <widget class="QPushButton" name="book4Btn">
              <property name="text">
               <string>Book 4</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="3">
+           <item row="2" column="2">
             <widget class="QLabel" name="book3Label">
              <property name="text">
               <string>Book 3</string>
@@ -118,14 +105,14 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="1">
+           <item row="3" column="0">
             <widget class="QPushButton" name="book5Btn">
              <property name="text">
               <string>Book 5</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="2" column="0">
             <widget class="QLabel" name="book1Label">
              <property name="text">
               <string>Book 1</string>
@@ -138,14 +125,14 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="2">
+           <item row="3" column="1">
             <widget class="QPushButton" name="book6Btn">
              <property name="text">
               <string>Book 6</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="1">
+           <item row="4" column="0">
             <widget class="QLabel" name="book5Label">
              <property name="text">
               <string>Book 5</string>
@@ -158,14 +145,14 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="2">
+           <item row="1" column="1">
             <widget class="QPushButton" name="book2Btn">
              <property name="text">
               <string>Book 2</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="2">
+           <item row="2" column="1">
             <widget class="QLabel" name="book2Label">
              <property name="text">
               <string>Book 2</string>
@@ -178,7 +165,7 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="4">
+           <item row="2" column="3">
             <widget class="QLabel" name="book4Label">
              <property name="text">
               <string>Book 4</string>
@@ -191,14 +178,14 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="3">
+           <item row="3" column="2">
             <widget class="QPushButton" name="book7Btn">
              <property name="text">
               <string>Book 7</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="4">
+           <item row="4" column="3">
             <widget class="QLabel" name="book8Label">
              <property name="text">
               <string>Book 8</string>
@@ -211,21 +198,21 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
+           <item row="1" column="0">
             <widget class="QPushButton" name="book1Btn">
              <property name="text">
               <string>Book 1</string>
              </property>
             </widget>
            </item>
-           <item row="3" column="4">
+           <item row="3" column="3">
             <widget class="QPushButton" name="book8Btn">
              <property name="text">
               <string>Book 8</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="2">
+           <item row="4" column="1">
             <widget class="QLabel" name="book6Label">
              <property name="text">
               <string>Book 6</string>
@@ -237,19 +224,6 @@
               <bool>true</bool>
              </property>
             </widget>
-           </item>
-           <item row="3" column="5">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </item>
@@ -286,6 +260,9 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item row="1" column="3">
@@ -295,6 +272,9 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -327,6 +307,9 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item row="2" column="0">
@@ -350,6 +333,9 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -375,6 +361,9 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item row="3" column="1">
@@ -384,6 +373,9 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -395,6 +387,9 @@
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
             </widget>
            </item>
            <item row="3" column="3">
@@ -404,6 +399,9 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -438,6 +436,60 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="6" column="0">
+      <layout class="QGridLayout" name="gridLayout_4">
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="previousBtn">
+         <property name="text">
+          <string>Previous</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="4">
+        <widget class="QPushButton" name="nextBtn">
+         <property name="text">
+          <string>Next</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="pageLabel">
+         <property name="text">
+          <string>1 of 2</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
