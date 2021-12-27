@@ -28,9 +28,27 @@ private slots:
     void syncCatalog();
     void setupView();
     void showToast(QString messageToDisplay);
+    QString getTitle(int bookNumber);
+    void openLatestBookInfoDialog(int bookNumber, QString title);
 
     void on_previousBtn_clicked();
     void on_nextBtn_clicked();
+    void on_book1Btn_clicked();
+    void on_book2Btn_clicked();
+    void on_book3Btn_clicked();
+    void on_book4Btn_clicked();
+    void on_book5Btn_clicked();
+    void on_book6Btn_clicked();
+    void on_book7Btn_clicked();
+    void on_book8Btn_clicked();
+    void on_book9Btn_clicked();
+    void on_book10Btn_clicked();
+    void on_book11Btn_clicked();
+    void on_book12Btn_clicked();
+    void on_book13Btn_clicked();
+    void on_book14Btn_clicked();
+    void on_book15Btn_clicked();
+    void on_book16Btn_clicked();
 };
 
 #endif // LIBRARYWIDGET_H

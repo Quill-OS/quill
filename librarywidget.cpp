@@ -225,3 +225,128 @@ void libraryWidget::on_nextBtn_clicked()
     ui->pageLabel->setText("2 <i>of</i> 2");
 }
 
+QString libraryWidget::getTitle(int bookNumber) {
+    QString bookNumberQstr = QString::number(bookNumber);
+    QString fullTitlePath = "/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/";
+    fullTitlePath = fullTitlePath.append(bookNumberQstr);
+    fullTitlePath = fullTitlePath.append("/title_full");
+    qDebug() << fullTitlePath;
+
+    return readFile(fullTitlePath);
+}
+
+void libraryWidget::openLatestBookInfoDialog(int bookNumber, QString title) {
+
+}
+
+
+void libraryWidget::on_book1Btn_clicked()
+{
+    QString title = getTitle(1);
+    openLatestBookInfoDialog(1, title);
+}
+
+void libraryWidget::on_book2Btn_clicked()
+{
+    QString title = getTitle(2);
+    openLatestBookInfoDialog(2, title);
+}
+
+
+void libraryWidget::on_book3Btn_clicked()
+{
+    QString title = getTitle(3);
+    openLatestBookInfoDialog(3, title);
+}
+
+
+void libraryWidget::on_book4Btn_clicked()
+{
+    QString title = getTitle(4);
+    openLatestBookInfoDialog(4, title);
+}
+
+
+void libraryWidget::on_book5Btn_clicked()
+{
+    QString title = getTitle(5);
+    openLatestBookInfoDialog(5, title);
+}
+
+
+void libraryWidget::on_book6Btn_clicked()
+{
+    QString title = getTitle(6);
+    openLatestBookInfoDialog(6, title);
+}
+
+
+void libraryWidget::on_book7Btn_clicked()
+{
+    QString title = getTitle(7);
+    openLatestBookInfoDialog(7, title);
+}
+
+
+void libraryWidget::on_book8Btn_clicked()
+{
+    QString title = getTitle(8);
+    openLatestBookInfoDialog(8, title);
+}
+
+
+void libraryWidget::on_book9Btn_clicked()
+{
+    QString title = getTitle(9);
+    openLatestBookInfoDialog(9, title);
+}
+
+
+void libraryWidget::on_book10Btn_clicked()
+{
+    QString title = getTitle(10);
+    openLatestBookInfoDialog(10, title);
+}
+
+
+void libraryWidget::on_book11Btn_clicked()
+{
+    QString title = getTitle(11);
+    openLatestBookInfoDialog(11, title);
+}
+
+
+void libraryWidget::on_book12Btn_clicked()
+{
+    QString title = getTitle(12);
+    openLatestBookInfoDialog(12, title);
+}
+
+
+void libraryWidget::on_book13Btn_clicked()
+{
+    QString title = getTitle(13);
+    openLatestBookInfoDialog(13, title);
+}
+
+
+void libraryWidget::on_book14Btn_clicked()
+{
+    QString title = getTitle(14);
+    openLatestBookInfoDialog(14, title);
+}
+
+
+void libraryWidget::on_book15Btn_clicked()
+{
+    QString title = getTitle(15);
+    openLatestBookInfoDialog(15, title);
+}
+
+
+void libraryWidget::on_book16Btn_clicked()
+{
+    QString title = getTitle(16);
+    openLatestBookInfoDialog(16, title);
+}
+

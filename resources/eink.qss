@@ -39,6 +39,11 @@ QPushButton[type="bw"]
     border: none;
 }
 
+QPushButton
+{
+    border-radius: 10px;
+}
+
 QLabel[type="mangainfolabel"]
 {
     font-weight: bold;
@@ -178,7 +183,9 @@ QLineEdit, QSpinBox, QDoubleSpinBox
   background-color:white;
   border:1px solid black;
   padding: 2px;
+  border-radius: 10px;
 }
+
 QLineEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus
 {
   border: 1px solid black;
@@ -207,7 +214,7 @@ QComboBox
 {
   background-color:white;
   border: 1.5px solid black;
-  border-radius:5px;
+  border-radius:10px;
   padding-top: 3px;
   padding-right: 0px;
   padding-bottom: 3px;
@@ -224,6 +231,7 @@ QComboBox:focus
 QComboBox::drop-down
 {
   border-width:1px;
+  border-radius:10px;
 }
 QComboBox::down-arrow {
   image:url(:/down-arrow.png);
@@ -318,7 +326,7 @@ QToolButton:pressed {
 
 QSlider::groove:horizontal {
      border: 1.5px solid black;
-     border-radius: 0px;
+     border-radius: 10px;
      height: 15px;
      background: white;
      margin: 0px 0;
@@ -326,11 +334,10 @@ QSlider::groove:horizontal {
 QSlider::handle:horizontal {
      background: black;
      border: 1.5px solid black;
-     border-radius: 0px;
+     border-radius: 10px;
      height: 15px;
      width: 25px;
      margin: 0px 0;
-     border-radius: 9px;
 }
 
 QSlider::handle:horizontal::focus {
@@ -338,8 +345,9 @@ QSlider::handle:horizontal::focus {
 }
 
 QScrollBar {
-background: white;
-border: 5px solid lightGrey;
+    background: white;
+    border: 5px solid lightGrey;
+    border-radius: 10px;
 }
 
 QScrollBar:vertical {
@@ -363,11 +371,13 @@ QScrollBar::sub-line {
 
 QDialog {
     border: 5px solid black;
+    border-radius: 10px;
     background: white;
 }
 
 QProgressBar {
     border: 1.5px solid black;
+    border-radius: 10px;
     text-align: center;
     background: white;
     color: rgb(160, 160, 160);
