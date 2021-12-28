@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QStringListModel>
+#include "bookinfodialog.h"
 
 namespace Ui {
 class searchResultsWidget;
@@ -18,6 +19,7 @@ public:
     void setListViewContents(QStringList searchResults);
     QModelIndex index;
     QString itemText;
+    bool libraryResults;
 
 private slots:
     void on_openBtn_clicked();
@@ -25,6 +27,7 @@ private slots:
 
 private:
     Ui::searchResultsWidget *ui;
+    bookInfoDialog * bookInfoDialogWindow;
 
 signals:
     void openBookFile(QString book, bool relativePath);

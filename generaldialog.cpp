@@ -345,7 +345,40 @@ void generalDialog::on_okBtn_clicked()
                     }
                 }
                 else if(ui->searchComboBox->currentText() == "Online library") {
+                    string_writeconfig("/inkbox/searchComboBoxFunction", "Online library");
+                    string_writeconfig("/inkbox/gutenberg_search_request", global::keyboard::keyboardText.toStdString());
+                    string_writeconfig("/opt/ibxd", "gutenberg_search\n");
+                    while(true) {
+                        if(QFile::exists("/inkbox/gutenberg-search/search_done")) {
+                            if(checkconfig("/inkbox/gutenberg-search/search_done") == true) {
+                                QStringList searchResults = readFile("/inkbox/gutenberg-search/search_results_titles").split("\n");
+                                global::library::libraryResults = true;
 
+                                for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {
+                                    QWidget * widget = ui->mainStackedWidget->widget(i);
+                                    ui->mainStackedWidget->removeWidget(widget);
+                                    widget->deleteLater();
+                                }
+                                ui->topStackedWidget->setVisible(false);
+                                ui->stackedWidget->setVisible(false);
+                                searchResultsWidgetWindow = new searchResultsWidget(this);
+                                searchResultsWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+                                global::forbidOpenSearchDialog = true;
+                                connect(searchResultsWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
+                                searchResultsWidgetWindow->setListViewContents(searchResults);
+                                ui->mainStackedWidget->insertWidget(1, searchResultsWidgetWindow);
+                                break;
+                            }
+                            else {
+                                global::toast::delay = 3000;
+                                emit showToast("No results found");
+                                keyboardWidget->clearLineEdit();
+                                global::keyboard::keyboardText = "";
+                                break;
+                            }
+                            QFile::remove("/inkbox/gutenberg-search/search_done");
+                        }
+                    }
                 }
                 else {
                     ;

@@ -9,6 +9,13 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
     ui(new Ui::bookInfoDialog)
 {
     ui->setupUi(this);
+
+    // Stylesheet
+    QFile stylesheetFile(":/resources/eink.qss");
+    stylesheetFile.open(QFile::ReadOnly);
+    this->setStyleSheet(stylesheetFile.readAll());
+    stylesheetFile.close();
+
     ui->closeBtn->setProperty("type", "borderless");
     ui->closeBtn->setText("");
     ui->closeBtn->setIcon(QIcon(":/resources/close.png"));

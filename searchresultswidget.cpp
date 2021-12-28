@@ -9,11 +9,17 @@ searchResultsWidget::searchResultsWidget(QWidget *parent) :
     ui(new Ui::searchResultsWidget)
 {
     ui->setupUi(this);
+
     ui->listView->setStyleSheet("font-size: 10pt");
     ui->backBtn->setProperty("type", "borderless");
     ui->backBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->openBtn->setProperty("type", "borderless");
     ui->openBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
+
+    if(global::library::libraryResults == true) {
+        global::library::libraryResults = false;
+        libraryResults = true;
+    }
 }
 
 searchResultsWidget::~searchResultsWidget()
@@ -29,8 +35,20 @@ void searchResultsWidget::setListViewContents(QStringList searchResults) {
 
 void searchResultsWidget::on_openBtn_clicked()
 {
-    if(global::library::librarySearchDialog == true) {
+    if(libraryResults == true) {
+        // Get currently selected row number
+        int selectedRow = ui->listView->currentIndex().row();
+        // So that row 0 becomes row 1
+        selectedRow = selectedRow++;
 
+        // TODO: Find book ID and pass it on to bookInfoDialog, then retrieve cover.jpg for display
+
+        global::keyboard::searchDialog = false;
+        global::keyboard::keyboardDialog = false;
+
+        bookInfoDialog * bookInfoDialogWindow = new bookInfoDialog();
+        bookInfoDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        bookInfoDialogWindow->show();
     }
     else {
         index = ui->listView->currentIndex();

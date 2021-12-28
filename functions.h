@@ -108,6 +108,7 @@ namespace global {
         inline int latestBookNumber;
         inline QString bookTitle;
         inline bool librarySearchDialog;
+        inline bool libraryResults;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
