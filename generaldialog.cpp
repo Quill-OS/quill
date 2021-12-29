@@ -367,6 +367,7 @@ void generalDialog::on_okBtn_clicked()
                                 connect(searchResultsWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
                                 searchResultsWidgetWindow->setListViewContents(searchResults);
                                 ui->mainStackedWidget->insertWidget(1, searchResultsWidgetWindow);
+                                QFile::remove("/inkbox/gutenberg-search/search_done");
                                 break;
                             }
                             else {
@@ -374,9 +375,9 @@ void generalDialog::on_okBtn_clicked()
                                 emit showToast("No results found");
                                 keyboardWidget->clearLineEdit();
                                 global::keyboard::keyboardText = "";
+                                QFile::remove("/inkbox/gutenberg-search/search_done");
                                 break;
                             }
-                            QFile::remove("/inkbox/gutenberg-search/search_done");
                         }
                     }
                 }

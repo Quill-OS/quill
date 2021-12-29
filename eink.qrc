@@ -70,5 +70,6 @@
         <file>resources/alert-triangle.png</file>
         <file>resources/online-library.png</file>
         <file>resources/online-library-inverted.png</file>
+        <file>resources/cover_unavailable.png</file>
     </qresource>
 </RCC>

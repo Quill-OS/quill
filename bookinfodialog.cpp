@@ -45,7 +45,31 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
         global::library::bookTitle = "";
     }
     else {
+        ui->bookTitleLabel->setText(global::library::bookTitle);
+        global::library::bookTitle = "";
 
+        QDir dictdir;
+        dictdir.mkpath("/inkbox/gutenberg");
+        string_writeconfig("/inkbox/gutenberg/bookid", QString::number(global::library::bookId).toStdString());
+        string_writeconfig("/opt/ibxd", "gutenberg_get_cover\n");
+        while(true) {
+            if(QFile::exists("/inkbox/gutenberg/getCoverDone")) {
+                if(checkconfig("/inkbox/gutenberg/getCoverDone") == true) {
+                    QPixmap coverPixmap("/inkbox/gutenberg/book_cover.jpg");
+                    QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+                    ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
+                    QFile::remove("/inkbox/gutenberg/getCoverDone");
+                    break;
+                }
+                else {
+                    QPixmap coverPixmap(":/resources/cover_unavailable.png");
+                    QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+                    ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
+                    QFile::remove("/inkbox/gutenberg/getCoverDone");
+                    break;
+                }
+            }
+        }
     }
 
     // Centering dialog

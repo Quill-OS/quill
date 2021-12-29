@@ -39,16 +39,32 @@ void searchResultsWidget::on_openBtn_clicked()
         // Get currently selected row number
         int selectedRow = ui->listView->currentIndex().row();
         // So that row 0 becomes row 1
-        selectedRow = selectedRow++;
+        selectedRow = selectedRow + 1;
+        QString selectedRowQstr = QString::number(selectedRow);
 
-        // TODO: Find book ID and pass it on to bookInfoDialog, then retrieve cover.jpg for display
+        QString prog ("sed");
+        QStringList args;
+        args << "-n" << selectedRowQstr + "p" << "/inkbox/gutenberg-search/search_results_ids";
+        QProcess *proc = new QProcess();
+        proc->start(prog, args);
+        proc->waitForFinished();
+        QString bookIdQstr = proc->readAllStandardOutput();
+        proc->deleteLater();
 
-        global::keyboard::searchDialog = false;
-        global::keyboard::keyboardDialog = false;
+        unsigned long bookId = bookIdQstr.toULong();
+        global::library::bookId = bookId;
+
+        index = ui->listView->currentIndex();
+        itemText = index.data(Qt::DisplayRole).toString();
+        global::library::bookTitle = itemText;
 
         bookInfoDialog * bookInfoDialogWindow = new bookInfoDialog();
         bookInfoDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
         bookInfoDialogWindow->show();
+
+        global::keyboard::searchDialog = false;
+        global::keyboard::keyboardDialog = false;
+        searchResultsWidget::close();
     }
     else {
         index = ui->listView->currentIndex();
