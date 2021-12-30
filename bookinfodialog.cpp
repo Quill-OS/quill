@@ -117,11 +117,13 @@ void bookInfoDialog::waitForBookFetch() {
             if(checkconfig("/inkbox/gutenberg/getBookDone") == true) {
                 emit closeIndefiniteToast();
                 emit showToast("Download successful");
+                QFile::remove("/inkbox/gutenberg/getBookDone");
                 break;
             }
             else {
                 emit closeIndefiniteToast();
                 emit showToast("Download failed");
+                QFile::remove("/inkbox/gutenberg/getBookDone");
                 break;
             }
         }
