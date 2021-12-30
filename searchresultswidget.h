@@ -24,6 +24,8 @@ public:
 private slots:
     void on_openBtn_clicked();
     void on_backBtn_clicked();
+    void showToastNative(QString messageToDisplay);
+    void closeIndefiniteToastNative();
 
 private:
     Ui::searchResultsWidget *ui;
@@ -31,6 +33,9 @@ private:
 
 signals:
     void openBookFile(QString book, bool relativePath);
+    void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
+    void hideDialog();
 };
 
 #endif // SEARCHRESULTSWIDGET_H

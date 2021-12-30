@@ -862,6 +862,7 @@ void MainWindow::setupSearchDialog() {
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
         connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
         connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+        connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
         connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
         generalDialogWindow->show();
     }

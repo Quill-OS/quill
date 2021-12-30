@@ -365,6 +365,9 @@ void generalDialog::on_okBtn_clicked()
                                 searchResultsWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
                                 global::forbidOpenSearchDialog = true;
                                 connect(searchResultsWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
+                                connect(searchResultsWidgetWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
+                                connect(searchResultsWidgetWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
+                                connect(searchResultsWidgetWindow, SIGNAL(hideDialog()), SLOT(hide()));
                                 searchResultsWidgetWindow->setListViewContents(searchResults);
                                 ui->mainStackedWidget->insertWidget(1, searchResultsWidgetWindow);
                                 QFile::remove("/inkbox/gutenberg-search/search_done");
@@ -573,4 +576,12 @@ void generalDialog::startOtaUpdate(bool wasDownloadSuccessful) {
 
 void generalDialog::openBookFileNative(QString book, bool relativePath) {
     emit openBookFile(book, relativePath);
+}
+
+void generalDialog::showToastNative(QString messageToDisplay) {
+    emit showToast(messageToDisplay);
+}
+
+void generalDialog::closeIndefiniteToastNative() {
+    emit closeIndefiniteToast();
 }

@@ -21,6 +21,12 @@ public:
 
 private slots:
     void on_closeBtn_clicked();
+    void on_getBtn_clicked();
+    void waitForBookFetch();
+
+signals:
+    void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
 
 private:
     Ui::bookInfoDialog *ui;

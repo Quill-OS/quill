@@ -55,6 +55,8 @@ private slots:
     void connectToNetworkSlot();
     void startOtaUpdate(bool wasDownloadSuccessful);
     void openBookFileNative(QString book, bool relativePath);
+    void showToastNative(QString messageToDisplay);
+    void closeIndefiniteToastNative();
 
 private:
     Ui::generalDialog *ui;

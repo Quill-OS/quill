@@ -242,6 +242,7 @@ void libraryWidget::openLatestBookInfoDialog(int bookNumber, QString title) {
     global::library::bookTitle = title;
 
     bookInfoDialogWindow = new bookInfoDialog(this);
+    connect(bookInfoDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
     bookInfoDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     bookInfoDialogWindow->setModal(true);
     bookInfoDialogWindow->show();

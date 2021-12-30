@@ -32,9 +32,15 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
 
     if(global::library::isLatestBook == true) {
         QString bookNumberQstr = QString::number(global::library::latestBookNumber);
+
         QString coverPath = "/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/";
         coverPath = coverPath.append(bookNumberQstr);
         coverPath = coverPath.append("/cover.jpg");
+
+        QString idPath = "/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/";
+        idPath = idPath.append(bookNumberQstr);
+        idPath = idPath.append("/id");
+        global::library::bookId = readFile(idPath).toULong();
 
         QPixmap coverPixmap(coverPath);
         QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
@@ -48,8 +54,8 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
         ui->bookTitleLabel->setText(global::library::bookTitle);
         global::library::bookTitle = "";
 
-        QDir dictdir;
-        dictdir.mkpath("/inkbox/gutenberg");
+        QDir gutenbergDir;
+        gutenbergDir.mkpath("/inkbox/gutenberg");
         string_writeconfig("/inkbox/gutenberg/bookid", QString::number(global::library::bookId).toStdString());
         string_writeconfig("/opt/ibxd", "gutenberg_get_cover\n");
         while(true) {
@@ -90,3 +96,34 @@ void bookInfoDialog::on_closeBtn_clicked()
     bookInfoDialog::close();
 }
 
+
+void bookInfoDialog::on_getBtn_clicked()
+{
+    QDir gutenbergDir;
+    gutenbergDir.mkpath("/inkbox/gutenberg");
+    string_writeconfig("/inkbox/gutenberg/bookid", QString::number(global::library::bookId).toStdString());
+    string_writeconfig("/opt/ibxd", "gutenberg_get_book\n");
+
+    global::toast::modalToast = true;
+    global::toast::indefiniteToast = true;
+    emit showToast("Downloading");
+
+    QTimer::singleShot(500, this, SLOT(waitForBookFetch()));
+}
+
+void bookInfoDialog::waitForBookFetch() {
+    while(true) {
+        if(QFile::exists("/inkbox/gutenberg/getBookDone")) {
+            if(checkconfig("/inkbox/gutenberg/getBookDone") == true) {
+                emit closeIndefiniteToast();
+                emit showToast("Download successful");
+                break;
+            }
+            else {
+                emit closeIndefiniteToast();
+                emit showToast("Download failed");
+                break;
+            }
+        }
+    }
+}

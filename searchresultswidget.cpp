@@ -10,6 +10,9 @@ searchResultsWidget::searchResultsWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Variables
+    libraryResults = false;
+
     ui->listView->setStyleSheet("font-size: 10pt");
     ui->backBtn->setProperty("type", "borderless");
     ui->backBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
@@ -19,6 +22,7 @@ searchResultsWidget::searchResultsWidget(QWidget *parent) :
     if(global::library::libraryResults == true) {
         global::library::libraryResults = false;
         libraryResults = true;
+        ui->openBtn->setText("Get info");
     }
 }
 
@@ -36,35 +40,47 @@ void searchResultsWidget::setListViewContents(QStringList searchResults) {
 void searchResultsWidget::on_openBtn_clicked()
 {
     if(libraryResults == true) {
-        // Get currently selected row number
-        int selectedRow = ui->listView->currentIndex().row();
-        // So that row 0 becomes row 1
-        selectedRow = selectedRow + 1;
-        QString selectedRowQstr = QString::number(selectedRow);
-
-        QString prog ("sed");
-        QStringList args;
-        args << "-n" << selectedRowQstr + "p" << "/inkbox/gutenberg-search/search_results_ids";
-        QProcess *proc = new QProcess();
-        proc->start(prog, args);
-        proc->waitForFinished();
-        QString bookIdQstr = proc->readAllStandardOutput();
-        proc->deleteLater();
-
-        unsigned long bookId = bookIdQstr.toULong();
-        global::library::bookId = bookId;
-
+        qDebug() << "Got there";
         index = ui->listView->currentIndex();
         itemText = index.data(Qt::DisplayRole).toString();
-        global::library::bookTitle = itemText;
+        if(!itemText.isEmpty()) {
+            // Get currently selected row number
+            int selectedRow = ui->listView->currentIndex().row();
+            // So that row 0 becomes row 1
+            selectedRow = selectedRow + 1;
+            QString selectedRowQstr = QString::number(selectedRow);
 
-        bookInfoDialog * bookInfoDialogWindow = new bookInfoDialog();
-        bookInfoDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-        bookInfoDialogWindow->show();
+            QString prog ("sed");
+            QStringList args;
+            args << "-n" << selectedRowQstr + "p" << "/inkbox/gutenberg-search/search_results_ids";
+            QProcess *proc = new QProcess();
+            proc->start(prog, args);
+            proc->waitForFinished();
+            QString bookIdQstr = proc->readAllStandardOutput();
+            proc->deleteLater();
 
-        global::keyboard::searchDialog = false;
-        global::keyboard::keyboardDialog = false;
-        searchResultsWidget::close();
+            unsigned long bookId = bookIdQstr.toULong();
+            global::library::bookId = bookId;
+
+            index = ui->listView->currentIndex();
+            itemText = index.data(Qt::DisplayRole).toString();
+            global::library::bookTitle = itemText;
+
+            bookInfoDialog * bookInfoDialogWindow = new bookInfoDialog();
+            connect(bookInfoDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
+            connect(bookInfoDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
+            connect(bookInfoDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(close()));
+            bookInfoDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+            bookInfoDialogWindow->setModal(true);
+            emit hideDialog();
+            bookInfoDialogWindow->show();
+
+            global::keyboard::searchDialog = false;
+            global::keyboard::keyboardDialog = false;
+        }
+        else {
+            QMessageBox::critical(this, tr("Invalid argument"), tr("Please select a search result."));
+        }
     }
     else {
         index = ui->listView->currentIndex();
@@ -88,3 +104,10 @@ void searchResultsWidget::on_backBtn_clicked()
     searchResultsWidget::close();
 }
 
+void searchResultsWidget::showToastNative(QString messageToDisplay) {
+    emit showToast(messageToDisplay);
+}
+
+void searchResultsWidget::closeIndefiniteToastNative() {
+    emit closeIndefiniteToast();
+}
