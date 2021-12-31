@@ -39,7 +39,6 @@ reader::reader(QWidget *parent) :
     ui->setupUi(this);
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
-    ui->hideOptionsBtn->setProperty("type", "borderless");
     ui->optionsBtn->setProperty("type", "borderless");
     ui->brightnessDecBtn->setProperty("type", "borderless");
     ui->brightnessIncBtn->setProperty("type", "borderless");
@@ -59,6 +58,7 @@ reader::reader(QWidget *parent) :
     ui->gotoBtn->setProperty("type", "borderless");
     ui->increaseScaleBtn->setProperty("type", "borderless");
     ui->decreaseScaleBtn->setProperty("type", "borderless");
+    ui->quitBtn->setProperty("type", "borderless");
 
     // Icons
     ui->alignLeftBtn->setText("");
@@ -91,6 +91,8 @@ reader::reader(QWidget *parent) :
     ui->increaseScaleBtn->setIcon(QIcon(":/resources/zoom-in.png"));
     ui->decreaseScaleBtn->setText("");
     ui->decreaseScaleBtn->setIcon(QIcon(":/resources/zoom-out.png"));
+    ui->quitBtn->setText("");
+    ui->quitBtn->setIcon(QIcon(":/resources/power.png"));
 
     // Style misc.
     ui->bookInfoLabel->setStyleSheet("font-style: italic");
@@ -266,7 +268,6 @@ reader::reader(QWidget *parent) :
         ui->nextBtn->setStyleSheet("padding: 13.5px");
         ui->previousBtn->setStyleSheet("padding: 13.5px");
         ui->optionsBtn->setStyleSheet("padding: 13.5px");
-        ui->hideOptionsBtn->setStyleSheet("padding: 13.5px");
     }
     ui->sizeValueLabel->setStyleSheet("font-size: 9pt");
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
@@ -276,7 +277,6 @@ reader::reader(QWidget *parent) :
     ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
 
     // Hiding the menubar + definition widget + brightness widget + buttons bar widget
-    ui->hideOptionsBtn->hide();
     ui->menuWidget->setVisible(false);
     ui->brightnessWidget->setVisible(false);
     ui->menuBarWidget->setVisible(false);
@@ -1051,14 +1051,18 @@ void reader::refreshScreen() {
 
 void reader::on_optionsBtn_clicked()
 {
-    menubar_show();
-    this->repaint();
-}
-
-void reader::on_hideOptionsBtn_clicked()
-{
-    menubar_hide();
-    this->repaint();
+    if(menubar_shown == true) {
+        menubar_hide();
+        ui->optionsBtn->setStyleSheet("background: white; color: black");
+        this->repaint();
+        menubar_shown = false;
+    }
+    else {
+        menubar_show();
+        ui->optionsBtn->setStyleSheet("background: black; color: white");
+        this->repaint();
+        menubar_shown = true;
+    }
 }
 
 void reader::on_brightnessDecBtn_clicked()
@@ -1304,8 +1308,6 @@ void reader::menubar_show() {
         }
     }
 
-    ui->hideOptionsBtn->show();
-    ui->optionsBtn->hide();
     ui->menuWidget->setVisible(true);
     if(is_pdf == false) {
         ui->menuBarWidget->setVisible(true);
@@ -1339,8 +1341,7 @@ void reader::menubar_hide() {
         // Safety measure
         ui->brightnessWidget->setVisible(false);
     }
-    ui->hideOptionsBtn->hide();
-    ui->optionsBtn->show();
+
     if(is_pdf == false) {
         ui->menuBarWidget->setVisible(false);
     }
@@ -1370,13 +1371,11 @@ void reader::menubar_hide() {
 void reader::wordwidget_show() {
     if(menubar_shown == true) {
         menubar_hide();
-        ui->hideOptionsBtn->hide();
         ui->optionsBtn->hide();
         ui->line->hide();
         ui->wordWidget->setVisible(true);
     }
     else {
-        ui->hideOptionsBtn->hide();
         ui->optionsBtn->hide();
         ui->line->hide();
         ui->wordWidget->setVisible(true);
@@ -1385,7 +1384,6 @@ void reader::wordwidget_show() {
 
 void reader::wordwidget_hide() {
     ui->wordWidget->setVisible(false);
-    ui->hideOptionsBtn->hide();
     ui->optionsBtn->show();
     ui->line->show();
     wordwidgetLock = false;
@@ -2092,4 +2090,11 @@ void reader::openBookFileNative(QString book, bool relativePath) {
     else {
         showToast("Not supported");
     }
+}
+
+void reader::on_quitBtn_clicked()
+{
+    quitWindow = new quit();
+    quitWindow->setAttribute(Qt::WA_DeleteOnClose);
+    quitWindow->showFullScreen();
 }

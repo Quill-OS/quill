@@ -5,6 +5,7 @@
 #include "alert.h"
 #include "generaldialog.h"
 #include "toast.h"
+#include "quit.h"
 
 #include <QWidget>
 #include <QGraphicsScene>
@@ -125,7 +126,6 @@ private slots:
     void on_nextBtn_clicked();
     void on_previousBtn_clicked();
     void on_optionsBtn_clicked();
-    void on_hideOptionsBtn_clicked();
     void on_brightnessDecBtn_clicked();
     void on_brightnessIncBtn_clicked();
     void on_aboutBtn_clicked();
@@ -157,6 +157,7 @@ private slots:
     void on_increaseScaleBtn_clicked();
     void openBookFileNative(QString book, bool relativePath);
     void showToast(QString messageToDisplay);
+    void on_quitBtn_clicked();
 
 signals:
     void openBookFile(QString book, bool relativePath);
@@ -166,6 +167,7 @@ private:
     alert * alertWindow;
     generalDialog * generalDialogWindow;
     toast * toastWindow;
+    quit * quitWindow;
     QGraphicsScene * graphicsScene;
 };
 
