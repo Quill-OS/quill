@@ -180,6 +180,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->recentBooksLabel->hide();
 
+    // Deleting/Hiding "Library" button if device is not WiFi-able
+    if(global::device::isWifiAble == false && readFile("/opt/inkbox_device") != "emu\n") {
+        ui->libraryButton->deleteLater();
+        ui->line_10->deleteLater();
+    }
+
     // Stylesheet
     QFile stylesheetFile(":/resources/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
