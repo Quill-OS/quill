@@ -378,8 +378,8 @@ MainWindow::MainWindow(QWidget *parent)
     // If new files are found in /mnt/onboard/onboard/encfs-dropbox, ask if user wants to encrypt them
     if(checkconfig(".config/18-encrypted_storage/status") == true) {
         QDir encfsDropboxDir("/mnt/onboard/onboard/encfs-dropbox");
-        if(encfsDropboxDir.isEmpty()) {
-            QTimer::singleShot(1000, this, SLOT(openEncfsEncryptDialog()));
+        if(!encfsDropboxDir.isEmpty()) {
+            QTimer::singleShot(1000, this, SLOT(openEncfsRepackDialog()));
         }
     }
 
@@ -1041,8 +1041,11 @@ void MainWindow::checkForUpdate() {
     }
 }
 
-void MainWindow::openEncfsEncryptDialog() {
-
+void MainWindow::openEncfsRepackDialog() {
+    global::encfs::repackDialog = true;
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    generalDialogWindow->show();
 }
 
 void MainWindow::on_libraryButton_clicked()

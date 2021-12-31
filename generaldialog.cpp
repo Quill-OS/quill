@@ -159,6 +159,13 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->bodyLabel->setText("Please put books in the 'encfs-dropbox' folder to repack your encrypted storage.");
         this->adjustSize();
     }
+    else if(global::encfs::repackDialog == true) {
+        ui->headerLabel->setText("Information");
+        ui->okBtn->setText("Proceed");
+        ui->cancelBtn->setText("Not now");
+        ui->bodyLabel->setText("New files have been found in the 'encfs-dropbox' folder. Would you want to repack your encrypted storage with them?");
+        this->adjustSize();
+    }
     else {
         // We shouldn't be there ;)
         ;
@@ -215,6 +222,9 @@ void generalDialog::on_cancelBtn_clicked()
         }
         else if(global::encfs::errorNoBooksInDropboxDialog == true) {
             global::encfs::errorNoBooksInDropboxDialog = false;
+        }
+        else if(global::encfs::repackDialog == true) {
+            global::encfs::repackDialog = false;
         }
         generalDialog::close();
     }
@@ -455,6 +465,11 @@ void generalDialog::on_okBtn_clicked()
         emit disableStorageEncryption();
         this->close();
     }
+    if(global::encfs::repackDialog == true) {
+        global::encfs::repackDialog = false;
+        string_writeconfig("/external_root/run/encfs_repack", "true");
+        quit_restart();
+    }
 }
 void generalDialog::on_acceptBtn_clicked()
 {
@@ -584,4 +599,14 @@ void generalDialog::showToastNative(QString messageToDisplay) {
 
 void generalDialog::closeIndefiniteToastNative() {
     emit closeIndefiniteToast();
+}
+
+void generalDialog::quit_restart() {
+    // If existing, cleaning bookconfig_mount mountpoint
+    string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
+
+    // Restarting InkBox
+    QProcess process;
+    process.startDetached("inkbox", QStringList());
+    qApp->quit();
 }

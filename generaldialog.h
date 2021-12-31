@@ -57,6 +57,7 @@ private slots:
     void openBookFileNative(QString book, bool relativePath);
     void showToastNative(QString messageToDisplay);
     void closeIndefiniteToastNative();
+    void quit_restart();
 
 private:
     Ui::generalDialog *ui;

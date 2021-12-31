@@ -101,6 +101,7 @@ namespace global {
         inline bool enableStorageEncryptionDialog;
         inline bool disableStorageEncryptionDialog;
         inline bool errorNoBooksInDropboxDialog;
+        inline bool repackDialog;
     }
     namespace library {
         inline unsigned long bookId;

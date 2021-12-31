@@ -89,7 +89,7 @@ private slots:
     void openBookFile(QString book, bool relativePath);
     void openReaderFramework();
     void checkForUpdate();
-    void openEncfsEncryptDialog();
+    void openEncfsRepackDialog();
 
     void on_libraryButton_clicked();
 
