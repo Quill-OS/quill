@@ -1057,6 +1057,7 @@ void MainWindow::on_libraryButton_clicked()
 
         // Create widget
         libraryWidgetWindow = new libraryWidget();
+        connect(libraryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(resetFullWindow()));
         libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
         ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
         global::mainwindow::tabSwitcher::libraryWidgetCreated = true;
@@ -1071,4 +1072,8 @@ void MainWindow::on_libraryButton_clicked()
     else {
         ;
     }
+}
+
+void MainWindow::resetFullWindow() {
+    resetWindow(true);
 }

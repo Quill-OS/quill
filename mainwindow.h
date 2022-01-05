@@ -53,7 +53,6 @@ public:
     void openLowBatteryDialog();
     void openCriticalBatteryAlertWindow();
     void openUsbmsDialog();
-    void resetWindow(bool resetStackedWidget);
     void resetIcons();
     void setBatteryIcon();
     int testPing();
@@ -90,8 +89,9 @@ private slots:
     void openReaderFramework();
     void checkForUpdate();
     void openEncfsRepackDialog();
-
     void on_libraryButton_clicked();
+    void resetWindow(bool resetStackedWidget);
+    void resetFullWindow();
 
 private:
     Ui::MainWindow * ui;

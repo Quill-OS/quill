@@ -30,6 +30,7 @@ private slots:
     void syncCatalog();
     void setupView();
     void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
     QString getTitle(int bookNumber);
     void openLatestBookInfoDialog(int bookNumber, QString title);
 

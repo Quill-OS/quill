@@ -183,6 +183,11 @@ void libraryWidget::showToast(QString messageToDisplay) {
     toastWindow->show();
 }
 
+void libraryWidget::closeIndefiniteToast() {
+    // Warning: use with caution
+    toastWindow->close();
+}
+
 void libraryWidget::syncCatalog() {
     global::toast::modalToast = true;
     global::toast::indefiniteToast = true;
@@ -202,7 +207,7 @@ void libraryWidget::syncCatalog() {
                 qDebug() << "Gutenberg sync encountered an error";
                 toastWindow->close();
                 showToast("Error");
-                libraryWidget::close();
+                QTimer::singleShot(5000, this, SLOT(close()));
             }
             QFile::remove("/inkbox/gutenbergSyncDone");
         }
@@ -243,6 +248,7 @@ void libraryWidget::openLatestBookInfoDialog(int bookNumber, QString title) {
 
     bookInfoDialogWindow = new bookInfoDialog(this);
     connect(bookInfoDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+    connect(bookInfoDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
     bookInfoDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     bookInfoDialogWindow->setModal(true);
     bookInfoDialogWindow->show();
