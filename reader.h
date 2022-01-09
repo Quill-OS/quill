@@ -12,7 +12,7 @@
 
 using namespace std;
 
-// ePUB scaling
+// ePUB & PDF scaling
 namespace mupdf {
     inline bool convertRelativeValues;
     namespace epub {
@@ -64,6 +64,7 @@ public:
     bool nextdefinition_lock = false;
     bool is_epub = false;
     bool is_pdf = false;
+    bool is_image = false;
     bool parser_ran = false;
     bool filematch_ran = false;
     bool neverRefresh = false;
@@ -121,6 +122,7 @@ public:
     void setCrimsonProFont();
     void setIbarraFont();
     bool pdf_file_match(QString file);
+    bool image_file_match(QString file);
 
 private slots:
     void on_nextBtn_clicked();

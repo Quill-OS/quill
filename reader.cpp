@@ -425,7 +425,7 @@ reader::reader(QWidget *parent) :
     }
 
     // Get text; no need to do it multiple times for ePUB books
-    if(is_epub == false or is_pdf == false) {
+    if(is_epub == false && is_pdf == false && is_image == false) {
         setDefaultWorkDir();
         if(global::reader::globalReadingSettings == false) {
             string_checkconfig_ro(".config/A-page_number/config");
@@ -491,6 +491,11 @@ reader::reader(QWidget *parent) :
         ui->text->setText(epubPageContent);
     }
     else if(is_pdf == true) {
+        ui->text->hide();
+        ui->text->deleteLater();
+        setupPng();
+    }
+    else if(is_image == true) {
         ui->text->hide();
         ui->text->deleteLater();
         setupPng();
@@ -758,8 +763,39 @@ int reader::setup_book(QString book, int i, bool run_parser) {
             filematch_ran = true;
             is_pdf = true;
         }
+        else if(image_file_match(book) == true) {
+            ui->previousBtn->hide();
+            ui->nextBtn->hide();
+            ui->line->hide();
+            ui->line_3->hide();
+            ui->previousBtn->deleteLater();
+            ui->nextBtn->deleteLater();
+            ui->line->deleteLater();
+            ui->line_3->deleteLater();
+
+            string_writeconfig("/tmp/inkboxImagePath", book.toStdString());
+            string_writeconfig("/opt/ibxd", "inkbox_convert_image\n");
+
+            while(true) {
+                if(QFile::exists("/inkbox/convertImageDone")) {
+                    if(checkconfig("/inkbox/convertImageDone") == true) {
+                        filematch_ran = true;
+                        is_image = true;
+                        break;
+                    }
+                    else {
+                        showToast("Failed to display image");
+                        break;
+                    }
+                    QFile::remove("/inkbox/convertImageDone");
+                }
+            }
+
+            filematch_ran = true;
+            is_image = true;
+        }
         else {
-            // This is likely not an ePUB.
+            // This is likely not an ePUB, a PDF or a picture.
             // Copying book specified in the function call
             QFile::copy(book, "/inkbox/book/book.txt");
 
@@ -817,6 +853,10 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         else {
             ;
         }
+    }
+    else if(is_image == true) {
+        // Do nothing, since images won't have pages
+        ;
     }
     else {
         QString parse_prog ("python3");
@@ -1309,17 +1349,24 @@ void reader::menubar_show() {
     }
 
     ui->menuWidget->setVisible(true);
-    if(is_pdf == false) {
+    if(is_pdf == false && is_image == false) {
         ui->menuBarWidget->setVisible(true);
     }
     else {
-        ui->pdfScaleWidget->setVisible(true);
+        if(is_pdf == true) {
+            ui->pdfScaleWidget->setVisible(true);
+        }
         ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        if(is_image == false) {
+            ui->pageWidget->setVisible(true);
+        }
+        else {
+            ui->pageWidget->setVisible(false);
+        }
     }
     ui->buttonsBarWidget->setVisible(true);
     ui->statusBarWidget->setVisible(true);
-    ui->pageWidget->setVisible(true);
 
     string_checkconfig_ro("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
@@ -1342,7 +1389,7 @@ void reader::menubar_hide() {
         ui->brightnessWidget->setVisible(false);
     }
 
-    if(is_pdf == false) {
+    if(is_pdf == false && is_image == false) {
         ui->menuBarWidget->setVisible(false);
     }
     else {
@@ -1587,6 +1634,7 @@ void reader::convertMuPdfVars(int fileType) {
     /* fileType can be:
      * 0: ePUB
      * 1: PDF
+     * 2: Image
     */
     if(fileType == 0) {
         setPageStyle(0);
@@ -1632,6 +1680,9 @@ void reader::convertMuPdfVars(int fileType) {
         }
         mupdf::pdf::pdfPageNumber_qstr = QString::number(mupdf::pdf::pdfPageNumber);
     }
+    else if(fileType == 2) {
+        ;
+    }
     if(mupdf::convertRelativeValues == true) {
         mupdf::convertRelativeValues = false;
     }
@@ -1641,6 +1692,7 @@ void reader::setPageStyle(int fileType) {
     /* fileType can be:
      * 0: ePUB
      * 1: PDF
+     * 2: Image
     */
     if(fileType == 0) {
         // General page size
@@ -1977,16 +2029,29 @@ void reader::setupLocalSettingsEnvironment() {
 }
 
 void reader::setupPng() {
-    // Note: Output file is supposed to be '/run/page.png', but somehow mutool puts it in '/run/page1.png'
-    QPixmap pixmap("/run/page1.png");
-    // Initialized above
-    graphicsScene->clear();
-    graphicsScene->addPixmap(pixmap);
-    // Shrinking scene if item is smaller than previous one
-    QRectF rect = graphicsScene->itemsBoundingRect();
-    graphicsScene->setSceneRect(rect);
-    ui->graphicsView->items().clear();
-    ui->graphicsView->setScene(graphicsScene);
+    if(is_pdf == true) {
+        // Note: Output file is supposed to be '/run/page.png', but somehow mutool puts it in '/run/page1.png'
+        QPixmap pixmap("/run/page1.png");
+        // Initialized above
+        graphicsScene->clear();
+        graphicsScene->addPixmap(pixmap);
+        // Shrinking scene if item is smaller than previous one
+        QRectF rect = graphicsScene->itemsBoundingRect();
+        graphicsScene->setSceneRect(rect);
+        ui->graphicsView->items().clear();
+        ui->graphicsView->setScene(graphicsScene);
+    }
+    else if(is_image == true) {
+        QPixmap pixmap("/run/image.png");
+        // Initialized above
+        graphicsScene->clear();
+        graphicsScene->addPixmap(pixmap);
+        // Shrinking scene if item is smaller than previous one
+        QRectF rect = graphicsScene->itemsBoundingRect();
+        graphicsScene->setSceneRect(rect);
+        ui->graphicsView->items().clear();
+        ui->graphicsView->setScene(graphicsScene);
+    }
 }
 
 bool reader::pdf_file_match(QString file) {
@@ -1998,6 +2063,21 @@ bool reader::pdf_file_match(QString file) {
     }
     else {
         string_writeconfig("/inkbox/bookIsPdf", "false");
+        return false;
+    }
+}
+
+bool reader::image_file_match(QString file) {
+    if(file.right(3) == "png" or file.right(3) == "jpg" or file.right(3) == "bmp" or file.right(3) == "tif") {
+        string_writeconfig("/inkbox/bookIsImage", "true");
+        return true;
+    }
+    else if(file.right(4) == "jpeg" or file.right(4) == "tiff") {
+        string_writeconfig("/inkbox/bookIsImage", "true");
+        return true;
+    }
+    else {
+        string_writeconfig("/inkbox/bookIsImage", "false");
         return false;
     }
 }
