@@ -1358,15 +1358,15 @@ void reader::menubar_show() {
         }
         ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        if(is_image == false) {
-            ui->pageWidget->setVisible(true);
-        }
-        else {
-            ui->pageWidget->setVisible(false);
-        }
     }
     ui->buttonsBarWidget->setVisible(true);
     ui->statusBarWidget->setVisible(true);
+    if(is_image == true) {
+        ui->pageWidget->setVisible(false);
+    }
+    else {
+        ui->pageWidget->setVisible(true);
+    }
 
     string_checkconfig_ro("/opt/inkbox_device");
     if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
