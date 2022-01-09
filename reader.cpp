@@ -2032,6 +2032,7 @@ void reader::setupPng() {
     if(is_pdf == true) {
         // Note: Output file is supposed to be '/run/page.png', but somehow mutool puts it in '/run/page1.png'
         QPixmap pixmap("/run/page1.png");
+        QFile::remove("/run/page1.png");
         // Initialized above
         graphicsScene->clear();
         graphicsScene->addPixmap(pixmap);
@@ -2043,6 +2044,7 @@ void reader::setupPng() {
     }
     else if(is_image == true) {
         QPixmap pixmap("/run/image.png");
+        QFile::remove("/run/image.png");
         // Initialized above
         graphicsScene->clear();
         graphicsScene->addPixmap(pixmap);
