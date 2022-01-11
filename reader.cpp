@@ -1431,6 +1431,7 @@ void reader::wordwidget_show() {
 
 void reader::wordwidget_hide() {
     ui->wordWidget->setVisible(false);
+    ui->optionsBtn->setStyleSheet("background: white; color: black");
     ui->optionsBtn->show();
     ui->line->show();
     wordwidgetLock = false;
