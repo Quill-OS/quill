@@ -182,6 +182,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Deleting/Hiding "Library" button if device is not WiFi-able
     if(global::device::isWifiAble == false && readFile("/opt/inkbox_device") != "emu\n") {
+        ui->libraryButton->hide();
+        ui->line_10->hide();
         ui->libraryButton->deleteLater();
         ui->line_10->deleteLater();
     }
