@@ -378,12 +378,12 @@ void generalDialog::on_okBtn_clicked()
                         syncGutenbergCatalog();
                     }
 
-                    QTimer * syncTimer = new QTimer(this);
-                    syncTimer->setInterval(100);
-                    connect(syncTimer, &QTimer::timeout, [&]() {
+                    QTimer * searchTimer = new QTimer(this);
+                    searchTimer->setInterval(100);
+                    connect(searchTimer, &QTimer::timeout, [&]() {
                         if(noGutenbergSyncToDo == true or (gutenbergSyncDone == true && gutenbergSyncStatus == true)) {
-                            if(syncTimerDone == false) {
-                                syncTimerDone = true;
+                            if(searchTimerDone == false) {
+                                searchTimerDone = true;
                                 string_writeconfig("/inkbox/gutenberg_search_request", global::keyboard::keyboardText.toStdString());
                                 string_writeconfig("/opt/ibxd", "gutenberg_search\n");
                                 global::toast::modalToast = true;
@@ -393,7 +393,7 @@ void generalDialog::on_okBtn_clicked()
                             }
                         }
                     } );
-                    syncTimer->start();
+                    searchTimer->start();
                 }
                 else {
                     ;

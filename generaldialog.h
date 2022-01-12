@@ -40,7 +40,7 @@ public:
     bool gutenbergSyncDone = false;
     bool gutenbergSyncStatus = false;
     bool noGutenbergSyncToDo = false;
-    bool syncTimerDone = false;
+    bool searchTimerDone = false;
     QString vncServerAddress;
     QString vncServerPassword;
     QString vncServerPort;
