@@ -330,7 +330,7 @@ void generalDialog::on_okBtn_clicked()
                         dirIt.next();
                         if(QFileInfo(dirIt.filePath()).isFile()) {
                             QString suffix = QFileInfo(dirIt.filePath()).suffix();
-                            if(suffix == "txt" or suffix == "TXT" or suffix == "epub" or suffix == "pdf" or suffix == "PDF") {
+                            if(suffix == "txt" or suffix == "TXT" or suffix == "epub" or suffix == "EPUB" or suffix == "pdf" or suffix == "PDF" or suffix == "png" or suffix == "PNG" or suffix == "tif" or suffix == "TIF" or suffix == "bmp" or suffix == "BMP" or suffix == "tiff" or suffix == "TIFF" or suffix == "jpg" or suffix == "JPG" or suffix == "jpeg" or suffix == "JPEG") {
                                 if(dirIt.fileName().contains(global::keyboard::keyboardText) == true) {
                                     storageSearchResults.append(dirIt.fileName());
                                 }
