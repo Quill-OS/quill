@@ -62,7 +62,8 @@ private slots:
     void showToastNative(QString messageToDisplay);
     void closeIndefiniteToastNative();
     void quit_restart();
-    void syncCatalog();
+    void syncGutenbergCatalog();
+    void waitForGutenbergSearchDone();
 
 private:
     Ui::generalDialog *ui;

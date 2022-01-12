@@ -368,14 +368,14 @@ void generalDialog::on_okBtn_clicked()
                         unsigned long syncEpoch = readFile("/external_root/opt/storage/gutenberg/last_sync").toULong();
                         unsigned long allowSyncEpoch = syncEpoch + 86400;
                         if(currentEpoch > allowSyncEpoch) {
-                            syncCatalog();
+                            syncGutenbergCatalog();
                         }
                         else {
                             noGutenbergSyncToDo = true;
                         }
                     }
                     else {
-                        syncCatalog();
+                        syncGutenbergCatalog();
                     }
 
                     QTimer * syncTimer = new QTimer(this);
@@ -386,41 +386,10 @@ void generalDialog::on_okBtn_clicked()
                                 syncTimerDone = true;
                                 string_writeconfig("/inkbox/gutenberg_search_request", global::keyboard::keyboardText.toStdString());
                                 string_writeconfig("/opt/ibxd", "gutenberg_search\n");
-                                while(true) {
-                                    if(QFile::exists("/inkbox/gutenberg-search/search_done")) {
-                                        if(checkconfig("/inkbox/gutenberg-search/search_done") == true) {
-                                            QStringList searchResults = readFile("/inkbox/gutenberg-search/search_results_titles").split("\n");
-                                            global::library::libraryResults = true;
-
-                                            for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {
-                                                QWidget * widget = ui->mainStackedWidget->widget(i);
-                                                ui->mainStackedWidget->removeWidget(widget);
-                                                widget->deleteLater();
-                                            }
-                                            ui->topStackedWidget->setVisible(false);
-                                            ui->stackedWidget->setVisible(false);
-                                            searchResultsWidgetWindow = new searchResultsWidget(this);
-                                            searchResultsWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
-                                            global::forbidOpenSearchDialog = true;
-                                            connect(searchResultsWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
-                                            connect(searchResultsWidgetWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
-                                            connect(searchResultsWidgetWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
-                                            connect(searchResultsWidgetWindow, SIGNAL(hideDialog()), SLOT(hide()));
-                                            searchResultsWidgetWindow->setListViewContents(searchResults);
-                                            ui->mainStackedWidget->insertWidget(1, searchResultsWidgetWindow);
-                                            QFile::remove("/inkbox/gutenberg-search/search_done");
-                                            break;
-                                        }
-                                        else {
-                                            global::toast::delay = 3000;
-                                            emit showToast("No results found");
-                                            keyboardWidget->clearLineEdit();
-                                            global::keyboard::keyboardText = "";
-                                            QFile::remove("/inkbox/gutenberg-search/search_done");
-                                            break;
-                                        }
-                                    }
-                                }
+                                global::toast::modalToast = true;
+                                global::toast::indefiniteToast = true;
+                                emit showToast("Searching");
+                                QTimer::singleShot(100, this, SLOT(waitForGutenbergSearchDone()));
                             }
                         }
                     } );
@@ -643,10 +612,10 @@ void generalDialog::quit_restart() {
     qApp->quit();
 }
 
-void generalDialog::syncCatalog() {
+void generalDialog::syncGutenbergCatalog() {
     global::toast::modalToast = true;
     global::toast::indefiniteToast = true;
-    showToast("Sync in progress");
+    emit showToast("Sync in progress");
 
     string_writeconfig("/opt/ibxd", "gutenberg_sync\n");
     QTimer * syncCheckTimer = new QTimer(this);
@@ -664,7 +633,7 @@ void generalDialog::syncCatalog() {
                 gutenbergSyncDone = true;
                 gutenbergSyncStatus = false;
                 emit closeIndefiniteToast();
-                showToast("Error");
+                emit showToast("Error");
                 global::keyboard::searchDialog = false;
                 global::forbidOpenSearchDialog = true;
                 global::keyboard::keyboardDialog = false;
@@ -676,4 +645,44 @@ void generalDialog::syncCatalog() {
         }
     } );
     syncCheckTimer->start();
+}
+
+void generalDialog::waitForGutenbergSearchDone() {
+    while(true) {
+        if(QFile::exists("/inkbox/gutenberg-search/search_done")) {
+            if(checkconfig("/inkbox/gutenberg-search/search_done") == true) {
+                QStringList searchResults = readFile("/inkbox/gutenberg-search/search_results_titles").split("\n");
+                global::library::libraryResults = true;
+
+                for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {
+                    QWidget * widget = ui->mainStackedWidget->widget(i);
+                    ui->mainStackedWidget->removeWidget(widget);
+                    widget->deleteLater();
+                }
+                ui->topStackedWidget->setVisible(false);
+                ui->stackedWidget->setVisible(false);
+                searchResultsWidgetWindow = new searchResultsWidget(this);
+                searchResultsWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+                global::forbidOpenSearchDialog = true;
+                connect(searchResultsWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(restartSearchDialog()));
+                connect(searchResultsWidgetWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
+                connect(searchResultsWidgetWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
+                connect(searchResultsWidgetWindow, SIGNAL(hideDialog()), SLOT(hide()));
+                searchResultsWidgetWindow->setListViewContents(searchResults);
+                ui->mainStackedWidget->insertWidget(1, searchResultsWidgetWindow);
+                QFile::remove("/inkbox/gutenberg-search/search_done");
+                emit closeIndefiniteToast();
+                break;
+            }
+            else {
+                global::toast::delay = 3000;
+                emit showToast("No results found");
+                keyboardWidget->clearLineEdit();
+                global::keyboard::keyboardText = "";
+                QFile::remove("/inkbox/gutenberg-search/search_done");
+                emit closeIndefiniteToast();
+                break;
+            }
+        }
+    }
 }
