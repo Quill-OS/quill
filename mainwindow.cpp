@@ -448,6 +448,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->book3Btn->show();
         ui->book4Btn->show();
 
+        setRecentBooksLabelsTruncateTreshold();
         // Book 1
         string_checkconfig(".config/08-recent_books/1");
         if(checkconfig_str_val == "") {
@@ -455,8 +456,10 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             relative_path = checkconfig_str_val.split("/").last();
-            relative_path.prepend("  ");
-            relative_path.append("  ");
+            if(relative_path.length() > truncateTreshold) {
+                relative_path.truncate(truncateTreshold);
+                relative_path.append(" ...");
+            }
             ui->book1Btn->setText(relative_path);
             existing_recent_books = true;
         }
@@ -467,8 +470,10 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             relative_path = checkconfig_str_val.split("/").last();
-            relative_path.prepend("  ");
-            relative_path.append("  ");
+            if(relative_path.length() > truncateTreshold) {
+                relative_path.truncate(truncateTreshold);
+                relative_path.append(" ...");
+            }
             ui->book2Btn->setText(relative_path);
             existing_recent_books = true;
         }
@@ -479,8 +484,10 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             relative_path = checkconfig_str_val.split("/").last();
-            relative_path.prepend("  ");
-            relative_path.append("  ");
+            if(relative_path.length() > truncateTreshold) {
+                relative_path.truncate(truncateTreshold);
+                relative_path.append(" ...");
+            }
             ui->book3Btn->setText(relative_path);
             existing_recent_books = true;
         }
@@ -491,8 +498,10 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             relative_path = checkconfig_str_val.split("/").last();
-            relative_path.prepend("  ");
-            relative_path.append("  ");
+            if(relative_path.length() > truncateTreshold) {
+                relative_path.truncate(truncateTreshold);
+                relative_path.append(" ...");
+            }
             ui->book4Btn->setText(relative_path);
             existing_recent_books = true;
         }
@@ -1078,4 +1087,16 @@ void MainWindow::on_libraryButton_clicked()
 
 void MainWindow::resetFullWindow() {
     resetWindow(true);
+}
+
+void MainWindow::setRecentBooksLabelsTruncateTreshold() {
+    if(readFile("/opt/inkbox_device") == "n705\n" or readFile("/opt/inkbox_device") == "n905b\n" or readFile("/opt/inkbox_device") == "n905c\n") {
+        truncateTreshold = 12;
+    }
+    else if(readFile("/opt/inkbox_device") == "n613\n" or readFile("/opt/inkbox_device") == "n873\n"){
+        truncateTreshold = 20;
+    }
+    else {
+        truncateTreshold = 12;
+    }
 }

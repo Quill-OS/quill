@@ -43,6 +43,7 @@ public:
     float wifiIconHeight;
     float sW;
     float sH;
+    int truncateTreshold;
 
     bool existing_recent_books = false;
     bool reboot_after_update = false;
@@ -92,6 +93,7 @@ private slots:
     void on_libraryButton_clicked();
     void resetWindow(bool resetStackedWidget);
     void resetFullWindow();
+    void setRecentBooksLabelsTruncateTreshold();
 
 private:
     Ui::MainWindow * ui;
