@@ -1093,13 +1093,23 @@ void reader::on_optionsBtn_clicked()
 {
     if(menubar_shown == true) {
         menubar_hide();
-        ui->optionsBtn->setStyleSheet("background: white; color: black");
+        if(readFile("/opt/inkbox_device") == "n873\n") {
+            ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 13.5px");
+        }
+        else {
+            ui->optionsBtn->setStyleSheet("background: white; color: black");
+        }
         this->repaint();
         menubar_shown = false;
     }
     else {
         menubar_show();
-        ui->optionsBtn->setStyleSheet("background: black; color: white");
+        if(readFile("/opt/inkbox_device") == "n873\n") {
+            ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 13.5px");
+        }
+        else {
+            ui->optionsBtn->setStyleSheet("background: black; color: white");
+        }
         this->repaint();
         menubar_shown = true;
     }
