@@ -32,6 +32,10 @@ However, you can also open a terminal and check the device node of the Kobo's SD
 xzcat inkbox.xz | sudo dd of=/dev/mmcblk0
 ```
 
+## How do I upgrade InkBox?
+To upgrade InkBox, go to http://23.163.0.39/bundles/inkbox/native/update/ and extract the files for your model onto the .inkbox folder on your device. 
+*Note*: InkBox has to be upgraded one version at a time.
+
 If you install the Nickel add-on, unpack the 'base' archive in the root of the onboard storage, not in any subfolder inside it.
 ## How can I contribute?
 If you like this project and want to improve it in some way, feel free to fork this repository or [one of the subprojects this organization hosts](https://github.com/Kobo-InkBox), then make a [pull request](https://github.com/Kobo-InkBox/inkbox/pulls). I'll be happy to review it.
