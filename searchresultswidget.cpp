@@ -40,7 +40,6 @@ void searchResultsWidget::setListViewContents(QStringList searchResults) {
 void searchResultsWidget::on_openBtn_clicked()
 {
     if(libraryResults == true) {
-        qDebug() << "Got there";
         index = ui->listView->currentIndex();
         itemText = index.data(Qt::DisplayRole).toString();
         if(!itemText.isEmpty()) {

@@ -1093,13 +1093,23 @@ void reader::on_optionsBtn_clicked()
 {
     if(menubar_shown == true) {
         menubar_hide();
-        ui->optionsBtn->setStyleSheet("background: white; color: black");
+        if(readFile("/opt/inkbox_device") == "n873\n") {
+            ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 13.5px");
+        }
+        else {
+            ui->optionsBtn->setStyleSheet("background: white; color: black");
+        }
         this->repaint();
         menubar_shown = false;
     }
     else {
         menubar_show();
-        ui->optionsBtn->setStyleSheet("background: black; color: white");
+        if(readFile("/opt/inkbox_device") == "n873\n") {
+            ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 13.5px");
+        }
+        else {
+            ui->optionsBtn->setStyleSheet("background: black; color: white");
+        }
         this->repaint();
         menubar_shown = true;
     }
@@ -1431,6 +1441,7 @@ void reader::wordwidget_show() {
 
 void reader::wordwidget_hide() {
     ui->wordWidget->setVisible(false);
+    ui->optionsBtn->setStyleSheet("background: white; color: black");
     ui->optionsBtn->show();
     ui->line->show();
     wordwidgetLock = false;
@@ -2070,11 +2081,11 @@ bool reader::pdf_file_match(QString file) {
 }
 
 bool reader::image_file_match(QString file) {
-    if(file.right(3) == "png" or file.right(3) == "jpg" or file.right(3) == "bmp" or file.right(3) == "tif") {
+    if(file.right(3) == "png" or file.right(3) == "PNG" or file.right(3) == "jpg" or file.right(3) == "JPG" or file.right(3) == "bmp" or file.right(3) == "BMP" or file.right(3) == "tif" or file.right(3) == "TIF") {
         string_writeconfig("/inkbox/bookIsImage", "true");
         return true;
     }
-    else if(file.right(4) == "jpeg" or file.right(4) == "tiff") {
+    else if(file.right(4) == "jpeg" or file.right(4) == "JPEG" or file.right(4) == "tiff" or file.right(4) == "TIFF") {
         string_writeconfig("/inkbox/bookIsImage", "true");
         return true;
     }

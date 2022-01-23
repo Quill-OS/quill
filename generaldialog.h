@@ -37,6 +37,10 @@ public:
     bool dictionaryResults = false;
     bool vncServerSet = false;
     bool vncPasswordSet = false;
+    bool gutenbergSyncDone = false;
+    bool gutenbergSyncStatus = false;
+    bool noGutenbergSyncToDo = false;
+    bool searchTimerDone = false;
     QString vncServerAddress;
     QString vncServerPassword;
     QString vncServerPort;
@@ -58,6 +62,8 @@ private slots:
     void showToastNative(QString messageToDisplay);
     void closeIndefiniteToastNative();
     void quit_restart();
+    void syncGutenbergCatalog();
+    void waitForGutenbergSearchDone();
 
 private:
     Ui::generalDialog *ui;
