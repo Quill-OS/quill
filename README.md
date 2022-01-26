@@ -35,7 +35,8 @@ xzcat inkbox.xz | dd of=/dev/mmcblk0
 
 ## How do I upgrade InkBox?
 To upgrade InkBox, go to http://23.163.0.39/bundles/inkbox/native/update/ and extract the files for your device onto the `.inkbox` folder in the USB storage partition.
-*Note*: Prior to version 1.6, InkBox had to be upgraded one version at a time. If your device's factory image ships with version 1.5, you need to closely follow the upgrade instructions [here](http://23.163.0.39/bundles/inkbox/native/update/1.6/HOWTO-Update).
+
+**Note**: Prior to version 1.6, InkBox had to be upgraded one version at a time. If your device's factory image ships with version 1.5, you need to closely follow the upgrade instructions [here](http://23.163.0.39/bundles/inkbox/native/update/1.6/HOWTO-Update).
 
 If you install the Nickel add-on, unpack the 'base' archive in the root of the onboard storage, not in any subfolder inside it.
 ## I want to learn more about this!
