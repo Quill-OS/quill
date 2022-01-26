@@ -32,6 +32,7 @@ apps::apps(QWidget *parent) :
         ui->label_5->deleteLater();
         ui->koboxAppsOpenButton->deleteLater();
     }
+    // Hiding VNC viewer button and label if device is not rooted and doesn't have a working Wi-Fi adapter
     if(checkconfig("/external_root/opt/root/rooted") == false) {
         if(global::device::isWifiAble == false or checkconfig("/external_root/boot/flags/X11_START") == false or checkconfig("/external_root/boot/flags/X11_STARTED") == false) {
             ui->vncViewerLabel->hide();
@@ -39,6 +40,13 @@ apps::apps(QWidget *parent) :
             ui->vncViewerLabel->deleteLater();
             ui->vncLaunchBtn->deleteLater();
         }
+    }
+    // Hiding Light Maps if device doesn't have a working Wi-Fi adapter
+    if(global::device::isWifiAble == false and readFile("/opt/inkbox_device") != "emu\n") {
+        ui->label_2->hide();
+        ui->lightmapsLaunchBtn->hide();
+        ui->label_2->deleteLater();
+        ui->lightmapsLaunchBtn->deleteLater();
     }
 
     QFile stylesheetFile(":/resources/eink.qss");
