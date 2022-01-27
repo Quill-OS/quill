@@ -207,6 +207,7 @@ void libraryWidget::syncCatalog() {
                 qDebug() << "Gutenberg sync encountered an error";
                 toastWindow->close();
                 showToast("Error");
+                QFile::remove("/external_root/opt/storage/gutenberg/last_sync");
                 QTimer::singleShot(5000, this, SLOT(close()));
             }
             QFile::remove("/inkbox/gutenbergSyncDone");
