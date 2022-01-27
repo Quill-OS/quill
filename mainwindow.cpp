@@ -181,11 +181,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->recentBooksLabel->hide();
 
     // Deleting/Hiding "Library" button if device is not WiFi-able
+    // NOTE: Using deleteLater() on these elements causes a segmentation fault and aborts the whole program when the Settings, Apps or Home button is pressed. No idea why.
     if(global::device::isWifiAble == false && readFile("/opt/inkbox_device") != "emu\n") {
         ui->libraryButton->hide();
         ui->line_10->hide();
-        ui->libraryButton->deleteLater();
-        ui->line_10->deleteLater();
     }
 
     // Stylesheet
