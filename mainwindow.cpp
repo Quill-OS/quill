@@ -723,7 +723,7 @@ void MainWindow::on_brightnessBtn_clicked()
 void MainWindow::on_homeBtn_clicked()
 {
     global::mainwindow::tabSwitcher::repaint = true;
-    resetFullWindowException = false;
+    resetFullWindowException = true;
     resetWindow(true);
 }
 
