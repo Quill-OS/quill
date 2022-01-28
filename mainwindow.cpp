@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
     global::usbms::launchUsbms = false;
     global::usbms::koboxExportExtensions = false;
     global::mainwindow::tabSwitcher::repaint = true;
+    resetFullWindowException = false;
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -611,6 +612,7 @@ void MainWindow::openCriticalBatteryAlertWindow() {
 
 void MainWindow::on_settingsBtn_clicked()
 {
+    resetFullWindowException = true;
     resetWindow(false);
     if(global::mainwindow::tabSwitcher::settingsChooserWidgetSelected != true) {
         ui->settingsBtn->setStyleSheet("background: black");
@@ -637,6 +639,7 @@ void MainWindow::on_settingsBtn_clicked()
 
 void MainWindow::on_appsBtn_clicked()
 {
+    resetFullWindowException = true;
     resetWindow(false);
     if(global::mainwindow::tabSwitcher::appsWidgetSelected != true) {
         ui->appsBtn->setStyleSheet("background: black");
@@ -720,6 +723,7 @@ void MainWindow::on_brightnessBtn_clicked()
 void MainWindow::on_homeBtn_clicked()
 {
     global::mainwindow::tabSwitcher::repaint = true;
+    resetFullWindowException = false;
     resetWindow(true);
 }
 
@@ -1060,6 +1064,7 @@ void MainWindow::openEncfsRepackDialog() {
 
 void MainWindow::on_libraryButton_clicked()
 {
+    resetFullWindowException = false;
     resetWindow(false);
     if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
         ui->libraryButton->setStyleSheet("background: black; color: white");
@@ -1085,7 +1090,12 @@ void MainWindow::on_libraryButton_clicked()
 }
 
 void MainWindow::resetFullWindow() {
-    resetWindow(true);
+    if(resetFullWindowException == false) {
+        resetWindow(true);
+    }
+    else {
+        resetFullWindowException = false;
+    }
 }
 
 void MainWindow::setRecentBooksLabelsTruncateTreshold() {

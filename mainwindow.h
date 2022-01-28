@@ -47,6 +47,7 @@ public:
 
     bool existing_recent_books = false;
     bool reboot_after_update = false;
+    bool resetFullWindowException;
     int timerTime = 0;
     QString relative_path;
     QString usbmsStatus;
