@@ -32,9 +32,17 @@ apps::apps(QWidget *parent) :
         ui->label_5->deleteLater();
         ui->koboxAppsOpenButton->deleteLater();
     }
-    // Hiding VNC viewer button and label if device is not rooted and doesn't have a working Wi-Fi adapter
+    // Hiding VNC viewer button and label if device is not rooted and doesn't have a working Wi-Fi adapter, or if X11 is not running
     if(checkconfig("/external_root/opt/root/rooted") == false) {
         if(global::device::isWifiAble == false or checkconfig("/external_root/boot/flags/X11_START") == false or checkconfig("/external_root/boot/flags/X11_STARTED") == false) {
+            ui->vncViewerLabel->hide();
+            ui->vncLaunchBtn->hide();
+            ui->vncViewerLabel->deleteLater();
+            ui->vncLaunchBtn->deleteLater();
+        }
+    }
+    else {
+        if(checkconfig("/external_root/boot/flags/X11_START") == false or checkconfig("/external_root/boot/flags/X11_STARTED") == false) {
             ui->vncViewerLabel->hide();
             ui->vncLaunchBtn->hide();
             ui->vncViewerLabel->deleteLater();
