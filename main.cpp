@@ -104,6 +104,7 @@ int main(int argc, char *argv[])
                 global::isN613 = false;
                 global::isN873 = false;
                 global::isN236 = false;
+                global::isN437 = false;
             }
             else if(checkconfig_str_val == "n905\n") {
                 global::isN705 = false;
@@ -111,6 +112,7 @@ int main(int argc, char *argv[])
                 global::isN613 = false;
                 global::isN873 = false;
                 global::isN236 = false;
+                global::isN437 = false;
             }
             else if(checkconfig_str_val == "n613\n") {
                 global::isN705 = false;
@@ -118,6 +120,7 @@ int main(int argc, char *argv[])
                 global::isN613 = true;
                 global::isN873 = false;
                 global::isN236 = false;
+                global::isN437 = false;
             }
             else if(checkconfig_str_val == "n873\n") {
                 global::isN705 = false;
@@ -125,6 +128,7 @@ int main(int argc, char *argv[])
                 global::isN613 = false;
                 global::isN873 = true;
                 global::isN236 = false;
+                global::isN437 = false;
             }
             else if(checkconfig_str_val == "n236\n") {
                 global::isN705 = false;
@@ -132,6 +136,15 @@ int main(int argc, char *argv[])
                 global::isN613 = false;
                 global::isN873 = false;
                 global::isN236 = true;
+                global::isN437 = false;
+            }
+            else if(checkconfig_str_val == "n437\n") {
+                global::isN705 = false;
+                global::isN905C = false;
+                global::isN613 = false;
+                global::isN873 = false;
+                global::isN236 = false;
+                global::isN437 = true;
             }
             else {
                 ;
@@ -170,6 +183,7 @@ int main(int argc, char *argv[])
                 global::isN613 = false;
                 global::isN873 = false;
                 global::isN236 = false;
+                global::isN437 = false;
             }
             else if(checkconfig_str_val == "n905\n") {
                 global::isN705 = false;
@@ -177,6 +191,7 @@ int main(int argc, char *argv[])
                 global::isN613 = false;
                 global::isN873 = false;
                 global::isN236 = false;
+                global::isN437 = false;
             }
             else if(checkconfig_str_val == "n613\n") {
                 global::isN705 = false;
@@ -184,6 +199,7 @@ int main(int argc, char *argv[])
                 global::isN613 = true;
                 global::isN873 = false;
                 global::isN236 = false;
+                global::isN437 = false;
             }
             else if(checkconfig_str_val == "n873\n") {
                 global::isN705 = false;
@@ -191,6 +207,7 @@ int main(int argc, char *argv[])
                 global::isN613 = false;
                 global::isN873 = true;
                 global::isN236 = false;
+                global::isN437 = false;
             }
             else if(checkconfig_str_val == "n236\n") {
                 global::isN705 = false;
@@ -198,6 +215,15 @@ int main(int argc, char *argv[])
                 global::isN613 = false;
                 global::isN873 = false;
                 global::isN236 = true;
+                global::isN437 = false;
+            }
+            else if(checkconfig_str_val == "n437\n") {
+                global::isN705 = false;
+                global::isN905C = false;
+                global::isN613 = false;
+                global::isN873 = false;
+                global::isN236 = false;
+                global::isN437 = true;
             }
             else {
                 ;

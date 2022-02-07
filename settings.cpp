@@ -87,7 +87,7 @@ settings::settings(QWidget *parent) :
     }
 
     string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n") {
         if(checkconfig(".config/10-dark_mode/config") == true) {
             ui->darkModeCheckBox->click();
         }
@@ -182,6 +182,17 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(1);
             }
             if(dpi_number == 225) {
+                ui->uiScalingSlider->setValue(2);
+            }
+        }
+        else if(checkconfig_str_val == "n437\n") {
+            if(dpi_number == 275) {
+                ui->uiScalingSlider->setValue(0);
+            }
+            if(dpi_number == 290) {
+                ui->uiScalingSlider->setValue(1);
+            }
+            if(dpi_number == 305) {
                 ui->uiScalingSlider->setValue(2);
             }
         }
@@ -575,6 +586,9 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n") {
             string_writeconfig(".config/09-dpi/config", "195");
         }
+        if(checkconfig_str_val == "n437\n") {
+            string_writeconfig(".config/09-dpi/config", "275");
+        }
         if(checkconfig_str_val == "n873\n") {
             string_writeconfig(".config/09-dpi/config", "285");
         }
@@ -590,6 +604,9 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n") {
             string_writeconfig(".config/09-dpi/config", "210");
         }
+        if(checkconfig_str_val == "n437\n") {
+            string_writeconfig(".config/09-dpi/config", "290");
+        }
         if(checkconfig_str_val == "n873\n") {
             string_writeconfig(".config/09-dpi/config", "300");
         }
@@ -604,6 +621,9 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         }
         if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n") {
             string_writeconfig(".config/09-dpi/config", "225");
+        }
+        if(checkconfig_str_val == "n437\n") {
+            string_writeconfig(".config/09-dpi/config", "305");
         }
         if(checkconfig_str_val == "n873\n") {
             string_writeconfig(".config/09-dpi/config", "315");
@@ -708,6 +728,9 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
         }
         else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n") {
             string_writeconfig(".config/09-dpi/config", "195");
+        }
+        else if(checkconfig_str_val == "n437\n") {
+            string_writeconfig(".config/09-dpi/config", "275");
         }
         else if(checkconfig_str_val == "n873\n") {
             string_writeconfig(".config/09-dpi/config", "285");

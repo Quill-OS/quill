@@ -44,6 +44,9 @@ koboxSettings::koboxSettings(QWidget *parent) :
         else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n") {
             dpiSetting = "175";
         }
+        else if(checkconfig_str_val == "n437\n") {
+            dpiSetting = "225";
+        }
         else if(checkconfig_str_val == "n873\n") {
             dpiSetting = "250";
         }

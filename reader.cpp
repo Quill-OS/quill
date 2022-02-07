@@ -242,7 +242,7 @@ reader::reader(QWidget *parent) :
     }
     // Night mode
     string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n") {
         if(checkconfig(".config/10-dark_mode/config") == true) {
             string_writeconfig("/tmp/invertScreen", "y");
             ui->nightModeBtn->setText("");
@@ -322,7 +322,7 @@ reader::reader(QWidget *parent) :
     // Defining what the icons' size will be
     if(checkconfig("/opt/inkbox_genuine") == true) {
         string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "emu\n") {
+        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "emu\n") {
             float stdIconWidth = sW / 16;
             float stdIconHeight = sW / 16;
             QPixmap chargingPixmap(":/resources/battery_charging.png");
