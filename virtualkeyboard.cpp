@@ -100,6 +100,51 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->sat->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
         ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 15px; border: 1px solid black");
     }
+    else if(checkconfig_str_val == "n437\n") {
+        ui->n1->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->n2->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->n3->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->n4->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->n5->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->n6->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->n7->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->n8->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->n9->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->n0->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+
+        ui->la->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lb->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lc->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->ld->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->le->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lf->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lg->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lh->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->li->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lj->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lk->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->ll->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lm->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->ln->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lo->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lp->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lq->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lr->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->ls->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lt->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lu->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lv->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lw->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lx->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->ly->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->lz->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+
+        ui->eraseBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->shiftBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->spt->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->sat->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 15px; border: 1px solid black");
+    }
     else {
         ui->n1->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 13px");
         ui->n2->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 13px");

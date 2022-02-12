@@ -935,7 +935,13 @@ bool MainWindow::checkWifiState() {
      * true: interface UP
      * false: interface DOWN
     */
-    string_checkconfig_ro("/sys/class/net/eth0/operstate");
+    if(readFile("/opt/inkbox_device") == "n437\n") {
+        string_checkconfig_ro("/sys/class/net/wlan0/operstate");
+    }
+    else {
+        string_checkconfig_ro("/sys/class/net/eth0/operstate");
+    }
+
     if(checkconfig_str_val == "up\n") {
         return true;
     }
