@@ -25,10 +25,18 @@ generalDialog::generalDialog(QWidget *parent) :
     this->setModal(true);
 
     // Stylesheet, style & misc.
-    QFile stylesheetFile(":/resources/eink.qss");
-    stylesheetFile.open(QFile::ReadOnly);
-    this->setStyleSheet(stylesheetFile.readAll());
-    stylesheetFile.close();
+    if(global::keyboard::encfsDialog == true) {
+        QFile stylesheetFile(":/resources/eink-square-encfs.qss");
+        stylesheetFile.open(QFile::ReadOnly);
+        this->setStyleSheet(stylesheetFile.readAll());
+        stylesheetFile.close();
+    }
+    else {
+        QFile stylesheetFile(":/resources/eink.qss");
+        stylesheetFile.open(QFile::ReadOnly);
+        this->setStyleSheet(stylesheetFile.readAll());
+        stylesheetFile.close();
+    }
 
     ui->okBtn->setProperty("type", "borderless");
     ui->cancelBtn->setProperty("type", "borderless");

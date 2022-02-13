@@ -29,7 +29,7 @@
         <file>resources/battery_empty.png</file>
         <file>resources/battery_charging.png</file>
         <file>resources/alert.png</file>
-        <file>resources/eink_dark.qss</file>
+        <file>resources/eink-dark.qss</file>
         <file>resources/frontlight.png</file>
         <file>resources/fonts/CrimsonPro-Bold.ttf</file>
         <file>resources/fonts/CrimsonPro-Italic.ttf</file>
@@ -73,5 +73,6 @@
         <file>resources/cover_unavailable.png</file>
         <file>resources/clock-inverted.png</file>
         <file>resources/clock.png</file>
+        <file>resources/eink-square-encfs.qss</file>
     </qresource>
 </RCC>

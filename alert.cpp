@@ -21,7 +21,7 @@ alert::alert(QWidget *parent) :
     float stdIconHeight = sH / 1.7;
 
     // General stylesheet
-    QFile stylesheetFile(":/resources/eink_dark.qss");
+    QFile stylesheetFile(":/resources/eink-dark.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
