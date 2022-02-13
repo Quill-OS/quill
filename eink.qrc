@@ -71,5 +71,7 @@
         <file>resources/online-library.png</file>
         <file>resources/online-library-inverted.png</file>
         <file>resources/cover_unavailable.png</file>
+        <file>resources/clock-inverted.png</file>
+        <file>resources/clock.png</file>
     </qresource>
 </RCC>

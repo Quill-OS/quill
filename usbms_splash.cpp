@@ -14,8 +14,8 @@ usbms_splash::usbms_splash(QWidget *parent) :
     ui->setupUi(this);
 
     // Getting the screen's size
-    float sW = QGuiApplication::screens()[0]->size().width();
-    float sH = QGuiApplication::screens()[0]->size().height();
+    sW = QGuiApplication::screens()[0]->size().width();
+    sH = QGuiApplication::screens()[0]->size().height();
 
     // Defining what the default icon size will be
     if(global::kobox::showKoboxSplash == true) {
@@ -97,51 +97,46 @@ void usbms_splash::usbms_launch()
     proc_1->waitForFinished();
     proc_1->deleteLater();
 
+    bool exitUsbMsDone = false;
     QTimer *usbms_t = new QTimer(this);
     usbms_t->setInterval(1000);
     connect(usbms_t, &QTimer::timeout, [&]() {
-        QString prog ("mass_storage.sh");
-        QStringList args;
-        QProcess *proc = new QProcess();
-        proc->start(prog, args);
-        proc->waitForFinished();
-        proc->deleteLater();
+        if(exitUsbMsDone == false) {
+            if(isUsbPluggedIn() == false) {
+                if(global::usbms::koboxExportExtensions == true) {
+                    reboot(false);
+                }
+                else {
+                    qDebug() << "Exiting USBMS session...";
+                    ui->label->setText("Processing content");
+                    ui->label_3->setText("Please wait");
+                    ui->label->setStyleSheet("QLabel { background-color : black; color : white; font-size: 15pt }");
+                    ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 11pt }");
 
-        QFile modules("/tmp/usbevent");
-        modules.open(QIODevice::ReadWrite);
-        QTextStream in (&modules);
-        const QString content = in.readAll();
-        std::string contentstr = content.toStdString();
-        modules.close();
-        if(contentstr.find("1") != std::string::npos) {
-            if(global::usbms::koboxExportExtensions == true) {
-                reboot(false);
+                    float stdIconWidth = sW / 1.5;
+                    float stdIconHeight = sH / 1.5;
+
+                    QPixmap pixmap(":/resources/clock-inverted.png");
+                    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+                    ui->label_2->setPixmap(scaledPixmap);
+
+                    this->repaint();
+
+                    QString prog("rmmod");
+                    QStringList args;
+                    args << "g_mass_storage";
+                    QProcess * proc = new QProcess();
+                    proc->start(prog, args);
+                    proc->waitForFinished();
+                    proc->deleteLater();
+
+                    QTimer::singleShot(500, this, SLOT(restartServices()));
+                }
+                exitUsbMsDone = true;
             }
             else {
-                QString prog("rmmod");
-                QStringList args;
-                args << "g_mass_storage";
-                QProcess * proc = new QProcess();
-                proc->start(prog, args);
-                proc->waitForFinished();
-                proc->deleteLater();
-
-                // Restarting USBNet
-                // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet)
-                string_writeconfig("/opt/ibxd", "usbnet_start\n");
-                QThread::msleep(1000);
-                // Mounting onboard storage
-                string_writeconfig("/opt/ibxd", "onboard_mount\n");
-                QThread::msleep(1000);
-                // Checking for updates
-                string_writeconfig("/opt/ibxd", "update_inkbox_restart\n");
-                QThread::msleep(2500);
-
-                quit_restart();
+                ;
             }
-        }
-        else {
-            ;
         }
     } );
     usbms_t->start();
@@ -164,4 +159,19 @@ void usbms_splash::quit_restart() {
     QProcess process;
     process.startDetached("inkbox", QStringList());
     qApp->quit();
+}
+
+void usbms_splash::restartServices() {
+    // Restarting USBNet
+    // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet)
+    string_writeconfig("/opt/ibxd", "usbnet_start\n");
+    QThread::msleep(1000);
+    // Mounting onboard storage
+    string_writeconfig("/opt/ibxd", "onboard_mount\n");
+    QThread::msleep(1000);
+    // Checking for updates
+    string_writeconfig("/opt/ibxd", "update_inkbox_restart\n");
+    QThread::msleep(2500);
+
+    quit_restart();
 }

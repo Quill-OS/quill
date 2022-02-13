@@ -14,12 +14,15 @@ class usbms_splash : public QWidget
 public:
     explicit usbms_splash(QWidget *parent = nullptr);
     ~usbms_splash();
+    float sW;
+    float sH;
 
     void usbms_launch();
 
 private slots:
     void brightnessDown();
     void quit_restart();
+    void restartServices();
 
 private:
     Ui::usbms_splash *ui;

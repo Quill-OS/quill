@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <unistd.h>
 
 // WoW, global variables and namespaces are awesome
 namespace global {
@@ -206,6 +207,7 @@ namespace {
                 fprintf(stderr, "Error opening ntx_io device\n");
         }
         ioctl(light, 241, value);
+        close(light);
     }
     int int_checkconfig(QString file) {
         if(QFile::exists(file)) {
@@ -665,6 +667,17 @@ namespace {
     }
     bool getEncFSStatus() {
         return checkconfig("/external_root/run/encfs_mounted");
+    }
+    bool isUsbPluggedIn() {
+        // Thanks to https://github.com/koreader/KoboUSBMS/blob/2efdf9d920c68752b2933f21c664dc1afb28fc2e/usbms.c#L148-L158
+        int ntxfd;
+        if((ntxfd = open("/dev/ntx_io", O_RDWR)) == -1) {
+                fprintf(stderr, "Error opening ntx_io device\n");
+        }
+        unsigned long ptr = 0U;
+        ioctl(ntxfd, 108, &ptr);
+        close(ntxfd);
+        return !!ptr;
     }
 }
 
