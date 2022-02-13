@@ -113,8 +113,8 @@ void usbms_splash::usbms_launch()
                     ui->label->setStyleSheet("QLabel { background-color : black; color : white; font-size: 15pt }");
                     ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 11pt }");
 
-                    float stdIconWidth = sW / 1.5;
-                    float stdIconHeight = sH / 1.5;
+                    float stdIconWidth = sW / 2;
+                    float stdIconHeight = sH / 2;
 
                     QPixmap pixmap(":/resources/clock-inverted.png");
                     QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
