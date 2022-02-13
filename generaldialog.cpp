@@ -177,7 +177,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->headerLabel->setText("Information");
         ui->okBtn->setText("Proceed");
         ui->cancelBtn->setText("Not now");
-        ui->bodyLabel->setText("New files have been found in the 'encfs-dropbox' folder. Would you want to repack your encrypted storage with them?");
+        ui->bodyLabel->setText("New files have been found in 'encfs-dropbox'. Would you want to repack your encrypted storage?");
         this->adjustSize();
     }
     else {
