@@ -459,6 +459,8 @@ namespace {
         kernelVersion = proc->readAllStandardOutput();
         kernelVersion = kernelVersion.trimmed();
 
+        proc->deleteLater();
+
         setDefaultWorkDir();
         QString fifo_prog("sh");
         QStringList fifo_args;

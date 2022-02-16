@@ -307,8 +307,7 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             if(isBatteryCritical() == true) {
-                string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-                if(checkconfig_str_val == "Charging\n") {
+                if(isUsbPluggedIn() == true) {
                     ;
                 }
                 else {
@@ -328,12 +327,11 @@ MainWindow::MainWindow(QWidget *parent)
                     ;
                 }
                 else {
-                    qDebug() << "Warning! Battery is low!";
-                    string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-                    if(checkconfig_str_val == "Charging\n") {
+                    if(isUsbPluggedIn() == true) {
                         ;
                     }
                     else {
+                        qDebug() << "Warning! Battery is low!";
                         openLowBatteryDialog();
                     }
                 }
@@ -341,36 +339,6 @@ MainWindow::MainWindow(QWidget *parent)
         }
     } );
     batteryWatchdog->start();
-
-    // USB mass storage prompt
-    QTimer *usbmsPrompt = new QTimer(this);
-    usbmsPrompt->setInterval(500);
-    connect(usbmsPrompt, &QTimer::timeout, [&]() {
-        if(checkconfig("/opt/inkbox_genuine") == true) {
-            if(global::usbms::showUsbmsDialog != true) {
-                if(isUsbPluggedIn() != usbmsStatus) {
-                    global::usbms::showUsbmsDialog = true;
-                }
-            }
-            else {
-                usbmsStatus = isUsbPluggedIn();
-                if(usbmsStatus == false) {
-                    // Loop again...
-                    ;
-                }
-                else {
-                    // An USB cable is connected!
-                    setBatteryIcon();
-                    openUsbmsDialog();
-                }
-            }
-        }
-        else {
-            // Do nothing, we're running along with Nickel & friends...
-            ;
-        }
-    } );
-    usbmsPrompt->start();
 
     // We set the brightness level saved in the config file
     QTimer::singleShot(2000, this, SLOT(setInitialBrightness()));
@@ -522,9 +490,6 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
-    // Check for an update and ask if the user wants to install it
-    checkForUpdate();
-
     // Check if it's the first boot since an update and confirm that it installed successfully
     if(checkconfig("/opt/inkbox_genuine") == true) {
         if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
@@ -539,6 +504,38 @@ MainWindow::MainWindow(QWidget *parent)
             string_writeconfig("/external_root/opt/update/inkbox_updated", "false");
         }
     }
+
+    // Check for an update and ask if the user wants to install it
+    checkForUpdate();
+    // USB mass storage prompt
+    QTimer *usbmsPrompt = new QTimer(this);
+    usbmsPrompt->setInterval(500);
+    connect(usbmsPrompt, &QTimer::timeout, [&]() {
+        if(checkconfig("/opt/inkbox_genuine") == true) {
+            if(global::usbms::showUsbmsDialog != true) {
+                if(isUsbPluggedIn() != usbmsStatus) {
+                    global::usbms::showUsbmsDialog = true;
+                }
+            }
+            else {
+                usbmsStatus = isUsbPluggedIn();
+                if(usbmsStatus == false) {
+                    // Loop again...
+                    ;
+                }
+                else {
+                    // An USB cable is connected!
+                    setBatteryIcon();
+                    openUsbmsDialog();
+                }
+            }
+        }
+        else {
+            // Do nothing, we're running along with Nickel & friends...
+            ;
+        }
+    } );
+    usbmsPrompt->start();
 
     // If the DEVKEY file is present, install a developer key
     if(QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY") == true && QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst") == true) {
@@ -790,8 +787,7 @@ void MainWindow::setBatteryIcon() {
         QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
 
         // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
-        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-        if(checkconfig_str_val == "Charging\n") {
+        if(isUsbPluggedIn() == true) {
             ui->batteryIcon->setPixmap(scaledChargingPixmap);
         }
         else {
@@ -821,8 +817,7 @@ void MainWindow::setBatteryIcon() {
         QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
 
         // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
-        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-        if(checkconfig_str_val == "Charging\n") {
+        if(isUsbPluggedIn() == true) {
             ui->batteryIcon->setPixmap(scaledChargingPixmap);
         }
         else {

@@ -616,15 +616,13 @@ reader::reader(QWidget *parent) :
         connect(usbmsPrompt, &QTimer::timeout, [&]() {
             if(checkconfig("/opt/inkbox_genuine") == true) {
                 if(global::usbms::showUsbmsDialog != true) {
-                    string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-                    if(usbmsStatus != checkconfig_str_val) {
+                    if(isUsbPluggedIn() != usbmsStatus) {
                         global::usbms::showUsbmsDialog = true;
                     }
                 }
                 else {
-                    string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-                    usbmsStatus = checkconfig_str_val;
-                    if(usbmsStatus != "Charging\n") {
+                    usbmsStatus = isUsbPluggedIn();
+                    if(usbmsStatus == false) {
                         // Loop again...
                         ;
                     }
@@ -668,12 +666,11 @@ reader::reader(QWidget *parent) :
                         ;
                     }
                     else {
-                        qDebug() << "Warning! Battery is low!";
-                        string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-                        if(checkconfig_str_val == "Charging\n") {
+                        if(isUsbPluggedIn()) {
                             ;
                         }
                         else {
+                            qDebug() << "Warning! Battery is low!";
                             openLowBatteryDialog();
                         }
                     }
@@ -1341,8 +1338,7 @@ void reader::alignText(int alignment) {
 
 void reader::menubar_show() {
     // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
-    string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-    if(checkconfig_str_val == "Charging\n") {
+    if(isUsbPluggedIn() == true) {
         ui->batteryIconLabel->setPixmap(scaledChargingPixmap);
     }
     else {
