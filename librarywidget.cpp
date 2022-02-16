@@ -34,14 +34,25 @@ libraryWidget::libraryWidget(QWidget *parent) :
     }
     QFont crimson(family);
 
-    ui->previousBtn->setText("");
-    ui->previousBtn->setProperty("type", "borderless");
-    ui->nextBtn->setText("");
-    ui->nextBtn->setProperty("type", "borderless");
-    ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
-    ui->nextBtn->setIcon(QIcon(":/resources/chevron-right.png"));
-    ui->pageLabel->setText("1 <i>of</i> 2");
-    ui->pageLabel->setFont(QFont("Source Serif Pro"));
+    if(readFile("/opt/inkbox_device") != "n905\n") {
+        ui->previousBtn->setText("");
+        ui->previousBtn->setProperty("type", "borderless");
+        ui->nextBtn->setText("");
+        ui->nextBtn->setProperty("type", "borderless");
+        ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
+        ui->nextBtn->setIcon(QIcon(":/resources/chevron-right.png"));
+        ui->pageLabel->setText("1 <i>of</i> 2");
+        ui->pageLabel->setFont(QFont("Source Serif Pro"));
+    }
+    else {
+        ui->previousBtn->hide();
+        ui->previousBtn->deleteLater();
+        ui->nextBtn->hide();
+        ui->nextBtn->deleteLater();
+        ui->pageLabel->hide();
+        ui->pageLabel->deleteLater();
+        ui->gridLayout_4->deleteLater();
+    }
 
     ui->book1Btn->setText("");
     ui->book2Btn->setText("");
@@ -51,14 +62,34 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui->book6Btn->setText("");
     ui->book7Btn->setText("");
     ui->book8Btn->setText("");
-    ui->book9Btn->setText("");
-    ui->book10Btn->setText("");
-    ui->book11Btn->setText("");
-    ui->book12Btn->setText("");
-    ui->book13Btn->setText("");
-    ui->book14Btn->setText("");
-    ui->book15Btn->setText("");
-    ui->book16Btn->setText("");
+    if(readFile("/opt/inkbox_device") != "n905\n") {
+        ui->book9Btn->setText("");
+        ui->book10Btn->setText("");
+        ui->book11Btn->setText("");
+        ui->book12Btn->setText("");
+        ui->book13Btn->setText("");
+        ui->book14Btn->setText("");
+        ui->book15Btn->setText("");
+        ui->book16Btn->setText("");
+    }
+    else {
+        ui->book9Btn->hide();
+        ui->book10Btn->hide();
+        ui->book11Btn->hide();
+        ui->book12Btn->hide();
+        ui->book13Btn->hide();
+        ui->book14Btn->hide();
+        ui->book15Btn->hide();
+        ui->book16Btn->hide();
+        ui->book9Btn->deleteLater();
+        ui->book10Btn->deleteLater();
+        ui->book11Btn->deleteLater();
+        ui->book12Btn->deleteLater();
+        ui->book13Btn->deleteLater();
+        ui->book14Btn->deleteLater();
+        ui->book15Btn->deleteLater();
+        ui->book16Btn->deleteLater();
+    }
     ui->book1Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
     ui->book2Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
     ui->book3Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
@@ -67,14 +98,34 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui->book6Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
     ui->book7Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
     ui->book8Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
-    ui->book9Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
-    ui->book10Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
-    ui->book11Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
-    ui->book12Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
-    ui->book13Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
-    ui->book14Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
-    ui->book15Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
-    ui->book16Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    if(readFile("/opt/inkbox_device") != "n905\n") {
+        ui->book9Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+        ui->book10Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+        ui->book11Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+        ui->book12Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+        ui->book13Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+        ui->book14Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+        ui->book15Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+        ui->book16Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
+    }
+    else {
+        ui->book9Label->hide();
+        ui->book10Label->hide();
+        ui->book11Label->hide();
+        ui->book12Label->hide();
+        ui->book13Label->hide();
+        ui->book14Label->hide();
+        ui->book15Label->hide();
+        ui->book16Label->hide();
+        ui->book9Label->hide();
+        ui->book10Label->deleteLater();
+        ui->book11Label->deleteLater();
+        ui->book12Label->deleteLater();
+        ui->book13Label->deleteLater();
+        ui->book14Label->deleteLater();
+        ui->book15Label->deleteLater();
+        ui->book16Label->deleteLater();
+    }
     ui->book1Label->setFont(crimson);
     ui->book2Label->setFont(crimson);
     ui->book3Label->setFont(crimson);
@@ -83,14 +134,16 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui->book6Label->setFont(crimson);
     ui->book7Label->setFont(crimson);
     ui->book8Label->setFont(crimson);
-    ui->book9Label->setFont(crimson);
-    ui->book10Label->setFont(crimson);
-    ui->book11Label->setFont(crimson);
-    ui->book12Label->setFont(crimson);
-    ui->book13Label->setFont(crimson);
-    ui->book14Label->setFont(crimson);
-    ui->book15Label->setFont(crimson);
-    ui->book16Label->setFont(crimson);
+    if(readFile("/opt/inkbox_device") != "n905\n") {
+        ui->book9Label->setFont(crimson);
+        ui->book10Label->setFont(crimson);
+        ui->book11Label->setFont(crimson);
+        ui->book12Label->setFont(crimson);
+        ui->book13Label->setFont(crimson);
+        ui->book14Label->setFont(crimson);
+        ui->book15Label->setFont(crimson);
+        ui->book16Label->setFont(crimson);
+    }
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -125,6 +178,25 @@ void libraryWidget::setupView() {
     stdIconWidth = sW / 5.5;
     stdIconHeight = sH / 5.5;
 
+    ui->book1Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/1/title"));
+    ui->book2Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/2/title"));
+    ui->book3Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/3/title"));
+    ui->book4Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/4/title"));
+    ui->book5Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/5/title"));
+    ui->book6Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/6/title"));
+    ui->book7Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/7/title"));
+    ui->book8Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/8/title"));
+    if(readFile("/opt/inkbox_device") != "n905\n") {
+        ui->book9Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/9/title"));
+        ui->book10Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/10/title"));
+        ui->book11Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/11/title"));
+        ui->book12Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/12/title"));
+        ui->book13Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/13/title"));
+        ui->book14Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/14/title"));
+        ui->book15Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/15/title"));
+        ui->book16Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/16/title"));
+    }
+
     ui->book1Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/1/cover.jpg"));
     ui->book1Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
     ui->book2Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/2/cover.jpg"));
@@ -141,39 +213,24 @@ void libraryWidget::setupView() {
     ui->book7Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
     ui->book8Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/8/cover.jpg"));
     ui->book8Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-    ui->book9Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/9/cover.jpg"));
-    ui->book9Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-    ui->book10Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/10/cover.jpg"));
-    ui->book10Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-    ui->book11Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/11/cover.jpg"));
-    ui->book11Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-    ui->book12Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/12/cover.jpg"));
-    ui->book12Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-    ui->book13Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/13/cover.jpg"));
-    ui->book13Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-    ui->book14Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/14/cover.jpg"));
-    ui->book14Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-    ui->book15Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/15/cover.jpg"));
-    ui->book15Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-    ui->book16Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/16/cover.jpg"));
-    ui->book16Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-
-    ui->book1Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/1/title"));
-    ui->book2Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/2/title"));
-    ui->book3Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/3/title"));
-    ui->book4Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/4/title"));
-    ui->book5Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/5/title"));
-    ui->book6Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/6/title"));
-    ui->book7Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/7/title"));
-    ui->book8Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/8/title"));
-    ui->book9Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/9/title"));
-    ui->book10Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/10/title"));
-    ui->book11Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/11/title"));
-    ui->book12Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/12/title"));
-    ui->book13Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/13/title"));
-    ui->book14Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/14/title"));
-    ui->book15Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/15/title"));
-    ui->book16Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/16/title"));
+    if(readFile("/opt/inkbox_device") != "n905\n") {
+        ui->book9Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/9/cover.jpg"));
+        ui->book9Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+        ui->book10Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/10/cover.jpg"));
+        ui->book10Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+        ui->book11Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/11/cover.jpg"));
+        ui->book11Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+        ui->book12Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/12/cover.jpg"));
+        ui->book12Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+        ui->book13Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/13/cover.jpg"));
+        ui->book13Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+        ui->book14Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/14/cover.jpg"));
+        ui->book14Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+        ui->book15Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/15/cover.jpg"));
+        ui->book15Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+        ui->book16Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/16/cover.jpg"));
+        ui->book16Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+    }
 }
 
 void libraryWidget::showToast(QString messageToDisplay) {
