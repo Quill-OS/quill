@@ -4,6 +4,7 @@
 
 #include <QTimer>
 #include <QDebug>
+#include <QDateTime>
 
 otaManager::otaManager(QWidget *parent) :
     QWidget(parent),
@@ -26,6 +27,8 @@ otaManager::otaManager(QWidget *parent) :
                     qDebug() << "No OTA update available.";
                     emit canOtaUpdate(false);
                 }
+                unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
+                string_writeconfig("/external_root/opt/storage/update/last_sync", std::to_string(currentEpoch));
                 otaManager::close();
             }
         } );
@@ -40,13 +43,16 @@ otaManager::otaManager(QWidget *parent) :
         connect(otaDownloadTimer, &QTimer::timeout, [&]() {
             if(QFile::exists("/run/can_install_ota_update") == true) {
                 if(checkconfig("/run/can_install_ota_update") == true) {
+                    qDebug() << "Download succeeded.";
                     emit downloadedOtaUpdate(true);
                     global::otaUpdate::downloadOta = false;
                 }
                 else {
+                    qDebug() << "Download failed.";
                     emit downloadedOtaUpdate(false);
                     global::otaUpdate::downloadOta = false;
                 }
+                QFile::remove("/external_root/opt/storage/update/last_sync");
                 otaManager::close();
             }
         } );

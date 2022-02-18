@@ -479,7 +479,12 @@ namespace {
     QString getConnectionInformation() {
         QString getIpProg ("sh");
         QStringList getIpArgs;
-        getIpArgs << "-c" << "/sbin/ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'";
+        if(readFile("/opt/inkbox_device") != "n437\n") {
+            getIpArgs << "-c" << "/sbin/ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'";
+        }
+        else {
+            getIpArgs << "-c" << "/sbin/ifconfig wlan0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'";
+        }
         QProcess *getIpProc = new QProcess();
         getIpProc->start(getIpProg, getIpArgs);
         getIpProc->waitForFinished();

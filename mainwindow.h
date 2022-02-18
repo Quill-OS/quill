@@ -90,6 +90,7 @@ private slots:
     void openBookFile(QString book, bool relativePath);
     void openReaderFramework();
     void checkForUpdate();
+    void checkForOtaUpdate();
     void openEncfsRepackDialog();
     void on_libraryButton_clicked();
     void resetWindow(bool resetStackedWidget);
