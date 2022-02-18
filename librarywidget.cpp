@@ -248,26 +248,30 @@ void libraryWidget::closeIndefiniteToast() {
 void libraryWidget::syncCatalog() {
     global::toast::modalToast = true;
     global::toast::indefiniteToast = true;
+    bool syncDone = false;
     showToast("Sync in progress");
 
     string_writeconfig("/opt/ibxd", "gutenberg_sync\n");
     QTimer * syncCheckTimer = new QTimer(this);
     syncCheckTimer->setInterval(100);
     connect(syncCheckTimer, &QTimer::timeout, [&]() {
-        if(QFile::exists("/inkbox/gutenbergSyncDone") == true) {
-            if(checkconfig("/inkbox/gutenbergSyncDone") == true) {
-                qDebug() << "Gutenberg sync successfully completed";
-                toastWindow->close();
-                setupView();
+        if(syncDone == false) {
+            if(QFile::exists("/inkbox/gutenbergSyncDone") == true) {
+                if(checkconfig("/inkbox/gutenbergSyncDone") == true) {
+                    qDebug() << "Gutenberg sync successfully completed";
+                    toastWindow->close();
+                    setupView();
+                }
+                else {
+                    qDebug() << "Gutenberg sync encountered an error";
+                    toastWindow->close();
+                    showToast("Error");
+                    QFile::remove("/external_root/opt/storage/gutenberg/last_sync");
+                    QTimer::singleShot(5000, this, SLOT(close()));
+                }
+                QFile::remove("/inkbox/gutenbergSyncDone");
+                syncDone = true;
             }
-            else {
-                qDebug() << "Gutenberg sync encountered an error";
-                toastWindow->close();
-                showToast("Error");
-                QFile::remove("/external_root/opt/storage/gutenberg/last_sync");
-                QTimer::singleShot(5000, this, SLOT(close()));
-            }
-            QFile::remove("/inkbox/gutenbergSyncDone");
         }
     } );
     syncCheckTimer->start();

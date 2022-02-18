@@ -502,6 +502,9 @@ MainWindow::MainWindow(QWidget *parent)
             updatemsg = updatemsg.append(checkconfig_str_val);
             QMessageBox::information(this, tr("Information"), updatemsg);
             string_writeconfig("/external_root/opt/update/inkbox_updated", "false");
+            if(QFile::exists("/external_root/opt/storage/gutenberg/last_sync")) {
+                QFile::remove("/external_root/opt/storage/gutenberg/last_sync");
+            }
         }
     }
 

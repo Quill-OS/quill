@@ -48,11 +48,9 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
         global::library::isLatestBook = false;
 
         ui->bookTitleLabel->setText(global::library::bookTitle);
-        global::library::bookTitle = "";
     }
     else {
         ui->bookTitleLabel->setText(global::library::bookTitle);
-        global::library::bookTitle = "";
 
         QDir gutenbergDir;
         gutenbergDir.mkpath("/inkbox/gutenberg");
@@ -93,6 +91,7 @@ bookInfoDialog::~bookInfoDialog()
 
 void bookInfoDialog::on_closeBtn_clicked()
 {
+    global::library::bookTitle = "";
     bookInfoDialog::close();
 }
 
@@ -102,6 +101,7 @@ void bookInfoDialog::on_getBtn_clicked()
     QDir gutenbergDir;
     gutenbergDir.mkpath("/inkbox/gutenberg");
     string_writeconfig("/inkbox/gutenberg/bookid", QString::number(global::library::bookId).toStdString());
+    string_writeconfig("/inkbox/gutenberg/booktitle", global::library::bookTitle.toStdString());
     string_writeconfig("/opt/ibxd", "gutenberg_get_book\n");
 
     global::toast::modalToast = true;
