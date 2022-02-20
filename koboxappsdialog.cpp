@@ -101,7 +101,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
             if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
                 dpiSetting = "125";
             }
-            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n") {
+            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
                 dpiSetting = "175";
             }
             else if(checkconfig_str_val == "n437\n") {
@@ -134,7 +134,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
             if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
                 dpiSetting = "175";
             }
-            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n") {
+            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
                 dpiSetting = "225";
             }
             else if(checkconfig_str_val == "n437\n") {

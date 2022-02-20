@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent)
         wifiIconWidth = sW / 22.5;
         wifiIconHeight = sH / 22.5;
     }
-    else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "emu\n") {
+    else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n" or checkconfig_str_val == "emu\n") {
         stdIconWidth = sW / 12.5;
         stdIconHeight = sH / 12.5;
         brightnessIconWidth = sW / 24.5;
@@ -158,7 +158,7 @@ MainWindow::MainWindow(QWidget *parent)
     if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 1px; padding-right: 1px;");
     }
-    else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "emu\n") {
+    else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n" or checkconfig_str_val == "emu\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;");
     }
     else if(checkconfig_str_val == "n873\n") {
@@ -776,7 +776,7 @@ void MainWindow::resetIcons() {
 void MainWindow::setBatteryIcon() {
     // Battery
     string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n873\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n") {
+    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n873\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
         // Hide brightness controls; they won't be very useful there anyway (for anything but the Glo (HD)/Libra/Aura 2) ...
         if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
             ui->brightnessBtn->hide();
@@ -1114,7 +1114,7 @@ void MainWindow::setRecentBooksLabelsTruncateTreshold() {
     if(readFile("/opt/inkbox_device") == "n705\n" or readFile("/opt/inkbox_device") == "n905b\n" or readFile("/opt/inkbox_device") == "n905c\n") {
         truncateTreshold = 12;
     }
-    else if(readFile("/opt/inkbox_device") == "n613\n" or readFile("/opt/inkbox_device") == "n873\n" or readFile("/opt/inkbox_device") == "n236\n" or readFile("/opt/inkbox_device") == "n437\n"){
+    else if(readFile("/opt/inkbox_device") == "n613\n" or readFile("/opt/inkbox_device") == "n873\n" or readFile("/opt/inkbox_device") == "n236\n" or readFile("/opt/inkbox_device") == "n437\n" or readFile("/opt/inkbox_device") == "n306\n"){
         truncateTreshold = 20;
     }
     else {

@@ -120,6 +120,7 @@ namespace global {
     inline bool isN873;
     inline bool isN236;
     inline bool isN437;
+    inline bool isN306;
     inline bool runningInstanceIsReaderOnly;
 }
 
@@ -548,7 +549,7 @@ namespace {
                 defaultEpubPageHeight = 425;
                 defaultEpubPageWidth = 425;
             }
-            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "emu\n") {
+            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n" or checkconfig_str_val == "emu\n") {
                 defaultEpubPageHeight = 450;
                 defaultEpubPageWidth = 450;
             }
@@ -563,7 +564,7 @@ namespace {
                 defaultPdfPageHeight = 750;
                 defaultPdfPageWidth = 550;
             }
-            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "emu\n") {
+            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n" or checkconfig_str_val == "emu\n") {
                 defaultPdfPageHeight = 974;
                 defaultPdfPageWidth = 708;
             }
@@ -580,7 +581,7 @@ namespace {
     void pre_set_brightness(int brightnessValue) {
         string_checkconfig_ro("/opt/inkbox_device");
 
-        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n873\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n") {
+        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n873\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
             set_brightness(brightnessValue);
         }
         else if(checkconfig_str_val == "n613\n") {
