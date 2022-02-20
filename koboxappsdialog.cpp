@@ -165,9 +165,15 @@ void koboxAppsDialog::on_launchBtn_clicked()
         // Re-use USBMS splash window for KoBox splash, since it's pretty much the same layout
         usbmsSplashWindow = new usbms_splash();
         usbmsSplashWindow->setAttribute(Qt::WA_DeleteOnClose);
-        usbmsSplashWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+        usbmsSplashWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry().size()));
         usbmsSplashWindow->show();
         QApplication::processEvents();
+
+        // Stop EncFS/Encrypted storage
+        if(checkconfig("/external_root/run/encfs_mounted") == true) {
+            string_writeconfig("/external_root/run/encfs_stop_cleanup", "true");
+            string_writeconfig("/opt/ibxd", "encfs_stop\n");
+        }
 
         // Write to FIFO to start X11
         string_writeconfig("/opt/ibxd", "x_start_gui\n");
