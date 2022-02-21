@@ -6,6 +6,17 @@ CONFIG += c++11 c++17
 
 QMAKE_CXXFLAGS += -Wno-unused-function -Wno-unused-parameter
 
+# Thanks to https://github.com/mrbindraw/TestVersion/blob/master/TestVersion.pro
+GIT_VERSION = $$system(git describe --always --tags)
+COMMAND_REMOVE_MAKEFILES=$$quote(rm $$system_path($$OUT_PWD\Makefile*))
+PRE_BUILD_TARGET = .dummyfile
+updatemakefiles.target = $$PRE_BUILD_TARGET
+updatemakefiles.commands = $$COMMAND_REMOVE_MAKEFILES
+updatemakefiles.depends = FORCE
+PRE_TARGETDEPS += $$PRE_BUILD_TARGET
+QMAKE_EXTRA_TARGETS += updatemakefiles
+DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
+
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
