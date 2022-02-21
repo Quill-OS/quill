@@ -463,19 +463,20 @@ namespace {
         proc->deleteLater();
 
         setDefaultWorkDir();
-        QString fifo_prog("sh");
-        QStringList fifo_args;
-        fifo_args << "get_kernel_build_id.sh";
-        QProcess *fifo_proc = new QProcess();
-        fifo_proc->start(fifo_prog, fifo_args);
-        fifo_proc->waitForFinished();
-        fifo_proc->deleteLater();
+        string_writeconfig("/external_root/run/initrd-fifo", "get_kernel_build_id\n");
+        QThread::msleep(100);
+        string_writeconfig("/external_root/run/initrd-fifo", "get_kernel_commit\n");
         QThread::msleep(100);
 
-        string_checkconfig_ro("/external_root/run/build_id");
+        string_checkconfig_ro("/external_root/run/kernel_build_id");
         QString kernelBuildID = checkconfig_str_val.trimmed();
         kernelVersion.append(", build ");
         kernelVersion.append(kernelBuildID);
+
+        string_checkconfig_ro("/external_root/run/kernel_commit");
+        QString kernelCommit = checkconfig_str_val.trimmed();
+        kernelVersion.append(", commit ");
+        kernelVersion.append(kernelCommit);
     }
     QString getConnectionInformation() {
         QString getIpProg ("sh");
