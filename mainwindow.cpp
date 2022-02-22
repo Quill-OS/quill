@@ -564,6 +564,11 @@ MainWindow::MainWindow(QWidget *parent)
 
         reboot(true);
     }
+
+    // Write version control info to file in tmpfs
+    if(checkconfig("/opt/inkbox_genuine") == true) {
+        string_writeconfig("/external_root/run/inkbox_gui_git_commit", GIT_VERSION);
+    }
 }
 
 MainWindow::~MainWindow()
