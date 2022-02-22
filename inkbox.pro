@@ -8,6 +8,7 @@ QMAKE_CXXFLAGS += -Wno-unused-function -Wno-unused-parameter
 
 # Thanks to https://github.com/mrbindraw/TestVersion/blob/master/TestVersion.pro
 GIT_VERSION = $$system(git describe --always --tags)
+GIT_COMMIT = $$system(git rev-parse HEAD)
 COMMAND_REMOVE_MAKEFILES=$$quote(rm $$system_path($$OUT_PWD\Makefile*))
 PRE_BUILD_TARGET = .dummyfile
 updatemakefiles.target = $$PRE_BUILD_TARGET
@@ -16,6 +17,7 @@ updatemakefiles.depends = FORCE
 PRE_TARGETDEPS += $$PRE_BUILD_TARGET
 QMAKE_EXTRA_TARGETS += updatemakefiles
 DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
+DEFINES += GIT_COMMIT=\\\"$$GIT_COMMIT\\\"
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
