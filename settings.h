@@ -69,6 +69,8 @@ private slots:
     void cancelDisableStorageEncryption();
     void on_repackBtn_clicked();
 
+    void on_generateSystemReportBtn_clicked();
+
 signals:
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();

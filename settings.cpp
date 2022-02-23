@@ -31,6 +31,7 @@ settings::settings(QWidget *parent) :
     ui->updateBtn->setProperty("type", "borderless");
     ui->resetBtn->setProperty("type", "borderless");
     ui->showSystemInfoBtn->setProperty("type", "borderless");
+    ui->generateSystemReportBtn->setProperty("type", "borderless");
     ui->checkOtaUpdateBtn->setProperty("type", "borderless");
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
@@ -41,6 +42,7 @@ settings::settings(QWidget *parent) :
     ui->updateBtn->setStyleSheet("font-size: 9pt");
     ui->resetBtn->setStyleSheet("font-size: 9pt");
     ui->showSystemInfoBtn->setStyleSheet("font-size: 9pt");
+    ui->generateSystemReportBtn->setStyleSheet("font-size: 9pt");
     ui->checkOtaUpdateBtn->setStyleSheet("font-size: 9pt");
     ui->comboBox->setStyleSheet("font-size: 9pt");
     ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
@@ -976,5 +978,22 @@ void settings::on_repackBtn_clicked()
     else {
         string_writeconfig("/external_root/run/encfs_repack", "true");
         quit_restart();
+    }
+}
+
+void settings::on_generateSystemReportBtn_clicked()
+{
+    string_writeconfig("/opt/ibxd", "generate_system_report\n");
+    while(true) {
+        if(QFile::exists("/inkbox/systemReportDone")) {
+            if(checkconfig("/inkbox/systemReportDone") == true) {
+                emit showToast("System report generated successfully");
+                break;
+            }
+            else {
+                emit showToast("Error in generating system report");
+                break;
+            }
+        }
     }
 }
