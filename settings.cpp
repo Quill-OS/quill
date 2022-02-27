@@ -994,6 +994,7 @@ void settings::on_generateSystemReportBtn_clicked()
                 emit showToast("Error in generating system report");
                 break;
             }
+            QFile::remove("/inkbox/systemReportDone");
         }
     }
 }
