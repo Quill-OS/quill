@@ -988,13 +988,12 @@ void settings::on_generateSystemReportBtn_clicked()
         if(QFile::exists("/inkbox/systemReportDone")) {
             if(checkconfig("/inkbox/systemReportDone") == true) {
                 emit showToast("System report generated successfully");
-                break;
             }
             else {
                 emit showToast("Error in generating system report");
-                break;
             }
             QFile::remove("/inkbox/systemReportDone");
+            break;
         }
     }
 }
