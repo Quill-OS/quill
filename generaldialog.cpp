@@ -20,6 +20,9 @@ generalDialog::generalDialog(QWidget *parent) :
     ui(new Ui::generalDialog)
 {
     ui->setupUi(this);
+    ui->bodyLabel->setFont(QFont("u001"));
+    ui->searchComboBox->setFont(QFont("u001"));
+    ui->label_2->setFont(QFont("u001"));
 
     // Preventing outside interaction
     this->setModal(true);
@@ -45,7 +48,8 @@ generalDialog::generalDialog(QWidget *parent) :
     ui->okBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->cancelBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->acceptBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
-    ui->bodyLabel->setStyleSheet("font-size: 9pt");
+    ui->headerLabel->setStyleSheet("font-weight: bold");
+    ui->bodyLabel->setStyleSheet("font-size: 9.5pt");
     ui->searchComboBox->setStyleSheet("font-size: 9pt");
 
     // Disabling "Online library" search if device doesn't have Wi-Fi
@@ -93,7 +97,7 @@ generalDialog::generalDialog(QWidget *parent) :
         updateDialog = true;
         ui->okBtn->setText("Update");
         ui->cancelBtn->setText("Not now");
-        ui->bodyLabel->setText("Do you want to update InkBox now?");
+        ui->bodyLabel->setText("<font face='u001'>Do you want to update InkBox now</font><font face='Inter'>?</font>"); // Because I hate Univers/U001's question mark ...
         ui->headerLabel->setText("Update available");
         this->adjustSize();
         string_writeconfig("/inkbox/updateDialog", "false");
@@ -126,7 +130,7 @@ generalDialog::generalDialog(QWidget *parent) :
         usbmsDialog = true;
         ui->okBtn->setText("Connect");
         ui->cancelBtn->setText("Cancel");
-        ui->bodyLabel->setText("Do you want to connect your device to a computer to manage books?");
+        ui->bodyLabel->setText("<font face='u001'>Do you want to connect your device to a computer to manage books</font><font face='Inter'>?</font>");
         ui->headerLabel->setText("USB cable connected");
         this->adjustSize();
     }
@@ -164,7 +168,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->headerLabel->setText("Warning");
         ui->okBtn->setText("Proceed");
         ui->cancelBtn->setText("Go back");
-        ui->bodyLabel->setText("This will delete all the files you have encrypted. Are you sure you want to continue?");
+        ui->bodyLabel->setText("<font face='u001'>This will delete all the files you have encrypted. Are you sure you want to continue</font><font face='Inter'>?</font>");
         this->adjustSize();
     }
     else if(global::encfs::errorNoBooksInDropboxDialog == true) {
@@ -177,7 +181,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->headerLabel->setText("Information");
         ui->okBtn->setText("Proceed");
         ui->cancelBtn->setText("Not now");
-        ui->bodyLabel->setText("New files have been found in 'encfs-dropbox'. Would you want to repack your encrypted storage?");
+        ui->bodyLabel->setText("<font face='u001'>New files have been found in 'encfs-dropbox'. Would you want to repack your encrypted storage</font><font face='Inter'>?</font>");
         this->adjustSize();
     }
     else {

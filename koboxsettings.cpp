@@ -10,11 +10,14 @@ koboxSettings::koboxSettings(QWidget *parent) :
     ui(new Ui::koboxSettings)
 {
     ui->setupUi(this);
+    koboxSettings::setFont(QFont("u001"));
+    ui->okBtn->setFont(QFont("Inter"));
 
     // UI tweaks
     ui->okBtn->setProperty("type", "borderless");
     ui->pushButton->setProperty("type", "borderless");
     ui->resetKoboxBtn->setProperty("type", "borderless");
+    ui->okBtn->setStyleSheet("font-weight: bold");
 
     // Stylesheet
     QFile stylesheetFile(":/resources/eink.qss");

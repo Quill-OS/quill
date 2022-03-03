@@ -12,6 +12,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
     ui(new Ui::usbms_splash)
 {
     ui->setupUi(this);
+    usbms_splash::setFont(QFont("u001"));
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -48,8 +49,8 @@ usbms_splash::usbms_splash(QWidget *parent) :
         float stdIconHeight = sH / 1.15;
 
         this->setStyleSheet("background-color:black;");
-        ui->label->setStyleSheet("QLabel { background-color : black; color : white; }");
-        ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 9pt}");
+        ui->label->setStyleSheet("QLabel { background-color : black; color : white; font-size: 15pt }");
+        ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 10pt }");
 
         QPixmap pixmap(":/resources/usbms.png");
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);

@@ -16,6 +16,14 @@ encryptionManager::encryptionManager(QWidget *parent) :
     ui(new Ui::encryptionManager)
 {
     ui->setupUi(this);
+    ui->encryptionSetupLabel->setFont(QFont("u001"));
+    ui->successLabel->setFont(QFont("u001"));
+    ui->failureLabel->setFont(QFont("u001"));
+    ui->descriptionLabel->setFont(QFont("u001"));
+    ui->successDescriptionLabel->setFont(QFont("u001"));
+    ui->failureDescriptionLabel->setFont(QFont("u001"));
+    ui->warningLabel->setFont(QFont("u001"));
+    ui->warningDescriptionLabel->setFont(QFont("u001"));
 
     // Stylesheet
     QFile stylesheetFile(":/resources/eink.qss");
@@ -23,20 +31,20 @@ encryptionManager::encryptionManager(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
-    ui->encryptionSetupLabel->setStyleSheet("font-size: 15pt");
-    ui->descriptionLabel->setStyleSheet("font-size: 9pt");
-    ui->successLabel->setStyleSheet("font-size: 15pt");
-    ui->successDescriptionLabel->setStyleSheet("font-size: 9pt");
-    ui->failureLabel->setStyleSheet("font-size: 15pt");
-    ui->failureDescriptionLabel->setStyleSheet("font-size: 9pt");
+    ui->encryptionSetupLabel->setStyleSheet("font-size: 18pt; font-weight: bold");
+    ui->descriptionLabel->setStyleSheet("font-size: 10pt");
+    ui->successLabel->setStyleSheet("font-size: 18pt; font-weight: bold");
+    ui->successDescriptionLabel->setStyleSheet("font-size: 10pt");
+    ui->failureLabel->setStyleSheet("font-size: 18pt; font-weight: bold");
+    ui->failureDescriptionLabel->setStyleSheet("font-size: 10pt");
     ui->setupContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
     ui->setupAbortBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
     ui->exitSuccessBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
     ui->failureContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
     ui->acceptBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
     ui->usbmsBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
-    ui->warningLabel->setStyleSheet("font-size: 15pt");
-    ui->warningDescriptionLabel->setStyleSheet("font-size: 9pt");
+    ui->warningLabel->setStyleSheet("font-size: 18pt; font-weight: bold");
+    ui->warningDescriptionLabel->setStyleSheet("font-size: 10pt");
 
     // Getting the screen's size
     float sW = QGuiApplication::screens()[0]->size().width();

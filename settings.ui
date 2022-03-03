@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>477</width>
-    <height>757</height>
+    <height>833</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,8 +48,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>442</width>
-          <height>580</height>
+          <width>463</width>
+          <height>632</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -98,72 +98,6 @@
                <property name="bottomMargin">
                 <number>0</number>
                </property>
-               <item row="2" column="0">
-                <layout class="QGridLayout" name="gridLayout_6">
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item row="1" column="1">
-                  <spacer name="horizontalSpacer_5">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="wordsNumberLabel">
-                   <property name="text">
-                    <string>Words number/page (plain text files)</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="2">
-                  <widget class="QSpinBox" name="wordsNumber">
-                   <property name="minimum">
-                    <number>20</number>
-                   </property>
-                   <property name="maximum">
-                    <number>300</number>
-                   </property>
-                   <property name="singleStep">
-                    <number>20</number>
-                   </property>
-                   <property name="value">
-                    <number>20</number>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="1" column="0">
-                <widget class="Line" name="line_8">
-                 <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="20" column="0">
-                <widget class="QLabel" name="label_3">
-                 <property name="font">
-                  <font>
-                   <family>Chivo</family>
-                   <italic>true</italic>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Networking</string>
-                 </property>
-                </widget>
-               </item>
                <item row="9" column="0">
                 <widget class="Line" name="line_6">
                  <property name="frameShadow">
@@ -171,6 +105,53 @@
                  </property>
                  <property name="orientation">
                   <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="21" column="0">
+                <widget class="Line" name="line_3">
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="18" column="0">
+                <widget class="Line" name="line_7">
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="0">
+                <widget class="QCheckBox" name="clockCheckBox">
+                 <property name="text">
+                  <string>Clock: Show seconds</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QCheckBox" name="readerScrollBarCheckBox">
+                 <property name="text">
+                  <string>Show scroll bar if needed</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label_7">
+                 <property name="font">
+                  <font>
+                   <family>Chivo</family>
+                   <italic>true</italic>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Reading</string>
                  </property>
                 </widget>
                </item>
@@ -245,15 +226,68 @@
                  </item>
                 </layout>
                </item>
-               <item row="18" column="0">
-                <widget class="Line" name="line_7">
-                 <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
+               <item row="8" column="0">
+                <widget class="QLabel" name="label_2">
+                 <property name="font">
+                  <font>
+                   <family>Chivo</family>
+                   <italic>true</italic>
+                  </font>
                  </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                 <property name="text">
+                  <string>Home</string>
                  </property>
                 </widget>
+               </item>
+               <item row="5" column="0">
+                <widget class="QCheckBox" name="globalReadingSettingsCheckBox">
+                 <property name="text">
+                  <string>Global reading settings</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="2" column="0">
+                <layout class="QGridLayout" name="gridLayout_6">
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="1" column="1">
+                  <spacer name="horizontalSpacer_5">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="1" column="0">
+                  <widget class="QLabel" name="wordsNumberLabel">
+                   <property name="text">
+                    <string>Words number/page (plain text files)</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QSpinBox" name="wordsNumber">
+                   <property name="minimum">
+                    <number>20</number>
+                   </property>
+                   <property name="maximum">
+                    <number>300</number>
+                   </property>
+                   <property name="singleStep">
+                    <number>20</number>
+                   </property>
+                   <property name="value">
+                    <number>20</number>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </item>
                <item row="22" column="0">
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -295,16 +329,20 @@
                  </item>
                 </layout>
                </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_7">
-                 <property name="font">
-                  <font>
-                   <family>Chivo</family>
-                   <italic>true</italic>
-                  </font>
-                 </property>
+               <item row="12" column="0">
+                <widget class="QCheckBox" name="demoCheckBox">
                  <property name="text">
-                  <string>Reading</string>
+                  <string>Disable &quot;Welcome to InkBox&quot; message</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="1" column="0">
+                <widget class="Line" name="line_8">
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
                </item>
@@ -361,15 +399,15 @@
                  </item>
                 </layout>
                </item>
-               <item row="10" column="0">
-                <widget class="QCheckBox" name="clockCheckBox">
+               <item row="7" column="0">
+                <widget class="QCheckBox" name="menuBarCheckBox">
                  <property name="text">
-                  <string>Clock: Show seconds</string>
+                  <string>Always show status bar</string>
                  </property>
                 </widget>
                </item>
-               <item row="8" column="0">
-                <widget class="QLabel" name="label_2">
+               <item row="20" column="0">
+                <widget class="QLabel" name="label_3">
                  <property name="font">
                   <font>
                    <family>Chivo</family>
@@ -377,37 +415,14 @@
                   </font>
                  </property>
                  <property name="text">
-                  <string>Home</string>
+                  <string>Networking</string>
                  </property>
                 </widget>
                </item>
-               <item row="23" column="0">
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="6" column="0">
-                <widget class="QCheckBox" name="readerScrollBarCheckBox">
+               <item row="11" column="0">
+                <widget class="QCheckBox" name="quoteCheckBox">
                  <property name="text">
-                  <string>Show scroll bar if needed</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="21" column="0">
-                <widget class="Line" name="line_3">
-                 <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
+                  <string>Disable authors quotes</string>
                  </property>
                 </widget>
                </item>
@@ -478,33 +493,18 @@
                  </item>
                 </layout>
                </item>
-               <item row="7" column="0">
-                <widget class="QCheckBox" name="menuBarCheckBox">
-                 <property name="text">
-                  <string>Always show status bar</string>
+               <item row="23" column="0">
+                <spacer name="verticalSpacer">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
                  </property>
-                </widget>
-               </item>
-               <item row="11" column="0">
-                <widget class="QCheckBox" name="quoteCheckBox">
-                 <property name="text">
-                  <string>Disable authors quotes</string>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
                  </property>
-                </widget>
-               </item>
-               <item row="12" column="0">
-                <widget class="QCheckBox" name="demoCheckBox">
-                 <property name="text">
-                  <string>Disable &quot;Welcome to InkBox&quot; message</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="5" column="0">
-                <widget class="QCheckBox" name="globalReadingSettingsCheckBox">
-                 <property name="text">
-                  <string>Global reading settings</string>
-                 </property>
-                </widget>
+                </spacer>
                </item>
               </layout>
              </item>
@@ -526,217 +526,13 @@
              </property>
              <item>
               <layout class="QGridLayout" name="gridLayout_10">
-               <item row="25" column="0">
-                <widget class="QCheckBox" name="enableEncryptedStorageCheckBox">
-                 <property name="text">
-                  <string>Enable</string>
-                 </property>
-                </widget>
-               </item>
+               <property name="bottomMargin">
+                <number>0</number>
+               </property>
                <item row="10" column="0">
                 <widget class="QCheckBox" name="darkModeCheckBox">
                  <property name="text">
                   <string>Enable night mode</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="26" column="0">
-                <layout class="QGridLayout" name="gridLayout_17">
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="1">
-                  <spacer name="horizontalSpacer_14">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="repackLabel">
-                   <property name="text">
-                    <string>Repack</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QPushButton" name="repackBtn">
-                   <property name="font">
-                    <font>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Repack</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="21" column="0">
-                <widget class="QCheckBox" name="enableLockscreenCheckBox">
-                 <property name="text">
-                  <string>Enable lock screen and passcode</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="28" column="0">
-                <layout class="QGridLayout" name="gridLayout_18">
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                </layout>
-               </item>
-               <item row="20" column="0">
-                <widget class="Line" name="line_2">
-                 <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="12" column="0">
-                <layout class="QGridLayout" name="gridLayout_12">
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_8">
-                   <property name="text">
-                    <string>Reset this device</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QPushButton" name="resetBtn">
-                   <property name="font">
-                    <font>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Reset</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <spacer name="horizontalSpacer_8">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                </layout>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="softwareLabel">
-                 <property name="font">
-                  <font>
-                   <family>Chivo</family>
-                   <italic>true</italic>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>System</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="29" column="0">
-                <spacer name="verticalSpacer_3">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-               <item row="8" column="0">
-                <widget class="QCheckBox" name="enableUiScalingCheckBox">
-                 <property name="text">
-                  <string>Enable UI scaling</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="22" column="0">
-                <layout class="QGridLayout" name="gridLayout_13">
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="1">
-                  <spacer name="horizontalSpacer_9">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QPushButton" name="setPasscodeBtn">
-                   <property name="font">
-                    <font>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Set</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="setPasscodeLabel">
-                   <property name="text">
-                    <string>Set a passcode</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="7" column="0">
-                <widget class="Line" name="line_9">
-                 <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="19" column="0">
-                <widget class="QLabel" name="securityLabel">
-                 <property name="font">
-                  <font>
-                   <family>Chivo</family>
-                   <italic>true</italic>
-                  </font>
-                 </property>
-                 <property name="text">
-                  <string>Security</string>
                  </property>
                 </widget>
                </item>
@@ -792,45 +588,12 @@
                  </item>
                 </layout>
                </item>
-               <item row="15" column="0">
-                <layout class="QGridLayout" name="checkOtaUpdateGridLayout">
-                 <property name="bottomMargin">
-                  <number>0</number>
+               <item row="25" column="0">
+                <widget class="QCheckBox" name="enableEncryptedStorageCheckBox">
+                 <property name="text">
+                  <string>Enable</string>
                  </property>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="checkOtaUpdateLabel">
-                   <property name="text">
-                    <string>Check for updates</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <spacer name="horizontalSpacer_13">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QPushButton" name="checkOtaUpdateBtn">
-                   <property name="font">
-                    <font>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Check</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
+                </widget>
                </item>
                <item row="23" column="0">
                 <widget class="QLabel" name="storageEncryptionLabel">
@@ -844,92 +607,6 @@
                   <string>Storage encryption</string>
                  </property>
                 </widget>
-               </item>
-               <item row="13" column="0">
-                <layout class="QGridLayout" name="gridLayout_7">
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <property name="verticalSpacing">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_9">
-                   <property name="text">
-                    <string>System info</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <spacer name="horizontalSpacer_6">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QPushButton" name="showSystemInfoBtn">
-                   <property name="font">
-                    <font>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Show</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </item>
-               <item row="18" column="0">
-                <layout class="QGridLayout" name="gridLayout_14">
-                 <property name="bottomMargin">
-                  <number>0</number>
-                 </property>
-                 <item row="0" column="1">
-                  <spacer name="horizontalSpacer_10">
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>40</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="updateLabel">
-                   <property name="text">
-                    <string>Update InkBox</string>
-                   </property>
-                   <property name="alignment">
-                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QPushButton" name="updateBtn">
-                   <property name="font">
-                    <font>
-                     <weight>75</weight>
-                     <bold>true</bold>
-                    </font>
-                   </property>
-                   <property name="text">
-                    <string>Update</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
                </item>
                <item row="11" column="0">
                 <layout class="QGridLayout" name="gridLayout_16">
@@ -1000,8 +677,8 @@
                  </item>
                 </layout>
                </item>
-               <item row="24" column="0">
-                <widget class="Line" name="line_10">
+               <item row="7" column="0">
+                <widget class="Line" name="line_9">
                  <property name="frameShadow">
                   <enum>QFrame::Plain</enum>
                  </property>
@@ -1009,6 +686,212 @@
                   <enum>Qt::Horizontal</enum>
                  </property>
                 </widget>
+               </item>
+               <item row="6" column="0">
+                <widget class="QLabel" name="softwareLabel">
+                 <property name="font">
+                  <font>
+                   <family>Chivo</family>
+                   <italic>true</italic>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>System</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="21" column="0">
+                <widget class="QCheckBox" name="enableLockscreenCheckBox">
+                 <property name="text">
+                  <string>Enable lock screen and passcode</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="20" column="0">
+                <widget class="Line" name="line_2">
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="13" column="0">
+                <layout class="QGridLayout" name="gridLayout_7">
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_9">
+                   <property name="text">
+                    <string>System info</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <spacer name="horizontalSpacer_6">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="showSystemInfoBtn">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Show</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="22" column="0">
+                <layout class="QGridLayout" name="gridLayout_13">
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="1">
+                  <spacer name="horizontalSpacer_9">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="setPasscodeBtn">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Set</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="setPasscodeLabel">
+                   <property name="text">
+                    <string>Set a passcode</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="15" column="0">
+                <layout class="QGridLayout" name="checkOtaUpdateGridLayout">
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="checkOtaUpdateLabel">
+                   <property name="text">
+                    <string>Check for updates</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <spacer name="horizontalSpacer_13">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="checkOtaUpdateBtn">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Check</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="19" column="0">
+                <widget class="QLabel" name="securityLabel">
+                 <property name="font">
+                  <font>
+                   <family>Chivo</family>
+                   <italic>true</italic>
+                  </font>
+                 </property>
+                 <property name="text">
+                  <string>Security</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="0">
+                <layout class="QGridLayout" name="gridLayout_12">
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_8">
+                   <property name="text">
+                    <string>Reset this device</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="resetBtn">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Reset</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <spacer name="horizontalSpacer_8">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
                </item>
                <item row="14" column="0">
                 <layout class="QGridLayout" name="gridLayout_19">
@@ -1049,6 +932,119 @@
                   </widget>
                  </item>
                 </layout>
+               </item>
+               <item row="18" column="0">
+                <layout class="QGridLayout" name="gridLayout_14">
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="1">
+                  <spacer name="horizontalSpacer_10">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="updateLabel">
+                   <property name="text">
+                    <string>Update InkBox</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="updateBtn">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Update</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="24" column="0">
+                <widget class="Line" name="line_10">
+                 <property name="frameShadow">
+                  <enum>QFrame::Plain</enum>
+                 </property>
+                 <property name="orientation">
+                  <enum>Qt::Horizontal</enum>
+                 </property>
+                </widget>
+               </item>
+               <item row="8" column="0">
+                <widget class="QCheckBox" name="enableUiScalingCheckBox">
+                 <property name="text">
+                  <string>Enable UI scaling</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="26" column="0">
+                <layout class="QGridLayout" name="gridLayout_17">
+                 <property name="bottomMargin">
+                  <number>0</number>
+                 </property>
+                 <item row="0" column="1">
+                  <spacer name="horizontalSpacer_14">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="repackLabel">
+                   <property name="text">
+                    <string>Repack</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QPushButton" name="repackBtn">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Repack</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item row="27" column="0">
+                <spacer name="verticalSpacer_2">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
                </item>
               </layout>
              </item>

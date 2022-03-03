@@ -28,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->inkboxLabel->setFont(QFont("u001"));
 
     ui->settingsBtn->setProperty("type", "borderless");
     ui->appsBtn->setProperty("type", "borderless");
@@ -53,6 +54,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->quotePictureLabel->setText("");
 
     ui->quoteHeadingLabel->setStyleSheet("padding: 30px");
+    ui->inkboxLabel->setStyleSheet("font-size: 10.5pt");
     ui->homeBtn->setStyleSheet("padding: 5px");
 
     // Initializing some variables
@@ -801,7 +803,7 @@ void MainWindow::setBatteryIcon() {
         QPixmap emptyPixmap(":/resources/battery_empty.png");
         QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
 
-        // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
+        // Checking battery level and status, then displaying the relevant icon on batteryIcon
         if(isUsbPluggedIn() == true) {
             ui->batteryIcon->setPixmap(scaledChargingPixmap);
         }
@@ -831,7 +833,7 @@ void MainWindow::setBatteryIcon() {
         QPixmap emptyPixmap(":/resources/battery_empty.png");
         QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
 
-        // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
+        // Checking battery level and status, then displaying the relevant icon on batteryIcon
         if(isUsbPluggedIn() == true) {
             ui->batteryIcon->setPixmap(scaledChargingPixmap);
         }

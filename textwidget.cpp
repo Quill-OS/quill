@@ -10,6 +10,7 @@ textwidget::textwidget(QWidget *parent) :
     ui(new Ui::textwidget)
 {
     ui->setupUi(this);
+    ui->textBrowser->setFont(QFont("u001"));
 
     // Stylesheet
     QFile stylesheetFile(":/resources/eink.qss");

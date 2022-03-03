@@ -13,6 +13,7 @@ quit::quit(QWidget *parent) :
     ui(new Ui::quit)
 {
     ui->setupUi(this);
+    ui->backBtn->setFont(QFont("u001"));
 
     ui->pushButton->setProperty("type", "borderless");
     ui->pushButton_2->setProperty("type", "borderless");

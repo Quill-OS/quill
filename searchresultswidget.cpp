@@ -13,6 +13,7 @@ searchResultsWidget::searchResultsWidget(QWidget *parent) :
     // Variables
     libraryResults = false;
 
+    ui->listView->setFont(QFont("u001"));
     ui->listView->setStyleSheet("font-size: 10pt");
     ui->backBtn->setProperty("type", "borderless");
     ui->backBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");

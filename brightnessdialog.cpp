@@ -12,6 +12,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     ui(new Ui::brightnessDialog)
 {
     ui->setupUi(this);
+    brightnessDialog::setFont(QFont("u001"));
 
     // Stylesheet, style & misc.
     QFile stylesheetFile(":/resources/eink.qss");

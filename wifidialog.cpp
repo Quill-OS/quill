@@ -28,6 +28,7 @@ wifiDialog::wifiDialog(QWidget *parent) :
     ui->cancelBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->connectBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->mainLabel->setStyleSheet("padding-left: 125px; padding-right: 125px");
+    ui->networksListWidget->setFont(QFont("u001"));
     ui->networksListWidget->setStyleSheet("font-size: 9pt");
 
     checkWifiNetworks();

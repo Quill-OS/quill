@@ -37,6 +37,14 @@ reader::reader(QWidget *parent) :
     wordwidgetLock = false;
 
     ui->setupUi(this);
+    ui->brightnessStatus->setFont(QFont("u001"));
+    ui->fontLabel->setFont(QFont("u001"));
+    ui->sizeLabel->setFont(QFont("u001"));
+    ui->sizeValueLabel->setFont(QFont("u001"));
+    ui->alignmentLabel->setFont(QFont("u001"));
+    ui->fontChooser->setFont(QFont("u001"));
+    ui->pageProgressBar->setFont(QFont("u001"));
+
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->optionsBtn->setProperty("type", "borderless");
@@ -1162,9 +1170,11 @@ void reader::on_aboutBtn_clicked()
 {
     if(checkconfig("/opt/inkbox_genuine") == true) {
         QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
+        aboutmsg.prepend("<font face='u001'>");
         string_checkconfig_ro("/external_root/opt/isa/version");
-        aboutmsg.append("\n\nInkBox ");
+        aboutmsg.append("<br><br>InkBox ");
         aboutmsg.append(checkconfig_str_val);
+        aboutmsg.append("</font>");
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
     else {

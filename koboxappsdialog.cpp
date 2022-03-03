@@ -15,6 +15,7 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     ui(new Ui::koboxAppsDialog)
 {
     ui->setupUi(this);
+    ui->appsList->setFont(QFont("u001"));
 
     // Preventing outside interaction
     this->setModal(true);

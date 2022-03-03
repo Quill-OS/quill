@@ -9,6 +9,7 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
     ui(new Ui::bookInfoDialog)
 {
     ui->setupUi(this);
+    bookInfoDialog::setFont(QFont("u001"));
 
     // Stylesheet
     QFile stylesheetFile(":/resources/eink.qss");

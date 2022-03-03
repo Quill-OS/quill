@@ -23,6 +23,12 @@ settings::settings(QWidget *parent) :
     ui(new Ui::settings)
 {
     ui->setupUi(this);
+    settings::setFont(QFont("u001"));
+    ui->label->setFont(QFont("u001"));
+    ui->comboBox->setFont(QFont("u001"));
+    ui->sleepTimeoutComboBox->setFont(QFont("u001"));
+    ui->okBtn->setFont(QFont("Inter"));
+
     ui->setPasscodeBtn->setProperty("type", "borderless");
     ui->okBtn->setProperty("type", "borderless");
     ui->aboutBtn->setProperty("type", "borderless");
@@ -36,6 +42,8 @@ settings::settings(QWidget *parent) :
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->repackBtn->setProperty("type", "borderless");
+    ui->label->setStyleSheet("font-size: 10.5pt; font-weight: bold");
+    ui->okBtn->setStyleSheet("font-weight: bold");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
     ui->requestLeaseBtn->setStyleSheet("font-size: 9pt");
     ui->usbmsBtn->setStyleSheet("font-size: 9pt");
@@ -401,9 +409,11 @@ void settings::on_aboutBtn_clicked()
 {
     if(checkconfig("/opt/inkbox_genuine") == true) {
         QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
+        aboutmsg.prepend("<font face='u001'>");
         string_checkconfig_ro("/external_root/opt/isa/version");
-        aboutmsg.append("\n\nInkBox ");
+        aboutmsg.append("<br><br>InkBox ");
         aboutmsg.append(checkconfig_str_val);
+        aboutmsg.append("</font>");
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
     else {

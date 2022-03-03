@@ -14,6 +14,10 @@ dictionaryWidget::dictionaryWidget(QWidget *parent) :
     ui(new Ui::dictionaryWidget)
 {
     ui->setupUi(this);
+    ui->wordLabel->setFont(QFont("u001"));
+    ui->wordLabel->setStyleSheet("font-weight: bold");
+    ui->definitionStatusLabel->setFont(QFont("u001"));
+
     ui->backBtn->setProperty("type", "borderless");
     ui->backBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->nextDefinitionBtn->setProperty("type", "borderless");
