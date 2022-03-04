@@ -112,8 +112,10 @@ void usbms_splash::usbms_launch()
                     qDebug() << "Exiting USBMS session...";
                     ui->label->setText("Processing content");
                     ui->label_3->setText("Please wait");
-                    ui->label->setStyleSheet("QLabel { background-color : black; color : white; font-size: 15pt }");
+                    ui->label->setStyleSheet("QLabel { background-color : black; color : white; font-size: 15pt; font-weight: bold }");
                     ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 11pt }");
+                    ui->label->setFont(QFont("u001"));
+                    ui->label_3->setFont(QFont("u001"));
 
                     float stdIconWidth = sW / 2;
                     float stdIconHeight = sH / 2;

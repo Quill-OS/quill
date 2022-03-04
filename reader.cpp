@@ -1945,6 +1945,7 @@ void reader::setupSearchDialog() {
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
         connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFileNative(QString, bool)));
         connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+        connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
         generalDialogWindow->show();
     }
     else {
