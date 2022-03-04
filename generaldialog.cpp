@@ -128,7 +128,7 @@ generalDialog::generalDialog(QWidget *parent) :
     else if(global::usbms::usbmsDialog == true) {
         usbmsDialog = true;
         ui->okBtn->setText("Connect");
-        ui->cancelBtn->setText("Cancel");
+        ui->cancelBtn->setText("Not now");
         ui->bodyLabel->setText("<font face='u001'>Do you want to connect your device to a computer to manage books</font><font face='Inter'>?</font>");
         ui->headerLabel->setText("USB cable connected");
         QTimer::singleShot(50, this, SLOT(adjust_size()));

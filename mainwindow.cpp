@@ -350,7 +350,6 @@ MainWindow::MainWindow(QWidget *parent)
     if(checkconfig(".config/18-encrypted_storage/status") == true) {
         QDir encfsDropboxDir("/mnt/onboard/onboard/encfs-dropbox");
         if(!encfsDropboxDir.isEmpty()) {
-            global::usbms::showUsbmsDialog = false;
             QTimer::singleShot(1000, this, SLOT(openEncfsRepackDialog()));
         }
     }
@@ -1076,6 +1075,8 @@ void MainWindow::checkForUpdate() {
 
 void MainWindow::openEncfsRepackDialog() {
     global::encfs::repackDialog = true;
+    global::usbms::showUsbmsDialog = false;
+    global::usbms::usbmsDialog = false;
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
 }
