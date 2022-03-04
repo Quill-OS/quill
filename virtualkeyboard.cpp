@@ -192,11 +192,11 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
     }
 
     ui->lineEdit->setStyleSheet("border: 3px solid black");
-    if(global::keyboard::vncDialog == true) {
+    if(global::keyboard::vncDialog == true or global::keyboard::wifiPassphraseDialog == true) {
         ui->lineEdit->setFont(QFont("Noto Mono"));
     }
     else if(global::keyboard::searchDialog == true){
-        ui->lineEdit->setFont(QFont("Source Serif Pro"));
+        ui->lineEdit->setFont(QFont("u001"));
     }
     else {
         ui->lineEdit->setFont(QFont("Roboto"));

@@ -226,6 +226,7 @@ OK
                     <widget class="QPushButton" name="resetKoboxBtn">
                      <property name="font">
                       <font>
+                       <family>Inter</family>
                        <weight>75</weight>
                        <bold>true</bold>
                       </font>

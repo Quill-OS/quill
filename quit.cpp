@@ -52,6 +52,7 @@ void quit::on_pushButton_clicked()
     global::battery::showLowBatteryDialog = false;
 
     poweroff(true);
+    qApp->quit();
 }
 
 void quit::on_pushButton_2_clicked()
@@ -60,6 +61,7 @@ void quit::on_pushButton_2_clicked()
     global::battery::showLowBatteryDialog = false;
 
     reboot(true);
+    qApp->quit();
 }
 
 void quit::on_pushButton_4_clicked()

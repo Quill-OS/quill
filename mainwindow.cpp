@@ -244,6 +244,7 @@ MainWindow::MainWindow(QWidget *parent)
             // Rebooting if needed
             if(reboot_after_update == true) {
                 reboot(false);
+                qApp->quit();
             }
             else {
                 // Update process finished.
@@ -349,6 +350,7 @@ MainWindow::MainWindow(QWidget *parent)
     if(checkconfig(".config/18-encrypted_storage/status") == true) {
         QDir encfsDropboxDir("/mnt/onboard/onboard/encfs-dropbox");
         if(!encfsDropboxDir.isEmpty()) {
+            global::usbms::showUsbmsDialog = false;
             QTimer::singleShot(1000, this, SLOT(openEncfsRepackDialog()));
         }
     }
@@ -565,6 +567,7 @@ MainWindow::MainWindow(QWidget *parent)
         QFile::remove("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst");
 
         reboot(true);
+        qApp->quit();
     }
 
     // Write version control info to file in tmpfs
@@ -583,12 +586,11 @@ void MainWindow::openUpdateDialog() {
     // Write to a temporary file to show an "Update" prompt
     string_writeconfig("/inkbox/updateDialog", "true");
 
-    // Show the dialog
+    // Setup the dialog
     generalDialogWindow = new generalDialog(this);
     connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
     connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
     QApplication::processEvents();
 }
 
@@ -598,7 +600,6 @@ void MainWindow::openLowBatteryDialog() {
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
     QApplication::processEvents();
 }
 
@@ -608,7 +609,6 @@ void MainWindow::openUsbmsDialog() {
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
     QApplication::processEvents();
 }
 
@@ -1078,7 +1078,6 @@ void MainWindow::openEncfsRepackDialog() {
     global::encfs::repackDialog = true;
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
 }
 
 void MainWindow::on_libraryButton_clicked()

@@ -22,7 +22,6 @@ generalDialog::generalDialog(QWidget *parent) :
     ui->setupUi(this);
     ui->bodyLabel->setFont(QFont("u001"));
     ui->searchComboBox->setFont(QFont("u001"));
-    ui->label_2->setFont(QFont("u001"));
 
     // Preventing outside interaction
     this->setModal(true);
@@ -80,7 +79,7 @@ generalDialog::generalDialog(QWidget *parent) :
             ui->cancelBtn->setText("Go back");
             ui->bodyLabel->setText("This will erase any books you have on the device. Settings will be reset.");
             ui->headerLabel->setText("Warning");
-            this->adjustSize();
+            QTimer::singleShot(50, this, SLOT(adjust_size()));
             string_writeconfig("/inkbox/resetDialog", "false");
         }
         else {
@@ -89,7 +88,7 @@ generalDialog::generalDialog(QWidget *parent) :
             ui->cancelBtn->setText("Go back");
             ui->bodyLabel->setText("Settings will be reset.");
             ui->headerLabel->setText("Warning");
-            this->adjustSize();
+            QTimer::singleShot(50, this, SLOT(adjust_size()));
             string_writeconfig("/inkbox/resetDialog", "false");
         }
     }
@@ -99,7 +98,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->cancelBtn->setText("Not now");
         ui->bodyLabel->setText("<font face='u001'>Do you want to update InkBox now</font><font face='Inter'>?</font>"); // Because I hate Univers/U001's question mark ...
         ui->headerLabel->setText("Update available");
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
         string_writeconfig("/inkbox/updateDialog", "false");
     }
     else if(global::settings::settingsRebootDialog == true) {
@@ -113,7 +112,7 @@ generalDialog::generalDialog(QWidget *parent) :
             ui->bodyLabel->setText("The settings you chose might require a complete reboot of the device for them to work properly.");
         }
         ui->headerLabel->setText("Information");
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
     else if(global::mainwindow::lowBatteryDialog == true) {
         lowBatteryDialog = true;
@@ -123,7 +122,7 @@ generalDialog::generalDialog(QWidget *parent) :
         message.append(batt_level);
         ui->bodyLabel->setText(message);
         ui->headerLabel->setText("Low battery");
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
         string_writeconfig("/inkbox/lowBatteryDialog", "false");
     }
     else if(global::usbms::usbmsDialog == true) {
@@ -132,7 +131,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->cancelBtn->setText("Cancel");
         ui->bodyLabel->setText("<font face='u001'>Do you want to connect your device to a computer to manage books</font><font face='Inter'>?</font>");
         ui->headerLabel->setText("USB cable connected");
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
     else if(global::text::textBrowserDialog == true) {
         textBrowserDialog = true;
@@ -141,7 +140,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->stackedWidget->setCurrentIndex(1);
         ui->mainStackedWidget->insertWidget(1, textwidgetWindow);
         ui->mainStackedWidget->setCurrentIndex(1);
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
     else if(global::kobox::resetKoboxDialog == true) {
         resetKoboxDialog = true;
@@ -149,7 +148,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->okBtn->setText("Proceed");
         ui->cancelBtn->setText("Go back");
         ui->bodyLabel->setText("This will erase all KoBox user data. KoBox settings will be reset.");
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
     else if(global::keyboard::keyboardDialog == true) {
         setupKeyboardDialog();
@@ -162,27 +161,27 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->cancelBtn->setText("Cancel");
         ui->mainStackedWidget->insertWidget(1, keypadWidget);
         ui->mainStackedWidget->setCurrentIndex(1);
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
     else if(global::encfs::disableStorageEncryptionDialog == true) {
         ui->headerLabel->setText("Warning");
         ui->okBtn->setText("Proceed");
         ui->cancelBtn->setText("Go back");
         ui->bodyLabel->setText("<font face='u001'>This will delete all the files you have encrypted. Are you sure you want to continue</font><font face='Inter'>?</font>");
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
     else if(global::encfs::errorNoBooksInDropboxDialog == true) {
         ui->stackedWidget->setCurrentIndex(1);
         ui->headerLabel->setText("Error");
         ui->bodyLabel->setText("Please put books in the 'encfs-dropbox' folder to repack your encrypted storage.");
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
     else if(global::encfs::repackDialog == true) {
         ui->headerLabel->setText("Information");
         ui->okBtn->setText("Proceed");
         ui->cancelBtn->setText("Not now");
         ui->bodyLabel->setText("<font face='u001'>New files have been found in 'encfs-dropbox'. Would you want to repack your encrypted storage</font><font face='Inter'>?</font>");
-        this->adjustSize();
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
     else {
         // We shouldn't be there ;)
@@ -257,6 +256,7 @@ void generalDialog::on_okBtn_clicked()
             string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
             string_writeconfig("/external_root/boot/flags/DO_SOFT_RESET", "true");
             reboot(false);
+            qApp->quit();
         }
         else {
             // Restore default settings, we're not on InkBox OS
@@ -289,6 +289,7 @@ void generalDialog::on_okBtn_clicked()
         }
         else {
             installUpdate();
+            qApp->quit();
         }
     }
     if(usbmsDialog == true) {
@@ -495,6 +496,7 @@ void generalDialog::on_acceptBtn_clicked()
     if(settingsRebootDialog == true) {
         if(koboxSettingsRebootDialog == true or global::encfs::enableStorageEncryptionDialog) {
             reboot(true);
+            qApp->quit();
         }
         else {
             QProcess process;
@@ -517,6 +519,7 @@ void generalDialog::adjust_size() {
     int x = (screenGeometry.width() - this->width()) / 2;
     int y = (screenGeometry.height() - this->height()) / 2;
     this->move(x, y);
+    this->show();
     emit refreshScreen();
 }
 
@@ -594,6 +597,7 @@ void generalDialog::startOtaUpdate(bool wasDownloadSuccessful) {
     if(wasDownloadSuccessful == true) {
         global::otaUpdate::isUpdateOta = false;
         installUpdate();
+        qApp->quit();
     }
     else {
         emit showToast("Download failed");

@@ -8,6 +8,7 @@ virtualkeypad::virtualkeypad(QWidget *parent) :
     ui(new Ui::virtualkeypad)
 {
     ui->setupUi(this);
+    ui->lineEdit->setFont(QFont("u001"));
 
     // Style
     ui->n1->setProperty("type", "borderless");

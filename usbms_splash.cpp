@@ -106,6 +106,7 @@ void usbms_splash::usbms_launch()
             if(isUsbPluggedIn() == false) {
                 if(global::usbms::koboxExportExtensions == true) {
                     reboot(false);
+                    qApp->quit();
                 }
                 else {
                     qDebug() << "Exiting USBMS session...";

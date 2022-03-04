@@ -122,7 +122,6 @@ void apps::on_vncLaunchBtn_clicked()
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
-    generalDialogWindow->show();
 }
 
 void apps::refreshScreenNative() {

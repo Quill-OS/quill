@@ -1633,7 +1633,6 @@ void reader::openLowBatteryDialog() {
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
     QApplication::processEvents();
 }
 
@@ -1811,7 +1810,6 @@ void reader::openUsbmsDialog() {
 
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
     QApplication::processEvents();
 }
 
@@ -1879,7 +1877,6 @@ void reader::on_gotoBtn_clicked()
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(generalDialogWindow, SIGNAL(gotoPageSelected(int)), SLOT(gotoPage(int)));
-    generalDialogWindow->show();
 }
 
 void reader::gotoPage(int pageNumber) {

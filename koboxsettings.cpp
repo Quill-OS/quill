@@ -17,7 +17,7 @@ koboxSettings::koboxSettings(QWidget *parent) :
     ui->okBtn->setProperty("type", "borderless");
     ui->pushButton->setProperty("type", "borderless");
     ui->resetKoboxBtn->setProperty("type", "borderless");
-    ui->okBtn->setStyleSheet("font-weight: bold");
+    ui->pushButton->setStyleSheet("font-weight: bold");
 
     // Stylesheet
     QFile stylesheetFile(":/resources/eink.qss");
@@ -97,13 +97,11 @@ void koboxSettings::openSettingsRebootDialog() {
     global::kobox::koboxSettingsRebootDialog = true;
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
 }
 void koboxSettings::openResetKoboxDialog() {
     global::kobox::resetKoboxDialog = true;
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
 }
 
 void koboxSettings::on_spinBox_valueChanged(int arg1)

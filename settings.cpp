@@ -24,9 +24,9 @@ settings::settings(QWidget *parent) :
 {
     ui->setupUi(this);
     settings::setFont(QFont("u001"));
-    ui->label->setFont(QFont("u001"));
     ui->comboBox->setFont(QFont("u001"));
     ui->sleepTimeoutComboBox->setFont(QFont("u001"));
+    ui->aboutBtn->setFont(QFont("u001"));
     ui->okBtn->setFont(QFont("Inter"));
 
     ui->setPasscodeBtn->setProperty("type", "borderless");
@@ -390,7 +390,6 @@ void settings::on_okBtn_clicked() {
             global::settings::settingsRebootDialog = true;
             generalDialogWindow = new generalDialog();
             generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-            generalDialogWindow->show();
         }
         else {
             QProcess process;
@@ -703,10 +702,9 @@ void settings::on_resetBtn_clicked()
     // We write to a temporary file to show a "Reset" prompt
     string_writeconfig("/inkbox/resetDialog", "true");
 
-    // We show the dialog
+    // We setup the dialog
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
 }
 
 void settings::on_setPasscodeBtn_clicked()
@@ -783,7 +781,6 @@ void settings::on_showSystemInfoBtn_clicked()
     // Show a system info dialog
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
 }
 
 void settings::on_pageSizeWidthSpinBox_valueChanged(int arg1)
@@ -867,7 +864,6 @@ void settings::openUpdateDialog() {
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
     connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
-    generalDialogWindow->show();
     QApplication::processEvents();
 }
 
@@ -933,7 +929,6 @@ void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
             global::encfs::enableStorageEncryptionDialog = true;
             generalDialogWindow = new generalDialog(this);
             generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-            generalDialogWindow->show();
         }
         else {
             enableEncryptedStorageUserChange = true;
@@ -945,7 +940,6 @@ void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
         connect(generalDialogWindow, SIGNAL(cancelDisableStorageEncryption()), SLOT(cancelDisableStorageEncryption()));
         connect(generalDialogWindow, SIGNAL(disableStorageEncryption()), SLOT(disableStorageEncryption()));
-        generalDialogWindow->show();
     }
 }
 
@@ -968,7 +962,6 @@ void settings::disableStorageEncryption() {
     global::settings::settingsRebootDialog = true;
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    generalDialogWindow->show();
 }
 
 void settings::cancelDisableStorageEncryption() {
@@ -983,7 +976,6 @@ void settings::on_repackBtn_clicked()
         global::encfs::errorNoBooksInDropboxDialog = true;
         generalDialogWindow = new generalDialog(this);
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-        generalDialogWindow->show();
     }
     else {
         string_writeconfig("/external_root/run/encfs_repack", "true");

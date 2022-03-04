@@ -113,7 +113,6 @@ void wifiDialog::on_connectBtn_clicked()
         connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
         connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
         connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(close()));
-        generalDialogWindow->show();
     }
 }
 

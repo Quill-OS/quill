@@ -206,6 +206,7 @@ void encryptionManager::unlockEncryptedStorage() {
     if(global::encfs::cancelSetup == true) {
         global::encfs::cancelSetup = false;
         poweroff(true);
+        qApp->quit();
     }
     else {
         this->setStyleSheet("background-color: white");
@@ -267,6 +268,7 @@ void encryptionManager::unlockEncryptedStorage() {
                                 alertWindow->setAttribute(Qt::WA_DeleteOnClose);
                                 alertWindow->showFullScreen();
                                 poweroff(false);
+                                qApp->quit();
                             }
 
                             if(passphraseTries <= 2) {
