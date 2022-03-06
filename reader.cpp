@@ -43,6 +43,7 @@ reader::reader(QWidget *parent) :
     ui->sizeValueLabel->setFont(QFont("u001"));
     ui->alignmentLabel->setFont(QFont("u001"));
     ui->fontChooser->setFont(QFont("u001"));
+    ui->definitionStatusLabel->setFont(QFont("u001"));
     ui->pageProgressBar->setFont(QFont("u001"));
 
     ui->previousBtn->setProperty("type", "borderless");

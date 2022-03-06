@@ -98,6 +98,16 @@ void usbms_splash::usbms_launch()
     proc_1->waitForFinished();
     proc_1->deleteLater();
 
+    if(readFile("/opt/inkbox_device") == "n306\n" or readFile("/opt/inkbox_device") == "n873\n") {
+        QString functionInsmodProg("insmod");
+        QStringList functionInsmodArgs;
+        functionInsmodArgs << "/external_root/modules/drivers/usb/gadget/function/usb_f_mass_storage.ko";
+        QProcess * functionInsmodProc = new QProcess();
+        functionInsmodProc->start();
+        functionInsmodProc->waitForFinished();
+        functionInsmodProc->deleteLater();
+    }
+
     bool exitUsbMsDone = false;
     QTimer *usbms_t = new QTimer(this);
     usbms_t->setInterval(1000);
