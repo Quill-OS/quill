@@ -77,7 +77,12 @@ generalDialog::generalDialog(QWidget *parent) :
             resetDialog = true;
             ui->okBtn->setText("Proceed");
             ui->cancelBtn->setText("Go back");
-            ui->bodyLabel->setText("This will erase any books you have stored on the deivce.\nSettings will be reset.");
+            if(readFile("/opt/inkbox_device") != "n705\n") {
+                ui->bodyLabel->setText("This will erase any books you have stored on the device.\nSettings will be reset.");
+            }
+            else {
+                ui->bodyLabel->setText("This will erase any books\nyou have stored on the device.\nSettings will be reset.");
+            }
             ui->headerLabel->setText("Warning");
             QTimer::singleShot(50, this, SLOT(adjust_size()));
             string_writeconfig("/inkbox/resetDialog", "false");
