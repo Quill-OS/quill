@@ -18,6 +18,8 @@ koboxSettings::koboxSettings(QWidget *parent) :
     ui->pushButton->setProperty("type", "borderless");
     ui->resetKoboxBtn->setProperty("type", "borderless");
     ui->pushButton->setStyleSheet("font-weight: bold");
+    ui->resetKoboxBtn->setStyleSheet("font-weight: bold");
+    ui->okBtn->setStyleSheet("font-weight: bold");
 
     // Stylesheet
     QFile stylesheetFile(":/resources/eink.qss");
