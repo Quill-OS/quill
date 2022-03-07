@@ -351,6 +351,7 @@ void generalDialog::on_okBtn_clicked()
                             if(suffix == "txt" or suffix == "TXT" or suffix == "epub" or suffix == "EPUB" or suffix == "pdf" or suffix == "PDF" or suffix == "png" or suffix == "PNG" or suffix == "tif" or suffix == "TIF" or suffix == "bmp" or suffix == "BMP" or suffix == "tiff" or suffix == "TIFF" or suffix == "jpg" or suffix == "JPG" or suffix == "jpeg" or suffix == "JPEG") {
                                 if(dirIt.fileName().contains(global::keyboard::keyboardText) == true) {
                                     storageSearchResults.append(dirIt.fileName());
+                                    global::localStorage::searchResultsPaths.append(dirIt.filePath());
                                 }
                             }
                         }

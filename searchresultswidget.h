@@ -18,7 +18,7 @@ public:
     ~searchResultsWidget();
     void setListViewContents(QStringList searchResults);
     QModelIndex index;
-    QString itemText;
+    QString item;
     bool libraryResults;
 
 private slots:

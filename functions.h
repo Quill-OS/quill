@@ -112,6 +112,9 @@ namespace global {
         inline bool librarySearchDialog;
         inline bool libraryResults;
     }
+    namespace localStorage {
+        inline QStringList searchResultsPaths;
+    }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705;

@@ -212,6 +212,7 @@ reader::reader(QWidget *parent) :
             }
         }
     }
+    qDebug() << "Reader: Opening file" << book_file;
 
     // Writing book path to file
     std::string book_file_str = book_file.toStdString();

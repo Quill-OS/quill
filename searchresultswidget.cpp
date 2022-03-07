@@ -42,8 +42,8 @@ void searchResultsWidget::on_openBtn_clicked()
 {
     if(libraryResults == true) {
         index = ui->listView->currentIndex();
-        itemText = index.data(Qt::DisplayRole).toString();
-        if(!itemText.isEmpty()) {
+        item = index.data(Qt::DisplayRole).toString();
+        if(!item.isEmpty()) {
             // Get currently selected row number
             int selectedRow = ui->listView->currentIndex().row();
             // So that row 0 becomes row 1
@@ -63,8 +63,8 @@ void searchResultsWidget::on_openBtn_clicked()
             global::library::bookId = bookId;
 
             index = ui->listView->currentIndex();
-            itemText = index.data(Qt::DisplayRole).toString();
-            global::library::bookTitle = itemText;
+            item = index.data(Qt::DisplayRole).toString();
+            global::library::bookTitle = item;
 
             bookInfoDialog * bookInfoDialogWindow = new bookInfoDialog();
             connect(bookInfoDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
@@ -84,9 +84,9 @@ void searchResultsWidget::on_openBtn_clicked()
     }
     else {
         index = ui->listView->currentIndex();
-        itemText = index.data(Qt::DisplayRole).toString();
-        if(!itemText.isEmpty()) {
-            emit openBookFile(itemText, true);
+        item = global::localStorage::searchResultsPaths.at(index.row());
+        if(!item.isEmpty()) {
+            emit openBookFile(item, false);
             global::keyboard::searchDialog = false;
             global::keyboard::keyboardDialog = false;
             searchResultsWidget::close();
