@@ -173,12 +173,7 @@ int main(int argc, char *argv[])
 
         }
         else {
-            if(checkconfig("/inkbox/bookIsEpub") == true) {
-                global::reader::bookIsEpub = true;
-            }
-            else {
-                global::reader::bookIsEpub = false;
-            }
+            QProcess::execute("remount_tmpfs_launch.sh", QStringList());
 
             QApplication a(argc, argv);
             MainWindow w;

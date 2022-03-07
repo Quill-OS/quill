@@ -1878,6 +1878,7 @@ void reader::getTotalEpubPagesNumber() {
 
     string_checkconfig_ro("/run/epub_total_pages_number");
     totalPagesInt = checkconfig_str_val.toInt();
+    QFile::remove("/run/epub_total_pages_number");
 }
 
 void reader::on_gotoBtn_clicked()
@@ -2120,6 +2121,7 @@ void reader::getTotalPdfPagesNumber() {
 
     string_checkconfig_ro("/run/pdf_total_pages_number");
     totalPagesInt = checkconfig_str_val.toInt();
+    QFile::remove("/run/pdf_total_pages_number");
 }
 
 void reader::on_pdfScaleSlider_valueChanged(int value)
