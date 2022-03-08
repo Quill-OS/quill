@@ -562,7 +562,10 @@ reader::reader(QWidget *parent) :
         if(checkconfig_str_val == "n705\n") {
             infoLabelDefinedLength = 35;
         }
-        if(checkconfig_str_val == "n905\n") {
+        else if(checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
+            infoLabelDefinedLength = 50;
+        }
+        else {
             infoLabelDefinedLength = 50;
         }
 
@@ -582,6 +585,24 @@ reader::reader(QWidget *parent) :
         }
         else {
             bookReadRelativePath = book_file.split("/").last();
+        }
+
+        int infoLabelDefinedLength;
+        if(checkconfig_str_val == "n705\n") {
+            infoLabelDefinedLength = 35;
+        }
+        else if(checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
+            infoLabelDefinedLength = 50;
+        }
+        else {
+            infoLabelDefinedLength = 50;
+        }
+
+        if(bookReadRelativePath <= infoLabelDefinedLength) {
+            ui->bookInfoLabel->setWordWrap(false);
+        }
+        else {
+            ui->bookInfoLabel->setWordWrap(true);
         }
         ui->bookInfoLabel->setText(bookReadRelativePath);
     }
