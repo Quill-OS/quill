@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>630</width>
+    <width>644</width>
     <height>851</height>
    </rect>
   </property>
@@ -914,7 +914,7 @@
             <enum>QFrame::Plain</enum>
            </property>
            <property name="lineWidth">
-            <number>4</number>
+            <number>2</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>

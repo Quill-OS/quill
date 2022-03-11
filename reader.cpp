@@ -35,6 +35,7 @@ reader::reader(QWidget *parent) :
     }
     mupdf::convertRelativeValues = false;
     wordwidgetLock = false;
+    goToSavedPageDone = false;
 
     ui->setupUi(this);
     ui->brightnessStatus->setFont(QFont("u001"));
@@ -423,7 +424,7 @@ reader::reader(QWidget *parent) :
         t->start();
     }
 
-    // Checking if we're waking from sleep; if so, do nothing there because the book should already have been parsed
+    // Checking if we're waking from sleep and have lockscreen enabled; if so, do nothing there because the book should already have been parsed
     if(wakeFromSleep != true) {
         // Remount tmpfs
         string_writeconfig("/inkbox/remount", "true");
@@ -723,12 +724,10 @@ reader::reader(QWidget *parent) :
     }
 
     // Pages number info label
-    if(is_epub == true) {
-        getTotalEpubPagesNumber();
-    }
-    else if(is_pdf == true) {
+    if(is_pdf == true) {
         getTotalPdfPagesNumber();
     }
+    // The total pages number is already known for ePUBs at this point
     setupPageWidget();
 
     // Reading settings auto-save timer
@@ -773,15 +772,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
             QFile::remove("/run/book.epub");
             QFile::copy(book, "/run/book.epub");
 
-            // Parsing ePUBs with `mutool'
-            QString epubProg ("sh");
-            QStringList epubArgs;
-            convertMuPdfVars(0, false);
-            epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << "0" << "0" << "0" << mupdf::epub::epubPageNumber_qstr;
-            QProcess * epubProc = new QProcess();
-            epubProc->start(epubProg, epubArgs);
-            epubProc->waitForFinished();
-            epubProc->deleteLater();
+            getTotalEpubPagesNumber();
 
             filematch_ran = true;
             is_epub = true;
@@ -862,12 +853,6 @@ int reader::setup_book(QString book, int i, bool run_parser) {
                 epubProc->waitForFinished();
                 epubProc->deleteLater();
             }
-            else {
-                ;
-            }
-        }
-        else {
-            ;
         }
     }
     else if(is_pdf == true) {
@@ -882,12 +867,6 @@ int reader::setup_book(QString book, int i, bool run_parser) {
                 pdfProc->waitForFinished();
                 pdfProc->deleteLater();
             }
-            else {
-                ;
-            }
-        }
-        else {
-            ;
         }
     }
     else if(is_image == true) {
@@ -1693,8 +1672,7 @@ void reader::convertMuPdfVars(int fileType, bool convertAll) {
         }
         if(global::reader::globalReadingSettings == false) {
             if(goToSavedPageDone == false) {
-                string_checkconfig_ro(".config/A-page_number/config");
-                mupdf::epub::epubPageNumber = checkconfig_str_val.toInt();
+                mupdf::epub::epubPageNumber = readFile(".config/A-page_number/config").toInt();
                 goToSavedPageDone = true;
             }
         }
