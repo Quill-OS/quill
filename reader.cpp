@@ -776,8 +776,8 @@ int reader::setup_book(QString book, int i, bool run_parser) {
             // Parsing ePUBs with `mutool'
             QString epubProg ("sh");
             QStringList epubArgs;
-            convertMuPdfVars(0);
-            epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << mupdf::epub::fontSize_qstr << mupdf::epub::width_qstr << mupdf::epub::height_qstr << mupdf::epub::epubPageNumber_qstr;
+            convertMuPdfVars(0, false);
+            epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << "0" << "0" << "0" << mupdf::epub::epubPageNumber_qstr;
             QProcess * epubProc = new QProcess();
             epubProc->start(epubProg, epubArgs);
             epubProc->waitForFinished();
@@ -789,7 +789,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         else if(pdf_file_match(book) == true) {
             QString pdfProg("/usr/local/bin/mutool");
             QStringList pdfArgs;
-            convertMuPdfVars(1);
+            convertMuPdfVars(1, true);
             pdfArgs << "convert" << "-F" << "png" << "-O" << "width=" + mupdf::pdf::width_qstr + ",height=" + mupdf::pdf::height_qstr << "-o" << "/run/page.png" << book_file << mupdf::pdf::pdfPageNumber_qstr;
             QProcess * pdfProc = new QProcess();
             pdfProc->start(pdfProg, pdfArgs);
@@ -855,8 +855,8 @@ int reader::setup_book(QString book, int i, bool run_parser) {
             if(filematch_ran == true) {
                 QString epubProg ("sh");
                 QStringList epubArgs;
-                convertMuPdfVars(0);
-                epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << mupdf::epub::fontSize_qstr << mupdf::epub::width_qstr << mupdf::epub::height_qstr << mupdf::epub::epubPageNumber_qstr;
+                convertMuPdfVars(0, false);
+                epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << "0" << "0" << "0" << mupdf::epub::epubPageNumber_qstr;
                 QProcess * epubProc = new QProcess();
                 epubProc->start(epubProg, epubArgs);
                 epubProc->waitForFinished();
@@ -875,7 +875,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
             if(filematch_ran == true) {
                 QString pdfProg("/usr/local/bin/mutool");
                 QStringList pdfArgs;
-                convertMuPdfVars(1);
+                convertMuPdfVars(1, true);
                 pdfArgs << "convert" << "-F" << "png" << "-O" << "width=" + mupdf::pdf::width_qstr + ",height=" + mupdf::pdf::height_qstr << "-o" << "/run/page.png" << book_file << mupdf::pdf::pdfPageNumber_qstr;
                 QProcess * pdfProc = new QProcess();
                 pdfProc->start(pdfProg, pdfArgs);
@@ -1677,18 +1677,20 @@ void reader::openCriticalBatteryAlertWindow() {
     alertWindow->show();
 }
 
-void reader::convertMuPdfVars(int fileType) {
+void reader::convertMuPdfVars(int fileType, bool convertAll) {
     /* fileType can be:
      * 0: ePUB
      * 1: PDF
      * 2: Image
     */
     if(fileType == 0) {
-        setPageStyle(0);
-        mupdf::epub::fontSize = 12;
-        mupdf::epub::fontSize_qstr = QString::number(mupdf::epub::fontSize);
-        mupdf::epub::width_qstr = QString::number(mupdf::epub::width);
-        mupdf::epub::height_qstr = QString::number(mupdf::epub::height);
+        if(convertAll == 1) {
+            setPageStyle(0);
+            mupdf::epub::fontSize = 12;
+            mupdf::epub::fontSize_qstr = QString::number(mupdf::epub::fontSize);
+            mupdf::epub::width_qstr = QString::number(mupdf::epub::width);
+            mupdf::epub::height_qstr = QString::number(mupdf::epub::height);
+        }
         if(global::reader::globalReadingSettings == false) {
             if(goToSavedPageDone == false) {
                 string_checkconfig_ro(".config/A-page_number/config");
@@ -1891,7 +1893,7 @@ void reader::setupPageWidget() {
 void reader::getTotalEpubPagesNumber() {
     QString epubProg ("sh");
     QStringList epubArgs;
-    convertMuPdfVars(0);
+    convertMuPdfVars(0, true);
     epubArgs << "/mnt/onboard/.adds/inkbox/epub.sh" << mupdf::epub::fontSize_qstr << mupdf::epub::width_qstr << mupdf::epub::height_qstr << mupdf::epub::epubPageNumber_qstr << "get_pages_number";
     QProcess *epubProc = new QProcess();
     epubProc->start(epubProg, epubArgs);
@@ -2134,7 +2136,7 @@ bool reader::image_file_match(QString file) {
 void reader::getTotalPdfPagesNumber() {
     QString epubProg ("sh");
     QStringList epubArgs;
-    convertMuPdfVars(0);
+    convertMuPdfVars(0, true);
     epubArgs << "/mnt/onboard/.adds/inkbox/pdf_get_total_pages_number.sh" << book_file;
     QProcess * epubProc = new QProcess();
     epubProc->start(epubProg, epubArgs);

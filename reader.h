@@ -108,7 +108,7 @@ public:
     void wordwidget_hide();
     void openLowBatteryDialog();
     void openCriticalBatteryAlertWindow();
-    void convertMuPdfVars(int fileType);
+    void convertMuPdfVars(int fileType, bool convertAll);
     void refreshScreen();
     void setPageStyle(int fileType);
     void alignText(int alignment);
