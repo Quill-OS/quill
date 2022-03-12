@@ -48,6 +48,7 @@ public:
     bool existing_recent_books = false;
     bool reboot_after_update = false;
     bool resetFullWindowException;
+    bool wifiIconClickedWhileReconnecting;
     int timerTime = 0;
     QString relative_path;
     QString usbmsStatus;
@@ -96,6 +97,7 @@ private slots:
     void resetWindow(bool resetStackedWidget);
     void resetFullWindow();
     void setRecentBooksLabelsTruncateTreshold();
+    void resetWifiIconClickedWhileReconnecting();
 
 private:
     Ui::MainWindow * ui;

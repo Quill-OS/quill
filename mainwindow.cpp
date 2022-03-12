@@ -65,6 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     global::usbms::koboxExportExtensions = false;
     global::mainwindow::tabSwitcher::repaint = true;
     resetFullWindowException = false;
+    wifiIconClickedWhileReconnecting = false;
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -924,7 +925,7 @@ void MainWindow::updateWifiIcon(int mode) {
     */
     if(mode == 0) {
         QTimer *wifiIconTimer = new QTimer(this);
-        wifiIconTimer->setInterval(60000);
+        wifiIconTimer->setInterval(10000);
         connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(setWifiIcon()));
         wifiIconTimer->start();
     }
@@ -988,8 +989,24 @@ void MainWindow::setWifiIcon() {
 }
 
 void MainWindow::openWifiDialog() {
-    global::toast::wifiToast = true;
-    showToast("Searching for networks");
+    if(checkconfig("/external_root/run/was_connected_to_wifi") == true and wifiIconClickedWhileReconnecting == false) {
+        showToast("Reconnection in progress\nTap again to cancel");
+        wifiIconClickedWhileReconnecting = true;
+        QTimer::singleShot(10000, this, SLOT(resetWifiIconClickedWhileReconnecting()));
+    }
+    else {
+        if(wifiIconClickedWhileReconnecting == true) {
+            string_writeconfig("/opt/ibxd", "stop_wifi_reconnection\n");
+            while(true) {
+                if(QFile::exists("/run/stop_wifi_reconnection_done")) {
+                    QFile::remove("/run/stop_wifi_reconnection_done");
+                    break;
+                }
+            }
+        }
+        global::toast::wifiToast = true;
+        showToast("Searching for networks");
+    }
 }
 
 void MainWindow::on_wifiBtn_clicked()
@@ -1144,4 +1161,8 @@ void MainWindow::checkForOtaUpdate() {
             launchOtaUpdater();
         }
     }
+}
+
+void MainWindow::resetWifiIconClickedWhileReconnecting() {
+    wifiIconClickedWhileReconnecting = false;
 }
