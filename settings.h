@@ -24,6 +24,7 @@ public:
     bool ui_enable_changed = false;
     bool ui_not_user_change = false;
     bool not_user_change = true;
+    bool timezone_not_user_change = true;
     bool enableEncryptedStorageUserChange = false;
 
     explicit settings(QWidget *parent = nullptr);
@@ -68,8 +69,8 @@ private slots:
     void disableStorageEncryption();
     void cancelDisableStorageEncryption();
     void on_repackBtn_clicked();
-
     void on_generateSystemReportBtn_clicked();
+    void on_tzComboBox_currentTextChanged(const QString &arg1);
 
 signals:
     void showToast(QString messageToDisplay);

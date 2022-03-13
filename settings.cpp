@@ -25,6 +25,7 @@ settings::settings(QWidget *parent) :
     ui->setupUi(this);
     settings::setFont(QFont("u001"));
     ui->comboBox->setFont(QFont("u001"));
+    ui->tzComboBox->setFont(QFont("u001"));
     ui->sleepTimeoutComboBox->setFont(QFont("u001"));
     ui->aboutBtn->setFont(QFont("u001"));
     ui->okBtn->setFont(QFont("Inter"));
@@ -53,6 +54,7 @@ settings::settings(QWidget *parent) :
     ui->generateSystemReportBtn->setStyleSheet("font-size: 9pt");
     ui->checkOtaUpdateBtn->setStyleSheet("font-size: 9pt");
     ui->comboBox->setStyleSheet("font-size: 9pt");
+    ui->tzComboBox->setStyleSheet("font-size: 9pt");
     ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
     ui->repackBtn->setStyleSheet("font-size: 9pt");
@@ -332,6 +334,16 @@ settings::settings(QWidget *parent) :
     if(checkconfig(".config/09-dpi/config-enabled") == true) {
         ui_not_user_change = true;
         ui->enableUiScalingCheckBox->click();
+    }
+
+    timezone_not_user_change = true;
+    ui->tzComboBox->addItems(QStringList(readFile(":/resources/tzlist").split("\n", Qt::SkipEmptyParts)));
+    // Timezone
+    if(readFile(".config/19-timezone/config-name").isEmpty()) {
+        ui->tzComboBox->setCurrentText("UTC");
+    }
+    else {
+        ui->tzComboBox->setCurrentText(readFile(".config/19-timezone/config-name"));
     }
 
     if(checkconfig("/opt/inkbox_genuine") == true) {
@@ -996,6 +1008,21 @@ void settings::on_generateSystemReportBtn_clicked()
             }
             QFile::remove("/inkbox/systemReportDone");
             break;
+        }
+    }
+}
+
+void settings::on_tzComboBox_currentTextChanged(const QString &arg1)
+{
+    if(timezone_not_user_change == true) {
+        timezone_not_user_change = false;
+    }
+    else {
+        setDefaultWorkDir();
+        // Preventing unnecessary (e)MMC writes
+        if(readFile(".config/19-timezone/config-name") != arg1) {
+            QProcess::execute("ln", QStringList() << "-sf" << "/usr/share/zoneinfo/" + arg1 << ".config/19-timezone/config");
+            string_writeconfig(".config/19-timezone/config-name", arg1.toStdString());
         }
     }
 }
