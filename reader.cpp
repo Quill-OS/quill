@@ -1026,6 +1026,9 @@ void reader::on_nextBtn_clicked()
         }
         else {
             mupdf::pdf::pdfPageNumber = mupdf::pdf::pdfPageNumber + 1;
+            if(ui->pdfScaleSlider->value() != 0) {
+                mupdf::convertRelativeValues = true;
+            }
             setup_book(book_file, mupdf::pdf::pdfPageNumber, true);
             setupPng();
 
