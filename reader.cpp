@@ -177,13 +177,16 @@ reader::reader(QWidget *parent) :
             stylesheetFile.close();
             book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
 
-            if(book_file != "") {
+            if(!book_file.isEmpty()) {
                 setDefaultWorkDir();
             }
             else {
                 // User clicked "Cancel" button
+                // Restarting InkBox
                 setDefaultWorkDir();
-                quit_restart();
+                QProcess process;
+                process.startDetached("inkbox", QStringList());
+                qApp->quit();
             }
         }
         else {
@@ -203,13 +206,16 @@ reader::reader(QWidget *parent) :
             stylesheetFile.close();
             book_file = dialog->getOpenFileName(dialog, tr("Open File"), QDir::currentPath());
 
-            if(book_file != "") {
+            if(!book_file.isEmpty()) {
                 setDefaultWorkDir();
             }
             else {
                 // User clicked "Cancel" button
+                // Restarting InkBox
                 setDefaultWorkDir();
-                quit_restart();
+                QProcess process;
+                process.startDetached("inkbox", QStringList());
+                qApp->quit();
             }
         }
     }
@@ -220,20 +226,22 @@ reader::reader(QWidget *parent) :
     string_writeconfig("/tmp/inkboxBookPath", book_file_str);
 
     // Calling InkBox daemon (ibxd) via FIFO interface to run bookconfig_mount
-    if(checkconfig(".config/16-global_reading_settings/config") == false) {
-        global::reader::globalReadingSettings = false;
-        string_writeconfig("/opt/ibxd", "bookconfig_mount\n");
-        // Callback handler to wait until bookconfig_mount has finished execution
-        while(true) {
-            if(QFile::exists("/inkbox/bookConfigSetUp")) {
-                QFile::remove("/inkbox/bookConfigSetUp");
-                setupLocalSettingsEnvironment();
-                break;
+    if(!book_file.isEmpty()) {
+        if(checkconfig(".config/16-global_reading_settings/config") == false) {
+            global::reader::globalReadingSettings = false;
+            string_writeconfig("/opt/ibxd", "bookconfig_mount\n");
+            // Callback handler to wait until bookconfig_mount has finished execution
+            while(true) {
+                if(QFile::exists("/inkbox/bookConfigSetUp")) {
+                    QFile::remove("/inkbox/bookConfigSetUp");
+                    setupLocalSettingsEnvironment();
+                    break;
+                }
             }
         }
-    }
-    else {
-        global::reader::globalReadingSettings = true;
+        else {
+            global::reader::globalReadingSettings = true;
+        }
     }
 
     // Custom settings
