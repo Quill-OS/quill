@@ -58,7 +58,6 @@ public:
     void openUsbmsDialog();
     void resetIcons();
     void setBatteryIcon();
-    int testPing();
     bool checkWifiState();
 
 public slots:

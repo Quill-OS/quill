@@ -693,6 +693,21 @@ namespace {
         close(ntxfd);
         return !!ptr;
     }
+    int testPing() {
+        QString pingProg = "ping";
+        QStringList pingArgs;
+        pingArgs << "-c" << "1" << "1.1.1.1";
+        QProcess *pingProcess = new QProcess();
+        pingProcess->start(pingProg, pingArgs);
+        pingProcess->waitForFinished();
+        int exitCode = pingProcess->exitCode();
+        pingProcess->deleteLater();
+        if(exitCode == 0) {
+            global::network::isConnected = true;
+        }
+        return exitCode;
+    }
+
 }
 
 #endif // FUNCTIONS_H

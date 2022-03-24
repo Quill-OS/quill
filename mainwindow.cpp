@@ -902,21 +902,6 @@ void MainWindow::setupSearchDialog() {
     }
 }
 
-int MainWindow::testPing() {
-    QString pingProg = "ping";
-    QStringList pingArgs;
-    pingArgs << "-c" << "1" << "1.1.1.1";
-    QProcess *pingProcess = new QProcess();
-    pingProcess->start(pingProg, pingArgs);
-    pingProcess->waitForFinished();
-    int exitCode = pingProcess->exitCode();
-    pingProcess->deleteLater();
-    if(exitCode == 0) {
-        global::network::isConnected = true;
-    }
-    return exitCode;
-}
-
 void MainWindow::updateWifiIcon(int mode) {
     /* Usage:
      * mode 0: auto
@@ -1101,28 +1086,30 @@ void MainWindow::openEncfsRepackDialog() {
 
 void MainWindow::on_libraryButton_clicked()
 {
-    resetFullWindowException = false;
-    resetWindow(false);
-    if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
-        ui->libraryButton->setStyleSheet("background: black; color: white");
-        ui->libraryButton->setIcon(QIcon(":/resources/online-library-inverted.png"));
+    if(testPing() == 0) {
+        resetFullWindowException = false;
+        resetWindow(false);
+        if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
+            ui->libraryButton->setStyleSheet("background: black; color: white");
+            ui->libraryButton->setIcon(QIcon(":/resources/online-library-inverted.png"));
 
-        // Create widget
-        libraryWidgetWindow = new libraryWidget();
-        connect(libraryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(resetFullWindow()));
-        libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
-        ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
-        global::mainwindow::tabSwitcher::libraryWidgetCreated = true;
+            // Create widget
+            libraryWidgetWindow = new libraryWidget();
+            connect(libraryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(resetFullWindow()));
+            libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+            ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
+            global::mainwindow::tabSwitcher::libraryWidgetCreated = true;
 
-        // Switch tab
-        ui->stackedWidget->setCurrentIndex(3);
-        global::mainwindow::tabSwitcher::libraryWidgetSelected = true;
+            // Switch tab
+            ui->stackedWidget->setCurrentIndex(3);
+            global::mainwindow::tabSwitcher::libraryWidgetSelected = true;
 
-        // Repaint
-        this->repaint();
+            // Repaint
+            this->repaint();
+        }
     }
     else {
-        ;
+        showToast("Wi-Fi connection error");
     }
 }
 

@@ -380,42 +380,44 @@ void generalDialog::on_okBtn_clicked()
                     }
                 }
                 else if(ui->searchComboBox->currentText() == "Online library") {
-                    string_writeconfig("/inkbox/searchComboBoxFunction", "Online library");
+                    if(testPing() == 0) {
+                        string_writeconfig("/inkbox/searchComboBoxFunction", "Online library");
 
-                    if(!readFile("/external_root/opt/storage/gutenberg/last_sync").isEmpty()) {
-                        unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
-                        unsigned long syncEpoch = readFile("/external_root/opt/storage/gutenberg/last_sync").toULong();
-                        unsigned long allowSyncEpoch = syncEpoch + 86400;
-                        if(currentEpoch > allowSyncEpoch) {
-                            syncGutenbergCatalog();
-                        }
-                        else {
-                            noGutenbergSyncToDo = true;
-                        }
-                    }
-                    else {
-                        syncGutenbergCatalog();
-                    }
-
-                    QTimer * searchTimer = new QTimer(this);
-                    searchTimer->setInterval(100);
-                    connect(searchTimer, &QTimer::timeout, [&]() {
-                        if(noGutenbergSyncToDo == true or (gutenbergSyncDone == true && gutenbergSyncStatus == true)) {
-                            if(searchTimerDone == false) {
-                                searchTimerDone = true;
-                                string_writeconfig("/inkbox/gutenberg_search_request", global::keyboard::keyboardText.toStdString());
-                                string_writeconfig("/opt/ibxd", "gutenberg_search\n");
-                                global::toast::modalToast = true;
-                                global::toast::indefiniteToast = true;
-                                emit showToast("Searching");
-                                QTimer::singleShot(100, this, SLOT(waitForGutenbergSearchDone()));
+                        if(!readFile("/external_root/opt/storage/gutenberg/last_sync").isEmpty()) {
+                            unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
+                            unsigned long syncEpoch = readFile("/external_root/opt/storage/gutenberg/last_sync").toULong();
+                            unsigned long allowSyncEpoch = syncEpoch + 86400;
+                            if(currentEpoch > allowSyncEpoch) {
+                                syncGutenbergCatalog();
+                            }
+                            else {
+                                noGutenbergSyncToDo = true;
                             }
                         }
-                    } );
-                    searchTimer->start();
-                }
-                else {
-                    ;
+                        else {
+                            syncGutenbergCatalog();
+                        }
+
+                        QTimer * searchTimer = new QTimer(this);
+                        searchTimer->setInterval(100);
+                        connect(searchTimer, &QTimer::timeout, [&]() {
+                            if(noGutenbergSyncToDo == true or (gutenbergSyncDone == true && gutenbergSyncStatus == true)) {
+                                if(searchTimerDone == false) {
+                                    searchTimerDone = true;
+                                    string_writeconfig("/inkbox/gutenberg_search_request", global::keyboard::keyboardText.toStdString());
+                                    string_writeconfig("/opt/ibxd", "gutenberg_search\n");
+                                    global::toast::modalToast = true;
+                                    global::toast::indefiniteToast = true;
+                                    emit showToast("Searching");
+                                    QTimer::singleShot(100, this, SLOT(waitForGutenbergSearchDone()));
+                                }
+                            }
+                        } );
+                        searchTimer->start();
+                    }
+                    else {
+                        emit showToast("Wi-Fi connection error");
+                    }
                 }
             }
             else {
