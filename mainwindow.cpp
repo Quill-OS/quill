@@ -498,12 +498,13 @@ MainWindow::MainWindow(QWidget *parent)
     if(checkconfig("/opt/inkbox_genuine") == true) {
         if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
             string_checkconfig_ro("/external_root/opt/isa/version");
-            QString updatemsg = "InkBox update to v";
+            QString updatemsg = "<font face='u001'>InkBox update to version ";
             updatemsg = updatemsg.append(checkconfig_str_val);
             updatemsg = updatemsg.remove(QRegExp("[\n]"));
-            updatemsg = updatemsg.append(" completed successfully.\n\nChangelog:\n");
+            updatemsg = updatemsg.append(" completed successfully.<br><br>Changelog:<br>");
             string_checkconfig_ro("/external_root/opt/isa/changelog");
             updatemsg = updatemsg.append(checkconfig_str_val);
+            updatemsg = updatemsg.append("</font>");
             QMessageBox::information(this, tr("Information"), updatemsg);
             string_writeconfig("/external_root/opt/update/inkbox_updated", "false");
 
