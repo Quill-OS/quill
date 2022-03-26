@@ -9,7 +9,6 @@
 #include <QProcess>
 #include <QScreen>
 #include <QTimer>
-#include <QMessageBox>
 #include <QDirIterator>
 #include <QStringListModel>
 #include <QListView>
@@ -111,10 +110,10 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->stackedWidget->setCurrentIndex(1);
         if(global::kobox::koboxSettingsRebootDialog == true or global::encfs::enableStorageEncryptionDialog) {
             koboxSettingsRebootDialog = true;
-            ui->bodyLabel->setText("The device will reboot now, since the settings you chose require it to work properly.");
+            ui->bodyLabel->setText("The device will reboot now, since<br>the settings you defined require it to work properly.");
         }
         else {
-            ui->bodyLabel->setText("The settings you chose might require a complete reboot of the device for them to work properly.");
+            ui->bodyLabel->setText("The settings you defined might<br>require a complete reboot of the device for them to work properly.");
         }
         ui->headerLabel->setText("Information");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
@@ -421,7 +420,8 @@ void generalDialog::on_okBtn_clicked()
                 }
             }
             else {
-                QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in a search term."));
+                global::toast::delay = 3000;
+                emit showToast("Please type in a search term");
             }
         }
         else if(global::keyboard::vncDialog == true) {
@@ -447,7 +447,8 @@ void generalDialog::on_okBtn_clicked()
                 }
             }
             else {
-                QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in the required argument."));
+                global::toast::delay = 3000;
+                emit showToast("Please type in the required argument");
             }
         }
         else if(global::keyboard::wifiPassphraseDialog == true) {
@@ -462,7 +463,8 @@ void generalDialog::on_okBtn_clicked()
                 global::keyboard::keyboardDialog = false;
             }
             else {
-                QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in the required argument."));
+                global::toast::delay = 3000;
+                showToast("Please type in the required argument");
             }
         }
         else if(global::keyboard::encfsDialog == true) {
@@ -474,7 +476,8 @@ void generalDialog::on_okBtn_clicked()
                 this->close();
             }
             else {
-                QMessageBox::critical(this, tr("Invalid argument"), tr("Please type in the required argument."));
+                global::toast::delay = 3000;
+                showToast("Please type in the required argument");
             }
         }
         else {
