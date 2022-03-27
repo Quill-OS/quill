@@ -16,6 +16,7 @@ apps::apps(QWidget *parent) :
     ui->savedWordsLaunchBtn->setProperty("type", "borderless");
     ui->calculatorLaunchBtn->setProperty("type", "borderless");
     ui->vncLaunchBtn->setProperty("type", "borderless");
+    ui->reversiLaunchBtn->setProperty("type", "borderless");
 
     ui->koboxAppsOpenButton->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->scribbleLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
@@ -24,6 +25,7 @@ apps::apps(QWidget *parent) :
     ui->savedWordsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->calculatorLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->vncLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
+    ui->reversiLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     // Hiding KoBox apps button and label if X11 isn't enabled/wasn't started
     if(checkconfig("/external_root/boot/flags/X11_START") == false or checkconfig("/external_root/boot/flags/X11_STARTED") == false) {
@@ -127,4 +129,11 @@ void apps::on_vncLaunchBtn_clicked()
 
 void apps::refreshScreenNative() {
     emit refreshScreen();
+}
+
+void apps::on_reversiLaunchBtn_clicked()
+{
+    QProcess process;
+    process.startDetached("qreversi", QStringList());
+    qApp->quit();
 }

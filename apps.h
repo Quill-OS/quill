@@ -28,6 +28,7 @@ private slots:
     void on_calculatorLaunchBtn_clicked();
     void on_koboxAppsOpenButton_clicked();
     void on_vncLaunchBtn_clicked();
+    void on_reversiLaunchBtn_clicked();
     void refreshScreenNative();
 
 private:

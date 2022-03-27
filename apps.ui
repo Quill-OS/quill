@@ -56,7 +56,75 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="4" column="0">
+       <item row="6" column="1">
+        <widget class="QPushButton" name="calculatorLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QPushButton" name="calendarLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="label_2">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Light Maps</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="scribbleLabel">
+         <property name="font">
+          <font>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Scribble</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QPushButton" name="savedWordsLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
         <widget class="QLabel" name="label_3">
          <property name="font">
           <font>
@@ -82,8 +150,8 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QLabel" name="label_4">
+       <item row="4" column="0">
+        <widget class="QLabel" name="calendarLabel">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -91,7 +159,36 @@
           </font>
          </property>
          <property name="text">
-          <string>Calculator</string>
+          <string>Calendar</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QPushButton" name="lightmapsLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QPushButton" name="vncLaunchBtn">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Launch</string>
          </property>
         </widget>
        </item>
@@ -109,22 +206,21 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
-        <widget class="QPushButton" name="vncLaunchBtn">
+       <item row="6" column="0">
+        <widget class="QLabel" name="label_4">
          <property name="font">
           <font>
-           <family>Inter</family>
            <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
          <property name="text">
-          <string>Launch</string>
+          <string>Calculator</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="scribbleLabel">
+       <item row="8" column="0">
+        <widget class="QLabel" name="vncViewerLabel">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -132,21 +228,7 @@
           </font>
          </property>
          <property name="text">
-          <string>Scribble</string>
-         </property>
-        </widget>
-       </item>
-       <item row="5" column="1">
-        <widget class="QPushButton" name="calculatorLaunchBtn">
-         <property name="font">
-          <font>
-           <family>Inter</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Launch</string>
+          <string>VNC viewer</string>
          </property>
         </widget>
        </item>
@@ -165,21 +247,8 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QLabel" name="vncViewerLabel">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>VNC viewer</string>
-         </property>
-        </widget>
-       </item>
        <item row="3" column="0">
-        <widget class="QLabel" name="calendarLabel">
+        <widget class="QLabel" name="reversiLabel">
          <property name="font">
           <font>
            <weight>75</weight>
@@ -187,63 +256,20 @@
           </font>
          </property>
          <property name="text">
-          <string>Calendar</string>
+          <string>Reversi</string>
          </property>
         </widget>
        </item>
        <item row="3" column="1">
-        <widget class="QPushButton" name="calendarLaunchBtn">
+        <widget class="QPushButton" name="reversiLaunchBtn">
          <property name="font">
           <font>
-           <family>Inter</family>
            <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
          <property name="text">
           <string>Launch</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="1">
-        <widget class="QPushButton" name="savedWordsLaunchBtn">
-         <property name="font">
-          <font>
-           <family>Inter</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Launch</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="1">
-        <widget class="QPushButton" name="lightmapsLaunchBtn">
-         <property name="font">
-          <font>
-           <family>Inter</family>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Launch</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
-        <widget class="QLabel" name="label_2">
-         <property name="font">
-          <font>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Light Maps</string>
          </property>
         </widget>
        </item>
