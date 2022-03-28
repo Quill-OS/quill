@@ -30,6 +30,7 @@ private slots:
     void on_vncLaunchBtn_clicked();
     void on_reversiLaunchBtn_clicked();
     void refreshScreenNative();
+    void on_g2048LaunchBtn_clicked();
 
 private:
     Ui::apps *ui;
