@@ -73,8 +73,7 @@ MainWindow::MainWindow(QWidget *parent)
     sH = QGuiApplication::screens()[0]->size().height();
 
     // Defining what the default icon size will be
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n") {
+    if(global::deviceID == "n705\n") {
         stdIconWidth = sW / 12;
         stdIconHeight = sH / 12;
         brightnessIconWidth = sW / 24;
@@ -84,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
         wifiIconWidth = sW / 20.5;
         wifiIconHeight = sH / 20.5;
     }
-    else if(checkconfig_str_val == "n905\n") {
+    else if(global::deviceID == "n905\n") {
         stdIconWidth = sW / 14;
         stdIconHeight = sH / 14;
         brightnessIconWidth = sW / 26;
@@ -94,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent)
         wifiIconWidth = sW / 22.5;
         wifiIconHeight = sH / 22.5;
     }
-    else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n" or checkconfig_str_val == "emu\n") {
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
         stdIconWidth = sW / 12.5;
         stdIconHeight = sH / 12.5;
         brightnessIconWidth = sW / 24.5;
@@ -158,14 +157,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->wifiBtn->setStyleSheet("font-size: 9pt; padding-bottom: 0px; padding-top: 0px; padding-left: 8px; padding-right: 8px");
 
     // Checking if we have a Mini or Touch there
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 1px; padding-right: 1px;");
     }
-    else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n" or checkconfig_str_val == "emu\n") {
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;");
     }
-    else if(checkconfig_str_val == "n873\n") {
+    else if(global::deviceID == "n873\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;");
     }
     else {
@@ -187,7 +185,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Deleting/Hiding "Library" button if device is not WiFi-able
     // NOTE: Using deleteLater() on these elements causes a segmentation fault and aborts the whole program when the Settings, Apps or Home button is pressed. No idea why.
-    if(global::device::isWifiAble == false && readFile("/opt/inkbox_device") != "emu\n") {
+    if(global::device::isWifiAble == false && global::deviceID != "emu\n") {
         ui->libraryButton->hide();
         ui->line_10->hide();
     }
@@ -784,10 +782,9 @@ void MainWindow::resetIcons() {
 
 void MainWindow::setBatteryIcon() {
     // Battery
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n873\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
         // Hide brightness controls; they won't be very useful there anyway (for anything but the Glo (HD)/Libra/Aura 2) ...
-        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
             ui->brightnessBtn->hide();
             ui->line_7->hide();
         }
@@ -855,8 +852,7 @@ void MainWindow::setBatteryIcon() {
 }
 
 void MainWindow::setInitialBrightness() {
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n873\n") {
+    if(global::deviceID == "n873\n") {
         int warmth;
         string_checkconfig_ro(".config/03-brightness/config-warmth");
         if(checkconfig_str_val == "") {
@@ -939,7 +935,7 @@ bool MainWindow::checkWifiState() {
      * true: interface UP
      * false: interface DOWN
     */
-    if(readFile("/opt/inkbox_device") == "n437\n") {
+    if(global::deviceID == "n437\n") {
         string_checkconfig_ro("/sys/class/net/wlan0/operstate");
     }
     else {
@@ -1137,10 +1133,10 @@ void MainWindow::resetFullWindow() {
 }
 
 void MainWindow::setRecentBooksLabelsTruncateTreshold() {
-    if(readFile("/opt/inkbox_device") == "n705\n" or readFile("/opt/inkbox_device") == "n905b\n" or readFile("/opt/inkbox_device") == "n905c\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905b\n" or global::deviceID == "n905c\n") {
         truncateTreshold = 12;
     }
-    else if(readFile("/opt/inkbox_device") == "n613\n" or readFile("/opt/inkbox_device") == "n873\n" or readFile("/opt/inkbox_device") == "n236\n" or readFile("/opt/inkbox_device") == "n437\n" or readFile("/opt/inkbox_device") == "n306\n"){
+    else if(global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n"){
         truncateTreshold = 20;
     }
     else {

@@ -34,7 +34,7 @@ libraryWidget::libraryWidget(QWidget *parent) :
     }
     QFont crimson(family);
 
-    if(readFile("/opt/inkbox_device") != "n905\n") {
+    if(global::deviceID != "n905\n") {
         ui->previousBtn->setText("");
         ui->previousBtn->setProperty("type", "borderless");
         ui->nextBtn->setText("");
@@ -62,7 +62,7 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui->book6Btn->setText("");
     ui->book7Btn->setText("");
     ui->book8Btn->setText("");
-    if(readFile("/opt/inkbox_device") != "n905\n") {
+    if(global::deviceID != "n905\n") {
         ui->book9Btn->setText("");
         ui->book10Btn->setText("");
         ui->book11Btn->setText("");
@@ -98,7 +98,7 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui->book6Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
     ui->book7Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
     ui->book8Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
-    if(readFile("/opt/inkbox_device") != "n905\n") {
+    if(global::deviceID != "n905\n") {
         ui->book9Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
         ui->book10Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
         ui->book11Label->setStyleSheet("font-size: 8.5pt; font-style: italic");
@@ -134,7 +134,7 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui->book6Label->setFont(crimson);
     ui->book7Label->setFont(crimson);
     ui->book8Label->setFont(crimson);
-    if(readFile("/opt/inkbox_device") != "n905\n") {
+    if(global::deviceID != "n905\n") {
         ui->book9Label->setFont(crimson);
         ui->book10Label->setFont(crimson);
         ui->book11Label->setFont(crimson);
@@ -186,7 +186,7 @@ void libraryWidget::setupView() {
     ui->book6Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/6/title"));
     ui->book7Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/7/title"));
     ui->book8Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/8/title"));
-    if(readFile("/opt/inkbox_device") != "n905\n") {
+    if(global::deviceID != "n905\n") {
         ui->book9Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/9/title"));
         ui->book10Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/10/title"));
         ui->book11Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/11/title"));
@@ -213,7 +213,7 @@ void libraryWidget::setupView() {
     ui->book7Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
     ui->book8Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/8/cover.jpg"));
     ui->book8Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
-    if(readFile("/opt/inkbox_device") != "n905\n") {
+    if(global::deviceID != "n905\n") {
         ui->book9Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/9/cover.jpg"));
         ui->book9Btn->setIconSize(QSize(stdIconWidth, stdIconHeight));
         ui->book10Btn->setIcon(QIcon("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/10/cover.jpg"));

@@ -54,8 +54,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
     ui->spt->setProperty("type", "borderless");
     ui->sat->setProperty("type", "borderless");
 
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n873\n") {
+    if(global::deviceID == "n873\n") {
         ui->n1->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
         ui->n2->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
         ui->n3->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");

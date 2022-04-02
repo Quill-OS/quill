@@ -31,6 +31,7 @@
 
 int main(int argc, char *argv[])
 {
+    global::deviceID = readFile("/opt/inkbox_device");
     setDefaultWorkDir();
     if(checkconfig(".config/18-encrypted_storage/status") == true and checkconfig("/external_root/run/encfs_mounted") == false) {
         // Open Encryption Manager to unlock encrypted storage
@@ -58,8 +59,7 @@ int main(int argc, char *argv[])
         global::reader::startUsbmsPrompt = false;
 
         // Checking if battery level is critical; if true (and if it is not charging), then display a "Please charge your eReader" splash and power off.
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val != "emu\n") {
+        if(global::deviceID != "emu\n") {
             if(isBatteryCritical() == true) {
                 string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
                 if(checkconfig_str_val == "Charging\n") {
@@ -97,8 +97,7 @@ int main(int argc, char *argv[])
             global::reader::skipOpenDialog = true;
 
             string_writeconfig("/inkbox/skip_opendialog", "true");
-            string_checkconfig_ro("/opt/inkbox_device");
-            if(checkconfig_str_val == "n705\n") {
+            if(global::deviceID == "n705\n") {
                 global::isN705 = true;
                 global::isN905C = false;
                 global::isN613 = false;
@@ -107,7 +106,7 @@ int main(int argc, char *argv[])
                 global::isN437 = false;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n905\n") {
+            else if(global::deviceID == "n905\n") {
                 global::isN705 = false;
                 global::isN905C = true;
                 global::isN613 = false;
@@ -116,7 +115,7 @@ int main(int argc, char *argv[])
                 global::isN437 = false;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n613\n") {
+            else if(global::deviceID == "n613\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = true;
@@ -124,7 +123,7 @@ int main(int argc, char *argv[])
                 global::isN236 = false;
                 global::isN437 = false;
             }
-            else if(checkconfig_str_val == "n873\n") {
+            else if(global::deviceID == "n873\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = false;
@@ -132,7 +131,7 @@ int main(int argc, char *argv[])
                 global::isN236 = false;
                 global::isN437 = false;
             }
-            else if(checkconfig_str_val == "n236\n") {
+            else if(global::deviceID == "n236\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = false;
@@ -141,7 +140,7 @@ int main(int argc, char *argv[])
                 global::isN437 = false;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n437\n") {
+            else if(global::deviceID == "n437\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = false;
@@ -150,7 +149,7 @@ int main(int argc, char *argv[])
                 global::isN437 = true;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n306\n") {
+            else if(global::deviceID == "n306\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = false;
@@ -184,8 +183,7 @@ int main(int argc, char *argv[])
             w.setStyleSheet(stylesheetFile.readAll());
             stylesheetFile.close();
 
-            string_checkconfig_ro("/opt/inkbox_device");
-            if(checkconfig_str_val == "n705\n") {
+            if(global::deviceID == "n705\n") {
                 global::isN705 = true;
                 global::isN905C = false;
                 global::isN613 = false;
@@ -194,7 +192,7 @@ int main(int argc, char *argv[])
                 global::isN437 = false;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n905\n") {
+            else if(global::deviceID == "n905\n") {
                 global::isN705 = false;
                 global::isN905C = true;
                 global::isN613 = false;
@@ -203,7 +201,7 @@ int main(int argc, char *argv[])
                 global::isN437 = false;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n613\n") {
+            else if(global::deviceID == "n613\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = true;
@@ -212,7 +210,7 @@ int main(int argc, char *argv[])
                 global::isN437 = false;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n873\n") {
+            else if(global::deviceID == "n873\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = false;
@@ -221,7 +219,7 @@ int main(int argc, char *argv[])
                 global::isN437 = false;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n236\n") {
+            else if(global::deviceID == "n236\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = false;
@@ -230,7 +228,7 @@ int main(int argc, char *argv[])
                 global::isN437 = false;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n437\n") {
+            else if(global::deviceID == "n437\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = false;
@@ -239,7 +237,7 @@ int main(int argc, char *argv[])
                 global::isN437 = true;
                 global::isN306 = false;
             }
-            else if(checkconfig_str_val == "n306\n") {
+            else if(global::deviceID == "n306\n") {
                 global::isN705 = false;
                 global::isN905C = false;
                 global::isN613 = false;

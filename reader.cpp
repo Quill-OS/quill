@@ -105,7 +105,7 @@ reader::reader(QWidget *parent) :
     ui->quitBtn->setIcon(QIcon(":/resources/power.png"));
 
     // On the Mini with QT_FONT_DPI set to 187 (default for this device), quitBtn makes the UI go beyond the limits of the screen when the menu bar is shown
-    if(readFile("/opt/inkbox_device") == "n705\n") {
+    if(global::deviceID == "n705\n") {
         ui->quitBtn->hide();
         ui->quitBtn->deleteLater();
         ui->line_19->hide();
@@ -268,8 +268,7 @@ reader::reader(QWidget *parent) :
         }
     }
     // Night mode
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
         if(checkconfig(".config/10-dark_mode/config") == true) {
             string_writeconfig("/tmp/invertScreen", "y");
             ui->nightModeBtn->setText("");
@@ -290,8 +289,7 @@ reader::reader(QWidget *parent) :
         ui->nightModeBtn->deleteLater();
     }
 
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n873\n") {
+    if(global::deviceID == "n873\n") {
         ui->nextBtn->setStyleSheet("padding: 13.5px");
         ui->previousBtn->setStyleSheet("padding: 13.5px");
         ui->optionsBtn->setStyleSheet("padding: 13.5px");
@@ -348,8 +346,7 @@ reader::reader(QWidget *parent) :
     float sH = QGuiApplication::screens()[0]->size().height();
     // Defining what the icons' size will be
     if(checkconfig("/opt/inkbox_genuine") == true) {
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n" or checkconfig_str_val == "emu\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or checkconfig_str_val == "emu\n") {
             float stdIconWidth = sW / 16;
             float stdIconHeight = sW / 16;
             QPixmap chargingPixmap(":/resources/battery_charging.png");
@@ -528,6 +525,8 @@ reader::reader(QWidget *parent) :
         setupPng();
     }
     else {
+        ui->graphicsView->hide();
+        ui->graphicsView->deleteLater();
         ui->text->setText(ittext);
     }
 
@@ -567,11 +566,10 @@ reader::reader(QWidget *parent) :
         infoLabelContent.append(bookTitle);
         int infoLabelLength = infoLabelContent.length();
         int infoLabelDefinedLength;
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
+        if(global::deviceID == "n705\n") {
             infoLabelDefinedLength = 35;
         }
-        else if(checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
             infoLabelDefinedLength = 50;
         }
         else {
@@ -597,10 +595,10 @@ reader::reader(QWidget *parent) :
         }
 
         int infoLabelDefinedLength;
-        if(checkconfig_str_val == "n705\n") {
+        if(global::deviceID == "n705\n") {
             infoLabelDefinedLength = 35;
         }
-        else if(checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
             infoLabelDefinedLength = 50;
         }
         else {
@@ -725,8 +723,7 @@ reader::reader(QWidget *parent) :
                 }
             }
         } );
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val != "emu\n") {
+        if(global::deviceID != "emu\n") {
             t->start();
         }
     }
@@ -1126,7 +1123,7 @@ void reader::on_optionsBtn_clicked()
 {
     if(menubar_shown == true) {
         menubar_hide();
-        if(readFile("/opt/inkbox_device") == "n873\n") {
+        if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 13.5px");
         }
         else {
@@ -1137,7 +1134,7 @@ void reader::on_optionsBtn_clicked()
     }
     else {
         menubar_show();
-        if(readFile("/opt/inkbox_device") == "n873\n") {
+        if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 13.5px");
         }
         else {
@@ -1412,8 +1409,7 @@ void reader::menubar_show() {
         ui->pageWidget->setVisible(true);
     }
 
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
         ;
     }
     else {
@@ -1424,8 +1420,7 @@ void reader::menubar_show() {
 }
 
 void reader::menubar_hide() {
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
         ui->brightnessWidget->setVisible(false);
     }
     else {

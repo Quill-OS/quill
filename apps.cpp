@@ -54,7 +54,7 @@ apps::apps(QWidget *parent) :
         }
     }
     // Hiding Light Maps if device doesn't have a working Wi-Fi adapter
-    if(global::device::isWifiAble == false and readFile("/opt/inkbox_device") != "emu\n") {
+    if(global::device::isWifiAble == false and global::deviceID != "emu\n") {
         ui->label_2->hide();
         ui->lightmapsLaunchBtn->hide();
         ui->label_2->deleteLater();

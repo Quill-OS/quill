@@ -98,8 +98,7 @@ settings::settings(QWidget *parent) :
         ui->quoteCheckBox->click();
     }
 
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
         if(checkconfig(".config/10-dark_mode/config") == true) {
             ui->darkModeCheckBox->click();
         }
@@ -163,8 +162,7 @@ settings::settings(QWidget *parent) :
     else {
         int dpi_number = checkconfig_str_val.toInt();
         // Checking if it's a Mini, Touch or a Glo
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
+        if(global::deviceID == "n705\n") {
             if(dpi_number == 187) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -175,7 +173,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(checkconfig_str_val == "n905\n") {
+        else if(global::deviceID == "n905\n") {
             if(dpi_number == 160) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -186,7 +184,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
             if(dpi_number == 195) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -197,7 +195,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(checkconfig_str_val == "n437\n") {
+        else if(global::deviceID == "n437\n") {
             if(dpi_number == 275) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -208,7 +206,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(checkconfig_str_val == "n873\n") {
+        else if(global::deviceID == "n873\n") {
             if(dpi_number == 285) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -599,56 +597,53 @@ void settings::on_darkModeCheckBox_toggled(bool checked)
 void settings::on_uiScalingSlider_valueChanged(int value)
 {
     if(value == 0) {
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
+        if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
-        if(checkconfig_str_val == "n905\n") {
+        if(global::deviceID == "n905\n") {
             string_writeconfig(".config/09-dpi/config", "160");
         }
-        if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
+        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
             string_writeconfig(".config/09-dpi/config", "195");
         }
-        if(checkconfig_str_val == "n437\n") {
+        if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "275");
         }
-        if(checkconfig_str_val == "n873\n") {
+        if(global::deviceID == "n873\n") {
             string_writeconfig(".config/09-dpi/config", "285");
         }
     }
     if(value == 1) {
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
+        if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "214");
         }
-        if(checkconfig_str_val == "n905\n") {
+        if(global::deviceID == "n905\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
-        if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
+        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
             string_writeconfig(".config/09-dpi/config", "210");
         }
-        if(checkconfig_str_val == "n437\n") {
+        if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "290");
         }
-        if(checkconfig_str_val == "n873\n") {
+        if(global::deviceID == "n873\n") {
             string_writeconfig(".config/09-dpi/config", "300");
         }
     }
     if(value == 2) {
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
+        if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "227");
         }
-        if(checkconfig_str_val == "n905\n") {
+        if(global::deviceID == "n905\n") {
             string_writeconfig(".config/09-dpi/config", "200");
         }
-        if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
+        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
             string_writeconfig(".config/09-dpi/config", "225");
         }
-        if(checkconfig_str_val == "n437\n") {
+        if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "305");
         }
-        if(checkconfig_str_val == "n873\n") {
+        if(global::deviceID == "n873\n") {
             string_writeconfig(".config/09-dpi/config", "315");
         }
     }
@@ -741,20 +736,19 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
 {
     if(checked == true) {
         // Writing default value depending on the device
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n") {
+        if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
-        else if(checkconfig_str_val == "n905\n") {
+        else if(global::deviceID == "n905\n") {
             string_writeconfig(".config/09-dpi/config", "160");
         }
-        else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
             string_writeconfig(".config/09-dpi/config", "195");
         }
-        else if(checkconfig_str_val == "n437\n") {
+        else if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "275");
         }
-        else if(checkconfig_str_val == "n873\n") {
+        else if(global::deviceID == "n873\n") {
             string_writeconfig(".config/09-dpi/config", "285");
         }
         else {

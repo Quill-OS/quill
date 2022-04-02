@@ -26,8 +26,7 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n") {
+    if(global::deviceID == "n705\n") {
         // If we don't do this, the text will clip out of the display.
         ui->definitionLabel->setText("Please select an application.\nClick on 'Launch' to start it.");
     }
@@ -98,17 +97,16 @@ void koboxAppsDialog::on_launchBtn_clicked()
         // DPI setting
         string_checkconfig(".config/00-kobox/dpiSetting");
         if(checkconfig_str_val == "") {
-            string_checkconfig_ro("/opt/inkbox_device");
-            if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+            if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
                 dpiSetting = "125";
             }
-            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
+            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
                 dpiSetting = "175";
             }
-            else if(checkconfig_str_val == "n437\n") {
+            else if(global::deviceID == "n437\n") {
                 dpiSetting = "225";
             }
-            else if(checkconfig_str_val == "n873\n") {
+            else if(global::deviceID == "n873\n") {
                 dpiSetting = "250";
             }
             else {
@@ -131,17 +129,16 @@ void koboxAppsDialog::on_launchBtn_clicked()
         else if(itemText == "KTerm") {
             string_writeconfig("/external_root/tmp/X_program", "/usr/local/bin/kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
             dpModeSetting = "fullscreen";
-            string_checkconfig_ro("/opt/inkbox_device");
-            if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+            if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
                 dpiSetting = "175";
             }
-            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
+            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
                 dpiSetting = "225";
             }
-            else if(checkconfig_str_val == "n437\n") {
+            else if(global::deviceID == "n437\n") {
                 dpiSetting = "275";
             }
-            else if(checkconfig_str_val == "n873\n") {
+            else if(global::deviceID == "n873\n") {
                 dpiSetting = "300";
             }
             else {

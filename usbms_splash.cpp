@@ -32,8 +32,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
         ui->label->setText("Launching KoBox subsystem");
         ui->label->setStyleSheet("font-size: 14pt");
         ui->label_3->setText("Please wait, this could take a while.");
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n905\n") {
+        if(global::deviceID == "n905\n") {
             ui->label_3->setStyleSheet("font-size: 11pt");
         }
         else {
@@ -83,7 +82,7 @@ void usbms_splash::usbms_launch()
     string_writeconfig("/opt/ibxd", "usbnet_stop\n");
     QThread::msleep(1000);
 
-    if(readFile("/opt/inkbox_device") == "n306\n" or readFile("/opt/inkbox_device") == "n873\n") {
+    if(global::deviceID == "n306\n" or global::deviceID == "n873\n") {
         QProcess::execute("insmod", QStringList() << "/external_root/modules/fs/configfs/configfs.ko");
         QProcess::execute("insmod", QStringList() << "/external_root/modules/drivers/usb/gadget/libcomposite.ko");
         QProcess::execute("insmod", QStringList() << "/external_root/modules/drivers/usb/gadget/function/usb_f_mass_storage.ko");

@@ -42,17 +42,16 @@ koboxSettings::koboxSettings(QWidget *parent) :
     QString dpiSetting;
     string_checkconfig(".config/00-kobox/dpiSetting");
     if(checkconfig_str_val == "") {
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
             dpiSetting = "125";
         }
-        else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
             dpiSetting = "175";
         }
-        else if(checkconfig_str_val == "n437\n") {
+        else if(global::deviceID == "n437\n") {
             dpiSetting = "225";
         }
-        else if(checkconfig_str_val == "n873\n") {
+        else if(global::deviceID == "n873\n") {
             dpiSetting = "250";
         }
         else {

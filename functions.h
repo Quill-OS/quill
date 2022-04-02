@@ -125,6 +125,7 @@ namespace global {
     inline bool isN437;
     inline bool isN306;
     inline bool runningInstanceIsReaderOnly;
+    inline QString deviceID;
 }
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534
@@ -299,8 +300,7 @@ namespace {
         fhandler.close();
     }
     int get_brightness() {
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n613\n") {
+        if(global::deviceID == "n613\n") {
             string_checkconfig_ro(".config/03-brightness/config");
             int brightness;
             if(checkconfig_str_val == "") {
@@ -385,8 +385,7 @@ namespace {
         return 0;
     }
     void zeroBrightness() {
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val != "n613\n") {
+        if(global::deviceID != "n613\n") {
             set_brightness(0);
         }
         else {
@@ -484,7 +483,7 @@ namespace {
     QString getConnectionInformation() {
         QString getIpProg ("sh");
         QStringList getIpArgs;
-        if(readFile("/opt/inkbox_device") != "n437\n") {
+        if(global::deviceID != "n437\n") {
             getIpArgs << "-c" << "/sbin/ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'";
         }
         else {
@@ -516,8 +515,7 @@ namespace {
         global::systemInfoText.append("<br><b>Kernel version:</b> ");
         global::systemInfoText.append(kernelVersion);
         global::systemInfoText.append("<br><b>Device:</b> ");
-        string_checkconfig_ro("/opt/inkbox_device");
-        QString device = checkconfig_str_val.trimmed();
+        QString device = global::deviceID.trimmed();
         global::systemInfoText.append(device);
         QString ipAddress = getConnectionInformation();
         global::systemInfoText.append("<br><b>IP address: </b>");
@@ -546,51 +544,47 @@ namespace {
          * 1: PDF
         */
         if(fileType == 0) {
-            string_checkconfig_ro("/opt/inkbox_device");
-            if(checkconfig_str_val == "n705\n") {
+            if(global::deviceID == "n705\n") {
                 defaultEpubPageHeight = 365;
                 defaultEpubPageWidth = 365;
             }
-            else if(checkconfig_str_val == "n905\n") {
+            else if(global::deviceID == "n905\n") {
                 defaultEpubPageHeight = 425;
                 defaultEpubPageWidth = 425;
             }
-            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n" or checkconfig_str_val == "emu\n") {
+            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or checkconfig_str_val == "emu\n") {
                 defaultEpubPageHeight = 450;
                 defaultEpubPageWidth = 450;
             }
-            else if(checkconfig_str_val == "n873\n") {
+            else if(global::deviceID == "n873\n") {
                 defaultEpubPageHeight = 525;
                 defaultEpubPageWidth = 525;
             }
         }
         else if(fileType == 1) {
-            string_checkconfig_ro("/opt/inkbox_device");
-            if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+            if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
                 defaultPdfPageHeight = 750;
                 defaultPdfPageWidth = 550;
             }
-            else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n" or checkconfig_str_val == "emu\n") {
+            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or checkconfig_str_val == "emu\n") {
                 defaultPdfPageHeight = 974;
                 defaultPdfPageWidth = 708;
             }
-            else if(checkconfig_str_val == "n437\n") {
+            else if(global::deviceID == "n437\n") {
                 defaultPdfPageHeight = 1398;
                 defaultPdfPageWidth = 1022;
             }
-            else if(checkconfig_str_val == "n873\n") {
+            else if(global::deviceID == "n873\n") {
                 defaultPdfPageHeight = 1630;
                 defaultPdfPageWidth = 1214;
             }
         }
     }
     void pre_set_brightness(int brightnessValue) {
-        string_checkconfig_ro("/opt/inkbox_device");
-
-        if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n" or checkconfig_str_val == "n873\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n437\n" or checkconfig_str_val == "n306\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
             set_brightness(brightnessValue);
         }
-        else if(checkconfig_str_val == "n613\n") {
+        else if(global::deviceID == "n613\n") {
             set_brightness_ntxio(brightnessValue);
         }
         else {
@@ -653,8 +647,7 @@ namespace {
     }
     int get_warmth() {
         QString sysfsWarmthPath;
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n873\n") {
+        if(global::deviceID == "n873\n") {
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
         string_checkconfig_ro(sysfsWarmthPath);
@@ -667,8 +660,7 @@ namespace {
         warmthValue = 10 - warmthValue;
         std::string warmthValueStr = std::to_string(warmthValue);
         std::string sysfsWarmthPath;
-        string_checkconfig_ro("/opt/inkbox_device");
-        if(checkconfig_str_val == "n873\n") {
+        if(global::deviceID == "n873\n") {
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
         string_writeconfig(sysfsWarmthPath, warmthValueStr);

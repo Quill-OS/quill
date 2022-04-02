@@ -28,8 +28,7 @@ settingsChooser::settingsChooser(QWidget *parent) :
     sH = QGuiApplication::screens()[0]->size().height();
 
     // Defining what the default icon size will be
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n") {
+    if(global::deviceID == "n705\n") {
         homeIconWidth = sW / 18;
         homeIconHeight = sW / 18;
     }
@@ -41,12 +40,11 @@ settingsChooser::settingsChooser(QWidget *parent) :
     ui->inkboxSettingsBtn->setProperty("type", "borderless");
     ui->koboxSettingsBtn->setProperty("type", "borderless");
 
-    string_checkconfig_ro("/opt/inkbox_device");
-    if(checkconfig_str_val == "n705\n" or checkconfig_str_val == "n905\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
     }
-    else if(checkconfig_str_val == "n613\n" or checkconfig_str_val == "n236\n" or checkconfig_str_val == "n306\n") {
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 25px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding:25px; Text-align: left");
     }

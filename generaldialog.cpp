@@ -51,7 +51,7 @@ generalDialog::generalDialog(QWidget *parent) :
     ui->searchComboBox->setStyleSheet("font-size: 9pt");
 
     // Disabling "Online library" search if device doesn't have Wi-Fi
-    if(global::device::isWifiAble == false && readFile("/opt/inkbox_device") != "emu\n") {
+    if(global::device::isWifiAble == false && global::deviceID != "emu\n") {
         ui->searchComboBox->removeItem(2);
     }
 
@@ -76,7 +76,7 @@ generalDialog::generalDialog(QWidget *parent) :
             resetDialog = true;
             ui->okBtn->setText("Proceed");
             ui->cancelBtn->setText("Go back");
-            if(readFile("/opt/inkbox_device") != "n705\n") {
+            if(global::deviceID != "n705\n") {
                 ui->bodyLabel->setText("This will erase any books you have stored on the device.\nSettings will be reset.");
             }
             else {

@@ -347,10 +347,10 @@ border: 5px solid lightGrey;
 }
 
 QScrollBar:vertical {
-    width: 25px
+    width: 30px
 }
 QScrollBar:horizontal {
-    height: 25px
+    height: 30px
 }
 QScrollBar::handle {
     background: black;
