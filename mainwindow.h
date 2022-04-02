@@ -49,6 +49,7 @@ public:
     bool reboot_after_update = false;
     bool resetFullWindowException;
     bool wifiIconClickedWhileReconnecting;
+    int lastWifiState;
     int timerTime = 0;
     QString relative_path;
     QString usbmsStatus;

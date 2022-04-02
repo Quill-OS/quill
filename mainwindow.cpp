@@ -66,6 +66,7 @@ MainWindow::MainWindow(QWidget *parent)
     global::mainwindow::tabSwitcher::repaint = true;
     resetFullWindowException = false;
     wifiIconClickedWhileReconnecting = false;
+    lastWifiState = 0;
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -954,17 +955,26 @@ void MainWindow::setWifiIcon() {
         global::device::isWifiAble = true;
         if(checkWifiState() == true) {
             if(testPing() == 0) {
-                ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
-                ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+                if(lastWifiState != 3) {
+                    lastWifiState = 3;
+                    ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
+                    ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+                }
             }
             else {
-                ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
-                ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+                if(lastWifiState != 2) {
+                    lastWifiState = 2;
+                    ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
+                    ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+                }
             }
         }
         else {
-            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
-            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+            if(lastWifiState != 1) {
+                lastWifiState = 1;
+                ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
+                ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+            }
         }
     }
     else {
