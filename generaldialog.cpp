@@ -678,7 +678,8 @@ void generalDialog::waitForGutenbergSearchDone() {
     while(true) {
         if(QFile::exists("/inkbox/gutenberg-search/search_done")) {
             if(checkconfig("/inkbox/gutenberg-search/search_done") == true) {
-                QStringList searchResults = readFile("/inkbox/gutenberg-search/search_results_titles").split("\n");
+                QList<QString> searchResults = readFile("/inkbox/gutenberg-search/search_results_titles").split("\n");
+                searchResults.takeLast();
                 global::library::libraryResults = true;
 
                 for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {
@@ -702,12 +703,14 @@ void generalDialog::waitForGutenbergSearchDone() {
                 break;
             }
             else {
+                emit closeIndefiniteToast();
                 global::toast::delay = 3000;
+                global::toast::modalToast = true;
                 emit showToast("No results found");
                 keyboardWidget->clearLineEdit();
                 global::keyboard::keyboardText = "";
                 QFile::remove("/inkbox/gutenberg-search/search_done");
-                emit closeIndefiniteToast();
+                QTimer::singleShot(3000, this, SLOT(close()));
                 break;
             }
         }

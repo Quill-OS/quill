@@ -79,7 +79,7 @@ void searchResultsWidget::on_openBtn_clicked()
             global::keyboard::keyboardDialog = false;
         }
         else {
-            QMessageBox::critical(this, tr("Invalid argument"), tr("Please select a search result."));
+            emit showToast("Please select a search result");
         }
     }
     else {
@@ -92,7 +92,7 @@ void searchResultsWidget::on_openBtn_clicked()
             searchResultsWidget::close();
         }
         else {
-            QMessageBox::critical(this, tr("Invalid argument"), tr("Please select a search result."));
+            emit showToast("Please select a search result");
         }
     }
 }

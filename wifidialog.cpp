@@ -104,8 +104,8 @@ void wifiDialog::on_connectBtn_clicked()
 {
     index = ui->networksListWidget->currentIndex();
     itemText = index.data(Qt::DisplayRole).toString();
-    if(itemText == "") {
-        QMessageBox::critical(this, tr("Invalid argument"), tr("You must select a network."));
+    if(itemText.isEmpty()) {
+        showToast("You must select a network");
     }
     else {
         this->hide();

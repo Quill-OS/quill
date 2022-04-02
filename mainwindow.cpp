@@ -913,7 +913,7 @@ void MainWindow::updateWifiIcon(int mode) {
     if(mode == 0) {
         lastWifiState = 0;
         QTimer *wifiIconTimer = new QTimer(this);
-        wifiIconTimer->setInterval(10000);
+        wifiIconTimer->setInterval(1000);
         connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(setWifiIcon()));
         wifiIconTimer->start();
     }
