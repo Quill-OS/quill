@@ -89,6 +89,13 @@ void wifiDialog::centerDialog() {
 
 void wifiDialog::on_cancelBtn_clicked()
 {
+    string_writeconfig("/opt/ibxd", "toggle_wifi_off\n");
+    while(true) {
+        if(QFile::exists("/run/toggle_wifi_off_done")) {
+            QFile::remove("/run/toggle_wifi_off_done");
+            break;
+        }
+    }
     emit quit(0);
     wifiDialog::close();
 }

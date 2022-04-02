@@ -911,20 +911,24 @@ void MainWindow::updateWifiIcon(int mode) {
      * mode 3: connected
     */
     if(mode == 0) {
+        lastWifiState = 0;
         QTimer *wifiIconTimer = new QTimer(this);
         wifiIconTimer->setInterval(10000);
         connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(setWifiIcon()));
         wifiIconTimer->start();
     }
     if(mode == 1) {
+        lastWifiState = 1;
         ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
         ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
     }
     if(mode == 2) {
+        lastWifiState = 2;
         ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
         ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
     }
     if(mode == 3) {
+        lastWifiState = 3;
         ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
         ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
     }
