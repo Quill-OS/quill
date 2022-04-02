@@ -996,7 +996,7 @@ void reader::save_word(string word, bool remove) {
 
 void reader::on_nextBtn_clicked()
 {
-    ui->nextBtn->setEnabled(false);
+    // ui->nextBtn->setEnabled(false);
     if(is_epub == false and is_pdf == false) {
         if(split_total - 1 == 1 or split_total - 1 == 0) {
             showToast("You've reached the end of the document");
@@ -1046,12 +1046,12 @@ void reader::on_nextBtn_clicked()
     }
     setupPageWidget();
     refreshScreen();
-    ui->nextBtn->setEnabled(true);
+    // ui->nextBtn->setEnabled(true);
 }
 
 void reader::on_previousBtn_clicked()
 {
-    ui->previousBtn->setEnabled(false);
+    // ui->previousBtn->setEnabled(false);
     if(is_epub == false and is_pdf == false) {
     // Making sure we won't encounter a "List index out of range" error ;)
         if(split_total >= split_files_number - 1) {
@@ -1104,7 +1104,7 @@ void reader::on_previousBtn_clicked()
     }
     setupPageWidget();
     refreshScreen();
-    ui->previousBtn->setEnabled(true);
+    // ui->previousBtn->setEnabled(true);
 }
 
 void reader::refreshScreen() {
