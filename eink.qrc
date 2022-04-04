@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>resources/eink.qss</file>
         <file>resources/checkbox-checked.png</file>
         <file>resources/checkbox-unchecked.png</file>
         <file>resources/align-center.png</file>

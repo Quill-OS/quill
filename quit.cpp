@@ -22,7 +22,7 @@ quit::quit(QWidget *parent) :
     ui->backBtn->setProperty("type", "borderless");
 
     // Stylesheet
-    QFile stylesheetFile(":/resources/eink.qss");
+    QFile stylesheetFile("eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();

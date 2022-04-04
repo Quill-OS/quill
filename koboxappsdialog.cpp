@@ -21,7 +21,7 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     this->setModal(true);
 
     // Stylesheet, style & misc.
-    QFile stylesheetFile(":/resources/eink.qss");
+    QFile stylesheetFile("eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();

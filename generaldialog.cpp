@@ -33,7 +33,7 @@ generalDialog::generalDialog(QWidget *parent) :
         stylesheetFile.close();
     }
     else {
-        QFile stylesheetFile(":/resources/eink.qss");
+        QFile stylesheetFile("eink.qss");
         stylesheetFile.open(QFile::ReadOnly);
         this->setStyleSheet(stylesheetFile.readAll());
         stylesheetFile.close();
@@ -379,7 +379,7 @@ void generalDialog::on_okBtn_clicked()
                     }
                 }
                 else if(ui->searchComboBox->currentText() == "Online library") {
-                    if(testPing() == 0) {
+                    if(testPing() == 0 or global::deviceID == "emu\n") {
                         string_writeconfig("/inkbox/searchComboBoxFunction", "Online library");
 
                         if(!readFile("/external_root/opt/storage/gutenberg/last_sync").isEmpty()) {

@@ -178,7 +178,7 @@ int main(int argc, char *argv[])
             MainWindow w;
 
             QApplication::setStyle("windows");
-            QFile stylesheetFile(":/resources/eink.qss");
+            QFile stylesheetFile("eink.qss");
             stylesheetFile.open(QFile::ReadOnly);
             w.setStyleSheet(stylesheetFile.readAll());
             stylesheetFile.close();

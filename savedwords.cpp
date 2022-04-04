@@ -10,7 +10,7 @@ savedwords::savedwords(QWidget *parent) :
 {
     ui->setupUi(this);
     savedwords::setFont(QFont("u001"));
-    QFile stylesheetFile(":/resources/eink.qss");
+    QFile stylesheetFile("eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();

@@ -191,7 +191,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // Stylesheet
-    QFile stylesheetFile(":/resources/eink.qss");
+    QFile stylesheetFile("eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
@@ -419,7 +419,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->book3Btn->show();
         ui->book4Btn->show();
 
-        setRecentBooksLabelsTruncateTreshold();
+        setRecentBooksLabelsTruncateThreshold();
         // Book 1
         string_checkconfig(".config/08-recent_books/1");
         if(checkconfig_str_val == "") {
@@ -427,8 +427,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             relative_path = checkconfig_str_val.split("/").last();
-            if(relative_path.length() > truncateTreshold) {
-                relative_path.truncate(truncateTreshold);
+            if(relative_path.length() > truncateThreshold) {
+                relative_path.truncate(truncateThreshold);
                 relative_path.append(" ...");
             }
             ui->book1Btn->setText(relative_path);
@@ -441,8 +441,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             relative_path = checkconfig_str_val.split("/").last();
-            if(relative_path.length() > truncateTreshold) {
-                relative_path.truncate(truncateTreshold);
+            if(relative_path.length() > truncateThreshold) {
+                relative_path.truncate(truncateThreshold);
                 relative_path.append(" ...");
             }
             ui->book2Btn->setText(relative_path);
@@ -455,8 +455,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             relative_path = checkconfig_str_val.split("/").last();
-            if(relative_path.length() > truncateTreshold) {
-                relative_path.truncate(truncateTreshold);
+            if(relative_path.length() > truncateThreshold) {
+                relative_path.truncate(truncateThreshold);
                 relative_path.append(" ...");
             }
             ui->book3Btn->setText(relative_path);
@@ -469,8 +469,8 @@ MainWindow::MainWindow(QWidget *parent)
         }
         else {
             relative_path = checkconfig_str_val.split("/").last();
-            if(relative_path.length() > truncateTreshold) {
-                relative_path.truncate(truncateTreshold);
+            if(relative_path.length() > truncateThreshold) {
+                relative_path.truncate(truncateThreshold);
                 relative_path.append(" ...");
             }
             ui->book4Btn->setText(relative_path);
@@ -1098,7 +1098,7 @@ void MainWindow::openEncfsRepackDialog() {
 
 void MainWindow::on_libraryButton_clicked()
 {
-    if(testPing() == 0) {
+    if(testPing() == 0 or global::deviceID == "emu\n") {
         resetFullWindowException = false;
         resetWindow(false);
         if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
@@ -1134,15 +1134,15 @@ void MainWindow::resetFullWindow() {
     }
 }
 
-void MainWindow::setRecentBooksLabelsTruncateTreshold() {
+void MainWindow::setRecentBooksLabelsTruncateThreshold() {
     if(global::deviceID == "n705\n" or global::deviceID == "n905b\n" or global::deviceID == "n905c\n") {
-        truncateTreshold = 12;
+        truncateThreshold = 12;
     }
     else if(global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n"){
-        truncateTreshold = 20;
+        truncateThreshold = 20;
     }
     else {
-        truncateTreshold = 12;
+        truncateThreshold = 12;
     }
 }
 

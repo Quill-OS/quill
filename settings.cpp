@@ -381,7 +381,7 @@ settings::settings(QWidget *parent) :
         ui->checkOtaUpdateGridLayout->deleteLater();
     }
 
-    QFile stylesheetFile(":/resources/eink.qss");
+    QFile stylesheetFile("eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
