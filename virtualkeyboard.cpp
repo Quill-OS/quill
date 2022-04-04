@@ -99,7 +99,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->sat->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
         ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 15px; border: 1px solid black");
     }
-    else if(checkconfig_str_val == "n437\n") {
+    else if(global::deviceID == "n437\n") {
         ui->n1->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
         ui->n2->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
         ui->n3->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
