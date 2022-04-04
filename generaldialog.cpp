@@ -33,7 +33,7 @@ generalDialog::generalDialog(QWidget *parent) :
         stylesheetFile.close();
     }
     else {
-        QFile stylesheetFile("eink.qss");
+        QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
         stylesheetFile.open(QFile::ReadOnly);
         this->setStyleSheet(stylesheetFile.readAll());
         stylesheetFile.close();

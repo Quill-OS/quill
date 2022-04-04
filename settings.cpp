@@ -27,6 +27,7 @@ settings::settings(QWidget *parent) :
     ui->comboBox->setFont(QFont("u001"));
     ui->tzComboBox->setFont(QFont("u001"));
     ui->sleepTimeoutComboBox->setFont(QFont("u001"));
+    ui->uiScaleNumberLabel->setFont(QFont("Inter"));
     ui->aboutBtn->setFont(QFont("u001"));
     ui->okBtn->setFont(QFont("Inter"));
 
@@ -58,6 +59,7 @@ settings::settings(QWidget *parent) :
     ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
     ui->repackBtn->setStyleSheet("font-size: 9pt");
+    ui->uiScaleNumberLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
 
     ui->previousBtn->setText("");
     ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
@@ -381,7 +383,7 @@ settings::settings(QWidget *parent) :
         ui->checkOtaUpdateGridLayout->deleteLater();
     }
 
-    QFile stylesheetFile("eink.qss");
+    QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();

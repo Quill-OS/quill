@@ -13,7 +13,7 @@ textwidget::textwidget(QWidget *parent) :
     ui->textBrowser->setFont(QFont("u001"));
 
     // Stylesheet
-    QFile stylesheetFile("eink.qss");
+    QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();

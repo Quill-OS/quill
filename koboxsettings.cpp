@@ -22,7 +22,7 @@ koboxSettings::koboxSettings(QWidget *parent) :
     ui->okBtn->setStyleSheet("font-weight: bold");
 
     // Stylesheet
-    QFile stylesheetFile("eink.qss");
+    QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();

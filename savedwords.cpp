@@ -10,12 +10,22 @@ savedwords::savedwords(QWidget *parent) :
 {
     ui->setupUi(this);
     savedwords::setFont(QFont("u001"));
-    QFile stylesheetFile("eink.qss");
+    ui->savedWordsLabel->setFont(QFont("Inter"));
+    ui->backBtn->setFont(QFont("Inter"));
+    ui->clearBtn->setFont(QFont("Inter"));
+
+    QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
+
     ui->backBtn->setProperty("type", "borderless");
     ui->clearBtn->setProperty("type", "borderless");
+
+    ui->savedWordsLabel->setStyleSheet("font-weight: bold");
+    ui->wordsList->setStyleSheet("font-size: 10pt");
+    ui->backBtn->setStyleSheet("font-weight: bold");
+    ui->clearBtn->setStyleSheet("font-weight: bold");
 
     checkwords();
 

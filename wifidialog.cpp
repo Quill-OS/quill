@@ -17,7 +17,7 @@ wifiDialog::wifiDialog(QWidget *parent) :
     wifiListTimer = new QTimer(this);
 
     // Stylesheet, style & misc.
-    QFile stylesheetFile("eink.qss");
+    QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();

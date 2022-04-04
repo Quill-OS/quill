@@ -41,7 +41,7 @@ reader::reader(QWidget *parent) :
     ui->brightnessStatus->setFont(QFont("u001"));
     ui->fontLabel->setFont(QFont("u001"));
     ui->sizeLabel->setFont(QFont("u001"));
-    ui->sizeValueLabel->setFont(QFont("u001"));
+    ui->sizeValueLabel->setFont(QFont("Inter"));
     ui->alignmentLabel->setFont(QFont("u001"));
     ui->fontChooser->setFont(QFont("u001"));
     ui->definitionStatusLabel->setFont(QFont("u001"));
@@ -124,7 +124,7 @@ reader::reader(QWidget *parent) :
     QFont crimson(family);
 
     // Stylesheet + misc.
-    QFile stylesheetFile("eink.qss");
+    QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
@@ -294,7 +294,7 @@ reader::reader(QWidget *parent) :
         ui->previousBtn->setStyleSheet("padding: 13.5px");
         ui->optionsBtn->setStyleSheet("padding: 13.5px");
     }
-    ui->sizeValueLabel->setStyleSheet("font-size: 9pt");
+    ui->sizeValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->aboutBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->fontChooser->setStyleSheet("font-size: 9pt");
