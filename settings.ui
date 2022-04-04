@@ -1054,7 +1054,7 @@
                  <item row="0" column="0">
                   <widget class="QLabel" name="label_11">
                    <property name="text">
-                    <string>Timezone</string>
+                    <string>Timezone (reboot req.)</string>
                    </property>
                   </widget>
                  </item>

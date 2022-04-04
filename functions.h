@@ -11,6 +11,7 @@
 #include <QThread>
 #include <QTimer>
 #include <QDebug>
+#include <QRandomGenerator>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -229,18 +230,8 @@ namespace {
         return 0;
     }
     int display_quote() {
-        QDir::setCurrent(".config/05-quote");
-        QString quote_prog ("sh");
-        QStringList quote_args;
-        quote_args << "quote.sh";
-        QProcess *quote_proc = new QProcess();
-        quote_proc->start(quote_prog, quote_args);
-        quote_proc->waitForFinished();
-        quote_proc->deleteLater();
-        QDir::setCurrent("/mnt/onboard/.adds/inkbox");
-
-        int quote_value = int_checkconfig(".config/05-quote/quote");
-        return quote_value;
+        int quoteNumber = QRandomGenerator::global()->bounded(1, 6);
+        return quoteNumber;
         return 0;
     }
     void string_writeconfig(std::string file, std::string config_option) {
@@ -552,7 +543,7 @@ namespace {
                 defaultEpubPageHeight = 425;
                 defaultEpubPageWidth = 425;
             }
-            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or checkconfig_str_val == "emu\n") {
+            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
                 defaultEpubPageHeight = 450;
                 defaultEpubPageWidth = 450;
             }
@@ -566,7 +557,7 @@ namespace {
                 defaultPdfPageHeight = 750;
                 defaultPdfPageWidth = 550;
             }
-            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or checkconfig_str_val == "emu\n") {
+            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
                 defaultPdfPageHeight = 974;
                 defaultPdfPageWidth = 708;
             }

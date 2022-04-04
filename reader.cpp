@@ -346,7 +346,7 @@ reader::reader(QWidget *parent) :
     float sH = QGuiApplication::screens()[0]->size().height();
     // Defining what the icons' size will be
     if(checkconfig("/opt/inkbox_genuine") == true) {
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or checkconfig_str_val == "emu\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
             float stdIconWidth = sW / 16;
             float stdIconHeight = sW / 16;
             QPixmap chargingPixmap(":/resources/battery_charging.png");
@@ -836,7 +836,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         }
     }
 
-    // Checking whether the user has defined an option for the number of words per page; if not, then setting the default.
+    // Checking whether or not the user has defined an option for the number of words per page; if not, then setting the default.
     // NOTE: This is only for plain text files.
     setDefaultWorkDir();
     string_checkconfig(".config/07-words_number/config");
@@ -1060,7 +1060,7 @@ void reader::on_previousBtn_clicked()
             ui->text->setText("");
             ui->text->setText(ittext);
 
-            // We always increment pagesTurned regardless whether we press the Previous or Next button
+            // We always increment pagesTurned regardless whether we press the Previous or Next button or not
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
             alignText(textAlignment);
@@ -1078,7 +1078,7 @@ void reader::on_previousBtn_clicked()
             setup_book(book_file, mupdf::pdf::pdfPageNumber, true);
             setupPng();
 
-            // We always increment pagesTurned regardless whether we press the Previous or Next button
+            // We always increment pagesTurned regardless whether we press the Previous or Next button or not
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
         }
@@ -1093,7 +1093,7 @@ void reader::on_previousBtn_clicked()
             ui->text->setText("");
             ui->text->setText(epubPageContent);
 
-            // We always increment pagesTurned regardless whether we press the Previous or Next button
+            // We always increment pagesTurned regardless whether we press the Previous or Next button not
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
             alignText(textAlignment);
