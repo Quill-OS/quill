@@ -191,7 +191,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
     }
 
     ui->lineEdit->setStyleSheet("border: 3px solid black");
-    if(global::keyboard::vncDialog == true or global::keyboard::wifiPassphraseDialog == true) {
+    if(global::keyboard::vncDialog == true or global::keyboard::wifiPassphraseDialog == true or global::keyboard::encfsDialog == true) {
         ui->lineEdit->setFont(QFont("Noto Mono"));
     }
     else if(global::keyboard::searchDialog == true){

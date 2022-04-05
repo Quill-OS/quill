@@ -26,6 +26,7 @@ private slots:
     void on_continueBtn_clicked();
     void on_resetBtn_clicked();
     void on_continue2Btn_clicked();
+    void quit();
 
 private:
     Ui::alert *ui;

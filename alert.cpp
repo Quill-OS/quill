@@ -62,8 +62,11 @@ alert::alert(QWidget *parent) :
 
         ui->warningLabel->setText("Fatal error");
         ui->securityLabel->setText("Device lockdown");
+        log(global::encfs::lockdownMessage, className);
         QString message = "Due to multiple incorrect passphrase attempts, this device is locked down until\n" + global::encfs::unlockTime + "\nand won't boot.";
         ui->messageLabel->setText(message);
+        poweroff(false);
+        QTimer::singleShot(1000, this, SLOT(quit()));
     }
     if(global::battery::showCriticalBatteryAlert == true) {
         global::battery::showCriticalBatteryAlert = false;
@@ -79,7 +82,7 @@ alert::alert(QWidget *parent) :
         ui->securityLabel->setText("The battery's charge level is critical.");
         ui->messageLabel->setText("To prevent damage, your device has been turned off.\nPlease consider charging it.");
         poweroff(false);
-        qApp->quit();
+        QTimer::singleShot(1000, this, SLOT(quit()));
     }
 
     ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 16pt }");
@@ -146,4 +149,8 @@ void alert::on_continue2Btn_clicked()
 void alert::updateReset() {
     string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "false");
     string_writeconfig("/mnt/onboard/onboard/.inkbox/can_update", "false");
+}
+
+void alert::quit() {
+    qApp->quit();
 }
