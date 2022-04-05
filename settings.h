@@ -19,6 +19,7 @@ class settings : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     int settings_page = 1;
     bool launch_sh = false;
     bool ui_enable_changed = false;

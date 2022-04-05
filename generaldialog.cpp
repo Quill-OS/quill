@@ -650,13 +650,13 @@ void generalDialog::syncGutenbergCatalog() {
     connect(syncCheckTimer, &QTimer::timeout, [&]() {
         if(QFile::exists("/inkbox/gutenbergSyncDone") == true) {
             if(checkconfig("/inkbox/gutenbergSyncDone") == true) {
-                qDebug() << "Gutenberg sync successfully completed";
+                log("Gutenberg sync successfully completed", className);
                 gutenbergSyncDone = true;
                 gutenbergSyncStatus = true;
                 emit closeIndefiniteToast();
             }
             else {
-                qDebug() << "Gutenberg sync encountered an error";
+                log("Gutenberg sync encountered an error", className);
                 gutenbergSyncDone = true;
                 gutenbergSyncStatus = false;
                 emit closeIndefiniteToast();

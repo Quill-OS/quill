@@ -90,8 +90,8 @@ void koboxAppsDialog::on_launchBtn_clicked()
 {
     index = ui->appsList->currentIndex();
     itemText = index.data(Qt::DisplayRole).toString();
-    if(itemText == "") {
-        QMessageBox::critical(this, tr("Invalid argument"), tr("Please select an application."));
+    if(itemText.isEmpty()) {
+        emit showToast("Please select an application");
     }
     else {
         // DPI setting

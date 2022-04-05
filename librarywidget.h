@@ -14,6 +14,7 @@ class libraryWidget : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit libraryWidget(QWidget *parent = nullptr);
     ~libraryWidget();
     float sH;

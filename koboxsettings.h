@@ -15,6 +15,7 @@ class koboxSettings : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit koboxSettings(QWidget *parent = nullptr);
     ~koboxSettings();
 

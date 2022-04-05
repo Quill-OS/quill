@@ -15,6 +15,7 @@ class settingsChooser : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit settingsChooser(QWidget *parent = nullptr);
     ~settingsChooser();
 

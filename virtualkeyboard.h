@@ -13,6 +13,7 @@ class virtualkeyboard : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit virtualkeyboard(QWidget *parent = nullptr);
     ~virtualkeyboard();
     bool shift;

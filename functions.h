@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <QDebug>
 #include <QRandomGenerator>
+#include <QDateTime>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -116,6 +117,9 @@ namespace global {
     namespace localStorage {
         inline QStringList searchResultsPaths;
     }
+    namespace logger {
+        inline bool status;
+    }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705;
@@ -142,6 +146,13 @@ namespace {
     int defaultPdfPageWidth;
     int defaultPdfPageHeight;
     bool checked_box = false;
+    void log(QString message, QString className) {
+        if(global::logger::status == true) {
+            QDebug logger = qDebug();
+            logger.noquote();
+            logger << QDateTime::currentDateTime().toString("dd/MM/yyyy @ hh:mm:ss") << "|" << className + ":" << message;
+        }
+    }
     bool checkconfig(QString file) {
         if(QFile::exists(file)) {
             QFile config(file);
@@ -690,7 +701,6 @@ namespace {
         }
         return exitCode;
     }
-
 }
 
 #endif // FUNCTIONS_H

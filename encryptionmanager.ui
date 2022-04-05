@@ -75,8 +75,7 @@
          <item row="5" column="0">
           <widget class="QLabel" name="descriptionLabel">
            <property name="text">
-            <string>&lt;font face=&quot;u001&quot;&gt;Encrypted storage allows you to keep your most important files and data safe from anyone else than you.
-Would you like to enable it&lt;/font&gt;&lt;font face=&quot;Inter&quot;&gt;?&lt;/font&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'u001';&quot;&gt;Encrypted storage allows you to keep your most important files and data safe from anyone else but you. Would you like to enable it&lt;/span&gt;&lt;span style=&quot; font-family:'Inter';&quot;&gt;?&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>

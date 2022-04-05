@@ -14,6 +14,7 @@ class brightnessDialog : public QDialog
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     QString checkconfig_str_val;
     int oldValue;
     int oldWarmthValue;

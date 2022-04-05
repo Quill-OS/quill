@@ -22,6 +22,7 @@ class generalDialog : public QDialog
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit generalDialog(QWidget *parent = nullptr);
     ~generalDialog();
     bool resetDialog = false;

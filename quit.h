@@ -14,6 +14,7 @@ class quit : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit quit(QWidget *parent = nullptr);
     ~quit();
 

@@ -12,6 +12,7 @@ class hourglassAnimationWidget : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit hourglassAnimationWidget(QWidget *parent = nullptr);
     ~hourglassAnimationWidget();
     int i;

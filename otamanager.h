@@ -12,6 +12,7 @@ class otaManager : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit otaManager(QWidget *parent = nullptr);
     ~otaManager();
 

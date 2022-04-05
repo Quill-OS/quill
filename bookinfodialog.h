@@ -12,6 +12,7 @@ class bookInfoDialog : public QDialog
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit bookInfoDialog(QWidget *parent = nullptr);
     ~bookInfoDialog();
     float sH;

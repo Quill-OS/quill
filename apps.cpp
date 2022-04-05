@@ -114,6 +114,7 @@ void apps::on_calculatorLaunchBtn_clicked()
 void apps::on_koboxAppsOpenButton_clicked()
 {
     koboxAppsDialogWindow = new koboxAppsDialog();
+    connect(koboxAppsDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
     koboxAppsDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     koboxAppsDialogWindow->show();
 }
@@ -145,4 +146,8 @@ void apps::on_g2048LaunchBtn_clicked()
     QProcess process;
     process.startDetached("2048", QStringList());
     qApp->quit();
+}
+
+void apps::showToastNative(QString messageToDisplay) {
+    emit showToast(messageToDisplay);
 }

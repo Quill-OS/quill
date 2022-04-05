@@ -219,7 +219,7 @@ reader::reader(QWidget *parent) :
             }
         }
     }
-    qDebug() << "Reader: Opening file" << book_file;
+    log("Opening file '" + book_file + "'", className);
 
     // Writing book path to file
     std::string book_file_str = book_file.toStdString();
@@ -697,7 +697,7 @@ reader::reader(QWidget *parent) :
             }
             else {
                 if(isBatteryCritical() == true) {
-                    qDebug() << "Warning! Battery is at a critical charge level!";
+                    log("Warning! Battery is at a critical charge level!", className);
                     openCriticalBatteryAlertWindow();
                 }
             }
@@ -716,7 +716,7 @@ reader::reader(QWidget *parent) :
                             ;
                         }
                         else {
-                            qDebug() << "Warning! Battery is low!";
+                            log("Warning! Battery is low!", className);
                             openLowBatteryDialog();
                         }
                     }

@@ -12,7 +12,7 @@ alert::alert(QWidget *parent) :
     ui(new Ui::alert)
 {
     ui->setupUi(this);
-    alert::setFont(QFont("u001"));
+    ui->messageLabel->setFont(QFont("u001"));
 
     // Getting the screen's size
     float sW = QGuiApplication::screens()[0]->size().width();
@@ -82,9 +82,9 @@ alert::alert(QWidget *parent) :
         qApp->quit();
     }
 
-    ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 18pt }");
+    ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 16pt }");
     ui->messageLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 10pt }");
-    ui->securityLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 12pt }");
+    ui->securityLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 11pt }");
     ui->continueBtn->setProperty("type", "borderless");
     ui->resetBtn->setProperty("type", "borderless");
     ui->continueBtn->setStyleSheet("padding: 20px");

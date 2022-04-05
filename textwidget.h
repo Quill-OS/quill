@@ -12,6 +12,7 @@ class textwidget : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit textwidget(QWidget *parent = nullptr);
     ~textwidget();
 

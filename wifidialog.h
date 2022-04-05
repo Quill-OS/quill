@@ -15,6 +15,7 @@ class wifiDialog : public QDialog
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit wifiDialog(QWidget *parent = nullptr);
     ~wifiDialog();
     QString wifiNetworksList;

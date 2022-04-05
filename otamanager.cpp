@@ -13,18 +13,18 @@ otaManager::otaManager(QWidget *parent) :
     ui->setupUi(this);
     QThread::msleep(500);
     if(global::otaUpdate::downloadOta == false) {
-        qDebug() << "Checking for available OTA update ...";
+        log("Checking for available OTA update ...", className);
         string_writeconfig("/opt/ibxd", "ota_update_check\n");
         QTimer * otaCheckTimer = new QTimer(this);
         otaCheckTimer->setInterval(100);
         connect(otaCheckTimer, &QTimer::timeout, [&]() {
             if(QFile::exists("/run/can_ota_update") == true) {
                 if(checkconfig("/run/can_ota_update") == true) {
-                    qDebug() << "OTA update is available!";
+                    log("OTA update is available!", className);
                     emit canOtaUpdate(true);
                 }
                 else {
-                    qDebug() << "No OTA update available.";
+                    log("No OTA update available.", className);
                     emit canOtaUpdate(false);
                 }
                 unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
@@ -35,7 +35,7 @@ otaManager::otaManager(QWidget *parent) :
         otaCheckTimer->start();
     }
     else {
-        qDebug() << "Downloading OTA update ...";
+        log("Downloading OTA update ...", className);
         QFile::remove("/run/can_install_ota_update");
         string_writeconfig("/opt/ibxd", "ota_update_download\n");
         QTimer * otaDownloadTimer = new QTimer(this);
@@ -43,12 +43,12 @@ otaManager::otaManager(QWidget *parent) :
         connect(otaDownloadTimer, &QTimer::timeout, [&]() {
             if(QFile::exists("/run/can_install_ota_update") == true) {
                 if(checkconfig("/run/can_install_ota_update") == true) {
-                    qDebug() << "Download succeeded.";
+                    log("Download succeeded.", className);
                     emit downloadedOtaUpdate(true);
                     global::otaUpdate::downloadOta = false;
                 }
                 else {
-                    qDebug() << "Download failed.";
+                    log("Download failed.", className);
                     emit downloadedOtaUpdate(false);
                     global::otaUpdate::downloadOta = false;
                 }

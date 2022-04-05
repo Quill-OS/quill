@@ -55,7 +55,7 @@ settings::settings(QWidget *parent) :
     ui->generateSystemReportBtn->setStyleSheet("font-size: 9pt");
     ui->checkOtaUpdateBtn->setStyleSheet("font-size: 9pt");
     ui->comboBox->setStyleSheet("font-size: 9pt");
-    ui->tzComboBox->setStyleSheet("font-size: 9pt");
+    ui->tzComboBox->setStyleSheet("font-size: 8.5pt");
     ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
     ui->repackBtn->setStyleSheet("font-size: 9pt");

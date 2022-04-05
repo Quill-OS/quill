@@ -12,6 +12,7 @@ class calendarApp : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit calendarApp(QWidget *parent = nullptr);
     ~calendarApp();
 

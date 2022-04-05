@@ -14,6 +14,7 @@ class alert : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit alert(QWidget *parent = nullptr);
     ~alert();
     bool signatureError = false;

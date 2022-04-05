@@ -30,6 +30,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 

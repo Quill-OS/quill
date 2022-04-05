@@ -14,6 +14,7 @@ class searchResultsWidget : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit searchResultsWidget(QWidget *parent = nullptr);
     ~searchResultsWidget();
     void setListViewContents(QStringList searchResults);

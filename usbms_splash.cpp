@@ -13,6 +13,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
 {
     ui->setupUi(this);
     usbms_splash::setFont(QFont("u001"));
+    ui->label->setFont(QFont("Inter"));
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -29,8 +30,9 @@ usbms_splash::usbms_splash(QWidget *parent) :
         this->setStyleSheet(stylesheetFile.readAll());
         stylesheetFile.close();
 
+        ui->label->setFont(QFont("Inter"));
         ui->label->setText("Launching KoBox subsystem");
-        ui->label->setStyleSheet("font-size: 14pt");
+        ui->label->setStyleSheet("font-size: 14pt; font-weight: bold");
         ui->label_3->setText("Please wait, this could take a while.");
         if(global::deviceID == "n905\n") {
             ui->label_3->setStyleSheet("font-size: 11pt");
@@ -48,7 +50,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
         float stdIconHeight = sH / 1.15;
 
         this->setStyleSheet("background-color:black;");
-        ui->label->setStyleSheet("QLabel { background-color : black; color : white; font-size: 15pt }");
+        ui->label->setStyleSheet("QLabel { background-color : black; color : white; font-size: 15pt; font-weight: bold }");
         ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 10pt }");
 
         QPixmap pixmap(":/resources/usbms.png");
@@ -64,6 +66,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
 
 void usbms_splash::usbms_launch()
 {
+    log("Entering USBMS session ...", className);
     string_writeconfig("/tmp/in_usbms", "true");
     QTimer::singleShot(1500, this, SLOT(brightnessDown()));
 
@@ -114,13 +117,15 @@ void usbms_splash::usbms_launch()
                     qApp->quit();
                 }
                 else {
-                    qDebug() << "Exiting USBMS session...";
-                    ui->label->setText("Processing content");
+                    log("Exiting USBMS session ...", className);
+                    // '<font/>' bit: because nothing else works ...
+                    ui->label->setText("<font face='Inter'>Processing content</font>");
+                    ui->label->setFont(QFont("Inter"));
                     ui->label_3->setText("Please wait");
+                    ui->label_3->setFont(QFont("u001"));
                     ui->label->setStyleSheet("QLabel { background-color : black; color : white; font-size: 15pt; font-weight: bold }");
                     ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 11pt }");
                     ui->label->setFont(QFont("u001"));
-                    ui->label_3->setFont(QFont("u001"));
 
                     float stdIconWidth = sW / 2;
                     float stdIconHeight = sH / 2;
@@ -181,6 +186,7 @@ void usbms_splash::restartServices() {
     // Checking for updates
     string_writeconfig("/opt/ibxd", "update_inkbox_restart\n");
     QThread::msleep(2500);
+    string_writeconfig("/tmp/in_usbms", "false");
 
     quit_restart();
 }

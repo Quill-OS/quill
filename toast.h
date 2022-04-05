@@ -14,6 +14,7 @@ class toast : public QDialog
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit toast(QWidget *parent = nullptr);
     ~toast();
     void centerToast();

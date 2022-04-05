@@ -12,6 +12,7 @@ class usbms_splash : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit usbms_splash(QWidget *parent = nullptr);
     ~usbms_splash();
     float sW;

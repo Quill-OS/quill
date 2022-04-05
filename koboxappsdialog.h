@@ -15,6 +15,7 @@ class koboxAppsDialog : public QDialog
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit koboxAppsDialog(QWidget *parent = nullptr);
     ~koboxAppsDialog();
 
@@ -29,6 +30,9 @@ public:
 private slots:
     void on_cancelBtn_clicked();
     void on_launchBtn_clicked();
+
+signals:
+    void showToast(QString messageToDisplay);
 
 private:
     Ui::koboxAppsDialog *ui;

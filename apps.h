@@ -16,6 +16,7 @@ class apps : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit apps(QWidget *parent = nullptr);
     ~apps();
 
@@ -31,6 +32,7 @@ private slots:
     void on_reversiLaunchBtn_clicked();
     void refreshScreenNative();
     void on_g2048LaunchBtn_clicked();
+    void showToastNative(QString messageToDisplay);
 
 private:
     Ui::apps *ui;
@@ -41,6 +43,7 @@ private:
 
 signals:
     void refreshScreen();
+    void showToast(QString messageToDisplay);
 };
 
 #endif // APPS_H

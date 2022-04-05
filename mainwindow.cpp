@@ -314,7 +314,7 @@ MainWindow::MainWindow(QWidget *parent)
                     ;
                 }
                 else {
-                    qDebug() << "Warning! Battery is at a critical charge level!";
+                    log("Warning! Battery is at a critical charge level!", className);
                     openCriticalBatteryAlertWindow();
                 }
             }
@@ -334,7 +334,7 @@ MainWindow::MainWindow(QWidget *parent)
                         ;
                     }
                     else {
-                        qDebug() << "Warning! Battery is low!";
+                        log("Warning! Battery is low!", className);
                         openLowBatteryDialog();
                     }
                 }
@@ -662,6 +662,7 @@ void MainWindow::on_appsBtn_clicked()
         // Create widget
         appsWindow = new apps();
         connect(appsWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+        connect(appsWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
         ui->stackedWidget->insertWidget(1, appsWindow);
         global::mainwindow::tabSwitcher::appsWidgetCreated = true;
 
@@ -1029,7 +1030,7 @@ void MainWindow::showToast(QString messageToDisplay) {
 }
 
 void MainWindow::hello(int testNumber) {
-    qDebug() << "Hello" << testNumber;
+    log("Hello" + QString::number(testNumber), className);
 }
 
 void MainWindow::closeIndefiniteToast() {
@@ -1079,11 +1080,11 @@ void MainWindow::checkForUpdate() {
     if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
         if(checkconfig("/tmp/cancelUpdateDialog") == false) {
             // I'm sorry.
-            qDebug() << "An update is available.";
+            log("An update is available.", className);
             QTimer::singleShot(2000, this, SLOT(openUpdateDialog()));
         }
         else {
-            qDebug() << "Not showing update dialog, user dismissed it...";
+            log("Not showing update dialog, user dismissed it ...", className);
         }
     }
 }

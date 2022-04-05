@@ -16,13 +16,9 @@ encryptionManager::encryptionManager(QWidget *parent) :
     ui(new Ui::encryptionManager)
 {
     ui->setupUi(this);
-    ui->encryptionSetupLabel->setFont(QFont("u001"));
-    ui->successLabel->setFont(QFont("u001"));
-    ui->failureLabel->setFont(QFont("u001"));
     ui->descriptionLabel->setFont(QFont("u001"));
     ui->successDescriptionLabel->setFont(QFont("u001"));
     ui->failureDescriptionLabel->setFont(QFont("u001"));
-    ui->warningLabel->setFont(QFont("u001"));
     ui->warningDescriptionLabel->setFont(QFont("u001"));
 
     // Stylesheet
@@ -31,11 +27,11 @@ encryptionManager::encryptionManager(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
-    ui->encryptionSetupLabel->setStyleSheet("font-size: 18pt; font-weight: bold");
+    ui->encryptionSetupLabel->setStyleSheet("font-size: 15pt; font-weight: bold");
     ui->descriptionLabel->setStyleSheet("font-size: 10pt");
-    ui->successLabel->setStyleSheet("font-size: 18pt; font-weight: bold");
+    ui->successLabel->setStyleSheet("font-size: 15pt; font-weight: bold");
     ui->successDescriptionLabel->setStyleSheet("font-size: 10pt");
-    ui->failureLabel->setStyleSheet("font-size: 18pt; font-weight: bold");
+    ui->failureLabel->setStyleSheet("font-size: 15pt; font-weight: bold");
     ui->failureDescriptionLabel->setStyleSheet("font-size: 10pt");
     ui->setupContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
     ui->setupAbortBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
@@ -43,7 +39,7 @@ encryptionManager::encryptionManager(QWidget *parent) :
     ui->failureContinueBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
     ui->acceptBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
     ui->usbmsBtn->setStyleSheet("background: lightGrey; border: 3px solid black; color: black; padding: 10px; outline: none; font-size: 10pt; font-weight: bold; border-radius: 10px");
-    ui->warningLabel->setStyleSheet("font-size: 18pt; font-weight: bold");
+    ui->warningLabel->setStyleSheet("font-size: 15pt; font-weight: bold");
     ui->warningDescriptionLabel->setStyleSheet("font-size: 10pt");
 
     // Getting the screen's size
@@ -259,7 +255,7 @@ void encryptionManager::unlockEncryptedStorage() {
                                 std::string unlockTime_str = to_string(currentEpoch);
                                 global::encfs::unlockTime = QDateTime::fromTime_t(currentEpoch).toString();
                                 QString message = "FATAL: 4 invalid passphrase tries, locking down device until " + global::encfs::unlockTime;
-                                qDebug() << message;
+                                log(message, className);
                                 string_writeconfig("/external_root/boot/flags/ENCRYPT_LOCK", unlockTime_str);
                                 global::encfs::lockdown = true;
                                 setupMessageBoxRan = true;
@@ -328,7 +324,7 @@ void encryptionManager::on_failureContinueBtn_clicked()
 
 void encryptionManager::setupFailedAuthenticationMessageBox() {
     ui->activityWidget->hide();
-    QMessageBox::critical(this, tr("Invalid argument"), tr("Invalid passphrase. Please try again."));
+    QMessageBox::critical(this, tr("Invalid argument"), tr("<font face='u001'>Invalid passphrase. Please try again.</font>"));
     QFile::remove("/external_root/run/encfs_mounted");
     quit_restart();
 }

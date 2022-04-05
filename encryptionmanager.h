@@ -16,6 +16,7 @@ class encryptionManager : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit encryptionManager(QWidget *parent = nullptr);
     ~encryptionManager();
     bool setupExitWidgetRan = false;

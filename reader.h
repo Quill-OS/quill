@@ -46,6 +46,7 @@ class reader : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit reader(QWidget *parent = nullptr);
     ~reader();
 

@@ -19,6 +19,7 @@ class savedwords : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit savedwords(QWidget *parent = nullptr);
     ~savedwords();
     QString words;

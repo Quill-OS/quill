@@ -13,6 +13,7 @@ class virtualkeypad : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit virtualkeypad(QWidget *parent = nullptr);
     ~virtualkeypad();
 

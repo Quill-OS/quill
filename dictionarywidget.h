@@ -14,6 +14,7 @@ class dictionaryWidget : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit dictionaryWidget(QWidget *parent = nullptr);
     ~dictionaryWidget();
     void dictionaryLookup(std::string word, QString first_letter, int position);
