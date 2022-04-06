@@ -2217,6 +2217,7 @@ void reader::openBookFileNative(QString book, bool relativePath) {
 
 void reader::on_quitBtn_clicked()
 {
+    writeconfig_pagenumber(true);
     quitWindow = new quit();
     quitWindow->setAttribute(Qt::WA_DeleteOnClose);
     quitWindow->showFullScreen();
