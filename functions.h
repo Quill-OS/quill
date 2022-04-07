@@ -213,10 +213,12 @@ namespace {
         return 0;
     }
     void set_brightness(int value) {
-        std::ofstream fhandler;
-        fhandler.open("/var/run/brightness");
-        fhandler << value;
-        fhandler.close();
+        if(QFile::exists("/var/run/brightness")) {
+            std::ofstream fhandler;
+            fhandler.open("/var/run/brightness");
+            fhandler << value;
+            fhandler.close();
+        }
     }
     void set_brightness_ntxio(int value) {
         // Thanks to Kevin Short for this (GloLight)
@@ -315,12 +317,17 @@ namespace {
             return brightness;
         }
         else {
-            QFile brightness("/var/run/brightness");
-            brightness.open(QIODevice::ReadOnly);
-            QString valuestr = brightness.readAll();
-            int value = valuestr.toInt();
-            brightness.close();
-            return value;
+            if(QFile::exists("/var/run/brightness")) {
+                QFile brightness("/var/run/brightness");
+                brightness.open(QIODevice::ReadOnly);
+                QString valuestr = brightness.readAll();
+                int value = valuestr.toInt();
+                brightness.close();
+                return value;
+            }
+            else {
+                return 0;
+            }
         }
         return 0;
     }
@@ -380,6 +387,7 @@ namespace {
         // Checks if the battery level is critical (i.e. <= 5%)
         get_battery_level();
         if(batt_level_int <= 5) {
+            QString function = __func__; log(function + ": Battery is at a critical charge level!", "functions");
             return true;
         }
         else {
@@ -396,6 +404,7 @@ namespace {
         }
     }
     void poweroff(bool splash) {
+        log("Powering off ...", "functions");
         if(splash == true) {
             QString prog ("/sbin/poweroff");
             QStringList args;
@@ -415,6 +424,7 @@ namespace {
         }
     }
     void reboot(bool splash) {
+        log("Rebooting ...", "functions");
         if(splash == true) {
             QString prog ("/sbin/reboot");
             QStringList args;
@@ -526,10 +536,12 @@ namespace {
 
     }
     void resetKoboxUserData() {
+        log("Resetting KoBox user data ...", "functions");
         global::kobox::resetKoboxUserDataBool = true;
         reboot(true);
     }
     QString findEpubMetadata(QString book_file, QString metadata) {
+        log("Finding ePUB metadata ...", "functions");
         setDefaultWorkDir();
         QString prog ("sh");
         QStringList args;
@@ -539,6 +551,7 @@ namespace {
         proc->waitForFinished();
 
         QString returnedMetadata = proc->readAllStandardOutput();
+        QString function = __func__; log(function + ": ePUB metadata is: " + returnedMetadata, "functions");
         return returnedMetadata;
     }
     void defineDefaultPageSize(int fileType) {
@@ -563,6 +576,9 @@ namespace {
                 defaultEpubPageHeight = 525;
                 defaultEpubPageWidth = 525;
             }
+            QString function = __func__;
+            log(function + ": Defined default ePUB page height to " + QString::number(defaultEpubPageHeight), "functions");
+            log(function + ": Defined default ePUB page width to " + QString::number(defaultEpubPageWidth), "functions");
         }
         else if(fileType == 1) {
             if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
@@ -581,6 +597,9 @@ namespace {
                 defaultPdfPageHeight = 1630;
                 defaultPdfPageWidth = 1214;
             }
+            QString function = __func__;
+            log(function + "Defined default PDF page height to " + QString::number(defaultPdfPageHeight), "functions");
+            log(function + "Defined default PDF page width to " + QString::number(defaultPdfPageWidth), "functions");
         }
     }
     void pre_set_brightness(int brightnessValue) {
@@ -617,6 +636,7 @@ namespace {
         }
     }
     bool connectToNetwork(QString essid, QString passphrase) {
+        log("Connecting to network " + essid + " ...", "functions");
         std::string essid_str = essid.toStdString();
         std::string passphrase_str = passphrase.toStdString();
         string_writeconfig("/run/wifi_network_essid", essid_str);
@@ -634,12 +654,14 @@ namespace {
                     setDefaultWorkDir();
                     string_writeconfig(".config/17-wifi_connection_information/essid", essid_str);
                     string_writeconfig(".config/17-wifi_connection_information/passphrase", passphrase_str);
+                    QString function = __func__; log(function + ": Connection successful", "functions");
                     return true;
                 }
                 else {
                     QFile::remove("/run/wifi_connected_successfully");
                     connectionSuccessful = 0;
                     global::network::isConnected = false;
+                    QString function = __func__; log(function + ": Connection failed", "functions");
                     return false;
                 }
             }

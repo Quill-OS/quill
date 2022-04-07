@@ -161,6 +161,7 @@ private slots:
     void openBookFileNative(QString book, bool relativePath);
     void showToast(QString messageToDisplay);
     void on_quitBtn_clicked();
+    void closeIndefiniteToast();
 
 signals:
     void openBookFile(QString book, bool relativePath);

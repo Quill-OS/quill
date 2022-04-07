@@ -69,6 +69,7 @@ settingsChooser::~settingsChooser()
 
 void settingsChooser::on_inkboxSettingsBtn_clicked()
 {
+    log("Launching InkBox Settings ...", className);
     settingsWindow = new settings();
     settingsWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(settingsWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
@@ -78,6 +79,7 @@ void settingsChooser::on_inkboxSettingsBtn_clicked()
 
 void settingsChooser::on_koboxSettingsBtn_clicked()
 {
+    log("Launching KoBox Settings ...", className);
     koboxSettingsWindow = new koboxSettings();
     koboxSettingsWindow->setAttribute(Qt::WA_DeleteOnClose);
     koboxSettingsWindow->showFullScreen();

@@ -11,6 +11,7 @@ toast::toast(QWidget *parent) :
     ui(new Ui::toast)
 {
     ui->setupUi(this);
+    log("Displaying message " + global::toast::message, className);
 
     if(global::toast::modalToast == true) {
         global::toast::modalToast = false;

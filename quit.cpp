@@ -66,6 +66,7 @@ void quit::on_pushButton_2_clicked()
 
 void quit::on_pushButton_4_clicked()
 {
+    log("Restarting InkBox ...", className);
     QProcess process;
     process.startDetached("inkbox", QStringList());
     qApp->quit();
@@ -78,6 +79,7 @@ void quit::on_backBtn_clicked()
 
 void quit::on_pushButton_3_clicked()
 {
+    log("Suspending ...", className);
     // inotifywait waits for a MODIFY event, so we just do it instead of evtest and the power button
     string_writeconfig("/external_root/tmp/power", "KEY_POWER");
 }

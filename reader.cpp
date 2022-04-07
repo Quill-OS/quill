@@ -245,6 +245,14 @@ reader::reader(QWidget *parent) :
     }
 
     // Custom settings
+    // Brightness
+    if(global::reader::globalReadingSettings == false) {
+        if(global::deviceID != "n705\n" and global::deviceID != "n905\n") {
+            int brightness_value = brightness_checkconfig(".config/03-brightness/config");
+            log("Local Reading Settings: setting brightness to " + QString::number(brightness_value), className);
+            pre_set_brightness(brightness_value);
+        }
+    }
     // Font
     string_checkconfig(".config/04-book/font");
     if(checkconfig_str_val == "") {
@@ -2221,4 +2229,9 @@ void reader::on_quitBtn_clicked()
     quitWindow = new quit();
     quitWindow->setAttribute(Qt::WA_DeleteOnClose);
     quitWindow->showFullScreen();
+}
+
+void reader::closeIndefiniteToast() {
+    // Warning: use with caution
+    toastWindow->close();
 }

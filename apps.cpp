@@ -78,6 +78,7 @@ void apps::exitSlot() {
 
 void apps::on_scribbleLaunchBtn_clicked()
 {
+    log("Launching external Scribble app ...", className);
     QProcess process;
     process.startDetached("scribble", QStringList());
     qApp->quit();
@@ -85,6 +86,7 @@ void apps::on_scribbleLaunchBtn_clicked()
 
 void apps::on_lightmapsLaunchBtn_clicked()
 {
+    log("Launching external LightMaps app ...", className);
     QProcess process;
     process.startDetached("lightmaps", QStringList());
     qApp->quit();
@@ -92,6 +94,7 @@ void apps::on_lightmapsLaunchBtn_clicked()
 
 void apps::on_savedWordsLaunchBtn_clicked()
 {
+    log("Launching Saved Words app ...", className);
     savedWordsWindow = new savedwords();
     savedWordsWindow->setAttribute(Qt::WA_DeleteOnClose);
     savedWordsWindow->showFullScreen();
@@ -99,6 +102,7 @@ void apps::on_savedWordsLaunchBtn_clicked()
 
 void apps::on_calendarLaunchBtn_clicked()
 {
+    log("Launching Calendar app ...", className);
     calendarWindow = new calendarApp();
     calendarWindow->setAttribute(Qt::WA_DeleteOnClose);
     calendarWindow->showFullScreen();
@@ -106,6 +110,7 @@ void apps::on_calendarLaunchBtn_clicked()
 
 void apps::on_calculatorLaunchBtn_clicked()
 {
+    log("Launching external Calculator app ...", className);
     QProcess process;
     process.startDetached("calculator", QStringList());
     qApp->quit();
@@ -113,6 +118,7 @@ void apps::on_calculatorLaunchBtn_clicked()
 
 void apps::on_koboxAppsOpenButton_clicked()
 {
+    log("Showing KoBox Apps Dialog ...", className);
     koboxAppsDialogWindow = new koboxAppsDialog();
     connect(koboxAppsDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
     koboxAppsDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -121,6 +127,7 @@ void apps::on_koboxAppsOpenButton_clicked()
 
 void apps::on_vncLaunchBtn_clicked()
 {
+    log("Showing VNC dialog ...", className);
     global::keyboard::keyboardDialog = true;
     global::keyboard::vncDialog = true;
     global::keyboard::keyboardText = "";
@@ -136,6 +143,7 @@ void apps::refreshScreenNative() {
 
 void apps::on_reversiLaunchBtn_clicked()
 {
+    log("Launching external Reversi app ...", className);
     QProcess process;
     process.startDetached("qreversi", QStringList());
     qApp->quit();
@@ -143,6 +151,7 @@ void apps::on_reversiLaunchBtn_clicked()
 
 void apps::on_g2048LaunchBtn_clicked()
 {
+    log("Launching external 2048 app ...", className);
     QProcess process;
     process.startDetached("2048", QStringList());
     qApp->quit();

@@ -25,19 +25,18 @@
 #include <QApplication>
 #include <QFile>
 #include <QTextStream>
-#include <QDebug>
 #include <QRect>
 #include <QScreen>
 
 int main(int argc, char *argv[])
 {
-    global::deviceID = readFile("/opt/inkbox_device");
-
     if(char * debug = std::getenv("DEBUG")) {
         if(std::atoi(debug) == 1) {
             global::logger::status = true;
         }
     }
+    global::deviceID = readFile("/opt/inkbox_device");
+    log("Running on device " + global::deviceID, "main");
 
     setDefaultWorkDir();
     if(checkconfig(".config/18-encrypted_storage/status") == true and checkconfig("/external_root/run/encfs_mounted") == false) {
