@@ -81,11 +81,17 @@ alert::alert(QWidget *parent) :
         ui->warningLabel->setText("Please charge your eReader.");
         ui->securityLabel->setText("The battery's charge level is critical.");
         ui->messageLabel->setText("To prevent damage, your device has been turned off.\nPlease consider charging it.");
+        // The Mini (N705) has a higher DPI and otherwise the text doesn't fit
+        if(global::deviceID == "n705\n") {
+            ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 14pt }");
+        }
+        else {
+            ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 16pt }");
+        }
         poweroff(false);
         QTimer::singleShot(1000, this, SLOT(quit()));
     }
 
-    ui->warningLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 16pt }");
     ui->messageLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 10pt }");
     ui->securityLabel->setStyleSheet("QLabel { background-color : black; color : white; font-size: 11pt }");
     ui->continueBtn->setProperty("type", "borderless");

@@ -1137,7 +1137,10 @@ void reader::on_optionsBtn_clicked()
         else {
             ui->optionsBtn->setStyleSheet("background: white; color: black");
         }
-        this->repaint();
+        // The Glo HD (N437) has a newer platform plugin that doesn't need this
+        if(global::deviceID != "n437\n") {
+            QTimer::singleShot(500, this, SLOT(repaint()));
+        }
         menubar_shown = false;
     }
     else {
