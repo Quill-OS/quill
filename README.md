@@ -6,8 +6,8 @@ InkBox features:
 - Full integrated KoBox X11 subsystem
 - ePUB, PDF, pictures and plain text display support
 - Versatile configuration options for reading
-- muPDF rendering engine for ePUB (and soon PDFs)
-- Wi-Fi support and web browser
+- muPDF rendering engine for ePUBs and PDFs
+- Wi-Fi support and web browser (NetSurf)
 - Encrypted storage with EncFS
 - Fast dictionary & local storage search
 - Dark mode
@@ -16,9 +16,9 @@ InkBox features:
 - Seamless update process
 - VNC viewer app
 - Search function
-- 9 built-in fonts
+- 10 built-in fonts
 - Auto-suspend
-- Lock screen/passcode
+- Lock screen/passcode option
 - User-friendly experience
 ## How do I install InkBox?
 You can download precompiled OS/binaries [here](http://23.163.0.39/bundles/inkbox/native/) and standard Nickel add-ons (outdated, unmaintained) are available [here](http://23.163.0.39/bundles/inkbox/nickel/), although support for them has been stopped until further notice. Huge thanks to [@fermino](https://github.com/fermino) for providing free hosting.
