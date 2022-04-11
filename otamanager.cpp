@@ -13,7 +13,7 @@ otaManager::otaManager(QWidget *parent) :
     ui->setupUi(this);
     QThread::msleep(500);
     if(global::otaUpdate::downloadOta == false) {
-        log("Checking for available OTA update ...", className);
+        log("Checking for available OTA update", className);
         string_writeconfig("/opt/ibxd", "ota_update_check\n");
         QTimer * otaCheckTimer = new QTimer(this);
         otaCheckTimer->setInterval(100);
@@ -35,7 +35,7 @@ otaManager::otaManager(QWidget *parent) :
         otaCheckTimer->start();
     }
     else {
-        log("Downloading OTA update ...", className);
+        log("Downloading OTA update", className);
         QFile::remove("/run/can_install_ota_update");
         string_writeconfig("/opt/ibxd", "ota_update_download\n");
         QTimer * otaDownloadTimer = new QTimer(this);

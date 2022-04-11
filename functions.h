@@ -151,7 +151,7 @@ namespace {
         if(global::logger::status == true) {
             QDebug logger = qDebug();
             logger.noquote();
-            logger << QDateTime::currentDateTime().toString("dd/MM/yyyy @ hh:mm:ss") << "|" << className + ":" << message;
+            logger << QDateTime::currentDateTime().toString("dd/MM/yyyy @ hh:mm:ss") << "|" << className + ":" << message.trimmed();
         }
     }
     bool checkconfig(QString file) {
@@ -404,7 +404,7 @@ namespace {
         }
     }
     void poweroff(bool splash) {
-        log("Powering off ...", "functions");
+        log("Powering off", "functions");
         if(splash == true) {
             QString prog ("/sbin/poweroff");
             QStringList args;
@@ -424,7 +424,7 @@ namespace {
         }
     }
     void reboot(bool splash) {
-        log("Rebooting ...", "functions");
+        log("Rebooting", "functions");
         if(splash == true) {
             QString prog ("/sbin/reboot");
             QStringList args;
@@ -536,12 +536,12 @@ namespace {
 
     }
     void resetKoboxUserData() {
-        log("Resetting KoBox user data ...", "functions");
+        log("Resetting KoBox user data", "functions");
         global::kobox::resetKoboxUserDataBool = true;
         reboot(true);
     }
     QString findEpubMetadata(QString book_file, QString metadata) {
-        log("Finding ePUB metadata ...", "functions");
+        log("Finding ePUB metadata, query: " + metadata, "functions");
         setDefaultWorkDir();
         QString prog ("sh");
         QStringList args;
@@ -636,7 +636,7 @@ namespace {
         }
     }
     bool connectToNetwork(QString essid, QString passphrase) {
-        log("Connecting to network " + essid + " ...", "functions");
+        log("Connecting to network " + essid, "functions");
         std::string essid_str = essid.toStdString();
         std::string passphrase_str = passphrase.toStdString();
         string_writeconfig("/run/wifi_network_essid", essid_str);

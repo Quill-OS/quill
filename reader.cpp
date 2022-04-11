@@ -269,6 +269,10 @@ reader::reader(QWidget *parent) :
         else if(checkconfig_str_val == "Ibarra Real Nova") {
             setIbarraFont();
         }
+        else if(checkconfig_str_val == "u001") {
+            ui->text->setFont(QFont("u001"));
+            ui->fontChooser->setCurrentText("Univers (u001)");
+        }
         else {
             QFont config_font(checkconfig_str_val);
             ui->text->setFont(config_font);
@@ -1262,7 +1266,7 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
         string_writeconfig(".config/04-book/font", "Libertinus Serif");
     }
     if(arg1 == "Crimson Pro") {
-        // As adding Crimson Pro to the default fonts bundled along with the Qt libs breaks the general Inter homogeneity, it is incorporated on-demand here.
+        // As adding Crimson Pro to the default fonts bundled along with the Qt libs breaks the general u001/Inter homogeneity, it is incorporated on-demand here.
         setCrimsonProFont();
         string_writeconfig(".config/04-book/font", "Crimson Pro");
     }
@@ -1273,6 +1277,10 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
     if(arg1 == "Ibarra Real Nova") {
         setIbarraFont();
         string_writeconfig(".config/04-book/font", "Ibarra Real Nova");
+    }
+    if(arg1 == "Univers (u001)") {
+        ui->text->setFont(QFont("u001"));
+        string_writeconfig(".config/04-book/font", "u001");
     }
 }
 

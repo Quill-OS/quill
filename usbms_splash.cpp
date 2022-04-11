@@ -66,7 +66,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
 
 void usbms_splash::usbms_launch()
 {
-    log("Entering USBMS session ...", className);
+    log("Entering USBMS session", className);
     string_writeconfig("/tmp/in_usbms", "true");
     QTimer::singleShot(1500, this, SLOT(brightnessDown()));
 
@@ -117,7 +117,7 @@ void usbms_splash::usbms_launch()
                     qApp->quit();
                 }
                 else {
-                    log("Exiting USBMS session ...", className);
+                    log("Exiting USBMS session", className);
                     // '<font/>' bit: because nothing else works ...
                     ui->label->setText("<font face='Inter'>Processing content</font>");
                     ui->label->setFont(QFont("Inter"));

@@ -609,6 +609,11 @@
                     <widget class="QComboBox" name="fontChooser">
                      <item>
                       <property name="text">
+                       <string>Univers (u001)</string>
+                      </property>
+                     </item>
+                     <item>
+                      <property name="text">
                        <string>Inter</string>
                       </property>
                      </item>

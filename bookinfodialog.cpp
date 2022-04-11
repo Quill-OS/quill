@@ -76,6 +76,8 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
         }
     }
 
+    log("Setting up book info dialog, ID: " + QString::number(global::library::bookId) + ", title: " + global::library::bookTitle, className);
+
     // Centering dialog
     this->adjustSize();
     QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
@@ -106,6 +108,7 @@ void bookInfoDialog::on_getBtn_clicked()
 
     global::toast::modalToast = true;
     global::toast::indefiniteToast = true;
+    log("Downloading book, ID: " + QString::number(global::library::bookId) + ", title: " + global::library::bookTitle, className);
     emit showToast("Downloading");
 
     QTimer::singleShot(500, this, SLOT(waitForBookFetch()));
@@ -116,12 +119,14 @@ void bookInfoDialog::waitForBookFetch() {
         if(QFile::exists("/inkbox/gutenberg/getBookDone")) {
             if(checkconfig("/inkbox/gutenberg/getBookDone") == true) {
                 emit closeIndefiniteToast();
+                QString function = __func__; log(function + ": Download successful", className);
                 emit showToast("Download successful");
                 QFile::remove("/inkbox/gutenberg/getBookDone");
                 break;
             }
             else {
                 emit closeIndefiniteToast();
+                QString function = __func__; log(function + ": Download failed", className);
                 emit showToast("Download failed");
                 QFile::remove("/inkbox/gutenberg/getBookDone");
                 break;

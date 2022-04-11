@@ -506,7 +506,7 @@ MainWindow::MainWindow(QWidget *parent)
             string_checkconfig_ro("/external_root/opt/isa/changelog");
             updatemsg = updatemsg.append(checkconfig_str_val);
             updatemsg = updatemsg.append("</font>");
-            log("Showing update changelog ...", className);
+            log("Showing update changelog", className);
             QMessageBox::information(this, tr("Information"), updatemsg);
             string_writeconfig("/external_root/opt/update/inkbox_updated", "false");
 
@@ -585,7 +585,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::openUpdateDialog() {
-    log("Showing Update dialog ...", className);
+    log("Showing Update dialog", className);
     global::mainwindow::updateDialog = true;
     // Write to a temporary file to show an "Update" prompt
     string_writeconfig("/inkbox/updateDialog", "true");
@@ -599,7 +599,7 @@ void MainWindow::openUpdateDialog() {
 }
 
 void MainWindow::openLowBatteryDialog() {
-    log("Showing Low Battery Dialog ...", className);
+    log("Showing Low Battery Dialog", className);
     global::mainwindow::lowBatteryDialog = true;
     global::battery::batteryAlertLock = true;
 
@@ -609,7 +609,7 @@ void MainWindow::openLowBatteryDialog() {
 }
 
 void MainWindow::openUsbmsDialog() {
-    log("Showing USB Mass Storage dialog ...", className);
+    log("Showing USB Mass Storage dialog", className);
     global::usbms::showUsbmsDialog = false;
     global::usbms::usbmsDialog = true;
 
@@ -630,7 +630,7 @@ void MainWindow::openCriticalBatteryAlertWindow() {
 
 void MainWindow::on_settingsBtn_clicked()
 {
-    log("Opening Settings Chooser widget ...", className);
+    log("Opening Settings Chooser widget", className);
     resetFullWindowException = true;
     resetWindow(false);
     if(global::mainwindow::tabSwitcher::settingsChooserWidgetSelected != true) {
@@ -658,7 +658,7 @@ void MainWindow::on_settingsBtn_clicked()
 
 void MainWindow::on_appsBtn_clicked()
 {
-    log("Opening Apps widget ...", className);
+    log("Opening Apps widget", className);
     resetFullWindowException = true;
     resetWindow(false);
     if(global::mainwindow::tabSwitcher::appsWidgetSelected != true) {
@@ -697,7 +697,7 @@ void MainWindow::on_searchBtn_clicked()
 
 void MainWindow::on_quitBtn_clicked()
 {
-    log("Opening Quit widget ...", className);
+    log("Opening Quit widget", className);
     quitWindow = new quit();
     quitWindow->setAttribute(Qt::WA_DeleteOnClose);
     quitWindow->showFullScreen();
@@ -737,7 +737,7 @@ void MainWindow::on_book4Btn_clicked()
 
 void MainWindow::on_brightnessBtn_clicked()
 {
-    log("Showing Brightness Dialog ...", className);
+    log("Showing Brightness Dialog", className);
     brightnessDialogWindow = new brightnessDialog();
     brightnessDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     brightnessDialogWindow->show();
@@ -745,7 +745,7 @@ void MainWindow::on_brightnessBtn_clicked()
 
 void MainWindow::on_homeBtn_clicked()
 {
-    log("Showing home screen ...", className);
+    log("Showing home screen", className);
     global::mainwindow::tabSwitcher::repaint = true;
     resetFullWindowException = true;
     resetWindow(true);
@@ -896,7 +896,7 @@ void MainWindow::refreshScreen() {
 }
 
 void MainWindow::setupSearchDialog() {
-    log("Launching Search dialog ...", className);
+    log("Launching Search dialog", className);
     if(global::forbidOpenSearchDialog == false) {
         global::keyboard::keyboardDialog = true;
         global::keyboard::searchDialog = true;
@@ -1001,7 +1001,7 @@ void MainWindow::setWifiIcon() {
 }
 
 void MainWindow::openWifiDialog() {
-    log("Opening Wi-Fi connection interface ...", className);
+    log("Opening Wi-Fi connection interface", className);
     if(checkconfig("/external_root/run/was_connected_to_wifi") == true and wifiIconClickedWhileReconnecting == false) {
         showToast("Reconnection in progress\nTap again to cancel");
         wifiIconClickedWhileReconnecting = true;
@@ -1064,7 +1064,7 @@ void MainWindow::openUpdateDialogOTA(bool open) {
 }
 
 void MainWindow::launchOtaUpdater() {
-    log("Launching OTA updater ...", className);
+    log("Launching OTA updater", className);
     otaManagerWindow = new otaManager(this);
     connect(otaManagerWindow, SIGNAL(canOtaUpdate(bool)), SLOT(openUpdateDialogOTA(bool)));
     otaManagerWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -1086,7 +1086,7 @@ void MainWindow::openBookFile(QString book, bool relativePath) {
 }
 
 void MainWindow::openReaderFramework() {
-    log("Launching Reader Framework ...", className);
+    log("Launching Reader Framework", className);
     readerWindow = new reader();
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(readerWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
@@ -1094,7 +1094,7 @@ void MainWindow::openReaderFramework() {
 }
 
 void MainWindow::checkForUpdate() {
-    log("Checking for available updates ...", className);
+    log("Checking for available updates", className);
     if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
         if(checkconfig("/tmp/cancelUpdateDialog") == false) {
             // I'm sorry.
@@ -1102,7 +1102,7 @@ void MainWindow::checkForUpdate() {
             QTimer::singleShot(2000, this, SLOT(openUpdateDialog()));
         }
         else {
-            QString function = __func__; log(function + ": Not showing update dialog, user dismissed it ...", className);
+            QString function = __func__; log(function + ": Not showing update dialog, user dismissed it", className);
         }
     }
     else {
@@ -1111,7 +1111,7 @@ void MainWindow::checkForUpdate() {
 }
 
 void MainWindow::openEncfsRepackDialog() {
-    log("Showing encrypted storage repack dialog ...", className);
+    log("Showing encrypted storage repack dialog", className);
     global::encfs::repackDialog = true;
     global::usbms::showUsbmsDialog = false;
     global::usbms::usbmsDialog = false;
@@ -1121,7 +1121,7 @@ void MainWindow::openEncfsRepackDialog() {
 
 void MainWindow::on_libraryButton_clicked()
 {
-    log("Launching Online Library ...", className);
+    log("Launching Online Library", className);
     if(testPing() == 0 or global::deviceID == "emu\n") {
         resetFullWindowException = false;
         resetWindow(false);

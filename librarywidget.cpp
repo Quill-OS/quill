@@ -249,6 +249,7 @@ void libraryWidget::syncCatalog() {
     global::toast::modalToast = true;
     global::toast::indefiniteToast = true;
     bool syncDone = false;
+    log("Gutenberg sync in progress", className);
     showToast("Sync in progress");
 
     string_writeconfig("/opt/ibxd", "gutenberg_sync\n");
@@ -258,12 +259,12 @@ void libraryWidget::syncCatalog() {
         if(syncDone == false) {
             if(QFile::exists("/inkbox/gutenbergSyncDone") == true) {
                 if(checkconfig("/inkbox/gutenbergSyncDone") == true) {
-                    qDebug() << "Gutenberg sync successfully completed";
+                    log("syncCatalog(): Gutenberg sync successfully completed", className);
                     toastWindow->close();
                     setupView();
                 }
                 else {
-                    qDebug() << "Gutenberg sync encountered an error";
+                    log("syncCatalog(): Gutenberg sync encountered an error", className);
                     toastWindow->close();
                     showToast("Error");
                     QFile::remove("/external_root/opt/storage/gutenberg/last_sync");
