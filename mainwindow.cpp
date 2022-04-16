@@ -879,15 +879,23 @@ void MainWindow::setInitialBrightness() {
     if(global::deviceID != "n705\n" and global::deviceID != "n905\n") {
         log("Setting initial brightness to " + QString::number(brightness_value), className);
     }
-    if(checkconfig("/tmp/oobe-inkbox_completed") == true or checkconfig("/tmp/inkbox-cinematicBrightness_ran") == true) {
+    if(checkconfig("/tmp/oobe-inkbox_completed") == true) {
         // Coming from OOBE setup; not doing that fancy stuff again ;p
         QFile::remove("/tmp/oobe-inkbox_completed");
         pre_set_brightness(brightness_value);
     }
     else {
         // Fancy brightness fade-in
-        string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
-        cinematicBrightness(brightness_value, 0);
+        if(checkconfig("/tmp/inkbox-cinematic_brightness_auto") == true) {
+            QFile::remove("/tmp/inkbox-cinematic_brightness_auto");
+            cinematicBrightness(brightness_value, 2);
+        }
+        else {
+            if(checkconfig("/tmp/inkbox-cinematicBrightness_ran") == false) {
+                string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
+                cinematicBrightness(brightness_value, 0);
+            }
+        }
     }
 }
 

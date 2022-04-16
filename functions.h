@@ -614,10 +614,12 @@ namespace {
         }
     }
     void cinematicBrightness(int value, int mode) {
-        /* mode can be 0 or 1, respectively
+        /* mode can be 0, 1, or 2, respectively:
          * 0: Bring UP brightness
          * 1: Bring DOWN brightness
+         * 2: Auto; smooth brightness transition between two brightness levels
         */
+        QString function = __func__; log(function + ": Setting brightness to " + QString::number(value), "functions");
         if(mode == 0) {
             int brightness = 0;
             while(brightness != value) {
@@ -626,12 +628,29 @@ namespace {
                 QThread::msleep(30);
             }
         }
-        else {
+        else if(mode == 1) {
             int brightness = get_brightness();
             while(brightness != 0) {
                 brightness = brightness - 1;
                 pre_set_brightness(brightness);
                 QThread::msleep(30);
+            }
+        }
+        else if(mode == 2) {
+            int brightness = get_brightness();
+            if(brightness <= value) {
+                while(brightness != value) {
+                    brightness = brightness + 1;
+                    pre_set_brightness(brightness);
+                    QThread::msleep(30);
+                }
+            }
+            else if(brightness >= value) {
+                while(brightness != value) {
+                    brightness = brightness - 1;
+                    pre_set_brightness(brightness);
+                    QThread::msleep(30);
+                }
             }
         }
     }

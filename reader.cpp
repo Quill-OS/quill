@@ -249,8 +249,8 @@ reader::reader(QWidget *parent) :
     if(global::reader::globalReadingSettings == false) {
         if(global::deviceID != "n705\n" and global::deviceID != "n905\n") {
             int brightness_value = brightness_checkconfig(".config/03-brightness/config");
-            log("Local Reading Settings: setting brightness to " + QString::number(brightness_value), className);
-            pre_set_brightness(brightness_value);
+            log("Local Reading Settings: Setting brightness to " + QString::number(brightness_value), className);
+            cinematicBrightness(brightness_value, 2);
         }
     }
     // Font
@@ -1229,6 +1229,8 @@ void reader::on_homeBtn_clicked()
     string_writeconfig("/tmp/inkboxReading", "false");
     // Remount tmpfs
     string_writeconfig("/inkbox/remount", "true");
+    // Specify cinematic brightness mode
+    string_writeconfig("/tmp/inkbox-cinematic_brightness_auto", "true");
 
     // Relaunching process
     quit_restart();
