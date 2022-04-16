@@ -97,6 +97,8 @@ public:
     QString usbmsStatus;
     int pageNumberInt;
     int totalPagesInt;
+    int pdfOrientation;
+    bool initialPdfRotationDone;
 
     int setup_book(QString book, int i, bool run_parser);
     void checkwords();
@@ -162,6 +164,7 @@ private slots:
     void showToast(QString messageToDisplay);
     void on_quitBtn_clicked();
     void closeIndefiniteToast();
+    void getPdfOrientation(QString file);
 
 signals:
     void openBookFile(QString book, bool relativePath);

@@ -39,6 +39,14 @@ int main(int argc, char *argv[])
     log("Running on device " + global::deviceID, "main");
 
     setDefaultWorkDir();
+    if(checkconfig("/run/wifi_able") == true) {
+        log("Device has Wi-Fi capabilities", "main");
+        global::device::isWifiAble = true;
+    }
+    else {
+        log("Device does not have Wi-Fi capabilities", "main");
+        global::device::isWifiAble = false;
+    }
     if(checkconfig(".config/18-encrypted_storage/status") == true and checkconfig("/external_root/run/encfs_mounted") == false) {
         // Open Encryption Manager to unlock encrypted storage
         QApplication a(argc, argv);

@@ -35,6 +35,7 @@ namespace global {
         inline bool startUsbmsPrompt;
         inline bool bookIsEpub;
         inline bool globalReadingSettings;
+        inline int pdfOrientation;
     }
     namespace kobox {
         inline bool showKoboxSplash;
@@ -582,20 +583,44 @@ namespace {
         }
         else if(fileType == 1) {
             if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
-                defaultPdfPageHeight = 750;
-                defaultPdfPageWidth = 550;
+                if(global::reader::pdfOrientation == 0) {
+                    defaultPdfPageHeight = 750;
+                    defaultPdfPageWidth = 550;
+                }
+                else {
+                    defaultPdfPageHeight = 550;
+                    defaultPdfPageWidth = 750;
+                }
             }
             else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
-                defaultPdfPageHeight = 974;
-                defaultPdfPageWidth = 708;
+                if(global::reader::pdfOrientation == 0) {
+                    defaultPdfPageHeight = 974;
+                    defaultPdfPageWidth = 708;
+                }
+                else {
+                    defaultPdfPageHeight = 708;
+                    defaultPdfPageWidth = 974;
+                }
             }
             else if(global::deviceID == "n437\n") {
-                defaultPdfPageHeight = 1398;
-                defaultPdfPageWidth = 1022;
+                if(global::reader::pdfOrientation == 0) {
+                    defaultPdfPageHeight = 1398;
+                    defaultPdfPageWidth = 1022;
+                }
+                else {
+                    defaultPdfPageHeight = 1022;
+                    defaultPdfPageWidth = 1398;
+                }
             }
             else if(global::deviceID == "n873\n") {
-                defaultPdfPageHeight = 1630;
-                defaultPdfPageWidth = 1214;
+                if(global::reader::pdfOrientation == 0) {
+                    defaultPdfPageHeight = 1630;
+                    defaultPdfPageWidth = 1214;
+                }
+                else {
+                    defaultPdfPageHeight = 1214;
+                    defaultPdfPageWidth = 1630;
+                }
             }
             QString function = __func__;
             log(function + "Defined default PDF page height to " + QString::number(defaultPdfPageHeight), "functions");
@@ -619,7 +644,9 @@ namespace {
          * 1: Bring DOWN brightness
          * 2: Auto; smooth brightness transition between two brightness levels
         */
-        QString function = __func__; log(function + ": Setting brightness to " + QString::number(value), "functions");
+        if(global::deviceID != "n705\n" && global::deviceID != "n905\n") {
+            QString function = __func__; log(function + ": Setting brightness to " + QString::number(value), "functions");
+        }
         if(mode == 0) {
             int brightness = 0;
             while(brightness != value) {
@@ -655,7 +682,7 @@ namespace {
         }
     }
     bool connectToNetwork(QString essid, QString passphrase) {
-        log("Connecting to network " + essid, "functions");
+        log("Connecting to network '" + essid + "'", "functions");
         std::string essid_str = essid.toStdString();
         std::string passphrase_str = passphrase.toStdString();
         string_writeconfig("/run/wifi_network_essid", essid_str);
@@ -730,19 +757,48 @@ namespace {
         close(ntxfd);
         return !!ptr;
     }
-    int testPing() {
-        QString pingProg = "ping";
-        QStringList pingArgs;
-        pingArgs << "-c" << "1" << "1.1.1.1";
+    int testPing(bool blocking) {
         QProcess *pingProcess = new QProcess();
-        pingProcess->start(pingProg, pingArgs);
-        pingProcess->waitForFinished();
-        int exitCode = pingProcess->exitCode();
-        pingProcess->deleteLater();
-        if(exitCode == 0) {
-            global::network::isConnected = true;
+        if(blocking == true) {
+            QString pingProg = "ping";
+            QStringList pingArgs;
+            pingArgs << "-c" << "1" << "1.1.1.1";
+            pingProcess->start(pingProg, pingArgs);
+            pingProcess->waitForFinished();
+            int exitCode = pingProcess->exitCode();
+            pingProcess->deleteLater();
+            if(exitCode == 0) {
+                global::network::isConnected = true;
+            }
+            else {
+                global::network::isConnected = false;
+            }
+            return exitCode;
         }
-        return exitCode;
+        else {
+            QString pingProg = "sh";
+            QStringList pingArgs;
+            pingArgs << "/mnt/onboard/.adds/inkbox/test_ping.sh";
+            pingProcess->startDetached(pingProg, pingArgs);
+        }
+        pingProcess->deleteLater();
+    }
+    bool getTestPingResults() {
+        // To be used when the testPing() function is used in non-blocking mode.
+        if(QFile::exists("/run/test_ping_status")) {
+            if(checkconfig("/run/test_ping_status") == true) {
+                global::network::isConnected = true;
+                return true;
+            }
+            else {
+                global::network::isConnected = false;
+                return false;
+            }
+        }
+        else {
+            global::network::isConnected = false;
+            return false;
+        }
     }
 }
 

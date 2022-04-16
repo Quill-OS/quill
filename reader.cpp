@@ -36,6 +36,7 @@ reader::reader(QWidget *parent) :
     mupdf::convertRelativeValues = false;
     wordwidgetLock = false;
     goToSavedPageDone = false;
+    initialPdfRotationDone = false;
 
     ui->setupUi(this);
     ui->brightnessStatus->setFont(QFont("u001"));
@@ -795,6 +796,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
             is_epub = true;
         }
         else if(pdf_file_match(book) == true) {
+            getPdfOrientation(book);
             QString pdfProg("/usr/local/bin/mutool");
             QStringList pdfArgs;
             convertMuPdfVars(1, true);
@@ -2103,6 +2105,12 @@ void reader::setupPng() {
         graphicsScene->setSceneRect(rect);
         ui->graphicsView->items().clear();
         ui->graphicsView->setScene(graphicsScene);
+        if(global::reader::pdfOrientation == 1) {
+            if(!initialPdfRotationDone) {
+                ui->graphicsView->rotate(270);
+                initialPdfRotationDone = true;
+            }
+        }
     }
     else if(is_image == true) {
         QPixmap pixmap("/run/image.png");
@@ -2248,4 +2256,24 @@ void reader::on_quitBtn_clicked()
 void reader::closeIndefiniteToast() {
     // Warning: use with caution
     toastWindow->close();
+}
+
+void reader::getPdfOrientation(QString file) {
+    log("Getting viewport orientation for PDF file '" + file + "'", className);
+    string_writeconfig("/inkbox/pdf_orientation_file_request", file.toStdString());
+    string_writeconfig("/opt/ibxd", "get_pdf_orientation\n");
+    while(true) {
+        if(QFile::exists("/inkbox/pdf_orientation_result")) {
+            QString result = readFile("/inkbox/pdf_orientation_result").trimmed();
+            if(result == "Portrait") {
+                QString function = __func__; log(function + ": Orientation is portrait", className);
+                global::reader::pdfOrientation = 0;
+            }
+            else {
+                QString function = __func__; log(function + ": Orientation is landscape", className);
+                global::reader::pdfOrientation = 1;
+            }
+            break;
+        }
+    }
 }

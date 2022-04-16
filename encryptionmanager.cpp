@@ -278,6 +278,7 @@ void encryptionManager::unlockEncryptedStorage() {
                     }
                 }
                 else {
+                    log("Unlocking successful", className);
                     quit_restart();
                 }
             }

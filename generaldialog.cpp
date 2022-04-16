@@ -387,7 +387,7 @@ void generalDialog::on_okBtn_clicked()
                     }
                 }
                 else if(ui->searchComboBox->currentText() == "Online library") {
-                    if(testPing() == 0 or global::deviceID == "emu\n") {
+                    if(testPing(true) == 0 or global::deviceID == "emu\n") {
                         string_writeconfig("/inkbox/searchComboBoxFunction", "Online library");
                         log("Searching online library for '" + global::keyboard::keyboardText + "'", className);
 

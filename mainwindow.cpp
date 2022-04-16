@@ -904,8 +904,8 @@ void MainWindow::refreshScreen() {
 }
 
 void MainWindow::setupSearchDialog() {
-    log("Launching Search dialog", className);
     if(global::forbidOpenSearchDialog == false) {
+        log("Launching Search dialog", className);
         global::keyboard::keyboardDialog = true;
         global::keyboard::searchDialog = true;
         global::keyboard::keyboardText = "";
@@ -933,7 +933,7 @@ void MainWindow::updateWifiIcon(int mode) {
     if(mode == 0) {
         lastWifiState = 0;
         QTimer *wifiIconTimer = new QTimer(this);
-        wifiIconTimer->setInterval(1000);
+        wifiIconTimer->setInterval(10000);
         connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(setWifiIcon()));
         wifiIconTimer->start();
     }
@@ -975,10 +975,11 @@ bool MainWindow::checkWifiState() {
 }
 
 void MainWindow::setWifiIcon() {
-    if(checkconfig("/run/wifi_able") == true) {
-        global::device::isWifiAble = true;
+    if(global::device::isWifiAble == true) {
         if(checkWifiState() == true) {
-            if(testPing() == 0) {
+            testPing(false);
+            getTestPingResults();
+            if(global::network::isConnected == true) {
                 if(lastWifiState != 3) {
                     lastWifiState = 3;
                     ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
@@ -1002,7 +1003,6 @@ void MainWindow::setWifiIcon() {
         }
     }
     else {
-        global::device::isWifiAble = false;
         ui->wifiBtn->hide();
         ui->line_9->hide();
     }
@@ -1061,8 +1061,8 @@ void MainWindow::closeIndefiniteToast() {
 }
 
 void MainWindow::openUpdateDialogOTA(bool open) {
-    QString function = __func__; log(function + ": Showing update dialog (OTA)", className);
     if(open == true) {
+        QString function = __func__; log(function + ": Showing update dialog (OTA)", className);
         global::otaUpdate::isUpdateOta = true;
         openUpdateDialog();
     }
@@ -1130,7 +1130,7 @@ void MainWindow::openEncfsRepackDialog() {
 void MainWindow::on_libraryButton_clicked()
 {
     log("Launching Online Library", className);
-    if(testPing() == 0 or global::deviceID == "emu\n") {
+    if(testPing(true) == 0 or global::deviceID == "emu\n") {
         resetFullWindowException = false;
         resetWindow(false);
         if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
