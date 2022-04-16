@@ -118,6 +118,7 @@ void encryptionManager::setupPassphraseDialog() {
      * 1: Normal behavior
      * 2: Repack
     */
+    log("Showing passphrase dialog for mode " + QString::number(setupPassphraseDialogMode), className);
     ui->activityWidget->hide();
     this->setStyleSheet("background-color: black");
     global::keyboard::keyboardDialog = true;
@@ -142,12 +143,14 @@ void encryptionManager::setupPassphraseDialog() {
 
 void encryptionManager::on_setupAbortBtn_clicked()
 {
+    log("Aborting setup", className);
     setDefaultWorkDir();
     string_writeconfig(".config/18-encrypted_storage/status", "false");
     quit_restart();
 }
 
 void encryptionManager::quit_restart() {
+    log("Restarting InkBox", className);
     QProcess process;
     process.startDetached("inkbox", QStringList());
     qApp->quit();
@@ -166,6 +169,7 @@ void encryptionManager::showToast(QString messageToDisplay) {
 }
 
 void encryptionManager::setupEncryptedStorage() {
+    log("Setting up encrypted storage", className);
     this->setStyleSheet("background-color: white");
     ui->activityWidget->show();
     if(global::encfs::cancelSetup == true) {
@@ -199,6 +203,7 @@ void encryptionManager::setupEncryptedStorage() {
 }
 
 void encryptionManager::unlockEncryptedStorage() {
+    log("Trying to unlock encrypted storage", className);
     if(global::encfs::cancelSetup == true) {
         global::encfs::cancelSetup = false;
         poweroff(true);
@@ -233,6 +238,7 @@ void encryptionManager::unlockEncryptedStorage() {
             if(QFile::exists("/external_root/run/encfs_mounted")) {
                 exitStatus = checkconfig("/external_root/run/encfs_mounted");
                 if(exitStatus == false) {
+                    QString function = __func__; log(function + ": Invalid passphrase", className);
                     if(setupMessageBoxRan == false) {
                         int delay = 0;
                         if(passphraseTries <= 3) {
@@ -281,6 +287,7 @@ void encryptionManager::unlockEncryptedStorage() {
 }
 
 void encryptionManager::mkEncfsDirs() {
+    log("Creating encrypted storage directories", className);
     QDir encfsDir;
     QString encfsPath("/external_root/run/encfs");
     encfsDir.mkpath(encfsPath);
@@ -320,6 +327,7 @@ void encryptionManager::on_failureContinueBtn_clicked()
 }
 
 void encryptionManager::setupFailedAuthenticationMessageBox() {
+    log("Showing 'Authentication failed' message box", className);
     ui->activityWidget->hide();
     QMessageBox::critical(this, tr("Invalid argument"), tr("<font face='u001'>Invalid passphrase. Please try again.</font>"));
     QFile::remove("/external_root/run/encfs_mounted");
@@ -335,6 +343,7 @@ void encryptionManager::on_acceptBtn_clicked()
 
 void encryptionManager::on_usbmsBtn_clicked()
 {
+    log("Showing USBMS splash", className);
     global::usbms::launchUsbms = true;
     usbmsWindow = new usbms_splash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -343,6 +352,7 @@ void encryptionManager::on_usbmsBtn_clicked()
 }
 
 void encryptionManager::repackEncryptedStorage() {
+    log("Repacking encrypted storage", className);
     if(global::encfs::cancelSetup == true) {
         global::encfs::cancelSetup = false;
         quit_restart();

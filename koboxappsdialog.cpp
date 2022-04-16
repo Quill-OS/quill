@@ -123,10 +123,12 @@ void koboxAppsDialog::on_launchBtn_clicked()
         dpModeSetting = "windowed";
 
         if(itemText == "Netsurf") {
+            log("Launching KoBox app: NetSurf", className);
             // Bypass standard shell script launch shenanigans
             string_writeconfig("/external_root/tmp/X_program", "!netsurf");
         }
         else if(itemText == "KTerm") {
+            log("Launching KoBox app: KTerm", className);
             string_writeconfig("/external_root/tmp/X_program", "/usr/local/bin/kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
             dpModeSetting = "fullscreen";
             if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
@@ -146,9 +148,11 @@ void koboxAppsDialog::on_launchBtn_clicked()
             }
         }
         else if(itemText == "Geany") {
+            log("Launching KoBox app: Geany", className);
             string_writeconfig("/external_root/tmp/X_program", "geany");
         }
         else {
+            log("Launching KoBox app: " + itemText, className);
             QString itemTextLower = itemText.toLower();
             std::string app = itemTextLower.toStdString();
             string_writeconfig("/external_root/tmp/X_program", app);
@@ -161,6 +165,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
         global::kobox::showKoboxSplash = true;
 
         // Re-use USBMS splash window for KoBox splash, since it's pretty much the same layout
+        log("Showing USBMS splash", className);
         usbmsSplashWindow = new usbms_splash();
         usbmsSplashWindow->setAttribute(Qt::WA_DeleteOnClose);
         usbmsSplashWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry().size()));

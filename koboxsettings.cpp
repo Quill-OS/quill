@@ -80,6 +80,7 @@ void koboxSettings::on_checkBox_toggled(bool checked)
 {
     if(checked == true) {
         if(not_user_change != true) {
+            log("Enabling KoBox subsystem", className);
             string_writeconfig("/external_root/boot/flags/X11_START", "true");
             openSettingsRebootDialog();
         }
@@ -88,6 +89,7 @@ void koboxSettings::on_checkBox_toggled(bool checked)
         }
     }
     else {
+        log("Disabling KoBox subsystem", className);
         string_writeconfig("/external_root/boot/flags/X11_START", "false");
         openSettingsRebootDialog();
     }
@@ -110,6 +112,7 @@ void koboxSettings::on_spinBox_valueChanged(int arg1)
     QString number = QString::number(arg1);
     string number_str = number.toStdString();
     string_writeconfig(".config/00-kobox/dpiSetting", number_str);
+    log("X11 DPI set to " + number, className);
 }
 
 void koboxSettings::on_pushButton_clicked()
@@ -119,6 +122,8 @@ void koboxSettings::on_pushButton_clicked()
     global::usbms::launchUsbms = true;
     global::usbms::koboxExportExtensions = true;
 
+    log("Exporting KoBox extensions onboard storage via USB", className);
+    log("Showing USBMS splash", className);
     usbmsWindow = new usbms_splash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
     usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));

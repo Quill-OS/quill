@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
         return a.exec();
     }
     else if(checkconfig("/external_root/run/encfs_mounted") == true and checkconfig("/external_root/run/encfs_repack") == true) {
+        log("Launching encryptionManager", "main");
         QApplication a(argc, argv);
         encryptionManager w;
         const QScreen * screen = qApp->primaryScreen();

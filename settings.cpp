@@ -55,7 +55,7 @@ settings::settings(QWidget *parent) :
     ui->generateSystemReportBtn->setStyleSheet("font-size: 9pt");
     ui->checkOtaUpdateBtn->setStyleSheet("font-size: 9pt");
     ui->comboBox->setStyleSheet("font-size: 9pt");
-    ui->tzComboBox->setStyleSheet("font-size: 8.5pt");
+    ui->tzComboBox->setStyleSheet("font-size: 9pt");
     ui->sleepTimeoutComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
     ui->repackBtn->setStyleSheet("font-size: 9pt");
@@ -952,6 +952,7 @@ void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
 }
 
 void settings::disableStorageEncryption() {
+    log("Disabling encrypted storage", className);
     setDefaultWorkDir();
     string_writeconfig("/external_root/run/encfs_stop_cleanup", "true");
     string_writeconfig("/opt/ibxd", "encfs_stop\n");
@@ -993,6 +994,7 @@ void settings::on_repackBtn_clicked()
 
 void settings::on_generateSystemReportBtn_clicked()
 {
+    log("Generating system report", className);
     string_writeconfig("/opt/ibxd", "generate_system_report\n");
     while(true) {
         if(QFile::exists("/inkbox/systemReportDone")) {
@@ -1014,11 +1016,14 @@ void settings::on_tzComboBox_currentTextChanged(const QString &arg1)
         timezone_not_user_change = false;
     }
     else {
+        log("Setting timezone to " + arg1, className);
         setDefaultWorkDir();
         // Preventing unnecessary (e)MMC writes
         if(readFile(".config/19-timezone/config-name") != arg1) {
             QProcess::execute("ln", QStringList() << "-sf" << "/usr/share/zoneinfo/" + arg1 << ".config/19-timezone/config");
             string_writeconfig(".config/19-timezone/config-name", arg1.toStdString());
+            string_writeconfig("/opt/ibxd", "gui_remount_localtime\n");
+            QThread::msleep(500);
         }
     }
 }

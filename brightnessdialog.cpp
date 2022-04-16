@@ -176,9 +176,11 @@ void brightnessDialog::on_okBtn_clicked()
     int warmthValue;
 
     // Write brightness config
+    log("Display brightness set to " + QString::number(brightnessValue), className);
     brightness_writeconfig(brightnessValue);
     if(global::isN873 == true) {
         warmthValue = ui->warmthSlider->value();
+        log("Display warmth set to " + QString::number(warmthValue), className);
         warmth_writeconfig(warmthValue);
     }
 

@@ -39,6 +39,7 @@ alert::alert(QWidget *parent) :
         ui->alertIconLabel->setPixmap(scaledPixmap);
 
         signatureError = true;
+        log("Displaying signature error alert splash", className);
         ui->securityLabel->setText("Failed to update InkBox.");
         ui->messageLabel->setText("The digital signature of the update is untrusted.\nFor security reasons, it cannot be installed.");
         ui->stackedWidget->setCurrentIndex(1);
@@ -48,6 +49,7 @@ alert::alert(QWidget *parent) :
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         ui->alertIconLabel->setPixmap(scaledPixmap);
 
+        log("Displaying downgrade error alert splash", className);
         downgradeError = true;
         ui->securityLabel->setText("Failed to update InkBox.");
         ui->messageLabel->setText("An error occured during the update process.\nThe update package's version is lower than the actual installed version.");
@@ -77,6 +79,7 @@ alert::alert(QWidget *parent) :
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
         ui->alertIconLabel->setPixmap(scaledPixmap);
 
+        log("Displaying critical battery alert splash", className);
         criticalBattery = true;
         ui->warningLabel->setText("Please charge your eReader.");
         ui->securityLabel->setText("The battery's charge level is critical.");
@@ -121,6 +124,7 @@ void alert::on_continueBtn_clicked()
 void alert::on_resetBtn_clicked()
 {
     // We set the DO_FACTORY_RESET flag and we restart the Kobo
+    log("Factory reset requested; setting required flags", className);
     string_writeconfig("/external_root/boot/flags/DO_FACTORY_RESET", "true");
     string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
     QString reboot_prog ("/sbin/reboot");
@@ -138,6 +142,7 @@ void alert::on_continue2Btn_clicked()
     string_writeconfig("/external_root/boot/flags/ALERT", "false");
     updateReset();
 
+    log("Restarting InkBox", className);
     if(signatureError == true) {
         string_writeconfig("/external_root/boot/flags/ALERT_SIGN", "false");
         QProcess process;

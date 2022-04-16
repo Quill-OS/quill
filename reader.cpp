@@ -949,6 +949,7 @@ bool reader::epub_file_match(QString file) {
 }
 
 void reader::dictionary_lookup(string word, QString first_letter, int position) {
+    log("Dictionary lookup requested for word '" + QString::fromStdString(word) + "', position " + QString::number(position), className);
     ofstream fhandler;
     fhandler.open("/inkbox/dictionary/word");
     fhandler << word;

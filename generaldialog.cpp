@@ -206,6 +206,7 @@ generalDialog::~generalDialog()
 
 void generalDialog::on_cancelBtn_clicked()
 {
+    log("Cancel button clicked", className);
     if(updateDialog == true) {
         string_writeconfig("/tmp/cancelUpdateDialog", "true");
         generalDialog::close();
@@ -253,10 +254,12 @@ void generalDialog::on_cancelBtn_clicked()
 
 void generalDialog::on_okBtn_clicked()
 {
+    log("OK button clicked", className);
     if(resetDialog == true) {
         if(checkconfig("/opt/inkbox_genuine") == true) {
             // Soft-reset the device
             // We set a custom boot flag and reboot silently in Diagnostics
+            log("Setting up the device for soft-reset", className);
             string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
             string_writeconfig("/external_root/boot/flags/DO_SOFT_RESET", "true");
             reboot(false);
@@ -264,6 +267,7 @@ void generalDialog::on_okBtn_clicked()
         }
         else {
             // Restore default settings, we're not on InkBox OS
+            log("Restoring default settings", className);
             QString prog ("sh");
             QStringList args;
             args << "reset-config.sh";
@@ -297,6 +301,7 @@ void generalDialog::on_okBtn_clicked()
         }
     }
     if(usbmsDialog == true) {
+        log("Showing USBMS splash", className);
         global::usbms::usbmsDialog = false;
         global::usbms::launchUsbms = true;
 
@@ -343,6 +348,7 @@ void generalDialog::on_okBtn_clicked()
                         onboardPath = "/mnt/onboard/";
                     }
                     QDirIterator dirIt(onboardPath, QDirIterator::Subdirectories);
+                    log("Searching local storage for '" + global::keyboard::keyboardText + "'", className);
                     while(dirIt.hasNext()) {
                         dirIt.next();
                         if(QFileInfo(dirIt.filePath()).isFile()) {
@@ -356,6 +362,7 @@ void generalDialog::on_okBtn_clicked()
                         }
                     }
                     if(!storageSearchResults.isEmpty()) {
+                        log("Displaying search results", className);
                         for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {
                             QWidget * widget = ui->mainStackedWidget->widget(i);
                             ui->mainStackedWidget->removeWidget(widget);
@@ -372,6 +379,7 @@ void generalDialog::on_okBtn_clicked()
                         ui->mainStackedWidget->insertWidget(1, searchResultsWidgetWindow);
                     }
                     else {
+                        log("No search results found", className);
                         global::toast::delay = 3000;
                         emit showToast("No results found");
                         keyboardWidget->clearLineEdit();
@@ -381,6 +389,7 @@ void generalDialog::on_okBtn_clicked()
                 else if(ui->searchComboBox->currentText() == "Online library") {
                     if(testPing() == 0 or global::deviceID == "emu\n") {
                         string_writeconfig("/inkbox/searchComboBoxFunction", "Online library");
+                        log("Searching online library for '" + global::keyboard::keyboardText + "'", className);
 
                         if(!readFile("/external_root/opt/storage/gutenberg/last_sync").isEmpty()) {
                             unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
@@ -426,6 +435,7 @@ void generalDialog::on_okBtn_clicked()
         }
         else if(global::keyboard::vncDialog == true) {
             if(!global::keyboard::keyboardText.isEmpty()) {
+                log("Gathering VNC connection information", className);
                 if(vncServerSet != true) {
                     vncServerAddress = global::keyboard::keyboardText;
                     vncServerSet = true;
@@ -453,6 +463,7 @@ void generalDialog::on_okBtn_clicked()
         }
         else if(global::keyboard::wifiPassphraseDialog == true) {
             if(!global::keyboard::keyboardText.isEmpty()) {
+                log("Attempting connection to Wi-Fi network '" + wifiEssid + "'", className);
                 this->hide();
                 wifiPassphrase = global::keyboard::keyboardText;
                 global::toast::indefiniteToast = true;
@@ -492,12 +503,14 @@ void generalDialog::on_okBtn_clicked()
     }
     if(global::encfs::repackDialog == true) {
         global::encfs::repackDialog = false;
+        log("Encrypted storage repack requested", className);
         string_writeconfig("/external_root/run/encfs_repack", "true");
         quit_restart();
     }
 }
 void generalDialog::on_acceptBtn_clicked()
 {
+    log("OK button clicked", className);
     if(lowBatteryDialog == true) {
         global::mainwindow::lowBatteryDialog = false;
         global::battery::batteryAlertLock = false;
@@ -579,6 +592,7 @@ void generalDialog::refreshScreenNative() {
 }
 
 void generalDialog::startVNC(QString server, QString password, QString port) {
+    log("Launching VNC viewer", className);
     std::string server_str = server.toStdString();
     std::string password_str = password.toStdString();
     std::string port_str = port.toStdString();
@@ -630,6 +644,7 @@ void generalDialog::closeIndefiniteToastNative() {
 }
 
 void generalDialog::quit_restart() {
+    log("Restarting InkBox", className);
     // If existing, cleaning bookconfig_mount mountpoint
     string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
 
@@ -640,6 +655,7 @@ void generalDialog::quit_restart() {
 }
 
 void generalDialog::syncGutenbergCatalog() {
+    log("Syncing Gutenberg catalog", className);
     global::toast::modalToast = true;
     global::toast::indefiniteToast = true;
     emit showToast("Sync in progress");
