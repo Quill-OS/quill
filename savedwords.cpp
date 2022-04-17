@@ -1,5 +1,6 @@
 #include "savedwords.h"
 #include "ui_savedwords.h"
+#include "functions.h"
 #include <QStringListModel>
 #include <QFile>
 #include <QProcess>
@@ -52,6 +53,7 @@ void savedwords::on_backBtn_clicked()
 void savedwords::on_clearBtn_clicked()
 {
     // Warning: possible memory leak here. Though, usually, when you press the "Clear" button and all clears up, you don't have to press it again ;)
+    log("Wiping Saved Words list", className);
     save_word_init();
     checkwords();
     QStringListModel* model = new QStringListModel(this);

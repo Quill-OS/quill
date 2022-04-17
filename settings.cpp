@@ -336,9 +336,9 @@ settings::settings(QWidget *parent) :
         ui->enableUiScalingCheckBox->click();
     }
 
-    timezone_not_user_change = true;
-    ui->tzComboBox->addItems(QStringList(readFile(":/resources/tzlist").split("\n", Qt::SkipEmptyParts)));
     // Timezone
+    ui->tzComboBox->addItems(QStringList(readFile(":/resources/tzlist").split("\n", Qt::SkipEmptyParts)));
+    timezone_not_user_change = true;
     if(readFile(".config/19-timezone/config-name").isEmpty()) {
         ui->tzComboBox->setCurrentText("UTC");
     }

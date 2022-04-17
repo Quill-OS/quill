@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
         }
     }
     global::deviceID = readFile("/opt/inkbox_device");
-    log("Running on device " + global::deviceID, "main");
+    log("Running on device " + global::deviceID, "main", true);
 
     setDefaultWorkDir();
     if(checkconfig("/run/wifi_able") == true) {

@@ -148,11 +148,30 @@ namespace {
     int defaultPdfPageWidth;
     int defaultPdfPageHeight;
     bool checked_box = false;
-    void log(QString message, QString className) {
+    QFile logFile("/external_root/var/log/inkbox-gui.log");
+    void log(QString message, QString className, bool applicationStart = false) {
         if(global::logger::status == true) {
+            QString initialTime;
+            if(applicationStart == true) {
+                initialTime = QDateTime::currentDateTime().toString("dd/MM/yyyy @ hh:mm:ss");
+            }
             QDebug logger = qDebug();
             logger.noquote();
-            logger << QDateTime::currentDateTime().toString("dd/MM/yyyy @ hh:mm:ss") << "|" << className + ":" << message.trimmed();
+
+            QStringList logStringList;
+            logStringList << QDateTime::currentDateTime().toString("dd/MM/yyyy @ hh:mm:ss") << "|" << className + ":" << message.trimmed();
+            QString logString = logStringList.join(" ");
+
+            logger << logString;
+            if(!logFile.isOpen()) {
+                logFile.open(QIODevice::Append|QIODevice::Text);
+            }
+            QTextStream logFileOut(&logFile);
+            if(applicationStart == true) {
+                logFileOut << "========== InkBox binary start at " << initialTime << " ==========" << Qt::endl;
+            }
+            logFileOut << logString << Qt::endl;
+            logFile.close();
         }
     }
     bool checkconfig(QString file) {

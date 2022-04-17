@@ -283,12 +283,14 @@ reader::reader(QWidget *parent) :
     // Night mode
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
         if(checkconfig(".config/10-dark_mode/config") == true) {
+            log("Setting night mode to ON", className);
             string_writeconfig("/tmp/invertScreen", "y");
             ui->nightModeBtn->setText("");
             ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-full.png"));
             isNightModeActive = true;
         }
         else {
+            log("Setting night mode to OFF", className);
             string_writeconfig("/tmp/invertScreen", "n");
             ui->nightModeBtn->setText("");
             ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-empty.png"));
@@ -296,6 +298,7 @@ reader::reader(QWidget *parent) :
         }
     }
     else {
+        log("Night mode disabled by software", className);
         ui->line_7->hide();
         ui->line_7->deleteLater();
         ui->nightModeBtn->hide();
@@ -411,10 +414,12 @@ reader::reader(QWidget *parent) :
     pageRefreshSetting = checkconfig_str_val.toInt();
     // Checking if that config option was set to "Never refresh"...
     if(pageRefreshSetting == -1) {
+        log("Setting page refresh to 'disabled'", className);
         neverRefresh = true;
     }
     else {
         // Safety measure
+        log("Setting page refresh to each " + checkconfig_str_val + " pages", className);
         neverRefresh = false;
     }
 
@@ -509,6 +514,7 @@ reader::reader(QWidget *parent) :
     QString font_size = "font-size: ";
     font_size = font_size.append(checkconfig_str_val);
     font_size = font_size.append("pt");
+    log("Setting font size to " + checkconfig_str_val + " points", className);
     ui->text->setStyleSheet(font_size);
 
     // If needed, show scroll bar when rendering engine isn't doing its job properly
@@ -565,6 +571,7 @@ reader::reader(QWidget *parent) :
                 textAlignment = 3;
                 alignText(3);
         }
+        log("Setting text alignment to '" + checkconfig_str_val + "'", className);
     }
 
     // Topbar info widget
@@ -941,6 +948,7 @@ bool reader::epub_file_match(QString file) {
     QString fileExt = file.right(4);
 
     if(fileExt == "epub" or fileExt == "EPUB") {
+        log("Book file format: ePUB", className);
         string_writeconfig("/inkbox/bookIsEpub", "true");
         return true;
     }
@@ -993,6 +1001,7 @@ void reader::save_word(string word, bool remove) {
         string words_list_str = words_list.toStdString();
         words.close();
 
+        log("Saving word '" + QString::fromStdString(word) + "' in Saved Words list", className);
         ofstream fhandler;
         fhandler.open(".config/06-words/config");
         fhandler << words_list_str << word << "\n";
@@ -1015,6 +1024,7 @@ void reader::on_nextBtn_clicked()
         }
         else {
             split_total = split_total - 1;
+            log("'Next' button clicked", className);
 
             setup_book(book_file, split_total, false);
             ui->text->setText("");
@@ -1031,6 +1041,7 @@ void reader::on_nextBtn_clicked()
         }
         else {
             mupdf::epub::epubPageNumber = mupdf::epub::epubPageNumber + 1;
+            log("'Next' button clicked: going to page " + QString::number(mupdf::epub::epubPageNumber), className);
             setup_book(book_file, mupdf::epub::epubPageNumber, true);
             ui->text->setText("");
             ui->text->setText(epubPageContent);
@@ -1046,6 +1057,7 @@ void reader::on_nextBtn_clicked()
         }
         else {
             mupdf::pdf::pdfPageNumber = mupdf::pdf::pdfPageNumber + 1;
+            log("'Next' button clicked: going to page " + QString::number(mupdf::pdf::pdfPageNumber), className);
             if(ui->pdfScaleSlider->value() != 1) {
                 mupdf::convertRelativeValues = true;
             }
@@ -1071,6 +1083,8 @@ void reader::on_previousBtn_clicked()
         }
         else {
             split_total = split_total + 1;
+            log("'Previous' button clicked", className);
+
             setup_book(book_file, split_total, false);
             ui->text->setText("");
             ui->text->setText(ittext);
@@ -1087,6 +1101,7 @@ void reader::on_previousBtn_clicked()
         }
         else {
             mupdf::pdf::pdfPageNumber = mupdf::pdf::pdfPageNumber - 1;
+            log("'Previous' button clicked: going to page " + QString::number(mupdf::pdf::pdfPageNumber), className);
             if(ui->pdfScaleSlider->value() != 1) {
                 mupdf::convertRelativeValues = true;
             }
@@ -1104,6 +1119,7 @@ void reader::on_previousBtn_clicked()
         }
         else {
             mupdf::epub::epubPageNumber = mupdf::epub::epubPageNumber - 1;
+            log("'Previous' button clicked: going to page " + QString::number(mupdf::epub::epubPageNumber), className);
             setup_book(book_file, mupdf::epub::epubPageNumber, true);
             ui->text->setText("");
             ui->text->setText(epubPageContent);
@@ -1136,6 +1152,7 @@ void reader::refreshScreen() {
 
 void reader::on_optionsBtn_clicked()
 {
+    log("'Options' button clicked", className);
     if(menubar_shown == true) {
         menubar_hide();
         if(global::deviceID == "n873\n") {
@@ -1211,6 +1228,7 @@ void reader::on_brightnessIncBtn_clicked()
 
 void reader::on_aboutBtn_clicked()
 {
+    log("Showing About message box", className);
     if(checkconfig("/opt/inkbox_genuine") == true) {
         QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
         aboutmsg.prepend("<font face='u001'>");
@@ -1227,6 +1245,7 @@ void reader::on_aboutBtn_clicked()
 
 void reader::on_homeBtn_clicked()
 {
+    log("Returning to Home screen", className);
     // We're leaving reading mode
     string_writeconfig("/tmp/inkboxReading", "false");
     // Remount tmpfs
@@ -1240,6 +1259,7 @@ void reader::on_homeBtn_clicked()
 
 void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
 {
+    log("Setting font to '" + arg1 + "'", className);
     if(arg1 == "Roboto") {
         QFont roboto("Roboto");
         ui->text->setFont(roboto);
@@ -1291,6 +1311,7 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
 
 void reader::on_alignLeftBtn_clicked()
 {
+    log("Setting text alignment to 'Left'", className);
     if(is_epub != true) {
         ui->text->setAlignment(Qt::AlignLeft);
     }
@@ -1302,6 +1323,7 @@ void reader::on_alignLeftBtn_clicked()
 
 void reader::on_alignCenterBtn_clicked()
 {
+    log("Setting text alignment to 'Center'", className);
     if(is_epub != true) {
         ui->text->setAlignment(Qt::AlignHCenter);
     }
@@ -1313,6 +1335,7 @@ void reader::on_alignCenterBtn_clicked()
 
 void reader::on_alignRightBtn_clicked()
 {
+    log("Setting text alignment to 'Right'", className);
     if(is_epub != true) {
         ui->text->setAlignment(Qt::AlignRight);
     }
@@ -1324,6 +1347,7 @@ void reader::on_alignRightBtn_clicked()
 
 void reader::on_alignJustifyBtn_clicked()
 {
+    log("Setting text alignment to 'Justify'", className);
     if(is_epub != true) {
         ui->text->setAlignment(Qt::AlignJustify);
     }
@@ -1396,6 +1420,7 @@ void reader::alignText(int alignment) {
 }
 
 void reader::menubar_show() {
+    log("Showing menu bar", className);
     // Checking battery level and status, then displaying the relevant icon on batteryIconLabel
     if(isUsbPluggedIn() == true) {
         ui->batteryIconLabel->setPixmap(scaledChargingPixmap);
@@ -1444,6 +1469,7 @@ void reader::menubar_show() {
 }
 
 void reader::menubar_hide() {
+    log("Hiding menu bar", className);
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
         ui->brightnessWidget->setVisible(false);
     }
@@ -1479,6 +1505,7 @@ void reader::menubar_hide() {
 }
 
 void reader::wordwidget_show() {
+    log("Showing word widget", className);
     if(menubar_shown == true) {
         menubar_hide();
         ui->optionsBtn->hide();
@@ -1493,6 +1520,7 @@ void reader::wordwidget_show() {
 }
 
 void reader::wordwidget_hide() {
+    log("Hiding word widget", className);
     ui->wordWidget->setVisible(false);
     ui->optionsBtn->setStyleSheet("background: white; color: black");
     ui->optionsBtn->show();
@@ -1543,6 +1571,7 @@ void reader::on_nextDefinitionBtn_clicked()
 void reader::on_saveWordBtn_clicked()
 {
     if(checkconfig_match(".config/06-words/config", selected_text_str) == true) {
+        log("Removing word '" + QString::fromStdString(selected_text_str) + "' from Saved Words list", className);
         checkwords();
         word = word.append("\n");
         words = words.replace(word, "");
@@ -1564,8 +1593,7 @@ void reader::on_sizeSlider_valueChanged(int value)
     string value_str = to_string(value);
     string_writeconfig(".config/04-book/size", value_str);
 
-    // Future improvement?
-    if(checkconfig_match("/opt/inkbox_device", "n705\n") == true) {
+    if(global::deviceID == "n705\n") {
         if(value == 0) {
             ui->text->setStyleSheet("font-size: 6pt");
             ui->sizeValueLabel->setText("1");
@@ -1587,7 +1615,7 @@ void reader::on_sizeSlider_valueChanged(int value)
             ui->sizeValueLabel->setText("5");
         }
     }
-    if(checkconfig_match("/opt/inkbox_device", "n905\n") == true) {
+    if(global::deviceID == "n905\n") {
         if(value == 0) {
             ui->text->setStyleSheet("font-size: 6pt");
             ui->sizeValueLabel->setText("1");
@@ -1639,6 +1667,7 @@ void reader::writeconfig_pagenumber(bool persistent) {
         std::string epubPageNumber_str = std::to_string(mupdf::epub::epubPageNumber);
         string_writeconfig("/tmp/inkboxPageNumber", epubPageNumber_str);
         if(persistent == true) {
+            log("Writing page number config for page '" + QString::number(mupdf::epub::epubPageNumber) + "'", className);
             epubPageNumber_str.append("\n");
             string_writeconfig(".config/A-page_number/config", epubPageNumber_str);
         }
@@ -1647,6 +1676,7 @@ void reader::writeconfig_pagenumber(bool persistent) {
         std::string pdfPageNumber_str = std::to_string(mupdf::pdf::pdfPageNumber);
         string_writeconfig("/tmp/inkboxPageNumber", pdfPageNumber_str);
         if(persistent == true) {
+            log("Writing page number config for page '" + QString::number(mupdf::pdf::pdfPageNumber) + "'", className);
             pdfPageNumber_str.append("\n");
             string_writeconfig(".config/A-page_number/config", pdfPageNumber_str);
         }
@@ -1655,6 +1685,7 @@ void reader::writeconfig_pagenumber(bool persistent) {
         std::string split_total_str = std::to_string(split_total);
         string_writeconfig("/tmp/inkboxPageNumber", split_total_str);
         if(persistent == true) {
+            log("Writing page number config for split total '" + QString::number(split_total) + "'", className);
             split_total_str.append("\n");
             string_writeconfig(".config/A-page_number/config", split_total_str);
         }
@@ -1662,6 +1693,8 @@ void reader::writeconfig_pagenumber(bool persistent) {
 }
 
 void reader::quit_restart() {
+    log("Restarting InkBox", className);
+
     // Saving current page number
     saveReadingSettings();
 
@@ -1675,6 +1708,7 @@ void reader::quit_restart() {
 }
 
 void reader::openLowBatteryDialog() {
+    log("Showing low battery dialog", className);
     global::mainwindow::lowBatteryDialog = true;
     global::battery::batteryAlertLock = true;
 
@@ -1684,6 +1718,7 @@ void reader::openLowBatteryDialog() {
 }
 
 void reader::openCriticalBatteryAlertWindow() {
+    log("Showing critical battery alert splash", className);
     global::battery::showCriticalBatteryAlert = true;
     global::battery::showLowBatteryDialog = false;
 
@@ -1793,7 +1828,7 @@ void reader::setPageStyle(int fileType) {
 
 void reader::delay(int mseconds) {
     // https://stackoverflow.com/questions/3752742/how-do-i-create-a-pause-wait-function-using-qt
-    QTime dieTime= QTime::currentTime().addMSecs(mseconds);
+    QTime dieTime = QTime::currentTime().addMSecs(mseconds);
     while (QTime::currentTime() < dieTime)
         QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 }
@@ -1804,6 +1839,7 @@ void reader::on_text_selectionChanged() {
         QTextCursor cursor = ui->text->textCursor();
         selected_text = cursor.selectedText();
         if(selected_text != "") {
+            log("Text selection changed; selected text: '" + selected_text + "'", className);
             QString dictionary_position_str = QString::number(dictionary_position);
             ui->definitionStatusLabel->setText(dictionary_position_str);
 
@@ -1838,6 +1874,7 @@ void reader::on_nightModeBtn_clicked()
 {
     if(isNightModeActive == true) {
         // Disabling night/dark mode
+        log("Setting night mode to OFF", className);
         string_writeconfig("/tmp/invertScreen", "n");
         string_writeconfig(".config/10-dark_mode/config", "false");
         ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-empty.png"));
@@ -1845,6 +1882,7 @@ void reader::on_nightModeBtn_clicked()
     }
     else {
         // Enabling night/dark mode
+        log("Setting night mode to ON", className);
         string_writeconfig("/tmp/invertScreen", "y");
         string_writeconfig(".config/10-dark_mode/config", "true");
         ui->nightModeBtn->setIcon(QIcon(":/resources/nightmode-full.png"));
@@ -1853,6 +1891,7 @@ void reader::on_nightModeBtn_clicked()
 }
 
 void reader::openUsbmsDialog() {
+    log("Showing USBMS dialog", className);
     global::usbms::showUsbmsDialog = false;
     global::usbms::usbmsDialog = true;
 
@@ -1917,11 +1956,13 @@ void reader::getTotalEpubPagesNumber() {
 
     string_checkconfig_ro("/run/epub_total_pages_number");
     totalPagesInt = checkconfig_str_val.toInt();
+    log("ePUB total pages number: " + checkconfig_str_val, className);
     QFile::remove("/run/epub_total_pages_number");
 }
 
 void reader::on_gotoBtn_clicked()
 {
+    log("Showing 'Go to page' dialog", className);
     global::keyboard::keypadDialog = true;
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -1929,6 +1970,7 @@ void reader::on_gotoBtn_clicked()
 }
 
 void reader::gotoPage(int pageNumber) {
+    log("Going to page " + QString::number(pageNumber), className);
     if(is_epub == true) {
         if(pageNumber > totalPagesInt or pageNumber < 1) {
             showToast("Request is beyond page range");
@@ -1985,6 +2027,7 @@ void reader::on_searchBtn_clicked()
 
 void reader::setupSearchDialog() {
     if(global::forbidOpenSearchDialog == false) {
+        log("Launching Search dialog", className);
         global::keyboard::keyboardDialog = true;
         global::keyboard::searchDialog = true;
         global::keyboard::keyboardText = "";
@@ -2087,6 +2130,7 @@ void reader::saveReadingSettings() {
 }
 
 void reader::setupLocalSettingsEnvironment() {
+    log("Setting local settings environment up", className);
     QString pageNumberDirPath = ".config/A-page_number";
     QDir pageNumberDir;
     pageNumberDir.mkpath(pageNumberDirPath);
@@ -2130,6 +2174,7 @@ bool reader::pdf_file_match(QString file) {
     QString fileExt = file.right(3);
 
     if(fileExt == "pdf" or fileExt == "PDF") {
+        log("Book file format: PDF", className);
         string_writeconfig("/inkbox/bookIsPdf", "true");
         return true;
     }
@@ -2141,10 +2186,12 @@ bool reader::pdf_file_match(QString file) {
 
 bool reader::image_file_match(QString file) {
     if(file.right(3) == "png" or file.right(3) == "PNG" or file.right(3) == "jpg" or file.right(3) == "JPG" or file.right(3) == "bmp" or file.right(3) == "BMP" or file.right(3) == "tif" or file.right(3) == "TIF") {
+        log("File format: image", className);
         string_writeconfig("/inkbox/bookIsImage", "true");
         return true;
     }
     else if(file.right(4) == "jpeg" or file.right(4) == "JPEG" or file.right(4) == "tiff" or file.right(4) == "TIFF") {
+        log("File format: image", className);
         string_writeconfig("/inkbox/bookIsImage", "true");
         return true;
     }
@@ -2166,11 +2213,13 @@ void reader::getTotalPdfPagesNumber() {
 
     string_checkconfig_ro("/run/pdf_total_pages_number");
     totalPagesInt = checkconfig_str_val.toInt();
+    log("Total PDF pages number: " + checkconfig_str_val, className);
     QFile::remove("/run/pdf_total_pages_number");
 }
 
 void reader::on_pdfScaleSlider_valueChanged(int value)
 {
+    log("Setting PDF scale to " + QString::number(value), className);
     if(value == 1) {
         mupdf::pdf::relativeWidth = 1 * mupdf::pdf::width;
         mupdf::pdf::relativeHeight = 1 * mupdf::pdf::height;
@@ -2247,6 +2296,7 @@ void reader::openBookFileNative(QString book, bool relativePath) {
 
 void reader::on_quitBtn_clicked()
 {
+    log("Showing Quit window", className);
     writeconfig_pagenumber(true);
     quitWindow = new quit();
     quitWindow->setAttribute(Qt::WA_DeleteOnClose);
