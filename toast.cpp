@@ -83,8 +83,7 @@ void toast::exitSlot(int exitCode) {
         toast::close();
     }
     else {
-        ui->messageLabel->setText("No networks found");
-        QTimer::singleShot(global::toast::delay, this, SLOT(close()));
+        emit showToast("No networks found");
     }
 }
 

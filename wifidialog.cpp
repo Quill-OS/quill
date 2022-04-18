@@ -52,12 +52,14 @@ void wifiDialog::checkWifiNetworks() {
 }
 
 void wifiDialog::printWifiNetworks() {
-    string_checkconfig_ro("/run/wifi_networks_list");
-    if(checkconfig_str_val == "") {
+    if(readFile("/run/wifi_networks_list").isEmpty()) {
+        log("Wi-Fi networks list empty", className);
+        QFile::remove("/run/wifi_networks_list");
         emit quit(1);
         wifiDialog::close();
     }
     else {
+        log("Parsing Wi-Fi networks list", className);
         QFile wifiNetworksListFile("/run/wifi_networks_list");
         wifiNetworksListFile.open(QIODevice::ReadWrite);
         QTextStream in (&wifiNetworksListFile);
