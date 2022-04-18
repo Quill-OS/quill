@@ -96,12 +96,14 @@ void koboxSettings::on_checkBox_toggled(bool checked)
 }
 
 void koboxSettings::openSettingsRebootDialog() {
+    log("Showing reboot dialog", className);
     global::settings::settingsRebootDialog = true;
     global::kobox::koboxSettingsRebootDialog = true;
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
 }
 void koboxSettings::openResetKoboxDialog() {
+    log("Showing KoBox reset dialog", className);
     global::kobox::resetKoboxDialog = true;
     generalDialogWindow = new generalDialog(this);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);

@@ -418,6 +418,7 @@ void settings::on_okBtn_clicked() {
 
 void settings::on_aboutBtn_clicked()
 {
+    log("Showing About message box", className);
     if(checkconfig("/opt/inkbox_genuine") == true) {
         QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
         aboutmsg.prepend("<font face='u001'>");
@@ -434,12 +435,15 @@ void settings::on_aboutBtn_clicked()
 
 void settings::on_demoCheckBox_toggled(bool checked)
 {
+    QString settingString = "demo setting (change MainWindow label)";
     // Write to config file
     if(checked == true) {
+        logEnabled(settingString);
         checked_box = true;
         writeconfig(".config/01-demo/config", "InkboxChangeLabel=");
     }
     else {
+        logDisabled(settingString);
         checked_box = false;
         writeconfig(".config/01-demo/config", "InkboxChangeLabel=");
     }
@@ -447,13 +451,15 @@ void settings::on_demoCheckBox_toggled(bool checked)
 
 void settings::on_clockCheckBox_toggled(bool checked)
 {
+    QString settingString = "clock with seconds setting";
     // Write to config file
     if(checked == true) {
+        logEnabled(settingString);
         checked_box = true;
         writeconfig(".config/02-clock/config", "ClockShowSeconds=");
     }
-
     else {
+        logDisabled(settingString);
         checked_box = false;
         writeconfig(".config/02-clock/config", "ClockShowSeconds=");
     }
@@ -461,11 +467,14 @@ void settings::on_clockCheckBox_toggled(bool checked)
 
 void settings::on_quoteCheckBox_toggled(bool checked)
 {
+    QString settingString = "show quotes setting";
     if(checked == true) {
+        logEnabled(settingString);
         checked_box = true;
         writeconfig(".config/05-quote/config", "DisableQuote=");
     }
     else {
+        logDisabled(settingString);
         checked_box = false;
         writeconfig(".config/05-quote/config", "DisableQuote=");
     }
@@ -473,6 +482,7 @@ void settings::on_quoteCheckBox_toggled(bool checked)
 
 void settings::on_requestLeaseBtn_clicked()
 {
+    log("Requesting DHCP lease", className);
     QString prog ("chroot");
     QStringList args;
     args << "/external_root" << "/usr/sbin/dhclient";
@@ -491,6 +501,7 @@ void settings::on_usbmsBtn_clicked()
 
 void settings::on_previousBtn_clicked()
 {
+    log("'Previous' button clicked", className);
     settings_page = settings_page - 1;
     if(settings_page == 1) {
         ui->stackedWidget->setCurrentIndex(0);
@@ -534,6 +545,7 @@ void settings::on_previousBtn_clicked()
 
 void settings::on_nextBtn_clicked()
 {
+    log("'Next' button clicked", className);
     settings_page = settings_page + 1;
     if(settings_page == 2) {
         ui->stackedWidget->setCurrentIndex(1);
@@ -569,10 +581,12 @@ void settings::on_wordsNumber_valueChanged(int arg1)
     QString number = QString::number(arg1);
     string number_str = number.toStdString();
     string_writeconfig(".config/07-words_number/config", number_str);
+    log("Set text files words number to " + number, className);
 }
 
 void settings::on_updateBtn_clicked()
 {
+    log("'Update' button clicked", className);
     string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "true");
     string_writeconfig("/external_root/opt/update/will_update", "true");
     string_writeconfig("/external_root/boot/flags/WILL_UPDATE", "true");
@@ -586,11 +600,14 @@ void settings::on_updateBtn_clicked()
 
 void settings::on_darkModeCheckBox_toggled(bool checked)
 {
+    QString settingString = "dark mode setting";
     if(checked == true) {
+        logEnabled(settingString);
         string_writeconfig(".config/10-dark_mode/config", "true");
         string_writeconfig("/tmp/invertScreen", "y");
     }
     else {
+        logDisabled(settingString);
         string_writeconfig(".config/10-dark_mode/config", "false");
         string_writeconfig("/tmp/invertScreen", "n");
     }
@@ -598,6 +615,7 @@ void settings::on_darkModeCheckBox_toggled(bool checked)
 
 void settings::on_uiScalingSlider_valueChanged(int value)
 {
+    log("Setting DPI level to " + QString::number(value), className);
     if(value == 0) {
         if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
@@ -668,11 +686,14 @@ void settings::on_uiScalingSlider_valueChanged(int value)
 
 void settings::on_menuBarCheckBox_toggled(bool checked)
 {
+    QString settingString = "sticky menu bar setting";
     if(checked == true) {
+        logEnabled(settingString);
         checked_box = true;
         writeconfig(".config/11-menubar/sticky", "StickyMenuBar=");
     }
     else {
+        logDisabled(settingString);
         checked_box = false;
         writeconfig(".config/11-menubar/sticky", "StickyMenuBar=");
     }
@@ -680,6 +701,7 @@ void settings::on_menuBarCheckBox_toggled(bool checked)
 
 void settings::on_comboBox_currentIndexChanged(const QString &arg1)
 {
+    log("Setting page refresh setting to " + arg1, className);
     if(arg1 == "Every page") {
         string_writeconfig(".config/04-book/refresh", "0");
     }
@@ -708,16 +730,20 @@ void settings::on_comboBox_currentIndexChanged(const QString &arg1)
 
 void settings::on_resetBtn_clicked()
 {
+    log("'Reset' button clicked", className);
     // We write to a temporary file to show a "Reset" prompt
     string_writeconfig("/inkbox/resetDialog", "true");
 
     // We setup the dialog
+    log("Showing reset dialog", className);
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
 }
 
 void settings::on_setPasscodeBtn_clicked()
 {
+    log("'Set passcode' button clicked", className);
+    log("Launching lockscreen binary", className);
     string_writeconfig("/tmp/setPasscode", "true");
     QProcess process;
     process.startDetached("lockscreen", QStringList());
@@ -726,17 +752,22 @@ void settings::on_setPasscodeBtn_clicked()
 
 void settings::on_enableLockscreenCheckBox_toggled(bool checked)
 {
+    QString settingString = "lockscreen setting";
     if(checked == true) {
+        logEnabled(settingString);
         string_writeconfig(".config/12-lockscreen/config", "true");
     }
     else {
+        logDisabled(settingString);
         string_writeconfig(".config/12-lockscreen/config", "false");
     }
 }
 
 void settings::on_enableUiScalingCheckBox_toggled(bool checked)
 {
+    QString settingString = "UI scaling setting";
     if(checked == true) {
+        logEnabled(settingString);
         // Writing default value depending on the device
         if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
@@ -769,6 +800,7 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
         }
     }
     else {
+        logDisabled(settingString);
         string_writeconfig(".config/09-dpi/config", "false");
         string_writeconfig(".config/09-dpi/config-enabled", "false");
         ui->uiScaleNumberLabel->hide();
@@ -781,12 +813,14 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
 
 void settings::on_showSystemInfoBtn_clicked()
 {
+    log("'Show system info' button clicked", className);
     getSystemInfo();
     global::usbms::usbmsDialog = false;
     global::text::textBrowserContents = global::systemInfoText;
     global::text::textBrowserDialog = true;
 
     // Show a system info dialog
+    log("Showing system info dialog", className);
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
 }
@@ -796,6 +830,7 @@ void settings::on_pageSizeWidthSpinBox_valueChanged(int arg1)
     std::string value = std::to_string(arg1);
     string_writeconfig(".config/13-epub_page_size/width", value);
     string_writeconfig(".config/13-epub_page_size/set", "true");
+    log("Set ePUB page size width to " + QString::number(arg1), className);
 }
 
 void settings::on_pageSizeHeightSpinBox_valueChanged(int arg1)
@@ -803,20 +838,25 @@ void settings::on_pageSizeHeightSpinBox_valueChanged(int arg1)
     std::string value = std::to_string(arg1);
     string_writeconfig(".config/13-epub_page_size/height", value);
     string_writeconfig(".config/13-epub_page_size/set", "true");
+    log("Set ePUB page size height to " + QString::number(arg1), className);
 }
 
 void settings::on_readerScrollBarCheckBox_toggled(bool checked)
 {
+    QString settingString = "scrollbar display if necessary setting";
     if(checked == true) {
+        logEnabled(settingString);
         string_writeconfig(".config/14-reader_scrollbar/config", "true");
     }
     else {
+        logDisabled(settingString);
         string_writeconfig(".config/14-reader_scrollbar/config", "false");
     }
 }
 
 void settings::on_sleepTimeoutComboBox_currentIndexChanged(const QString &arg1)
 {
+    log("Setting sleep timeout setting to " + arg1, className);
     setDefaultWorkDir();
     if(arg1 == "Never") {
         string_writeconfig(".config/15-sleep_timeout/config", "-1");
@@ -847,11 +887,14 @@ void settings::brightnessDown() {
 
 void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)
 {
+    QString settingString = "global reading settings setting";
     if(checked == true) {
+        logEnabled(settingString);
         checked_box = true;
         writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
     }
     else {
+        logDisabled(settingString);
         checked_box = false;
         writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
     }
@@ -859,10 +902,12 @@ void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)
 
 void settings::on_checkOtaUpdateBtn_clicked()
 {
+    log("'Check for OTA update' button clicked", className);
     launchOtaUpdater();
 }
 
 void settings::openUpdateDialog() {
+    log("Showing update dialog", className);
     global::mainwindow::updateDialog = true;
     // Write to a temporary file to show an "Update" prompt
     string_writeconfig("/inkbox/updateDialog", "true");
@@ -905,6 +950,7 @@ void settings::closeIndefiniteToastNative() {
 
 void settings::usbms_launch()
 {
+    log("Showing USBMS splash", className);
     global::usbms::launchUsbms = true;
 
     usbmsWindow = new usbms_splash();
@@ -925,8 +971,10 @@ void settings::quit_restart() {
 
 void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
 {
+    QString settingString = "encrypted storage setting";
     if(checked == true) {
         if(enableEncryptedStorageUserChange == true) {
+            logEnabled(settingString);
             setDefaultWorkDir();
             string_writeconfig(".config/18-encrypted_storage/initial_setup_done", "false");
             string_writeconfig(".config/18-encrypted_storage/status", "true");
@@ -943,6 +991,7 @@ void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
         }
     }
     else {
+        logDisabled(settingString);
         global::encfs::disableStorageEncryptionDialog = true;
         generalDialogWindow = new generalDialog(this);
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -980,13 +1029,16 @@ void settings::cancelDisableStorageEncryption() {
 
 void settings::on_repackBtn_clicked()
 {
+    log("'Repack encrypted storage' button clicked", className);
     QDir dir("/mnt/onboard/onboard/encfs-dropbox");
     if(dir.isEmpty()) {
+        log("Showing encrypted storage repack error dialog ('encfs-dropbox' directory is empty)", className);
         global::encfs::errorNoBooksInDropboxDialog = true;
         generalDialogWindow = new generalDialog(this);
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     }
     else {
+        log("Showing encrypted storage repack dialog", className);
         string_writeconfig("/external_root/run/encfs_repack", "true");
         quit_restart();
     }
@@ -994,6 +1046,7 @@ void settings::on_repackBtn_clicked()
 
 void settings::on_generateSystemReportBtn_clicked()
 {
+    log("'Generate system report' button clicked", className);
     log("Generating system report", className);
     string_writeconfig("/opt/ibxd", "generate_system_report\n");
     while(true) {
@@ -1026,4 +1079,12 @@ void settings::on_tzComboBox_currentTextChanged(const QString &arg1)
             QThread::msleep(500);
         }
     }
+}
+
+void settings::logEnabled(QString settingString) {
+    log("Enabling " + settingString, className);
+}
+
+void settings::logDisabled(QString settingString) {
+    log("Disabling " + settingString, className);
 }
