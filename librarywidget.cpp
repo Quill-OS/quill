@@ -259,12 +259,10 @@ void libraryWidget::syncCatalog() {
         if(syncDone == false) {
             if(QFile::exists("/inkbox/gutenbergSyncDone") == true) {
                 if(checkconfig("/inkbox/gutenbergSyncDone") == true) {
-                    log("syncCatalog(): Gutenberg sync successfully completed", className);
                     toastWindow->close();
                     setupView();
                 }
                 else {
-                    log("syncCatalog(): Gutenberg sync encountered an error", className);
                     toastWindow->close();
                     showToast("Error");
                     QFile::remove("/external_root/opt/storage/gutenberg/last_sync");
