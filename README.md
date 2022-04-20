@@ -32,6 +32,7 @@ Alternatively, you can also open a terminal and check the device node of the Kob
 ```
 xzcat inkbox.xz | dd of=/dev/mmcblk0
 ```
+<b>IMPORTANT:</b> InkBox OS does NOT provide ANY WARRANTY at all and we are not responsible if you brick your device with one of the images below.
 
 ## How do I upgrade InkBox?
 To upgrade InkBox, go to http://23.163.0.39/bundles/inkbox/native/update/ and extract the files for your device onto the `.inkbox` folder in the USB storage partition.
