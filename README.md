@@ -35,7 +35,7 @@ xzcat inkbox.xz | dd of=/dev/mmcblk0
 <b>IMPORTANT:</b> InkBox OS does NOT provide ANY WARRANTY at all and we are not responsible if you brick your device with one of the factory images or update bundles available online. See [legal information](https://github.com/Kobo-InkBox/inkbox/blob/master/LEGAL.md) for more details.
 
 ## How do I upgrade InkBox?
-To upgrade InkBox, go to http://23.163.0.39/bundles/inkbox/native/update/ and extract the files for your device onto the `.inkbox` folder in the USB storage partition.
+To upgrade InkBox, go to http://23.163.0.39/bundles/inkbox/native/update/ and copy the files for your device onto the `.inkbox` folder in the USB storage partition.
 
 **Note**: Prior to version 1.6, InkBox had to be upgraded one version at a time. If your device's factory image ships with version 1.5, you need to closely follow the upgrade instructions [here](http://23.163.0.39/bundles/inkbox/native/update/1.6/HOWTO-Update).
 
