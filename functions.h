@@ -794,12 +794,14 @@ namespace {
             }
             return exitCode;
         }
+        /* For some reason, implementing a non-blocking version of this functions triggers a "terminate called without an active exception" error with a platform plugin compiled with a newer GCC 11 toolchain. The problem has been solved by transplanting this function into the related area which uses it.
         else {
             QString pingProg = "sh";
             QStringList pingArgs;
             pingArgs << "/mnt/onboard/.adds/inkbox/test_ping.sh";
             pingProcess->startDetached(pingProg, pingArgs);
         }
+        */
         pingProcess->deleteLater();
     }
     bool getTestPingResults() {
