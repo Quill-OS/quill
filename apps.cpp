@@ -3,6 +3,44 @@
 #include "mainwindow.h"
 #include <QFile>
 #include <QProcess>
+#include <QJsonDocument>
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
+
+#include <QDebug> // szybet testing
+
+// Json scheme:
+/*
+{
+    "list": [
+      {
+        "Name": "Sanki",
+        "Author": "Szybet",
+        "Version": "0.1 testing",
+        "IconPath": "/sanki.png",
+        "ExecPath": "/sanki",
+        "Signed": true,
+        "Enabled": false,
+        "SupportedDevices": "n305,xxx,xxx"
+      },
+      {
+        "Name": "Syncthing",
+        "Author": "Szybet",
+        "Version": "0.1 testing",
+        "IconPath": "/syncthing.png",
+        "ExecPath": "/syncthing_arm.bin",
+        "Signed": false,
+        "Enabled": false,
+        "SupportedDevices": "n305,xxx,xxx"
+      }
+    ]
+}
+*/
+// Its located at: /data/onboard/.apps/apps.json so in chroot: /mnt/onboard/onboard/.apps/apps.json
+
+
 
 apps::apps(QWidget *parent) :
     QWidget(parent),
@@ -65,6 +103,16 @@ apps::apps(QWidget *parent) :
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
+
+    // Refresh becouse qt shows the scrollbar for one second and hides it, leaving a mark on the e-ink
+    QTimer::singleShot(1750, this, SLOT(refreshScreenNative()));
+    if(parseJson() == true)
+    {
+        log("Json is correct", className);
+    } else {
+        log("Json is not correct", className);
+        showToastNative("ERROR: Failed to parse apps.json");
+    }
 }
 
 apps::~apps()
@@ -159,4 +207,112 @@ void apps::on_g2048LaunchBtn_clicked()
 
 void apps::showToastNative(QString messageToDisplay) {
     emit showToast(messageToDisplay);
+}
+
+// This function Opens the json file, parses the json
+// ( checks if its 100% correct ), to avoid problems and that in the future
+// its not needed to check if a variable is a string, for example
+//
+// Here the code is a bit not elegant, but thanks to it in all other json
+// related code will be. Also debugging the json is easier with this
+// ~Szybet
+bool apps::parseJson() {
+    jsonFile.setFileName("/mnt/onboard/onboard/.apps/apps.json");
+    bool check_sucess = true;
+
+    if(jsonFile.exists() == false)
+    {
+        // Doesn't work currently
+        log("App Json File is missing, creating it", className);
+        check_sucess = false;
+    } else {
+        log("App Json File exists", className);
+        jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString fileRead = jsonFile.readAll();
+        jsonFile.close();
+
+        jsonDocument = QJsonDocument::fromJson(fileRead.toUtf8());
+        if(jsonDocument.isNull() == true)
+        {
+            log("Json file is not valid", className);
+            check_sucess = false;
+        } else {
+            QJsonObject jsonObject = jsonDocument.object();
+            if(jsonObject["list"].isArray() == true)
+            {
+                QJsonArray jsonArray = jsonObject["list"].toArray();
+                for(QJsonValueRef refJsonObject: jsonArray)
+                {
+                    if(refJsonObject.isObject())
+                    {
+                        QJsonObject JsonMainObject = refJsonObject.toObject();
+                        if(JsonMainObject.size() == 8)
+                        {
+                            if(!JsonMainObject["Name"].isString())
+                            {
+                                log("JSON: Invalid Name type inside object", className);
+                                check_sucess = false;
+
+                            }
+                            if(!JsonMainObject["Author"].isString())
+                            {
+                                log("JSON: Invalid Author type inside object", className);
+                                check_sucess = false;
+
+                            }
+                            if(!JsonMainObject["Version"].isString())
+                            {
+                                log("JSON: Invalid Version type inside object", className);
+                                check_sucess = false;
+
+                            }
+                            if(!JsonMainObject["IconPath"].isString())
+                            {
+                                log("JSON: Invalid IconPath type inside object", className);
+                                check_sucess = false;
+
+                            }
+                            if(!JsonMainObject["ExecPath"].isString())
+                            {
+                                log("JSON: Invalid ExecPath type inside object", className);
+                                check_sucess = false;
+                            } else {
+                                if(JsonMainObject["ExecPath"].toString().contains(".."))
+                                {
+                                    // Security risk a bit it is
+                                    showToastNative("ERROR: ExecPath has invalid path");
+                                    log("JSON: ExecPath contains \"..\"", className);
+                                }
+                            }
+                            if(!JsonMainObject["Signed"].isBool())
+                            {
+                                log("JSON: Invalid Signed type inside object", className);
+                                check_sucess = false;
+
+                            }
+                            if(!JsonMainObject["Enabled"].isBool())
+                            {
+                                log("JSON: Invalid Enabled type inside object", className);
+                                check_sucess = false;
+
+                            }
+                            if(!JsonMainObject["SupportedDevices"].isString())
+                            {
+                                log("JSON: Invalid SupportedDevices type inside object", className);
+                                check_sucess = false;
+
+                            }
+                        } else {
+                            log("JSON: an object inside list array has too many items", className);
+                            check_sucess = false;
+                        }
+                    } else {
+                        log("JSON: list array has an item of other type than object", className);
+                        check_sucess = false;
+                    }
+                }
+            }
+        }
+    }
+    return check_sucess;
 }
