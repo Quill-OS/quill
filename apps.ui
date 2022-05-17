@@ -28,7 +28,7 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="2" column="0">
+     <item row="6" column="0">
       <widget class="QScrollArea" name="scrollArea">
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
@@ -51,7 +51,7 @@
           <x>0</x>
           <y>0</y>
           <width>428</width>
-          <height>512</height>
+          <height>542</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -72,14 +72,17 @@
          </property>
          <item>
           <layout class="QGridLayout" name="gridLayout_3">
+           <property name="rightMargin">
+            <number>11</number>
+           </property>
            <property name="bottomMargin">
             <number>6</number>
            </property>
            <property name="verticalSpacing">
             <number>10</number>
            </property>
-           <item row="5" column="0">
-            <widget class="QLabel" name="g2048Label">
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_5">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -87,12 +90,12 @@
               </font>
              </property>
              <property name="text">
-              <string>2048</string>
+              <string>KoBox apps</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="reversiLabel">
+           <item row="12" column="0">
+            <widget class="QLabel" name="vncViewerLabel">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -100,11 +103,11 @@
               </font>
              </property>
              <property name="text">
-              <string>Reversi</string>
+              <string>VNC viewer</string>
              </property>
             </widget>
            </item>
-           <item row="2" column="1">
+           <item row="4" column="1">
             <widget class="QPushButton" name="scribbleLaunchBtn">
              <property name="font">
               <font>
@@ -119,7 +122,20 @@
              </property>
             </widget>
            </item>
-           <item row="2" column="0">
+           <item row="9" column="0">
+            <widget class="QLabel" name="label_3">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Saved words</string>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
             <widget class="QLabel" name="scribbleLabel">
              <property name="font">
               <font>
@@ -132,8 +148,8 @@
              </property>
             </widget>
            </item>
-           <item row="5" column="1">
-            <widget class="QPushButton" name="g2048LaunchBtn">
+           <item row="10" column="0">
+            <widget class="QLabel" name="label_4">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -141,25 +157,12 @@
               </font>
              </property>
              <property name="text">
-              <string>Launch</string>
-             </property>
-            </widget>
-           </item>
-           <item row="9" column="0">
-            <widget class="QLabel" name="label_2">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Light Maps</string>
+              <string>Calculator</string>
              </property>
             </widget>
            </item>
            <item row="8" column="1">
-            <widget class="QPushButton" name="calculatorLaunchBtn">
+            <widget class="QPushButton" name="calendarLaunchBtn">
              <property name="font">
               <font>
                <family>Inter</family>
@@ -172,8 +175,35 @@
              </property>
             </widget>
            </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="koboxAppsOpenButton">
+             <property name="font">
+              <font>
+               <family>Inter</family>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Open</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="0">
+            <widget class="QLabel" name="label_2">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Light Maps</string>
+             </property>
+            </widget>
+           </item>
            <item row="6" column="0">
-            <widget class="QLabel" name="calendarLabel">
+            <widget class="QLabel" name="reversiLabel">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -181,12 +211,12 @@
               </font>
              </property>
              <property name="text">
-              <string>Calendar</string>
+              <string>Reversi</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_5">
+           <item row="6" column="1">
+            <widget class="QPushButton" name="reversiLaunchBtn">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -194,11 +224,11 @@
               </font>
              </property>
              <property name="text">
-              <string>KoBox apps</string>
+              <string>Launch</string>
              </property>
             </widget>
            </item>
-           <item row="7" column="1">
+           <item row="9" column="1">
             <widget class="QPushButton" name="savedWordsLaunchBtn">
              <property name="font">
               <font>
@@ -212,7 +242,61 @@
              </property>
             </widget>
            </item>
-           <item row="9" column="1">
+           <item row="10" column="1">
+            <widget class="QPushButton" name="calculatorLaunchBtn">
+             <property name="font">
+              <font>
+               <family>Inter</family>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Launch</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="0">
+            <widget class="QLabel" name="g2048Label">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>2048</string>
+             </property>
+            </widget>
+           </item>
+           <item row="7" column="1">
+            <widget class="QPushButton" name="g2048LaunchBtn">
+             <property name="font">
+              <font>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Launch</string>
+             </property>
+            </widget>
+           </item>
+           <item row="12" column="1">
+            <widget class="QPushButton" name="vncLaunchBtn">
+             <property name="font">
+              <font>
+               <family>Inter</family>
+               <weight>75</weight>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Launch</string>
+             </property>
+            </widget>
+           </item>
+           <item row="11" column="1">
             <widget class="QPushButton" name="lightmapsLaunchBtn">
              <property name="font">
               <font>
@@ -227,22 +311,8 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="koboxAppsOpenButton">
-             <property name="font">
-              <font>
-               <family>Inter</family>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Open</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="0">
-            <widget class="QLabel" name="label_3">
+           <item row="1" column="0" colspan="2">
+            <widget class="QLabel" name="label">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -250,53 +320,15 @@
               </font>
              </property>
              <property name="text">
-              <string>Saved words</string>
+              <string>Build-in Apps</string>
              </property>
-            </widget>
-           </item>
-           <item row="10" column="0">
-            <widget class="QLabel" name="vncViewerLabel">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>VNC viewer</string>
-             </property>
-            </widget>
-           </item>
-           <item row="10" column="1">
-            <widget class="QPushButton" name="vncLaunchBtn">
-             <property name="font">
-              <font>
-               <family>Inter</family>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Launch</string>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="1">
-            <widget class="QPushButton" name="calendarLaunchBtn">
-             <property name="font">
-              <font>
-               <family>Inter</family>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="text">
-              <string>Launch</string>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
            <item row="8" column="0">
-            <widget class="QLabel" name="label_4">
+            <widget class="QLabel" name="calendarLabel">
              <property name="font">
               <font>
                <weight>75</weight>
@@ -304,20 +336,20 @@
               </font>
              </property>
              <property name="text">
-              <string>Calculator</string>
+              <string>Calendar</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="1">
-            <widget class="QPushButton" name="reversiLaunchBtn">
-             <property name="font">
-              <font>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
+           <item row="2" column="0" colspan="2">
+            <widget class="Line" name="line">
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
              </property>
-             <property name="text">
-              <string>Launch</string>
+             <property name="lineWidth">
+              <number>3</number>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
@@ -353,7 +385,11 @@
           </widget>
          </item>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_4UserApps"/>
+          <layout class="QVBoxLayout" name="verticalLayout_4UserApps">
+           <property name="rightMargin">
+            <number>11</number>
+           </property>
+          </layout>
          </item>
          <item>
           <spacer name="verticalSpacer">
@@ -373,35 +409,6 @@
          </item>
         </layout>
        </widget>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Build-in Apps</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="Line" name="line">
-       <property name="frameShadow">
-        <enum>QFrame::Plain</enum>
-       </property>
-       <property name="lineWidth">
-        <number>3</number>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
       </widget>
      </item>
     </layout>

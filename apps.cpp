@@ -1,6 +1,8 @@
 #include "apps.h"
 #include "ui_apps.h"
 #include "mainwindow.h"
+#include "userapp.h"
+
 #include <QFile>
 #include <QProcess>
 #include <QJsonDocument>
@@ -109,6 +111,16 @@ apps::apps(QWidget *parent) :
     if(parseJson() == true)
     {
         log("Json is correct", className);
+        QJsonArray jsonListArray = jsonDocument.object()["list"].toArray();
+            for(QJsonValueRef refJsonObject: jsonListArray)
+            {
+                QJsonObject appInfo = refJsonObject.toObject();
+                userapp* newUserApp = new userapp;
+                newUserApp->provideInfo(appInfo);
+
+                ui->verticalLayout_4UserApps->addWidget(newUserApp);
+
+            }
     } else {
         log("Json is not correct", className);
         showToastNative("ERROR: Failed to parse apps.json");
