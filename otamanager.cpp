@@ -29,6 +29,7 @@ otaManager::otaManager(QWidget *parent) :
                 }
                 unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
                 string_writeconfig("/external_root/opt/storage/update/last_sync", std::to_string(currentEpoch));
+                QFile::remove("/run/can_ota_update");
                 otaManager::close();
             }
         } );
