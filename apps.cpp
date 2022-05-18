@@ -21,8 +21,8 @@
         "Name": "Sanki",
         "Author": "Szybet",
         "Version": "0.1 testing",
-        "IconPath": "/sanki.png",
-        "ExecPath": "/sanki",
+        "IconPath": "sanki.png",
+        "ExecPath": "sanki",
         "Signed": true,
         "Enabled": false,
         "SupportedDevices": "n305,xxx,xxx"
@@ -31,8 +31,8 @@
         "Name": "Syncthing",
         "Author": "Szybet",
         "Version": "0.1 testing",
-        "IconPath": "/syncthing.png",
-        "ExecPath": "/syncthing_arm.bin",
+        "IconPath": "syncthing.png",
+        "ExecPath": "syncthing_arm.bin",
         "Signed": false,
         "Enabled": false,
         "SupportedDevices": "n305,xxx,xxx"
@@ -108,23 +108,9 @@ apps::apps(QWidget *parent) :
 
     // Refresh becouse qt shows the scrollbar for one second and hides it, leaving a mark on the e-ink
     QTimer::singleShot(1750, this, SLOT(refreshScreenNative()));
-    if(parseJson() == true)
-    {
-        log("Json is correct", className);
-        QJsonArray jsonListArray = jsonDocument.object()["list"].toArray();
-            for(QJsonValueRef refJsonObject: jsonListArray)
-            {
-                QJsonObject appInfo = refJsonObject.toObject();
-                userapp* newUserApp = new userapp;
-                newUserApp->provideInfo(appInfo);
 
-                ui->verticalLayout_4UserApps->addWidget(newUserApp);
-
-            }
-    } else {
-        log("Json is not correct", className);
-        showToastNative("ERROR: Failed to parse apps.json");
-    }
+    jsonParsedSuccess = parseJson();
+    showUserApps();
 }
 
 apps::~apps()
@@ -229,6 +215,7 @@ void apps::showToastNative(QString messageToDisplay) {
 // related code will be. Also debugging the json is easier with this
 // ~Szybet
 bool apps::parseJson() {
+    // If the path changes: its also used statically in showUserApps()
     jsonFile.setFileName("/mnt/onboard/onboard/.apps/apps.json");
     bool check_sucess = true;
 
@@ -327,4 +314,56 @@ bool apps::parseJson() {
         }
     }
     return check_sucess;
+}
+
+void apps::on_pushButtonEditUserApps_clicked()
+{
+    if(userAppsSecondPage == false)
+    {
+        userAppsSecondPage = true;
+    } else {
+        userAppsSecondPage = false;
+    }
+    emit showUserAppsEdit(userAppsSecondPage);
+    // Remake apps onle when neccesary
+    if(remakeAppsBool == true)
+    {
+        showUserApps();
+        remakeAppsBool = false;
+    }
+}
+
+void apps::showUserApps()
+{
+    emit clearAppLayout();
+
+    if(jsonParsedSuccess == true)
+    {
+        log("Json is correct", className);
+        QJsonArray jsonListArray = jsonDocument.object()["list"].toArray();
+            for(QJsonValueRef refJsonObject: jsonListArray)
+            {
+                QJsonObject appInfo = refJsonObject.toObject();
+                if(appInfo["ExecPath"].toBool() == true)
+                {
+                    userapp* newUserApp = new userapp;
+                    newUserApp->provideInfo(appInfo);
+                    connect(this, SIGNAL(clearAppLayout()), newUserApp, SLOT(close()));
+                    connect(this, SIGNAL(showUserAppsEdit(bool)), newUserApp, SLOT(changePageEnabling(bool)));
+                    connect(newUserApp, SIGNAL(remakeApps()), this, SLOT(RemakeApps()));
+                    newUserApp->jsonDocument = jsonDocument;
+                    newUserApp->jsonFilePath = jsonFile.fileName();
+                    ui->verticalLayout_4UserApps->addWidget(newUserApp);
+                }
+            }
+    } else {
+        log("Json is not correct", className);
+        emit showToast("ERROR: Failed to parse apps.json");
+    }
+}
+
+// Maybe there is a better way to do this? i hope for suggestions
+void apps::RemakeApps()
+{
+    remakeAppsBool = true;
 }

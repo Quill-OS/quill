@@ -22,6 +22,9 @@ public:
     explicit apps(QWidget *parent = nullptr);
     ~apps();
 
+public slots:
+    void RemakeApps(); // This slot is called and changes showUserAppsEdit to true
+
 private slots:
     void on_scribbleLaunchBtn_clicked();
     void exitSlot();
@@ -37,6 +40,8 @@ private slots:
     void showToastNative(QString messageToDisplay);
 
     bool parseJson();
+    void on_pushButtonEditUserApps_clicked();
+    void showUserApps();
 
 private:
     Ui::apps *ui;
@@ -44,12 +49,18 @@ private:
     calendarApp *calendarWindow;
     koboxAppsDialog *koboxAppsDialogWindow;
     generalDialog *generalDialogWindow;
+
     QFile jsonFile;
     QJsonDocument jsonDocument;
+    bool jsonParsedSuccess = false;
+    bool userAppsSecondPage = false;
+    bool remakeAppsBool = false; // After changing from launch to enabling page and back, this is checked if a remake of apps is needed
 
 signals:
     void refreshScreen();
     void showToast(QString messageToDisplay);
+    void clearAppLayout();
+    void showUserAppsEdit(bool showOrNot);
 };
 
 #endif // APPS_H
