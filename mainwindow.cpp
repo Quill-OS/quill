@@ -977,7 +977,14 @@ bool MainWindow::checkWifiState() {
 void MainWindow::setWifiIcon() {
     if(global::device::isWifiAble == true) {
         if(checkWifiState() == true) {
-            testPing(false);
+            // testPing() the non-blocking way
+            QProcess * pingProcess = new QProcess();
+            QString pingProg = "sh";
+            QStringList pingArgs;
+            pingArgs << "/mnt/onboard/.adds/inkbox/test_ping.sh";
+            pingProcess->startDetached(pingProg, pingArgs);
+            pingProcess->deleteLater();
+
             getTestPingResults();
             if(global::network::isConnected == true) {
                 if(lastWifiState != 3) {

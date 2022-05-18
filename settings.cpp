@@ -903,7 +903,12 @@ void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)
 void settings::on_checkOtaUpdateBtn_clicked()
 {
     log("'Check for OTA update' button clicked", className);
-    launchOtaUpdater();
+    if(testPing(true) == 0 or global::deviceID == "emu\n") {
+        launchOtaUpdater();
+    }
+    else {
+        emit showToast("Wi-Fi connection error");
+    }
 }
 
 void settings::openUpdateDialog() {
