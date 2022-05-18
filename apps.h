@@ -22,9 +22,6 @@ public:
     explicit apps(QWidget *parent = nullptr);
     ~apps();
 
-public slots:
-    void RemakeApps(); // This slot is called and changes showUserAppsEdit to true
-
 private slots:
     void on_scribbleLaunchBtn_clicked();
     void exitSlot();
@@ -41,7 +38,7 @@ private slots:
 
     bool parseJson();
     void on_pushButtonEditUserApps_clicked();
-    void showUserApps();
+    void showUserApps(bool ShowDisabledJson);
 
 private:
     Ui::apps *ui;
@@ -54,7 +51,6 @@ private:
     QJsonDocument jsonDocument;
     bool jsonParsedSuccess = false;
     bool userAppsSecondPage = false;
-    bool remakeAppsBool = false; // After changing from launch to enabling page and back, this is checked if a remake of apps is needed
 
 signals:
     void refreshScreen();

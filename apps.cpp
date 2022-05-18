@@ -110,7 +110,7 @@ apps::apps(QWidget *parent) :
     QTimer::singleShot(1750, this, SLOT(refreshScreenNative()));
 
     jsonParsedSuccess = parseJson();
-    showUserApps();
+    showUserApps(false);
 }
 
 apps::~apps()
@@ -321,19 +321,26 @@ void apps::on_pushButtonEditUserApps_clicked()
     if(userAppsSecondPage == false)
     {
         userAppsSecondPage = true;
+        // Now its setting page
+        showUserApps(userAppsSecondPage);
+        emit showUserAppsEdit(userAppsSecondPage);
     } else {
         userAppsSecondPage = false;
-    }
-    emit showUserAppsEdit(userAppsSecondPage);
-    // Remake apps onle when neccesary
-    if(remakeAppsBool == true)
-    {
-        showUserApps();
-        remakeAppsBool = false;
+        // Now its launch page
+
+        // It reads it becouse it maybe was changed in userapp.
+        // No need to validate - the user didn't have time to break it;
+        jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString fileRead = jsonFile.readAll();
+        jsonFile.close();
+        jsonDocument = QJsonDocument::fromJson(fileRead.toUtf8());
+
+        showUserApps(userAppsSecondPage);
+        emit showUserAppsEdit(userAppsSecondPage);
     }
 }
 
-void apps::showUserApps()
+void apps::showUserApps(bool ShowDisabledJson)
 {
     emit clearAppLayout();
 
@@ -344,13 +351,12 @@ void apps::showUserApps()
             for(QJsonValueRef refJsonObject: jsonListArray)
             {
                 QJsonObject appInfo = refJsonObject.toObject();
-                if(appInfo["ExecPath"].toBool() == true)
+                if(appInfo["Enabled"].toBool() == true or ShowDisabledJson == true)
                 {
                     userapp* newUserApp = new userapp;
                     newUserApp->provideInfo(appInfo);
-                    connect(this, SIGNAL(clearAppLayout()), newUserApp, SLOT(close()));
+                    connect(this, SIGNAL(clearAppLayout()), newUserApp, SLOT(deleteLater()));
                     connect(this, SIGNAL(showUserAppsEdit(bool)), newUserApp, SLOT(changePageEnabling(bool)));
-                    connect(newUserApp, SIGNAL(remakeApps()), this, SLOT(RemakeApps()));
                     newUserApp->jsonDocument = jsonDocument;
                     newUserApp->jsonFilePath = jsonFile.fileName();
                     ui->verticalLayout_4UserApps->addWidget(newUserApp);
@@ -360,10 +366,4 @@ void apps::showUserApps()
         log("Json is not correct", className);
         emit showToast("ERROR: Failed to parse apps.json");
     }
-}
-
-// Maybe there is a better way to do this? i hope for suggestions
-void apps::RemakeApps()
-{
-    remakeAppsBool = true;
 }

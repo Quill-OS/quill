@@ -29,9 +29,6 @@ public slots:
     void provideInfo(QJsonObject jsonObject);
     void changePageEnabling(bool goThere);
 
-signals:
-    void remakeApps();
-
 private slots:
     void on_pushButtonAppInfo_clicked();
 
@@ -41,6 +38,9 @@ private:
     Ui::userapp *ui;
     QDir appDir;
     QFile execPath;
+    bool userAppEnabled;
+    QString appName;
+
 
 };
 
