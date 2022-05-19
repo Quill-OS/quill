@@ -22,6 +22,10 @@ public:
     explicit apps(QWidget *parent = nullptr);
     ~apps();
 
+signals:
+    void updateJsonFileSignal(QJsonDocument jsonDocument);
+
+
 private slots:
     void on_scribbleLaunchBtn_clicked();
     void exitSlot();
@@ -39,6 +43,7 @@ private slots:
     bool parseJson();
     void on_pushButtonEditUserApps_clicked();
     void showUserApps(bool ShowDisabledJson);
+    void updateJsonFileSlot(QJsonDocument jsonDocument);
 
 private:
     Ui::apps *ui;

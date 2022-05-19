@@ -25,6 +25,7 @@
         "ExecPath": "sanki",
         "Signed": true,
         "Enabled": false,
+        "ToRemove": false,
         "SupportedDevices": "n305,xxx,xxx"
       },
       {
@@ -35,6 +36,7 @@
         "ExecPath": "syncthing_arm.bin",
         "Signed": false,
         "Enabled": false,
+        "ToRemove": false,
         "SupportedDevices": "n305,xxx,xxx"
       }
     ]
@@ -105,6 +107,8 @@ apps::apps(QWidget *parent) :
     stylesheetFile.open(QFile::ReadOnly);
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
+
+    ui->pushButtonEditUserApps->setProperty("type", "borderless");
 
     // Refresh becouse qt shows the scrollbar for one second and hides it, leaving a mark on the e-ink
     QTimer::singleShot(1750, this, SLOT(refreshScreenNative()));
@@ -214,6 +218,8 @@ void apps::showToastNative(QString messageToDisplay) {
 // Here the code is a bit not elegant, but thanks to it in all other json
 // related code will be. Also debugging the json is easier with this
 // ~Szybet
+
+// Note 19 May - added ToRemove entry - Idk if its a good idea
 bool apps::parseJson() {
     // If the path changes: its also used statically in showUserApps()
     jsonFile.setFileName("/mnt/onboard/onboard/.apps/apps.json");
@@ -245,7 +251,7 @@ bool apps::parseJson() {
                     if(refJsonObject.isObject())
                     {
                         QJsonObject JsonMainObject = refJsonObject.toObject();
-                        if(JsonMainObject.size() == 8)
+                        if(JsonMainObject.size() == 9)
                         {
                             if(!JsonMainObject["Name"].isString())
                             {
@@ -295,6 +301,12 @@ bool apps::parseJson() {
                                 check_sucess = false;
 
                             }
+                            if(!JsonMainObject["ToRemove"].isBool())
+                            {
+                                log("JSON: Invalid ToRemove type inside object", className);
+                                check_sucess = false;
+
+                            }
                             if(!JsonMainObject["SupportedDevices"].isString())
                             {
                                 log("JSON: Invalid SupportedDevices type inside object", className);
@@ -302,7 +314,7 @@ bool apps::parseJson() {
 
                             }
                         } else {
-                            log("JSON: an object inside list array has too many items", className);
+                            log("JSON: an object inside list array has too many items ( or to less )", className);
                             check_sucess = false;
                         }
                     } else {
@@ -337,6 +349,9 @@ void apps::on_pushButtonEditUserApps_clicked()
 
         showUserApps(userAppsSecondPage);
         emit showUserAppsEdit(userAppsSecondPage);
+
+        // it leaves a blank spot becouse of this button sometimes, looks awfull
+        QTimer::singleShot(1000, this, SLOT(refreshScreenNative()));
     }
 }
 
@@ -357,6 +372,8 @@ void apps::showUserApps(bool ShowDisabledJson)
                     newUserApp->provideInfo(appInfo);
                     connect(this, SIGNAL(clearAppLayout()), newUserApp, SLOT(deleteLater()));
                     connect(this, SIGNAL(showUserAppsEdit(bool)), newUserApp, SLOT(changePageEnabling(bool)));
+                    connect(this, SIGNAL(updateJsonFileSignal(QJsonDocument)), newUserApp, SLOT(updateJsonFileSlotUA(QJsonDocument)));
+                    connect(newUserApp, SIGNAL(updateJsonFileSignalUA(QJsonDocument)), this, SLOT(updateJsonFileSlot(QJsonDocument)));
                     newUserApp->jsonDocument = jsonDocument;
                     newUserApp->jsonFilePath = jsonFile.fileName();
                     ui->verticalLayout_4UserApps->addWidget(newUserApp);
@@ -364,6 +381,12 @@ void apps::showUserApps(bool ShowDisabledJson)
             }
     } else {
         log("Json is not correct", className);
+        // It doesn't show at launch - maybe becouse of speed
         emit showToast("ERROR: Failed to parse apps.json");
     }
+}
+
+void apps::updateJsonFileSlot(QJsonDocument jsonDocument)
+{
+    emit updateJsonFileSignal(jsonDocument);
 }

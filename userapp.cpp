@@ -1,6 +1,7 @@
 #include "userapp.h"
 #include "ui_userapp.h"
 #include "mainwindow.h"
+#include "generaldialog.h"
 
 userapp::userapp(QWidget *parent) :
     QWidget(parent),
@@ -11,6 +12,10 @@ userapp::userapp(QWidget *parent) :
     ui->pushButtonLaunch->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     ui->pushButtonIcon->setProperty("type", "borderless");
+
+    ui->pushButtonAppInfo->setProperty("type", "borderless");
+    ui->pushButton_2EnablingButton->setProperty("type", "borderless");
+    ui->pushButton_2EnablingButton->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 }
 
 userapp::~userapp()
@@ -22,6 +27,7 @@ void userapp::provideInfo(QJsonObject jsonInfo)
 {
     QString name = jsonInfo["Name"].toString();
     appName = name; // Its for searching for json entry while disabling / enabling
+    jsonObject = jsonInfo;
     // Limit name size to avoid breaking the gui
     if(name.size() > 20)
     {
@@ -69,13 +75,28 @@ void userapp::changePageEnabling(bool SecondPage)
 
 void userapp::on_pushButtonAppInfo_clicked()
 {
-    // Show a big qdialog with the whole part json in it :)
+    // Show a big qdialog with the whole part json in it
+    log("Launching json information dialog", className);
+    global::text::textBrowserDialog = true;
+    // https://stackoverflow.com/questions/28181627/how-to-convert-a-qjsonobject-to-qstring
+    QJsonDocument doc(jsonObject);
+    QString jsonString = doc.toJson(QJsonDocument::Indented);
+    global::text::textBrowserContents = jsonString;
+
+    generalDialogWindow = new generalDialog();
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
+    connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+    connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+    connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
+    connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
+    generalDialogWindow->show();
 }
-
-
 
 void userapp::on_pushButton_2EnablingButton_clicked()
 {
+    ui->pushButton_2EnablingButton->setEnabled(false);
+
     // Here the text on this button is used as a bool. No need to create a new one
     // Disable and Enable
     if(userAppEnabled == false)
@@ -98,29 +119,57 @@ void userapp::on_pushButton_2EnablingButton_clicked()
 
     int arraySize = jsonArrayList.size();
 
-    for(int i = 0; i <= arraySize; i++)
+    for(int i = 0; i < arraySize; i++)
     {
         QJsonObject jsonObject = jsonArrayList.at(i).toObject();
         QString entryName = jsonObject["Name"].toString();
+
+        /*
+        QString message = "JSON Searching for: ";
+        message.append(appName);
+        message.append(" Found: ");
+        message.append(entryName);
+        log(message, className);
+        */
+
         if(entryName == appName)
         {
             jsonObject.insert("Enabled", QJsonValue(userAppEnabled));
 
-            jsonArrayList.replace(i, jsonObject);
+            // Its accessing jsonDocument again becouse it could be changed via updateJsonFileSlot
+            QJsonArray sonArrayListNew = jsonDocument.object()["list"].toArray();
+            sonArrayListNew.replace(i, jsonObject);
 
-            jsonRootObject["list"] = jsonArrayList;
+            jsonRootObject["list"] = sonArrayListNew;
 
             jsonDocument.setObject(jsonRootObject);
+            emit updateJsonFileSignalUA(jsonDocument);
 
             QFile jsonFile = jsonFilePath;
-            QString message = "Accesing json: ";
-            message.append(jsonFile.fileName());
-            log(message, className);
-
-            // Here is maybe a filesystem sync problem - needs further testing
             jsonFile.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
             jsonFile.write(jsonDocument.toJson());
+            jsonFile.flush();
             jsonFile.close();
         }
     }
+    ui->pushButton_2EnablingButton->setEnabled(true);
+}
+
+void userapp::updateJsonFileSlotUA(QJsonDocument jsonDocumentProvided)
+{
+    jsonDocument = jsonDocumentProvided;
+}
+
+void userapp::on_pushButtonLaunch_clicked()
+{
+    // Some powerfull command to execute binary at "execPath"
+    // For now this:
+    QString message = "Launching user app at: ";
+    message.append(execPath.fileName());
+    log(message, className);
+
+    QProcess process;
+    process.startDetached(execPath.fileName(), QStringList());
+    qApp->quit();
+    // this doesnt work becouse onboard filesystem is weird, and i cant execute anything from it
 }

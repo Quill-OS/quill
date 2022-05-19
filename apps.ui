@@ -390,6 +390,22 @@
             </widget>
            </item>
            <item>
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>10</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
             <widget class="QPushButton" name="pushButtonEditUserApps">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -412,8 +428,8 @@
              </property>
              <property name="iconSize">
               <size>
-               <width>20</width>
-               <height>20</height>
+               <width>34</width>
+               <height>34</height>
               </size>
              </property>
             </widget>
@@ -448,6 +464,9 @@
          </item>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_4UserApps">
+           <property name="spacing">
+            <number>10</number>
+           </property>
            <property name="rightMargin">
             <number>11</number>
            </property>
