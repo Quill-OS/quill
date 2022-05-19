@@ -33,7 +33,7 @@ void userapp::provideInfo(QJsonObject jsonInfo)
     {
         // If someone wants to break the gui, they will do it ¯\^-^/¯
         // Idk if this will work for every device
-        name.remove(14, 100);
+        name.remove(16, 100);
     }
     ui->labelAppName->setText(name);
 
@@ -171,5 +171,6 @@ void userapp::on_pushButtonLaunch_clicked()
     QProcess process;
     process.startDetached(execPath.fileName(), QStringList());
     qApp->quit();
-    // this doesnt work becouse onboard filesystem is weird, and i cant execute anything from it
+    // mount -o remount,suid /kobo/mnt/onboard/onboard
+
 }

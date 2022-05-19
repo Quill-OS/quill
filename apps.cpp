@@ -25,7 +25,6 @@
         "ExecPath": "sanki",
         "Signed": true,
         "Enabled": false,
-        "ToRemove": false,
         "SupportedDevices": "n305,xxx,xxx"
       },
       {
@@ -36,7 +35,6 @@
         "ExecPath": "syncthing_arm.bin",
         "Signed": false,
         "Enabled": false,
-        "ToRemove": false,
         "SupportedDevices": "n305,xxx,xxx"
       }
     ]
@@ -251,7 +249,7 @@ bool apps::parseJson() {
                     if(refJsonObject.isObject())
                     {
                         QJsonObject JsonMainObject = refJsonObject.toObject();
-                        if(JsonMainObject.size() == 9)
+                        if(JsonMainObject.size() == 8)
                         {
                             if(!JsonMainObject["Name"].isString())
                             {
@@ -298,12 +296,6 @@ bool apps::parseJson() {
                             if(!JsonMainObject["Enabled"].isBool())
                             {
                                 log("JSON: Invalid Enabled type inside object", className);
-                                check_sucess = false;
-
-                            }
-                            if(!JsonMainObject["ToRemove"].isBool())
-                            {
-                                log("JSON: Invalid ToRemove type inside object", className);
                                 check_sucess = false;
 
                             }
