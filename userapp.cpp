@@ -144,12 +144,6 @@ void userapp::on_pushButton_2EnablingButton_clicked()
 
             jsonDocument.setObject(jsonRootObject);
             emit updateJsonFileSignalUA(jsonDocument);
-
-            QFile jsonFile = jsonFilePath;
-            jsonFile.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
-            jsonFile.write(jsonDocument.toJson());
-            jsonFile.flush();
-            jsonFile.close();
         }
     }
     ui->pushButton_2EnablingButton->setEnabled(true);

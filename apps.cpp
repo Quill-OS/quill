@@ -332,12 +332,11 @@ void apps::on_pushButtonEditUserApps_clicked()
         userAppsSecondPage = false;
         // Now its launch page
 
-        // It reads it becouse it maybe was changed in userapp.
-        // No need to validate - the user didn't have time to break it;
-        jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
-        QString fileRead = jsonFile.readAll();
+        // It changed via updateJsonFileSlot, and now it writes it only once
+        jsonFile.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
+        jsonFile.write(jsonDocument.toJson());
+        jsonFile.flush();
         jsonFile.close();
-        jsonDocument = QJsonDocument::fromJson(fileRead.toUtf8());
 
         showUserApps(userAppsSecondPage);
         emit showUserAppsEdit(userAppsSecondPage);
@@ -378,7 +377,8 @@ void apps::showUserApps(bool ShowDisabledJson)
     }
 }
 
-void apps::updateJsonFileSlot(QJsonDocument jsonDocument)
+void apps::updateJsonFileSlot(QJsonDocument jsonDocumentFunc)
 {
+    jsonDocument = jsonDocumentFunc;
     emit updateJsonFileSignal(jsonDocument);
 }
