@@ -11,8 +11,6 @@
 #include <QJsonValue>
 #include <QJsonArray>
 
-#include <QDebug> // szybet testing
-
 // Json scheme:
 /*
 {
@@ -23,7 +21,6 @@
         "Version": "0.1 testing",
         "IconPath": "sanki.png",
         "ExecPath": "sanki",
-        "Signed": true,
         "Enabled": false,
         "SupportedDevices": "n305,xxx,xxx"
       },
@@ -33,7 +30,6 @@
         "Version": "0.1 testing",
         "IconPath": "syncthing.png",
         "ExecPath": "syncthing_arm.bin",
-        "Signed": false,
         "Enabled": false,
         "SupportedDevices": "n305,xxx,xxx"
       }
@@ -249,7 +245,7 @@ bool apps::parseJson() {
                     if(refJsonObject.isObject())
                     {
                         QJsonObject JsonMainObject = refJsonObject.toObject();
-                        if(JsonMainObject.size() == 8)
+                        if(JsonMainObject.size() == 7)
                         {
                             if(!JsonMainObject["Name"].isString())
                             {
@@ -286,12 +282,6 @@ bool apps::parseJson() {
                                     showToastNative("ERROR: ExecPath has invalid path");
                                     log("JSON: ExecPath contains \"..\"", className);
                                 }
-                            }
-                            if(!JsonMainObject["Signed"].isBool())
-                            {
-                                log("JSON: Invalid Signed type inside object", className);
-                                check_sucess = false;
-
                             }
                             if(!JsonMainObject["Enabled"].isBool())
                             {
