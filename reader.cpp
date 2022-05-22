@@ -248,7 +248,7 @@ reader::reader(QWidget *parent) :
     // Custom settings
     // Brightness
     if(global::reader::globalReadingSettings == false) {
-        if(global::deviceID != "n705\n" and global::deviceID != "n905\n") {
+        if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
             int brightness_value = brightness_checkconfig(".config/03-brightness/config");
             log("Local Reading Settings: Setting brightness to " + QString::number(brightness_value), className);
             cinematicBrightness(brightness_value, 2);
@@ -344,7 +344,7 @@ reader::reader(QWidget *parent) :
 
     // Getting brightness level
     int brightness_value;
-    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
         brightness_value = get_brightness();
     }
     else if(global::isN613 == true) {
@@ -362,7 +362,7 @@ reader::reader(QWidget *parent) :
     float sH = QGuiApplication::screens()[0]->size().height();
     // Defining what the icons' size will be
     if(checkconfig("/opt/inkbox_genuine") == true) {
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
             float stdIconWidth = sW / 16;
             float stdIconHeight = sW / 16;
             QPixmap chargingPixmap(":/resources/battery_charging.png");
@@ -589,7 +589,7 @@ reader::reader(QWidget *parent) :
         if(global::deviceID == "n705\n") {
             infoLabelDefinedLength = 35;
         }
-        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n") {
             infoLabelDefinedLength = 50;
         }
         else {
@@ -618,7 +618,7 @@ reader::reader(QWidget *parent) :
         if(global::deviceID == "n705\n") {
             infoLabelDefinedLength = 35;
         }
-        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n") {
             infoLabelDefinedLength = 50;
         }
         else {
@@ -1183,7 +1183,7 @@ void reader::on_optionsBtn_clicked()
 void reader::on_brightnessDecBtn_clicked()
 {
     int bval;
-    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
         bval = get_brightness();
     }
     else if(global::isN613 == true) {
@@ -1206,7 +1206,7 @@ void reader::on_brightnessDecBtn_clicked()
 void reader::on_brightnessIncBtn_clicked()
 {
     int bval;
-    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
         bval = get_brightness();
     }
     else if(global::isN613 == true) {
@@ -1458,7 +1458,7 @@ void reader::menubar_show() {
         ui->pageWidget->setVisible(true);
     }
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         ;
     }
     else {
@@ -1470,7 +1470,7 @@ void reader::menubar_show() {
 
 void reader::menubar_hide() {
     log("Hiding menu bar", className);
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         ui->brightnessWidget->setVisible(false);
     }
     else {
@@ -1615,7 +1615,7 @@ void reader::on_sizeSlider_valueChanged(int value)
             ui->sizeValueLabel->setText("5");
         }
     }
-    if(global::deviceID == "n905\n") {
+    if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         if(value == 0) {
             ui->text->setStyleSheet("font-size: 6pt");
             ui->sizeValueLabel->setText("1");

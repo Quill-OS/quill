@@ -124,13 +124,14 @@ namespace global {
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
-    inline bool isN705;
-    inline bool isN905C;
-    inline bool isN613;
-    inline bool isN873;
-    inline bool isN236;
-    inline bool isN437;
-    inline bool isN306;
+    inline bool isN705 = false;
+    inline bool isN905C = false;
+    inline bool isN613 = false;
+    inline bool isN873 = false;
+    inline bool isN236 = false;
+    inline bool isN437 = false;
+    inline bool isN306 = false;
+    inline bool isKT = false;
     inline bool runningInstanceIsReaderOnly;
     inline QString deviceID;
 }
@@ -584,7 +585,7 @@ namespace {
                 defaultEpubPageHeight = 365;
                 defaultEpubPageWidth = 365;
             }
-            else if(global::deviceID == "n905\n") {
+            else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
                 defaultEpubPageHeight = 425;
                 defaultEpubPageWidth = 425;
             }
@@ -601,7 +602,7 @@ namespace {
             log(function + ": Defined default ePUB page width to " + QString::number(defaultEpubPageWidth), "functions");
         }
         else if(fileType == 1) {
-            if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+            if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
                 if(global::reader::pdfOrientation == 0) {
                     defaultPdfPageHeight = 750;
                     defaultPdfPageWidth = 550;
@@ -647,7 +648,7 @@ namespace {
         }
     }
     void pre_set_brightness(int brightnessValue) {
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n") {
             set_brightness(brightnessValue);
         }
         else if(global::deviceID == "n613\n") {
@@ -663,7 +664,7 @@ namespace {
          * 1: Bring DOWN brightness
          * 2: Auto; smooth brightness transition between two brightness levels
         */
-        if(global::deviceID != "n705\n" && global::deviceID != "n905\n") {
+        if(global::deviceID != "n705\n" && global::deviceID != "n905\n" && global::deviceID != "kt\n") {
             QString function = __func__; log(function + ": Setting brightness to " + QString::number(value), "functions");
         }
         if(mode == 0) {
@@ -766,15 +767,17 @@ namespace {
         return checkconfig("/external_root/run/encfs_mounted");
     }
     bool isUsbPluggedIn() {
-        // Thanks to https://github.com/koreader/KoboUSBMS/blob/2efdf9d920c68752b2933f21c664dc1afb28fc2e/usbms.c#L148-L158
-        int ntxfd;
-        if((ntxfd = open("/dev/ntx_io", O_RDWR)) == -1) {
-                fprintf(stderr, "Error opening ntx_io device\n");
+        if(global::deviceID != "kt\n") {
+            // Thanks to https://github.com/koreader/KoboUSBMS/blob/2efdf9d920c68752b2933f21c664dc1afb28fc2e/usbms.c#L148-L158
+            int ntxfd;
+            if((ntxfd = open("/dev/ntx_io", O_RDWR)) == -1) {
+                    fprintf(stderr, "Error opening ntx_io device\n");
+            }
+            unsigned long ptr = 0U;
+            ioctl(ntxfd, 108, &ptr);
+            close(ntxfd);
+            return !!ptr;
         }
-        unsigned long ptr = 0U;
-        ioctl(ntxfd, 108, &ptr);
-        close(ntxfd);
-        return !!ptr;
     }
     int testPing(bool blocking) {
         QProcess *pingProcess = new QProcess();

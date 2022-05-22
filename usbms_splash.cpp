@@ -34,7 +34,7 @@ usbms_splash::usbms_splash(QWidget *parent) :
         ui->label->setText("Launching KoBox subsystem");
         ui->label->setStyleSheet("font-size: 14pt; font-weight: bold");
         ui->label_3->setText("Please wait, this could take a while.");
-        if(global::deviceID == "n905\n") {
+        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             ui->label_3->setStyleSheet("font-size: 11pt");
         }
         else {

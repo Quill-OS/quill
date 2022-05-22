@@ -175,7 +175,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(global::deviceID == "n905\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             if(dpi_number == 160) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -620,7 +620,7 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
-        if(global::deviceID == "n905\n") {
+        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "160");
         }
         if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
@@ -637,7 +637,7 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "214");
         }
-        if(global::deviceID == "n905\n") {
+        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
         if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
@@ -654,7 +654,7 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "227");
         }
-        if(global::deviceID == "n905\n") {
+        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "200");
         }
         if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
@@ -772,7 +772,7 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
         if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
-        else if(global::deviceID == "n905\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "160");
         }
         else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {

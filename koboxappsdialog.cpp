@@ -97,7 +97,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
         // DPI setting
         string_checkconfig(".config/00-kobox/dpiSetting");
         if(checkconfig_str_val == "") {
-            if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+            if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
                 dpiSetting = "125";
             }
             else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
@@ -131,7 +131,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
             log("Launching KoBox app: KTerm", className);
             string_writeconfig("/external_root/tmp/X_program", "/usr/local/bin/kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
             dpModeSetting = "fullscreen";
-            if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+            if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
                 dpiSetting = "175";
             }
             else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {

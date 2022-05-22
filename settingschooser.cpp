@@ -40,7 +40,7 @@ settingsChooser::settingsChooser(QWidget *parent) :
     ui->inkboxSettingsBtn->setProperty("type", "borderless");
     ui->koboxSettingsBtn->setProperty("type", "borderless");
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
     }

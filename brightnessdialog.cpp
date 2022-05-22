@@ -36,7 +36,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     ui->valueLabel->setStyleSheet("font-size: 9pt");
     ui->warmthValueLabel->setStyleSheet("font-size: 9pt");
 
-    if(global::isN705 == true or global::isN905C == true or global::isN613 == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isN613 == true or global::isKT == true) {
         ui->warmthSlider->hide();
         ui->warmthDecBtn->hide();
         ui->warmthIncBtn->hide();
@@ -72,7 +72,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     // I know, Mini and Touch don't have frontlights but that's a template to include others later...
     int value;
     int warmthValue;
-    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
         value = get_brightness();
         if(global::isN873 == true) {
             warmthValue = get_warmth();
@@ -109,7 +109,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     ui->brightnessLabel->setFont(QFont(crimson_bold));
 
     // Saving current brightness value in case we want to go backwards
-    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
         oldValue = get_brightness();
         if(global::isN873 == true) {
             oldWarmthValue = get_warmth();
@@ -189,7 +189,7 @@ void brightnessDialog::on_okBtn_clicked()
 }
 
 void brightnessDialog::pre_set_brightness(int brightnessValue) {
-    if(global::isN705 == true or global::isN905C == true or global::isN873 == true) {
+    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
         set_brightness(brightnessValue);
     }
     else if(global::isN613 == true) {
