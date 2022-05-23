@@ -353,18 +353,32 @@ namespace {
         return 0;
     }
     void get_battery_level() {
-        QFile batt_level_file("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity");
-        if(batt_level_file.exists()) {
-            batt_level_file.open(QIODevice::ReadOnly);
-            batt_level = batt_level_file.readAll();
-            batt_level = batt_level.trimmed();
-            batt_level_int = batt_level.toInt();
-            batt_level = batt_level.append("%");
-            batt_level_file.close();
+        QString batteryLevelFileQstr;
+        if(global::deviceID == "kt\n") {
+            QFile batt_level_file("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_capacity");
+            if(batt_level_file.exists()) {
+                batt_level_file.open(QIODevice::ReadOnly);
+                batt_level = batt_level_file.readAll();
+                batt_level = batt_level.trimmed();
+                batt_level_int = batt_level.toInt();
+                batt_level = batt_level.append("%");
+                batt_level_file.close();
+            }
         }
         else {
-            batt_level_int = 100;
-            batt_level = "100%";
+            QFile batt_level_file("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity");
+            if(batt_level_file.exists()) {
+                batt_level_file.open(QIODevice::ReadOnly);
+                batt_level = batt_level_file.readAll();
+                batt_level = batt_level.trimmed();
+                batt_level_int = batt_level.toInt();
+                batt_level = batt_level.append("%");
+                batt_level_file.close();
+            }
+            else {
+                batt_level_int = 100;
+                batt_level = "100%";
+            }
         }
     }
     void writeconfig(std::string file, std::string config) {
@@ -767,7 +781,15 @@ namespace {
         return checkconfig("/external_root/run/encfs_mounted");
     }
     bool isUsbPluggedIn() {
-        if(global::deviceID != "kt\n") {
+        if(global::deviceID == "kt\n") {
+            if(readFile("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_status") == "1\n") {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        }
+        else {
             // Thanks to https://github.com/koreader/KoboUSBMS/blob/2efdf9d920c68752b2933f21c664dc1afb28fc2e/usbms.c#L148-L158
             int ntxfd;
             if((ntxfd = open("/dev/ntx_io", O_RDWR)) == -1) {

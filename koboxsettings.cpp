@@ -119,7 +119,7 @@ void koboxSettings::on_spinBox_valueChanged(int arg1)
 
 void koboxSettings::on_pushButton_clicked()
 {
-    // Export Extensions disk image over USB with g_mass_storage
+    // Export Extensions disk image over USB with g_mass_storage/g_file_storage
     global::usbms::usbmsDialog = false;
     global::usbms::launchUsbms = true;
     global::usbms::koboxExportExtensions = true;

@@ -86,19 +86,29 @@ void usbms_splash::usbms_launch()
     QThread::msleep(1000);
 
     if(global::deviceID == "n306\n" or global::deviceID == "n873\n") {
-        QProcess::execute("insmod", QStringList() << "/external_root/modules/fs/configfs/configfs.ko");
-        QProcess::execute("insmod", QStringList() << "/external_root/modules/drivers/usb/gadget/libcomposite.ko");
-        QProcess::execute("insmod", QStringList() << "/external_root/modules/drivers/usb/gadget/function/usb_f_mass_storage.ko");
+        QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/fs/configfs/configfs.ko");
+        QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/drivers/usb/gadget/libcomposite.ko");
+        QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/drivers/usb/gadget/function/usb_f_mass_storage.ko");
+    }
+    else if(global::deviceID == "kt\n") {
+        QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/2.6.35-inkbox/kernel/drivers/usb/gadget/arcotg_udc.ko");
     }
 
     QString prog_1 ("insmod");
     QStringList args_1;
 
-    if(global::usbms::koboxExportExtensions == true) {
-        args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/X11/extensions-user.img" << "removable=y" << "stall=0";
+    if(global::deviceID == "kt\n") {
+        massStorageModule = "/external_root/lib/modules/2.6.35-inkbox/kernel/drivers/usb/gadget/g_file_storage.ko";
     }
     else {
-        args_1 << "/external_root/modules/g_mass_storage.ko" << "file=/external_root/opt/storage/onboard" << "removable=y" << "stall=0";
+        massStorageModule = "/external_root/lib/modules/g_mass_storage.ko";
+    }
+
+    if(global::usbms::koboxExportExtensions == true) {
+        args_1 << massStorageModule << "file=/external_root/opt/storage/X11/extensions-user.img" << "removable=y" << "stall=0";
+    }
+    else {
+        args_1 << massStorageModule << "file=/external_root/opt/storage/onboard" << "removable=y" << "stall=0";
     }
 
     QProcess *proc_1 = new QProcess();
@@ -111,7 +121,7 @@ void usbms_splash::usbms_launch()
     usbms_t->setInterval(1000);
     connect(usbms_t, &QTimer::timeout, [&]() {
         if(exitUsbMsDone == false) {
-            if(isUsbPluggedIn() == false) {
+            if(isUsbPluggedIn() == 0) {
                 if(global::usbms::koboxExportExtensions == true) {
                     reboot(false);
                     qApp->quit();
@@ -138,7 +148,7 @@ void usbms_splash::usbms_launch()
 
                     QString prog("rmmod");
                     QStringList args;
-                    args << "g_mass_storage";
+                    args << massStorageModule;
                     QProcess * proc = new QProcess();
                     proc->start(prog, args);
                     proc->waitForFinished();

@@ -17,6 +17,7 @@ public:
     ~usbms_splash();
     float sW;
     float sH;
+    QString massStorageModule;
 
     void usbms_launch();
 
