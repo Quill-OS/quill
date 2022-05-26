@@ -241,64 +241,27 @@ int main(int argc, char *argv[])
             string_writeconfig("/inkbox/skip_opendialog", "true");
             if(global::deviceID == "n705\n") {
                 global::isN705 = true;
-                global::isN905C = false;
-                global::isN613 = false;
-                global::isN873 = false;
-                global::isN236 = false;
-                global::isN437 = false;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n905\n") {
-                global::isN705 = false;
                 global::isN905C = true;
-                global::isN613 = false;
-                global::isN873 = false;
-                global::isN236 = false;
-                global::isN437 = false;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n613\n") {
-                global::isN705 = false;
-                global::isN905C = false;
                 global::isN613 = true;
-                global::isN873 = false;
-                global::isN236 = false;
-                global::isN437 = false;
             }
             else if(global::deviceID == "n873\n") {
-                global::isN705 = false;
-                global::isN905C = false;
-                global::isN613 = false;
                 global::isN873 = true;
-                global::isN236 = false;
-                global::isN437 = false;
             }
             else if(global::deviceID == "n236\n") {
-                global::isN705 = false;
-                global::isN905C = false;
-                global::isN613 = false;
-                global::isN873 = false;
                 global::isN236 = true;
-                global::isN437 = false;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n437\n") {
-                global::isN705 = false;
-                global::isN905C = false;
-                global::isN613 = false;
-                global::isN873 = false;
-                global::isN236 = false;
                 global::isN437 = true;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n306\n") {
-                global::isN705 = false;
-                global::isN905C = false;
-                global::isN613 = false;
-                global::isN873 = false;
-                global::isN236 = false;
-                global::isN437 = false;
                 global::isN306 = true;
+            }
+            else if(global::deviceID == "kt\n") {
+                global::isKT = true;
             }
             else {
                 ;
@@ -327,66 +290,27 @@ int main(int argc, char *argv[])
 
             if(global::deviceID == "n705\n") {
                 global::isN705 = true;
-                global::isN905C = false;
-                global::isN613 = false;
-                global::isN873 = false;
-                global::isN236 = false;
-                global::isN437 = false;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n905\n") {
-                global::isN705 = false;
                 global::isN905C = true;
-                global::isN613 = false;
-                global::isN873 = false;
-                global::isN236 = false;
-                global::isN437 = false;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n613\n") {
-                global::isN705 = false;
-                global::isN905C = false;
                 global::isN613 = true;
-                global::isN873 = false;
-                global::isN236 = false;
-                global::isN437 = false;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n873\n") {
-                global::isN705 = false;
-                global::isN905C = false;
-                global::isN613 = false;
                 global::isN873 = true;
-                global::isN236 = false;
-                global::isN437 = false;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n236\n") {
-                global::isN705 = false;
-                global::isN905C = false;
-                global::isN613 = false;
-                global::isN873 = false;
                 global::isN236 = true;
-                global::isN437 = false;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n437\n") {
-                global::isN705 = false;
-                global::isN905C = false;
-                global::isN613 = false;
-                global::isN873 = false;
-                global::isN236 = false;
                 global::isN437 = true;
-                global::isN306 = false;
             }
             else if(global::deviceID == "n306\n") {
-                global::isN705 = false;
-                global::isN905C = false;
-                global::isN613 = false;
-                global::isN873 = false;
-                global::isN236 = false;
-                global::isN437 = false;
                 global::isN306 = true;
+            }
+            else if(global::deviceID == "kt\n") {
+                global::isKT = true;
             }
             else {
                 ;

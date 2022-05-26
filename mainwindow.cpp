@@ -83,7 +83,7 @@ MainWindow::MainWindow(QWidget *parent)
         wifiIconWidth = sW / 20.5;
         wifiIconHeight = sH / 20.5;
     }
-    else if(global::deviceID == "n905\n") {
+    else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         stdIconWidth = sW / 14;
         stdIconHeight = sH / 14;
         brightnessIconWidth = sW / 26;
@@ -157,7 +157,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->wifiBtn->setStyleSheet("font-size: 9pt; padding-bottom: 0px; padding-top: 0px; padding-left: 8px; padding-right: 8px");
 
     // Checking if we have a Mini or Touch there
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 1px; padding-right: 1px;");
     }
     else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
@@ -794,9 +794,9 @@ void MainWindow::resetIcons() {
 
 void MainWindow::setBatteryIcon() {
     // Battery
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n") {
         // Hide brightness controls; they won't be very useful there anyway (for anything but the Glo (HD)/Libra/Aura 2) ...
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             ui->brightnessBtn->hide();
             ui->line_7->hide();
         }
@@ -876,7 +876,7 @@ void MainWindow::setInitialBrightness() {
         set_warmth(warmth);
     }
     int brightness_value = brightness_checkconfig(".config/03-brightness/config");
-    if(global::deviceID != "n705\n" and global::deviceID != "n905\n") {
+    if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
         log("Setting initial brightness to " + QString::number(brightness_value), className);
     }
     if(checkconfig("/tmp/oobe-inkbox_completed") == true) {
@@ -1174,7 +1174,7 @@ void MainWindow::resetFullWindow() {
 }
 
 void MainWindow::setRecentBooksLabelsTruncateThreshold() {
-    if(global::deviceID == "n705\n" or global::deviceID == "n905b\n" or global::deviceID == "n905c\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905b\n" or global::deviceID == "n905c\n" or global::deviceID == "kt\n") {
         truncateThreshold = 12;
     }
     else if(global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n"){

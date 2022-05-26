@@ -42,7 +42,7 @@ koboxSettings::koboxSettings(QWidget *parent) :
     QString dpiSetting;
     string_checkconfig(".config/00-kobox/dpiSetting");
     if(checkconfig_str_val == "") {
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             dpiSetting = "125";
         }
         else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
@@ -119,7 +119,7 @@ void koboxSettings::on_spinBox_valueChanged(int arg1)
 
 void koboxSettings::on_pushButton_clicked()
 {
-    // Export Extensions disk image over USB with g_mass_storage
+    // Export Extensions disk image over USB with g_mass_storage/g_file_storage
     global::usbms::usbmsDialog = false;
     global::usbms::launchUsbms = true;
     global::usbms::koboxExportExtensions = true;
