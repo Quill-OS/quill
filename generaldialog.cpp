@@ -186,9 +186,22 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->cancelBtn->setText("Not now");
         ui->bodyLabel->setText("<font face='u001'>New files have been found in 'encfs-dropbox'. Would you want to repack your encrypted storage</font><font face='Inter'>?</font>");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
+    } else if(global::userApps::appCompabilityDialog == true) {
+        appCompabilityDialog = true;
+        ui->okBtn->setText("Launch");
+        ui->cancelBtn->setText("Cancel");
+        ui->bodyLabel->setText("<font face='u001'>Your device is not compatible with this app, launch anyway?</font><font face='Inter'>?</font>");
+        ui->headerLabel->setText("Compability warning");
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
+    else if(global::userApps::appInfoDialog == true) {
+            appInfoDialog = true;
+            QTimer::singleShot(50, this, SLOT(adjust_size()));
+    }
+
     else {
         // We shouldn't be there ;)
+        log("General dialog launched without launching settings", className);
         ;
     }
 
@@ -247,6 +260,11 @@ void generalDialog::on_cancelBtn_clicked()
         }
         else if(global::encfs::repackDialog == true) {
             global::encfs::repackDialog = false;
+        }
+        else if(global::userApps::appCompabilityDialog == true) {
+            global::userApps::launchApp = false;
+            // Im highly unsure where to put this one:
+            global::userApps::appCompabilityDialog = false;
         }
         generalDialog::close();
     }
@@ -507,6 +525,12 @@ void generalDialog::on_okBtn_clicked()
         string_writeconfig("/external_root/run/encfs_repack", "true");
         quit_restart();
     }
+    else if(global::userApps::appCompabilityDialog == true) {
+        global::userApps::launchApp = true;
+        // Im highly unsure where to put this one:
+        global::userApps::appCompabilityDialog = false;
+        generalDialog::close();
+    }
 }
 void generalDialog::on_acceptBtn_clicked()
 {
@@ -531,6 +555,10 @@ void generalDialog::on_acceptBtn_clicked()
     if(textBrowserDialog == true) {
         global::text::textBrowserContents = "";
         global::text::textBrowserDialog = false;
+    }
+    // Is here a mess? no else statements?
+    if(appInfoDialog == true) {
+        global::userApps::appInfoDialog = false;
     }
 
     // We don't have any other option ;p

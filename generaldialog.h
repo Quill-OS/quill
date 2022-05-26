@@ -31,6 +31,8 @@ public:
     bool koboxSettingsRebootDialog = false;
     bool lowBatteryDialog = false;
     bool usbmsDialog = false;
+    bool appCompabilityDialog = false;
+    bool appInfoDialog = false;
     bool textBrowserDialog = false;
     bool resetKoboxDialog = false;
     bool keyboardDialog = false;

@@ -76,6 +76,7 @@ void userapp::changePageEnabling(bool SecondPage)
 void userapp::on_pushButtonAppInfo_clicked()
 {
     // Show a big qdialog with the whole part json in it
+    // this is higly bad code
     log("Launching json information dialog", className);
     global::text::textBrowserDialog = true;
     // https://stackoverflow.com/questions/28181627/how-to-convert-a-qjsonobject-to-qstring
@@ -83,13 +84,16 @@ void userapp::on_pushButtonAppInfo_clicked()
     QString jsonString = doc.toJson(QJsonDocument::Indented);
     global::text::textBrowserContents = jsonString;
 
+    global::userApps::appInfoDialog = true;
     generalDialogWindow = new generalDialog();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
-    connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
-    connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
-    connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
-    connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
+
+
+    //connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
+    //connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+    //connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+    //connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
+    //connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
     generalDialogWindow->show();
 }
 
@@ -156,15 +160,43 @@ void userapp::updateJsonFileSlotUA(QJsonDocument jsonDocumentProvided)
 
 void userapp::on_pushButtonLaunch_clicked()
 {
-    // Some powerfull command to execute binary at "execPath"
+    // Some command to execute binary at "execPath"
     // For now this:
-    QString message = "Launching user app at: ";
-    message.append(execPath.fileName());
+    QString supportedDevices = jsonObject["SupportedDevices"].toString();
+    QString message = "Supported devices for this app: ";
+    message.append(supportedDevices);
     log(message, className);
 
-    QProcess process;
-    process.startDetached(execPath.fileName(), QStringList());
-    qApp->quit();
-    // mount -o remount,suid /kobo/mnt/onboard/onboard
+    // you know that holding \n in deviceID is horrible?
+    QString betterDeviceId = global::deviceID.replace("\n", "");
 
+    if(supportedDevices.contains("all") == false and supportedDevices.contains(betterDeviceId) == false)
+    {
+        global::userApps::appCompabilityDialog = true;
+        generalDialogWindow = new generalDialog();
+        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        //connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
+        //connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+        //connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+        //connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
+        //connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
+        // Needs to be exec!
+        generalDialogWindow->exec();
+    } else {
+        global::userApps::launchApp = true;
+    }
+
+
+    if(global::userApps::launchApp == true)
+    {
+        global::userApps::launchApp = false;
+        QString message = "Launching user app at: ";
+        message.append(execPath.fileName());
+        log(message, className);
+
+        QProcess process;
+        process.startDetached(execPath.fileName(), QStringList());
+        qApp->quit();
+        // mount -o remount,exec /kobo/mnt/onboard/onboard
+    }
 }

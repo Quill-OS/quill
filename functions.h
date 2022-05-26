@@ -122,6 +122,12 @@ namespace global {
     namespace logger {
         inline bool status;
     }
+    namespace userApps {
+        inline bool appCompabilityDialog;
+        inline bool appInfoDialog;
+        inline bool launchApp;
+        // Here i will propably in the future add a proper dialog for showing the json file
+    }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705;
