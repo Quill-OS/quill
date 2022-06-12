@@ -15,24 +15,28 @@
 /*
 {
     "list": [
-      {
-        "Name": "Sanki",
-        "Author": "Szybet",
-        "Version": "0.1 testing",
-        "IconPath": "sanki.png",
-        "ExecPath": "sanki",
-        "Enabled": false,
-        "SupportedDevices": "n305,xxx,xxx"
-      },
-      {
-        "Name": "Syncthing",
-        "Author": "Szybet",
-        "Version": "0.1 testing",
-        "IconPath": "syncthing.png",
-        "ExecPath": "syncthing_arm.bin",
-        "Enabled": false,
-        "SupportedDevices": "n305,xxx,xxx"
-      }
+        "app": {
+            "Author": "Szybet",
+            "AuthorContact": "https://github.com/Szybet/sanki/issues",
+            "Enabled": true,
+            "ExecPath": "/app-bin/Sanki.sh",
+            "IconPath": "/app-misc/Sanki.png",
+            "Name": "Sanki",
+            "SupportedDevices": "all",
+            "RequiredFeatures": [ ],
+            "Version": "0.1-testing"
+          },
+        "app": {
+            "Author": "Szybet",
+            "AuthorContact": "https://github.com/Szybet/sanki/issues",
+            "Enabled": true,
+            "ExecPath": "/app-bin/Sanki.sh",
+            "IconPath": "/app-misc/Sanki.png",
+            "Name": "Sanki",
+            "SupportedDevices": "all",
+            "RequiredFeatures": [ ],
+            "Version": "0.1-testing"
+          }
     ]
 }
 */
@@ -245,7 +249,7 @@ bool apps::parseJson() {
                     if(refJsonObject.isObject())
                     {
                         QJsonObject JsonMainObject = refJsonObject.toObject();
-                        if(JsonMainObject.size() == 7)
+                        if(JsonMainObject.size() == 9)
                         {
                             if(!JsonMainObject["Name"].isString())
                             {
@@ -256,6 +260,12 @@ bool apps::parseJson() {
                             if(!JsonMainObject["Author"].isString())
                             {
                                 log("JSON: Invalid Author type inside object", className);
+                                check_sucess = false;
+
+                            }
+                            if(!JsonMainObject["AuthorContact"].isString())
+                            {
+                                log("JSON: Invalid AuthorContact type inside object", className);
                                 check_sucess = false;
 
                             }
@@ -294,6 +304,23 @@ bool apps::parseJson() {
                                 log("JSON: Invalid SupportedDevices type inside object", className);
                                 check_sucess = false;
 
+                            }
+                            if(!JsonMainObject["RequiredFeatures"].isArray())
+                            {
+                                log("JSON: Invalid RequiredFeatures type inside object", className);
+                                check_sucess = false;
+
+                            } else {
+                                QJsonArray jsonArray = JsonMainObject["list"].toArray();
+                                for(QJsonValueRef refJsonObject: jsonArray)
+                                {
+                                    // https://doc.qt.io/qt-5/qjsonvalue.html#toInt
+                                    if(!refJsonObject.isDouble())
+                                    {
+                                        log("JSON: array from RequiredFeatures contains a wrong type", className);
+                                        check_sucess = false;
+                                    }
+                                }
                             }
                         } else {
                             log("JSON: an object inside list array has too many items ( or to less )", className);
