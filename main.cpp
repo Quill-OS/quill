@@ -203,11 +203,7 @@ int main(int argc, char *argv[])
         // Checking if battery level is critical; if true (and if it is not charging), then display a "Please charge your eReader" splash and power off.
         if(global::deviceID != "emu\n") {
             if(isBatteryCritical() == true) {
-                string_checkconfig_ro("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/status");
-                if(checkconfig_str_val == "Charging\n") {
-                    ;
-                }
-                else {
+                if(!isUsbPluggedIn()) {
                     global::battery::showCriticalBatteryAlert = true;
                     QApplication a(argc, argv);
                     alert w;
