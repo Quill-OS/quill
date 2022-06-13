@@ -13,6 +13,7 @@
 #include <QStringListModel>
 #include <QListView>
 #include <QDateTime>
+#include <QTextEdit>
 
 generalDialog::generalDialog(QWidget *parent) :
     QDialog(parent),
@@ -131,6 +132,7 @@ generalDialog::generalDialog(QWidget *parent) :
     }
     else if(global::usbms::usbmsDialog == true) {
         usbmsDialog = true;
+        ui->stackedWidget->setCurrentIndex(0);
         ui->okBtn->setText("Connect");
         ui->cancelBtn->setText("Not now");
         ui->bodyLabel->setText("<font face='u001'>Do you want to connect your device to a computer to manage books</font><font face='Inter'>?</font>");
@@ -186,7 +188,8 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->cancelBtn->setText("Not now");
         ui->bodyLabel->setText("<font face='u001'>New files have been found in 'encfs-dropbox'. Would you want to repack your encrypted storage</font><font face='Inter'>?</font>");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
-    } else if(global::userApps::appCompabilityDialog == true) {
+    }
+    else if(global::userApps::appCompabilityDialog == true) {
         appCompabilityDialog = true;
         global::userApps::appCompabilityLastContinueStatus = true;
         ui->okBtn->setText("Launch");
@@ -197,13 +200,23 @@ generalDialog::generalDialog(QWidget *parent) :
     }
     else if(global::userApps::appInfoDialog == true) {
             appInfoDialog = true;
-            QTimer::singleShot(50, this, SLOT(adjust_size()));
-    }
+            textwidgetWindow = new textwidget();
 
+            // https://stackoverflow.com/questions/4311352/how-do-you-get-a-widgets-children-in-qt magic
+            //QTextEdit* textEdit = textwidgetWindow->findChild<QTextEdit*>("textBrowser");
+            //textEdit->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+            //textEdit->adjustSize();
+
+            ui->headerLabel->setText("App info");
+            ui->stackedWidget->setCurrentIndex(1);
+            ui->mainStackedWidget->insertWidget(1, textwidgetWindow);
+            ui->mainStackedWidget->setCurrentIndex(1);
+            yincrease = 1.8;
+            QTimer::singleShot(50, this, SLOT(increaseSize()));
+    }
     else {
         // We shouldn't be there ;)
         log("General dialog launched without launching settings", className);
-        ;
     }
 
     // Centering dialog
@@ -563,6 +576,7 @@ void generalDialog::on_acceptBtn_clicked()
     }
     // Is here a mess? no else statements?
     if(appInfoDialog == true) {
+        global::text::textBrowserContents = "";
         global::userApps::appInfoDialog = false;
     }
 
@@ -585,6 +599,9 @@ void generalDialog::restartSearchDialog() {
 }
 
 void generalDialog::setupKeyboardDialog() {
+    // Bugfix - szybet
+    ui->stackedWidget->setCurrentIndex(0);
+
     keyboardDialog = true;
     ui->stackedWidget->setVisible(true);
     if(global::keyboard::searchDialog == true) {
@@ -764,4 +781,31 @@ void generalDialog::waitForGutenbergSearchDone() {
             }
         }
     }
+}
+
+void generalDialog::increaseSize()
+{
+    log("resizing GeneralDialog", className);
+
+    //ui->topStackedWidget->sizePolicy().setVerticalPolicy(QSizePolicy::Fixed);
+    //ui->mainStackedWidget->sizePolicy().setVerticalPolicy(QSizePolicy::MinimumExpanding);
+    //ui->stackedWidget->sizePolicy().setVerticalPolicy(QSizePolicy::Fixed);
+
+    ui->topStackedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    ui->mainStackedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+    ui->stackedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+    QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
+    int wx = screenGeometry.width();
+    //int wy = screenGeometry.height();
+
+    int x = wx - 25;
+    int y = this->height() * yincrease;
+    this->setFixedWidth(x);
+    this->setFixedHeight(y);
+
+    ui->bodyLabel->sizePolicy().setVerticalPolicy(QSizePolicy::Expanding);
+    ui->bodyLabel->sizePolicy().setHorizontalPolicy(QSizePolicy::Expanding);
+
+    adjust_size();
 }

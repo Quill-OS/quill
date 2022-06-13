@@ -821,7 +821,12 @@ void settings::on_showSystemInfoBtn_clicked()
 
     // Show a system info dialog
     log("Showing system info dialog", className);
+
     generalDialogWindow = new generalDialog();
+    // 2.6 is for the nia, IDK about other devices
+    generalDialogWindow->yincrease = 2.6;
+    generalDialogWindow->increaseSize();
+
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
 }
 

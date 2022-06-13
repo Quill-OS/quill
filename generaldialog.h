@@ -51,6 +51,10 @@ public:
     QString wifiPassphrase;
     void setupKeyboardDialog();
     void startVNC(QString server, QString password, QString port);
+    float yincrease;
+
+public slots:
+    void increaseSize();
 
 private slots:
     void on_cancelBtn_clicked();

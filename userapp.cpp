@@ -78,11 +78,9 @@ void userapp::on_pushButtonAppInfo_clicked()
     // Show a big qdialog with the whole part json in it
     // this is higly bad code
     log("Launching json information dialog", className);
-    global::text::textBrowserDialog = true;
     // https://stackoverflow.com/questions/28181627/how-to-convert-a-qjsonobject-to-qstring
-    QJsonDocument doc(jsonObject);
-    QString jsonString = doc.toJson(QJsonDocument::Indented);
-    global::text::textBrowserContents = jsonString;
+    QString jsonStringParsed = parseJsonShow(jsonObject);
+    global::text::textBrowserContents = jsonStringParsed;
 
     global::userApps::appInfoDialog = true;
     generalDialogWindow = new generalDialog();
@@ -247,3 +245,49 @@ bool userapp::manageRequiredFeatures()
     }
     return true;
 }
+
+QString userapp::parseJsonShow(QJsonObject json)
+{
+    QString mainString;
+    foreach(const QString& key, json.keys())
+    {
+        QJsonValue value = json.value(key);
+
+        QString appendString;
+
+        appendString.append("<b>");
+        appendString.append(key);
+        appendString.append("</b>: ");
+
+        if(value.isString())
+        {
+            appendString.append(value.toString());
+        } else if(value.isBool())
+        {
+            appendString.append(QVariant(value.toBool()).toString());
+        } else if(value.isArray())
+        {
+            QJsonArray array = value.toArray();
+            for(QJsonValueRef ref: array)
+            {
+                int id = ref.toInt();
+                if(id == 0)
+                {
+                    appendString.append("Wi-Fi connection");
+                } else if(id == 1)
+                {
+                    appendString.append("Rooted kernel");
+                }
+                appendString.append(", ");
+            }
+            appendString.remove(appendString.size() - 2, 2);
+        }
+
+        appendString.append("<br>");
+
+        mainString.append(appendString);
+    }
+
+    return mainString;
+}
+
