@@ -14,35 +14,22 @@
 // Json scheme:
 /*
 {
-    "list": [
-        "app": {
-            "Author": "Szybet",
-            "AuthorContact": "https://github.com/Szybet/sanki/issues",
-            "Enabled": true,
-            "ExecPath": "/app-bin/Sanki.sh",
-            "IconPath": "/app-misc/Sanki.png",
-            "Name": "Sanki",
-            "SupportedDevices": "all",
-            "RequiredFeatures": [ ],
-            "Version": "0.1-testing"
-          },
-        "app": {
-            "Author": "Szybet",
-            "AuthorContact": "https://github.com/Szybet/sanki/issues",
-            "Enabled": true,
-            "ExecPath": "/app-bin/Sanki.sh",
-            "IconPath": "/app-misc/Sanki.png",
-            "Name": "Sanki",
-            "SupportedDevices": "all",
-            "RequiredFeatures": [ ],
-            "Version": "0.1-testing"
-          }
-    ]
+   "list":[
+      {
+         "Author":"Szybet",
+         "Enabled":true,
+         "AuthorContact":"https://github.com/Szybet/sanki/issues",
+         "ExecPath":"sanki",
+         "IconPath":"sanki.png",
+         "Name":"Sanki",
+         "SupportedDevices":"n306",
+         "RequiredFeatures":[ ],
+         "Version":"0.1 testing"
+      }
+   ]
 }
 */
 // Its located at: /data/onboard/.apps/apps.json so in chroot: /mnt/onboard/onboard/.apps/apps.json
-
-
 
 apps::apps(QWidget *parent) :
     QWidget(parent),
@@ -311,7 +298,7 @@ bool apps::parseJson() {
                                 check_sucess = false;
 
                             } else {
-                                QJsonArray jsonArray = JsonMainObject["list"].toArray();
+                                QJsonArray jsonArray = JsonMainObject["RequiredFeatures"].toArray();
                                 for(QJsonValueRef refJsonObject: jsonArray)
                                 {
                                     // https://doc.qt.io/qt-5/qjsonvalue.html#toInt
@@ -323,7 +310,9 @@ bool apps::parseJson() {
                                 }
                             }
                         } else {
-                            log("JSON: an object inside list array has too many items ( or to less )", className);
+                            QString message = "JSON: an object inside list array has too many items (or to less): ";
+                            message.append(QString::number(JsonMainObject.size()));
+                            log(message, className);
                             check_sucess = false;
                         }
                     } else {

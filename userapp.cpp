@@ -175,6 +175,8 @@ void userapp::on_pushButtonLaunch_clicked()
         global::userApps::appCompabilityDialog = true;
         generalDialogWindow = new generalDialog();
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        global::userApps::appCompabilityText = "<font face='u001'>Your device is not compatible with this app, launch anyway</font><font face='Inter'>?</font>";
+
         //connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
         //connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
         //connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
@@ -186,17 +188,62 @@ void userapp::on_pushButtonLaunch_clicked()
         global::userApps::launchApp = true;
     }
 
-
-    if(global::userApps::launchApp == true)
+    // syntax question:
+    if(manageRequiredFeatures() == true)
     {
-        global::userApps::launchApp = false;
-        QString message = "Launching user app at: ";
-        message.append(execPath.fileName());
-        log(message, className);
+        if(global::userApps::launchApp == true)
+        {
+            global::userApps::launchApp = false;
+            QString message = "Launching user app at: ";
+            message.append(execPath.fileName());
+            log(message, className);
 
-        QProcess process;
-        process.startDetached(execPath.fileName(), QStringList());
-        qApp->quit();
-        // mount -o remount,exec /kobo/mnt/onboard/onboard
+            QProcess process;
+            process.startDetached(execPath.fileName(), QStringList());
+            qApp->quit();
+            // mount -o remount,exec /kobo/mnt/onboard/onboard is needed
+        }
     }
+}
+
+bool userapp::manageRequiredFeatures()
+{
+    QJsonArray jsonArray = jsonObject["RequiredFeatures"].toArray();
+    for(QJsonValueRef refJsonObject: jsonArray)
+    {
+        bool launchDialog = false;
+        int featureId = refJsonObject.toInt();
+        // Wi-Fi connection required
+        if(featureId == 0)
+        {
+            global::userApps::appCompabilityText = "<font face='u001'>This app needs Wi-Fi connection, launch anyway</font><font face='Inter'>?</font>";
+            launchDialog = true;
+        }
+        // Rooted kernel required
+        if(featureId == 1)
+        {
+            global::userApps::appCompabilityText = "<font face='u001'>This app needs a rooted kernel, launch anyway</font><font face='Inter'>?</font>";
+            launchDialog = true;
+        }
+
+        if(launchDialog == true)
+        {
+            global::userApps::appCompabilityDialog = true;
+            generalDialogWindow = new generalDialog();
+            generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+            //connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(setupSearchDialog()));
+            //connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+            //connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
+            //connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
+            //connect(generalDialogWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
+            // Needs to be exec!
+            generalDialogWindow->exec();
+        }
+
+        if(global::userApps::appCompabilityLastContinueStatus == false)
+        {
+            return false;
+        }
+    }
+    return true;
 }

@@ -188,9 +188,10 @@ generalDialog::generalDialog(QWidget *parent) :
         QTimer::singleShot(50, this, SLOT(adjust_size()));
     } else if(global::userApps::appCompabilityDialog == true) {
         appCompabilityDialog = true;
+        global::userApps::appCompabilityLastContinueStatus = true;
         ui->okBtn->setText("Launch");
         ui->cancelBtn->setText("Cancel");
-        ui->bodyLabel->setText("<font face='u001'>Your device is not compatible with this app, launch anyway?</font><font face='Inter'>?</font>");
+        ui->bodyLabel->setText(global::userApps::appCompabilityText);
         ui->headerLabel->setText("Compability warning");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
@@ -263,8 +264,10 @@ void generalDialog::on_cancelBtn_clicked()
         }
         else if(global::userApps::appCompabilityDialog == true) {
             global::userApps::launchApp = false;
+            global::userApps::appCompabilityLastContinueStatus = false;
             // Im highly unsure where to put this one:
             global::userApps::appCompabilityDialog = false;
+            global::userApps::appCompabilityText = "";
         }
         generalDialog::close();
     }
@@ -529,6 +532,8 @@ void generalDialog::on_okBtn_clicked()
         global::userApps::launchApp = true;
         // Im highly unsure where to put this one:
         global::userApps::appCompabilityDialog = false;
+        global::userApps::appCompabilityText = "";
+        global::userApps::appCompabilityLastContinueStatus = true; // Not really necceserry, only if something fails horibly
         generalDialog::close();
     }
 }

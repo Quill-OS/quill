@@ -124,9 +124,10 @@ namespace global {
     }
     namespace userApps {
         inline bool appCompabilityDialog;
+        inline QString appCompabilityText = "";
+        inline bool appCompabilityLastContinueStatus = true; // This is for RequiredFeatures to show only one dialog if cancel is clicked. maybe merging this bool with launchApp is a good idea
         inline bool appInfoDialog;
         inline bool launchApp;
-        // Here i will propably in the future add a proper dialog for showing the json file
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;

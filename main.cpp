@@ -157,6 +157,9 @@ void createSmallJsons()
 
 int main(int argc, char *argv[])
 {
+    // Szybet testing
+    global::logger::status = true;
+
     if(char * debug = std::getenv("DEBUG")) {
         if(std::atoi(debug) == 1) {
             global::logger::status = true;

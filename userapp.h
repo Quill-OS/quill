@@ -37,6 +37,7 @@ public slots:
     void provideInfo(QJsonObject jsonObject);
     void changePageEnabling(bool goThere);
     void updateJsonFileSlotUA(QJsonDocument jsonDocument);
+    bool manageRequiredFeatures();
 
 private slots:
     void on_pushButtonAppInfo_clicked();
