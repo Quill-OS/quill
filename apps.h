@@ -39,6 +39,7 @@ private slots:
     bool parseJson();
     void showUserApps(bool showDisabledJson);
     void updateJsonFileSlot(QJsonDocument jsonDocument);
+    void showFailedToParseMainUserAppsJsonFile();
 
 private:
     Ui::apps *ui;

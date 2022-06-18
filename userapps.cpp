@@ -14,6 +14,8 @@ userapps::userapps(QWidget *parent) :
     ui->launchBtn->setProperty("type", "borderless");
 
     ui->iconBtn->setProperty("type", "borderless");
+    ui->iconBtn->setStyleSheet("QPushButton[type='borderless']:pressed { background: white; color: white; border: none; }");
+
     ui->infoBtn->setProperty("type", "borderless");
     ui->statusBtn->setProperty("type", "borderless");
     ui->statusBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");

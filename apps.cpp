@@ -317,7 +317,7 @@ void apps::showUserApps(bool showDisabledJson)
     emit clearAppsLayout();
 
     if(jsonParseSuccess == true) {
-        QString function = __func__; log(function + ": JSON is valid", className);
+        QString function = __func__; log(function + ": Main user applications' JSON is valid", className);
         QJsonArray jsonListArray = jsonDocument.object()["list"].toArray();
             for(QJsonValueRef refJsonObject: jsonListArray) {
                 QJsonObject appInfo = refJsonObject.toObject();
@@ -335,7 +335,8 @@ void apps::showUserApps(bool showDisabledJson)
             }
     }
     else {
-        QString function = __func__; log(function + ": JSON is invalid", className);
+        QString function = __func__; log(function + ": Main user applications' JSON file is invalid", className);
+        QTimer::singleShot(500, this, SLOT(showFailedToParseMainUserAppsJsonFile()));
 
         ui->editUserAppsBtn->deleteLater();
         ui->label_6->deleteLater();
@@ -349,4 +350,8 @@ void apps::updateJsonFileSlot(QJsonDocument jsonDocumentFunc)
 {
     jsonDocument = jsonDocumentFunc;
     emit updateJsonFileSignal(jsonDocument);
+}
+
+void apps::showFailedToParseMainUserAppsJsonFile() {
+     emit showToast("Failed to parse 'apps.json'");
 }
