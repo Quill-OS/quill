@@ -48,6 +48,7 @@ SOURCES += \
     textwidget.cpp \
     toast.cpp \
     usbms_splash.cpp \
+    userapps.cpp \
     virtualkeyboard.cpp \
     virtualkeypad.cpp \
     wifidialog.cpp
@@ -77,6 +78,7 @@ HEADERS += \
     textwidget.h \
     toast.h \
     usbms_splash.h \
+    userapps.h \
     virtualkeyboard.h \
     virtualkeypad.h \
     wifidialog.h
@@ -105,6 +107,7 @@ FORMS += \
     textwidget.ui \
     toast.ui \
     usbms_splash.ui \
+    userapps.ui \
     virtualkeyboard.ui \
     virtualkeypad.ui \
     wifidialog.ui

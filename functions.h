@@ -122,6 +122,13 @@ namespace global {
     namespace logger {
         inline bool status;
     }
+    namespace userApps {
+       inline bool appCompatibilityDialog;
+       inline QString appCompatibilityText;
+       inline bool appCompatibilityLastContinueStatus = true; // This is for RequiredFeatures to show only one dialog if 'Cancel' is clicked.
+       inline bool appInfoDialog;
+       inline bool launchApp;
+    }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705 = false;

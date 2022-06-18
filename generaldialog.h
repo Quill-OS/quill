@@ -32,6 +32,8 @@ public:
     bool lowBatteryDialog = false;
     bool usbmsDialog = false;
     bool textBrowserDialog = false;
+    bool appCompabilityDialog = false;
+    bool appInfoDialog = false;
     bool resetKoboxDialog = false;
     bool keyboardDialog = false;
     bool keypadDialog = false;
@@ -49,6 +51,10 @@ public:
     QString wifiPassphrase;
     void setupKeyboardDialog();
     void startVNC(QString server, QString password, QString port);
+    float yIncrease;
+
+public slots:
+    void increaseSize();
 
 private slots:
     void on_cancelBtn_clicked();

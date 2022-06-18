@@ -1,8 +1,14 @@
 #include "apps.h"
 #include "ui_apps.h"
 #include "mainwindow.h"
+#include "userapps.h"
+
 #include <QFile>
 #include <QProcess>
+#include <QJsonParseError>
+#include <QJsonObject>
+#include <QJsonValue>
+#include <QJsonArray>
 
 apps::apps(QWidget *parent) :
     QWidget(parent),
@@ -60,6 +66,14 @@ apps::apps(QWidget *parent) :
         ui->label_2->deleteLater();
         ui->lightmapsLaunchBtn->deleteLater();
     }
+
+    ui->editUserAppsBtn->setProperty("type", "borderless");
+
+    // Refresh because Qt shows the scrollbar for one second then hides it, leaving a mark on the eInk screen
+    QTimer::singleShot(1750, this, SLOT(refreshScreenNative()));
+
+    jsonParseSuccess = parseJson();
+    showUserApps(false);
 
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);
@@ -159,4 +173,175 @@ void apps::on_g2048LaunchBtn_clicked()
 
 void apps::showToastNative(QString messageToDisplay) {
     emit showToast(messageToDisplay);
+}
+
+/*
+ * This function opens and reads the main GUI user applications' JSON file, parses and verifies its content to avoid issues in the future.
+*/
+bool apps::parseJson() {
+    // If the path changes, it is also used statically in showUserApps()
+    jsonFile.setFileName("/mnt/onboard/onboard/.apps/apps.json");
+    bool jsonCheckSuccess = true;
+
+    if(jsonFile.exists() == false) {
+        log("GUI user applications' main JSON file is missing, creating it", className);
+        jsonCheckSuccess = false;
+    }
+    else {
+        jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
+        QString fileRead = jsonFile.readAll();
+        jsonFile.close();
+
+        jsonDocument = QJsonDocument::fromJson(fileRead.toUtf8());
+        if(jsonDocument.isNull() == true) {
+            log("GUI user applications' main JSON file is invalid", className);
+            jsonCheckSuccess = false;
+        }
+        else {
+            QJsonObject jsonObject = jsonDocument.object();
+            if(jsonObject["list"].isArray() == true) {
+                QJsonArray jsonArray = jsonObject["list"].toArray();
+                for(QJsonValueRef refJsonObject: jsonArray) {
+                    if(refJsonObject.isObject()) {
+                        QJsonObject jsonMainObject = refJsonObject.toObject();
+                        if(jsonMainObject.size() == 9) {
+                            if(!jsonMainObject["Name"].isString()) {
+                                QString function = __func__; log(function + ": Invalid 'Name' type inside object", className);
+                                jsonCheckSuccess = false;
+
+                            }
+                            if(!jsonMainObject["Author"].isString()) {
+                                QString function = __func__; log(function + ": Invalid 'Author' type inside object", className);
+                                jsonCheckSuccess = false;
+
+                            }
+                            if(!jsonMainObject["AuthorContact"].isString()) {
+                                QString function = __func__; log(function + ": Invalid 'AuthorContact' type inside object", className);
+                                jsonCheckSuccess = false;
+
+                            }
+                            if(!jsonMainObject["Version"].isString()) {
+                                QString function = __func__; log(function + ": Invalid 'Version' type inside object", className);
+                                jsonCheckSuccess = false;
+
+                            }
+                            if(!jsonMainObject["IconPath"].isString()) {
+                                log("JSON: Invalid IconPath type inside object", className);
+                                jsonCheckSuccess = false;
+
+                            }
+                            if(!jsonMainObject["ExecPath"].isString()) {
+                                QString function = __func__; log(function + ": Invalid 'ExecPath' type inside object", className);
+                                jsonCheckSuccess = false;
+                            }
+                            else {
+                                if(jsonMainObject["ExecPath"].toString().contains("..")) {
+                                    // Possible security risk
+                                    showToastNative("ERROR: 'ExecPath' has invalid path");
+                                    QString function = __func__; log(function + ": 'ExecPath' contains \"..\"", className);
+                                    jsonCheckSuccess = false;
+                                }
+                            }
+                            if(!jsonMainObject["Enabled"].isBool()) {
+                                QString function = __func__; log(function + ": Invalid 'Enabled' type inside object", className);
+                                jsonCheckSuccess = false;
+
+                            }
+                            if(!jsonMainObject["SupportedDevices"].isString()) {
+                                QString function = __func__; log(function + ": Invalid 'SupportedDevices' type inside object", className);
+                                jsonCheckSuccess = false;
+
+                            }
+                            if(!jsonMainObject["RequiredFeatures"].isArray()) {
+                                QString function = __func__; log(function + ": Invalid 'RequiredFeatures' type inside object", className);
+                                jsonCheckSuccess = false;
+
+                            }
+                            else {
+                                QJsonArray jsonArray = jsonMainObject["RequiredFeatures"].toArray();
+                                for(QJsonValueRef refJsonObject: jsonArray) {
+                                    // https://doc.qt.io/qt-5/qjsonvalue.html#toInt
+                                    if(!refJsonObject.isDouble()) {
+                                        QString function = __func__; log(function + ": Array from 'RequiredFeatures' contains a wrong type", className);
+                                        jsonCheckSuccess = false;
+                                    }
+                                }
+                            }
+                        }
+                        else {
+                            QString function = __func__; QString message = function + ": An object inside list array has too many items (or not enough): ";
+                            message.append(QString::number(jsonMainObject.size()));
+                            log(message, className);
+                            jsonCheckSuccess = false;
+                        }
+                    }
+                    else {
+                        QString function = __func__; log(function + ": List array has an item of other type than object", className);
+                        jsonCheckSuccess = false;
+                    }
+                }
+            }
+        }
+    }
+    return jsonCheckSuccess;
+}
+
+void apps::on_editUserAppsBtn_clicked()
+{
+    if(userAppsSecondPage == false) {
+        userAppsSecondPage = true;
+
+        // Settings page
+        showUserApps(userAppsSecondPage);
+        emit showUserAppsEdit(userAppsSecondPage);
+    }
+    else {
+        userAppsSecondPage = false;
+        // Launch page
+
+        // It changed via updateJsonFileSlot, and now it writes it only once
+        jsonFile.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
+        jsonFile.write(jsonDocument.toJson());
+        jsonFile.flush();
+        jsonFile.close();
+
+        showUserApps(userAppsSecondPage);
+        emit showUserAppsEdit(userAppsSecondPage);
+
+        QTimer::singleShot(1000, this, SLOT(refreshScreenNative()));
+    }
+}
+
+void apps::showUserApps(bool showDisabledJson)
+{
+    emit clearAppsLayout();
+
+    if(jsonParseSuccess == true) {
+        QString function = __func__; log(function + ": JSON is valid", className);
+        QJsonArray jsonListArray = jsonDocument.object()["list"].toArray();
+            for(QJsonValueRef refJsonObject: jsonListArray) {
+                QJsonObject appInfo = refJsonObject.toObject();
+                if(appInfo["Enabled"].toBool() == true or showDisabledJson == true) {
+                    userapps * newUserApp = new userapps;
+                    newUserApp->provideInfo(appInfo);
+                    connect(this, SIGNAL(clearAppsLayout()), newUserApp, SLOT(deleteLater()));
+                    connect(this, SIGNAL(showUserAppsEdit(bool)), newUserApp, SLOT(changePageEnabling(bool)));
+                    connect(this, SIGNAL(updateJsonFileSignal(QJsonDocument)), newUserApp, SLOT(updateJsonFileSlotUA(QJsonDocument)));
+                    connect(newUserApp, SIGNAL(updateJsonFileSignalUA(QJsonDocument)), this, SLOT(updateJsonFileSlot(QJsonDocument)));
+                    newUserApp->jsonDocument = jsonDocument;
+                    newUserApp->jsonFilePath = jsonFile.fileName();
+                    ui->verticalLayout_4UserApps->addWidget(newUserApp);
+                }
+            }
+    }
+    else {
+        QString function = __func__; log(function + ": JSON is invalid", className);
+        emit showToast("ERROR: Failed to parse 'apps.json'");
+    }
+}
+
+void apps::updateJsonFileSlot(QJsonDocument jsonDocumentFunc)
+{
+    jsonDocument = jsonDocumentFunc;
+    emit updateJsonFileSignal(jsonDocument);
 }
