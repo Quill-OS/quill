@@ -51,6 +51,9 @@ void quit::on_pushButton_clicked()
     global::battery::showCriticalBatteryAlert = false;
     global::battery::showLowBatteryDialog = false;
 
+    // GUI apps
+    updateUserAppsMainJsonFile();
+
     poweroff(true);
     qApp->quit();
 }
@@ -59,6 +62,9 @@ void quit::on_pushButton_2_clicked()
 {
     global::battery::showCriticalBatteryAlert = false;
     global::battery::showLowBatteryDialog = false;
+
+    // GUI apps
+    updateUserAppsMainJsonFile();
 
     reboot(true);
     qApp->quit();

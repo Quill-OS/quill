@@ -27,101 +27,6 @@
 #include <QTextStream>
 #include <QRect>
 #include <QScreen>
-#include <QDirIterator>
-
-#include <QJsonDocument>
-#include <QJsonParseError>
-#include <QJsonObject>
-#include <QJsonValue>
-#include <QJsonArray>
-
-void createMainJson()
-{
-    QDirIterator appsDir("/mnt/onboard/onboard/.apps", QDirIterator::NoIteratorFlags);
-    QFile newJsonFile = QFile{"/mnt/onboard/onboard/.apps/apps.json"};
-    QJsonDocument newJsonDocument;
-    QJsonArray array;
-
-    while (appsDir.hasNext())
-    {
-        QDir dir(appsDir.next());
-        if(dir.exists() == true) {
-            if(dir.path().split("/").last().contains(".") == false) {
-                QFile jsonSmall = QFile{dir.path() + "/app.json"};
-                if(jsonSmall.exists() == true) {
-                    jsonSmall.open(QIODevice::ReadOnly | QIODevice::Text);
-                    QString jsonString = jsonSmall.readAll();
-                    jsonSmall.close();
-
-                    QJsonDocument jsonSmallDoc = QJsonDocument::fromJson(jsonString.toUtf8());
-                    if(jsonSmallDoc["app"].isObject() == true) {
-                        QJsonObject jsonSmallMainObj = jsonSmallDoc["app"].toObject();
-                        array.append(jsonSmallMainObj);
-
-                    }
-                    else {
-                        log("Small JSON user application file is missing main object 'app'", "main");
-                    }
-
-                }
-                else {
-                    QString message = "User applications folder does not contain any 'app.json' file: ";
-                    message.append(jsonSmall.fileName());
-                    log(message, "main");
-                }
-            }
-        }
-    }
-    // https://forum.qt.io/topic/104791/how-i-can-create-json-format-in-qt/5
-    QJsonObject root;
-    root["list"] = array;
-    newJsonDocument.setObject(root);
-
-    newJsonFile.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
-    newJsonFile.write(newJsonDocument.toJson());
-    newJsonFile.flush();
-    newJsonFile.close();
-}
-
-void createSmallJsonFiles()
-{
-    QFile jsonFile = QFile{"/mnt/onboard/onboard/.apps/apps.json"};
-
-    jsonFile.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString fileRead = jsonFile.readAll();
-    jsonFile.close();
-    QJsonDocument jsonDocument = QJsonDocument::fromJson(fileRead.toUtf8());
-
-    if(jsonDocument["list"].isArray() == true) {
-        QJsonArray jsonArray = jsonDocument["list"].toArray();
-        for(QJsonValueRef refJsonObject: jsonArray) {
-            QJsonObject jsonMainObject = refJsonObject.toObject();
-            QString appName = jsonMainObject["Name"].toString();
-
-            // This needs to be here and not at the beggining of this function because it is an iterator
-            QDirIterator appsDir("/mnt/onboard/onboard/.apps", QDirIterator::NoIteratorFlags);
-            while (appsDir.hasNext()) {
-                QDir dir(appsDir.next());
-                if(dir.exists() == true) {
-                    if(dir.path().split("/").last().toLower().contains(appName.toLower()) == true) {
-                        QJsonObject root;
-                        root["app"] = refJsonObject.toObject();;
-                        QJsonDocument newJsonDocument;
-                        newJsonDocument.setObject(root);
-
-                        QFile newSmallJson = QFile{dir.path() + "/" + "app.json"};
-
-                        newSmallJson.open(QIODevice::ReadWrite);
-                        QTextStream stream(&newSmallJson);
-                        stream << newJsonDocument.toJson() << Qt::endl;
-                        newSmallJson.flush();
-                        newSmallJson.close();
-                    }
-                }
-            }
-        }
-    }
-}
 
 int main(int argc, char *argv[])
 {
@@ -142,6 +47,13 @@ int main(int argc, char *argv[])
         log("Device does not have Wi-Fi capabilities", "main");
         global::device::isWifiAble = false;
     }
+
+    if(QFile::exists("/tmp/rescan_userapps")) {
+        QFile::remove("/tmp/rescan_userapps");
+        log("Re-scanning user applications from explicit request", "main");
+        updateUserAppsMainJsonFile();
+    }
+
     if(checkconfig(".config/18-encrypted_storage/status") == true and checkconfig("/external_root/run/encfs_mounted") == false) {
         // Open Encryption Manager to unlock encrypted storage
         QApplication a(argc, argv);

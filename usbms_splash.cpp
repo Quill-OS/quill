@@ -85,6 +85,9 @@ void usbms_splash::usbms_launch()
     string_writeconfig("/opt/ibxd", "usbnet_stop\n");
     QThread::msleep(1000);
 
+    string_writeconfig("/opt/ibxd", "gui_apps_stop\n");
+    QThread::msleep(1000);
+
     if(global::deviceID == "n306\n" or global::deviceID == "n873\n") {
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/fs/configfs/configfs.ko");
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/drivers/usb/gadget/libcomposite.ko");
@@ -197,6 +200,22 @@ void usbms_splash::restartServices() {
     string_writeconfig("/opt/ibxd", "update_inkbox_restart\n");
     QThread::msleep(2500);
     string_writeconfig("/tmp/in_usbms", "false");
+    // GUI apps: update main JSON file
+    string_writeconfig("/opt/ibxd", "gui_apps_start\n");
+    while(true) {
+        if(QFile::exists("/tmp/gui_apps_started")) {
+            if(checkconfig("/tmp/gui_apps_started") == true) {
+                QFile::remove("/tmp/gui_apps_started");
+                updateUserAppsMainJsonFile();
+                break;
+            }
+            else {
+                log("GUI apps service failed to start", className);
+                QFile::remove("/tmp/gui_apps_started");
+                break;
+            }
+        }
+    }
 
     quit_restart();
 }

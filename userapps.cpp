@@ -30,8 +30,7 @@ void userapps::provideInfo(QJsonObject jsonInfo)
     appName = name; // It is for searching for json entry while disabling / enabling
     jsonObject = jsonInfo;
     // Limit name size to avoid breaking the GUI
-    if(name.size() > 20)
-    {
+    if(name.size() > 20) {
         // If someone wants to break the GUI, they will do it ¯\^-^/¯
         name.remove(16, 100);
     }
@@ -91,7 +90,7 @@ void userapps::on_statusBtn_clicked()
 {
     ui->statusBtn->setEnabled(false);
 
-    // Here the text on this button is used as a bool. No need to create a new one
+    // Here the text on this button is used as a boolean; no need to create a new one
     // Disable and Enable
     if(userAppEnabled == false) {
         userAppEnabled = true;
@@ -107,13 +106,11 @@ void userapps::on_statusBtn_clicked()
 
     int arraySize = jsonArrayList.size();
 
-    for(int i = 0; i < arraySize; i++)
-    {
+    for(int i = 0; i < arraySize; i++) {
         QJsonObject jsonObject = jsonArrayList.at(i).toObject();
         QString entryName = jsonObject["Name"].toString();
 
-        if(entryName == appName)
-        {
+        if(entryName == appName) {
             jsonObject.insert("Enabled", QJsonValue(userAppEnabled));
 
             QJsonArray sonArrayListNew = jsonDocument.object()["list"].toArray();
@@ -173,8 +170,7 @@ void userapps::on_launchBtn_clicked()
 bool userapps::manageRequiredFeatures()
 {
     QJsonArray jsonArray = jsonObject["RequiredFeatures"].toArray();
-    for(QJsonValueRef refJsonObject: jsonArray)
-    {
+    for(QJsonValueRef refJsonObject: jsonArray) {
         bool launchDialog = false;
         int featureId = refJsonObject.toInt();
         // Wi-Fi connection required
@@ -188,16 +184,14 @@ bool userapps::manageRequiredFeatures()
             launchDialog = true;
         }
 
-        if(launchDialog == true)
-        {
+        if(launchDialog == true) {
             global::userApps::appCompatibilityDialog = true;
             generalDialogWindow = new generalDialog();
             generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
             generalDialogWindow->exec();
         }
 
-        if(global::userApps::appCompatibilityLastContinueStatus == false)
-        {
+        if(global::userApps::appCompatibilityLastContinueStatus == false) {
             return false;
         }
     }
@@ -226,11 +220,10 @@ QString userapps::parseJsonShow(QJsonObject json)
             QJsonArray array = value.toArray();
             for(QJsonValueRef ref: array) {
                 int id = ref.toInt();
-                if(id == 0)
-                {
+                if(id == 0) {
                     appendString.append("Wi-Fi connection");
-                } else if(id == 1)
-                {
+                }
+                else if(id == 1) {
                     appendString.append("Rooted kernel");
                 }
                 appendString.append(", ");

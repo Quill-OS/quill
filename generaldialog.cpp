@@ -190,7 +190,7 @@ generalDialog::generalDialog(QWidget *parent) :
         QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
     else if(global::userApps::appCompatibilityDialog == true) {
-            appCompabilityDialog = true;
+            appCompatibilityDialog = true;
             global::userApps::appCompatibilityLastContinueStatus = true;
             ui->okBtn->setText("Launch");
             ui->cancelBtn->setText("Cancel");

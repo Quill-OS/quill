@@ -32,7 +32,7 @@ public:
     bool lowBatteryDialog = false;
     bool usbmsDialog = false;
     bool textBrowserDialog = false;
-    bool appCompabilityDialog = false;
+    bool appCompatibilityDialog = false;
     bool appInfoDialog = false;
     bool resetKoboxDialog = false;
     bool keyboardDialog = false;

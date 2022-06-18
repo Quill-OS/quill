@@ -336,7 +336,12 @@ void apps::showUserApps(bool showDisabledJson)
     }
     else {
         QString function = __func__; log(function + ": JSON is invalid", className);
-        emit showToast("ERROR: Failed to parse 'apps.json'");
+
+        ui->editUserAppsBtn->deleteLater();
+        ui->label_6->deleteLater();
+        ui->horizontalLayout->deleteLater();
+        ui->line_2->deleteLater();
+        ui->line_3->deleteLater();
     }
 }
 
