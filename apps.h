@@ -52,6 +52,7 @@ private:
     QJsonDocument jsonDocument;
     bool jsonParseSuccess = false;
     bool userAppsSecondPage = false;
+    bool userAppsAvailable = false;
 
 signals:
     void refreshScreen();

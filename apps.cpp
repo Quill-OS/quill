@@ -35,6 +35,8 @@ apps::apps(QWidget *parent) :
     ui->reversiLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->g2048LaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
+    ui->noUserAppsAvailableLabel->hide();
+
     // Hiding KoBox apps button and label if X11 isn't enabled/wasn't started
     if(checkconfig("/external_root/boot/flags/X11_START") == false or checkconfig("/external_root/boot/flags/X11_STARTED") == false) {
         ui->label_5->hide();
@@ -68,6 +70,7 @@ apps::apps(QWidget *parent) :
     }
 
     ui->editUserAppsBtn->setProperty("type", "borderless");
+    ui->editUserAppsBtn->setIcon(QIcon(":/resources/edit.png"));
 
     // Refresh because Qt shows the scrollbar for one second then hides it, leaving a mark on the eInk screen
     QTimer::singleShot(1750, this, SLOT(refreshScreenNative()));
@@ -294,9 +297,12 @@ void apps::on_editUserAppsBtn_clicked()
         // Settings page
         showUserApps(userAppsSecondPage);
         emit showUserAppsEdit(userAppsSecondPage);
+
+        QTimer::singleShot(500, this, SLOT(refreshScreenNative()));
     }
     else {
         userAppsSecondPage = false;
+        userAppsAvailable = false;
         // Launch page
 
         // It changed via updateJsonFileSlot, and now it writes it only once
@@ -308,7 +314,7 @@ void apps::on_editUserAppsBtn_clicked()
         showUserApps(userAppsSecondPage);
         emit showUserAppsEdit(userAppsSecondPage);
 
-        QTimer::singleShot(1000, this, SLOT(refreshScreenNative()));
+        QTimer::singleShot(500, this, SLOT(refreshScreenNative()));
     }
 }
 
@@ -319,20 +325,28 @@ void apps::showUserApps(bool showDisabledJson)
     if(jsonParseSuccess == true) {
         QString function = __func__; log(function + ": Main user applications' JSON is valid", className);
         QJsonArray jsonListArray = jsonDocument.object()["list"].toArray();
-            for(QJsonValueRef refJsonObject: jsonListArray) {
-                QJsonObject appInfo = refJsonObject.toObject();
-                if(appInfo["Enabled"].toBool() == true or showDisabledJson == true) {
-                    userapps * newUserApp = new userapps;
-                    newUserApp->provideInfo(appInfo);
-                    connect(this, SIGNAL(clearAppsLayout()), newUserApp, SLOT(deleteLater()));
-                    connect(this, SIGNAL(showUserAppsEdit(bool)), newUserApp, SLOT(changePageEnabling(bool)));
-                    connect(this, SIGNAL(updateJsonFileSignal(QJsonDocument)), newUserApp, SLOT(updateJsonFileSlotUA(QJsonDocument)));
-                    connect(newUserApp, SIGNAL(updateJsonFileSignalUA(QJsonDocument)), this, SLOT(updateJsonFileSlot(QJsonDocument)));
-                    newUserApp->jsonDocument = jsonDocument;
-                    newUserApp->jsonFilePath = jsonFile.fileName();
-                    ui->verticalLayout_4UserApps->addWidget(newUserApp);
-                }
+        for(QJsonValueRef refJsonObject: jsonListArray) {
+            QJsonObject appInfo = refJsonObject.toObject();
+            if(appInfo["Enabled"].toBool() == true or showDisabledJson == true) {
+                userAppsAvailable = true;
+                userapps * newUserApp = new userapps;
+                newUserApp->provideInfo(appInfo);
+                connect(this, SIGNAL(clearAppsLayout()), newUserApp, SLOT(deleteLater()));
+                connect(this, SIGNAL(showUserAppsEdit(bool)), newUserApp, SLOT(changePageEnabling(bool)));
+                connect(this, SIGNAL(updateJsonFileSignal(QJsonDocument)), newUserApp, SLOT(updateJsonFileSlotUA(QJsonDocument)));
+                connect(newUserApp, SIGNAL(updateJsonFileSignalUA(QJsonDocument)), this, SLOT(updateJsonFileSlot(QJsonDocument)));
+                newUserApp->jsonDocument = jsonDocument;
+                newUserApp->jsonFilePath = jsonFile.fileName();
+                ui->verticalLayout_4->addWidget(newUserApp);
             }
+        }
+
+        if(userAppsAvailable == false) {
+            ui->noUserAppsAvailableLabel->show();
+        }
+        else {
+            ui->noUserAppsAvailableLabel->hide();
+        }
     }
     else {
         QString function = __func__; log(function + ": Main user applications' JSON file is invalid", className);

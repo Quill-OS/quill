@@ -274,7 +274,7 @@ void generalDialog::on_cancelBtn_clicked()
             global::userApps::launchApp = false;
             global::userApps::appCompatibilityLastContinueStatus = false;
             global::userApps::appCompatibilityText = "";
-                    global::userApps::appCompatibilityDialog = false;
+            global::userApps::appCompatibilityDialog = false;
         }
         generalDialog::close();
     }

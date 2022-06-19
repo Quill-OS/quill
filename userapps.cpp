@@ -51,6 +51,8 @@ void userapps::provideInfo(QJsonObject jsonInfo)
         QString message = ": Warning: Icon not found: ";
         message.append(iconPath.fileName());
         log(function + message, className);
+        ui->iconBtn->deleteLater();
+        ui->gridLayout->deleteLater();
     }
 
     execPath.setFileName("/" + jsonInfo["ExecPath"].toString());
