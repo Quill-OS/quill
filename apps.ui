@@ -447,7 +447,11 @@
           </widget>
          </item>
          <item>
-          <layout class="QGridLayout" name="gridLayout_4"/>
+          <layout class="QGridLayout" name="gridLayout_4">
+           <property name="topMargin">
+            <number>15</number>
+           </property>
+          </layout>
          </item>
          <item>
           <layout class="QVBoxLayout" name="verticalLayout_4"/>
