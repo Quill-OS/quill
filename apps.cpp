@@ -359,10 +359,19 @@ void apps::showUserApps(bool showDisabledJson)
         }
     }
     else {
-        QString function = __func__; log(function + ": Main user applications' JSON file is invalid", className);
-        QTimer::singleShot(500, this, SLOT(showFailedToParseMainUserAppsJsonFile()));
+        if(QFile::exists("/mnt/onboard/onboard/.apps/apps.json")) {
+            QString function = __func__; log(function + ": Main user applications' JSON file is invalid", className);
+            QTimer::singleShot(500, this, SLOT(showFailedToParseMainUserAppsJsonFile()));
+        }
+        else {
+            QString function = __func__; log(function + ": Main user applications' JSON file doesn't exist; assuming that no user applications are currently installed", className);
+        }
 
-        ui->editUserAppsBtn->deleteLater();
+        ui->editUserAppsBtn->hide();
+        ui->label_6->hide();
+        ui->line_2->hide();
+        ui->line_3->hide();
+        ui->editUserAppsBtn->hide();
         ui->label_6->deleteLater();
         ui->horizontalLayout->deleteLater();
         ui->line_2->deleteLater();
