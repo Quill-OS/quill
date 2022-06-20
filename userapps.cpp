@@ -137,15 +137,13 @@ void userapps::updateJsonFileSlotUA(QJsonDocument jsonDocumentProvided)
 void userapps::on_launchBtn_clicked()
 {
     // Some command to execute script or binary at "ExecPath"
-    QString supportedDevices = jsonObject["SupportedDevices"].toString();
-    QString message = "Supported devices for this app: ";
-    message.append(supportedDevices);
-    log(message, className);
+    QJsonArray supportedDevices = jsonObject["SupportedDevices"].toArray();
 
+    // This will work even if we are looking for 'n306' and there is a device named 'n306b' because QJsonArray::contains() works that way
     if(supportedDevices.contains("all") == false and supportedDevices.contains(global::deviceID.trimmed()) == false) {
         log("Warning: User app does not support this device", className);
         global::userApps::appCompatibilityDialog = true;
-        global::userApps::appCompatibilityText = "<font face='u001'>Your device is not compatible with this app.<br>Launch it anyway</font><font face='Inter'>?</font>";
+        global::userApps::appCompatibilityText = "<font face='u001'>Your device is not compatible with this app.<br>Continue anyway</font><font face='Inter'>?</font>";
         generalDialogWindow = new generalDialog();
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
 
@@ -175,20 +173,30 @@ void userapps::on_launchBtn_clicked()
 
 bool userapps::manageRequiredFeatures()
 {
+    // This should be already set to 'true', but just in case
+    global::userApps::appCompatibilityLastContinueStatus = true;
     QJsonArray jsonArray = jsonObject["RequiredFeatures"].toArray();
     for(QJsonValueRef refJsonObject: jsonArray) {
         bool launchDialog = false;
         int featureId = refJsonObject.toInt();
         // Wi-Fi connection required
         if(featureId == 0) {
-            global::userApps::appCompatibilityText = "<font face='u001'>This app needs Wi-Fi connection, launch anyway</font><font face='Inter'>?</font>";
-            launchDialog = true;
+            // Double 'if' conditions to avoid launching unnecesery testPing() in emu
+            if(global::deviceID != "emu\n") {
+                if(testPing(true) != 0) {
+                    global::userApps::appCompatibilityText = "<font face='u001'>This app needs a Wi-Fi connection, continue anyway</font><font face='Inter'>?</font>";
+                    launchDialog = true;
+                }
+            }
         }
         // Rooted kernel required
         if(featureId == 1) {
-            global::userApps::appCompatibilityText = "<font face='u001'>This app needs a rooted kernel, launch anyway</font><font face='Inter'>?</font>";
-            launchDialog = true;
+            if(checkconfig("/external_root/opt/root/rooted") == true) {
+                global::userApps::appCompatibilityText = "<font face='u001'>This app needs a rooted kernel, continue anyway</font><font face='Inter'>?</font>";
+                launchDialog = true;
+            }
         }
+        // Pseudoterminal support (ID: 2) is managed by the 'gui_apps' service (https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/gui_apps)
 
         if(launchDialog == true) {
             global::userApps::appCompatibilityDialog = true;
@@ -224,19 +232,32 @@ QString userapps::parseJsonShow(QJsonObject json)
         }
         else if(value.isArray()) {
             QJsonArray array = value.toArray();
-            for(QJsonValueRef ref: array) {
-                int id = ref.toInt();
-                if(id == 0) {
-                    appendString.append("Wi-Fi connection");
+            if(key == "RequiredFeatures") {
+                for(QJsonValueRef ref: array) {
+                    int id = ref.toInt();
+                    if(id == 0) {
+                        appendString.append("Wi-Fi connection");
+                    }
+                    else if(id == 1) {
+                        appendString.append("Rooted kernel");
+                    }
+                    else if(id == 2) {
+                        appendString.append("Pseudoterminal support");
+                    }
+                    appendString.append(", ");
                 }
-                else if(id == 1) {
-                    appendString.append("Rooted kernel");
-                }
-                appendString.append(", ");
+                appendString.remove(appendString.size() - 2, 2);
             }
-            appendString.remove(appendString.size() - 2, 2);
-        }
+            else if(key == "SupportedDevices") {
+                for(QJsonValueRef ref: array) {
+                    QString name = ref.toString();
+                    appendString.append(name);
+                    appendString.append(", ");
+                }
+                appendString.remove(appendString.size() - 2, 2);
+            }
 
+        }
         appendString.append("<br>");
         mainString.append(appendString);
     }

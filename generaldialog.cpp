@@ -192,7 +192,7 @@ generalDialog::generalDialog(QWidget *parent) :
     else if(global::userApps::appCompatibilityDialog == true) {
             appCompatibilityDialog = true;
             global::userApps::appCompatibilityLastContinueStatus = true;
-            ui->okBtn->setText("Launch");
+            ui->okBtn->setText("Continue");
             ui->cancelBtn->setText("Cancel");
             ui->bodyLabel->setText(global::userApps::appCompatibilityText);
             ui->headerLabel->setText("Compatibility warning");

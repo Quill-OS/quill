@@ -250,10 +250,20 @@ bool apps::parseJson() {
                                 jsonCheckSuccess = false;
 
                             }
-                            if(!jsonMainObject["SupportedDevices"].isString()) {
+                            if(!jsonMainObject["SupportedDevices"].isArray()) {
                                 QString function = __func__; log(function + ": Invalid 'SupportedDevices' type inside object", className);
                                 jsonCheckSuccess = false;
 
+                            }
+                            else {
+                                QJsonArray jsonArray = jsonMainObject["SupportedDevices"].toArray();
+                                for(QJsonValueRef refJsonObject: jsonArray) {
+                                    // https://doc.qt.io/qt-5/qjsonvalue.html#toInt
+                                    if(!refJsonObject.isString()) {
+                                        QString function = __func__; log(function + ": Array from 'RequiredFeatures' contains a wrong type", className);
+                                        jsonCheckSuccess = false;
+                                    }
+                                }
                             }
                             if(!jsonMainObject["RequiredFeatures"].isArray()) {
                                 QString function = __func__; log(function + ": Invalid 'RequiredFeatures' type inside object", className);

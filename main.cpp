@@ -60,6 +60,7 @@ int main(int argc, char *argv[])
         while(true) {
             if(QFile::exists("/tmp/gui_apps_started")) {
                 if(checkconfig("/tmp/gui_apps_started") == true) {
+                    log("GUI apps service started successfully", "main");
                     QFile::remove("/tmp/gui_apps_started");
                     updateUserAppsMainJsonFile();
                     break;
