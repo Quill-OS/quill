@@ -38,6 +38,9 @@ int main(int argc, char *argv[])
     global::deviceID = readFile("/opt/inkbox_device");
     log("Running on device " + global::deviceID, "main", true);
 
+    // Tell the OS that we're currently running
+    string_writeconfig("/tmp/inkbox_running", "true");
+
     setDefaultWorkDir();
     if(checkconfig("/run/wifi_able") == true) {
         log("Device has Wi-Fi capabilities", "main");
@@ -51,6 +54,23 @@ int main(int argc, char *argv[])
     if(QFile::exists("/tmp/rescan_userapps")) {
         QFile::remove("/tmp/rescan_userapps");
         log("Re-scanning user applications from explicit request", "main");
+        string_writeconfig("/opt/ibxd", "gui_apps_stop\n");
+        QThread::msleep(1000);
+        string_writeconfig("/opt/ibxd", "gui_apps_start\n");
+        while(true) {
+            if(QFile::exists("/tmp/gui_apps_started")) {
+                if(checkconfig("/tmp/gui_apps_started") == true) {
+                    QFile::remove("/tmp/gui_apps_started");
+                    updateUserAppsMainJsonFile();
+                    break;
+                }
+                else {
+                    log("GUI apps service failed to start", "main");
+                    QFile::remove("/tmp/gui_apps_started");
+                    break;
+                }
+            }
+        }
         updateUserAppsMainJsonFile();
     }
 
@@ -73,9 +93,6 @@ int main(int argc, char *argv[])
         return a.exec();
     }
     else {
-        // Tell scripts that we're currently running
-        string_writeconfig("/tmp/inkbox_running", "true");
-
         // Variables
         global::reader::startBatteryWatchdog = false;
         global::reader::startUsbmsPrompt = false;

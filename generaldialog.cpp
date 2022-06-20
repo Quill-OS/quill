@@ -211,7 +211,7 @@ generalDialog::generalDialog(QWidget *parent) :
     }
     else {
         // We shouldn't be there ;)
-        log("generalDialog launched without settings", className);
+        log("Launched without settings", className);
     }
 
     // Centering dialog

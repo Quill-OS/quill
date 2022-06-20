@@ -161,6 +161,8 @@ void userapps::on_launchBtn_clicked()
             QString message = "Launching user application at: ";
             message.append(appDir.path() + execPath.fileName());
             log(message, className);
+            // Tell the OS that we're not running anymore
+            string_writeconfig("/tmp/inkbox_running", "false");
 
             QProcess process;
             QStringList args;
