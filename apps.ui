@@ -52,9 +52,9 @@
         <property name="geometry">
          <rect>
           <x>0</x>
-          <y>0</y>
-          <width>428</width>
-          <height>510</height>
+          <y>-30</y>
+          <width>407</width>
+          <height>539</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -351,10 +351,10 @@
             <number>0</number>
            </property>
            <property name="topMargin">
-            <number>10</number>
+            <number>5</number>
            </property>
            <property name="bottomMargin">
-            <number>10</number>
+            <number>5</number>
            </property>
            <item>
             <spacer name="horizontalSpacer">
@@ -449,7 +449,7 @@
          <item>
           <layout class="QGridLayout" name="gridLayout_4">
            <property name="topMargin">
-            <number>15</number>
+            <number>10</number>
            </property>
           </layout>
          </item>
