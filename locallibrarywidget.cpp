@@ -12,12 +12,6 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     ui->setupUi(this);
     this->setFont(QFont("u001"));
 
-    /*for(int i = 7; i <= 9; i++) {
-        bookBtnArray[i]->deleteLater();
-        bookIconArray[i]->deleteLater();
-    }*/
-    //bookBtnArray[7]->deleteLater();
-
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
         buttonsNumber = 4;
     }
