@@ -36,6 +36,7 @@ SOURCES += \
     koboxappsdialog.cpp \
     koboxsettings.cpp \
     librarywidget.cpp \
+    locallibrarywidget.cpp \
     main.cpp \
     mainwindow.cpp \
     otamanager.cpp \
@@ -67,6 +68,7 @@ HEADERS += \
     koboxappsdialog.h \
     koboxsettings.h \
     librarywidget.h \
+    locallibrarywidget.h \
     mainwindow.h \
     otamanager.h \
     quit.h \
@@ -96,6 +98,7 @@ FORMS += \
     koboxappsdialog.ui \
     koboxsettings.ui \
     librarywidget.ui \
+    locallibrarywidget.ui \
     mainwindow.ui \
     otamanager.ui \
     quit.ui \
