@@ -40,6 +40,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     otamanager.cpp \
+    qclickablelabel.cpp \
     quit.cpp \
     reader.cpp \
     savedwords.cpp \
@@ -71,6 +72,7 @@ HEADERS += \
     locallibrarywidget.h \
     mainwindow.h \
     otamanager.h \
+    qclickablelabel.h \
     quit.h \
     reader.h \
     savedwords.h \

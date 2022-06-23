@@ -998,5 +998,6 @@ void MainWindow::resetWifiIconClickedWhileReconnecting() {
 void MainWindow::setupLocalLibraryWidget() {
     localLibraryWidgetWindow = new localLibraryWidget();
     libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
-    ui->stackedWidget->insertWidget(1, localLibraryWidgetWindow);
+    ui->homeStackedWidget->insertWidget(1, localLibraryWidgetWindow);
+    ui->homeStackedWidget->setCurrentIndex(1);
 }
