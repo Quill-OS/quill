@@ -187,7 +187,7 @@ bool apps::parseJson() {
     bool jsonCheckSuccess = true;
 
     if(jsonFile.exists() == false) {
-        log("GUI user applications' main JSON file is missing, creating it", className);
+        log("GUI user applications' main JSON file is missing", className);
         jsonCheckSuccess = false;
     }
     else {

@@ -55,7 +55,7 @@ void userapps::provideInfo(QJsonObject jsonInfo)
         ui->gridLayout->deleteLater();
     }
 
-    execPath.setFileName("/" + jsonInfo["ExecPath"].toString());
+    execPath.setFileName(jsonInfo["ExecPath"].toString());
 
     userAppEnabled = jsonInfo["Enabled"].toBool();
     if(userAppEnabled == true) {
@@ -141,7 +141,7 @@ void userapps::on_launchBtn_clicked()
 
     // This will work even if we are looking for 'n306' and there is a device named 'n306b' because QJsonArray::contains() works that way
     if(supportedDevices.contains("all") == false and supportedDevices.contains(global::deviceID.trimmed()) == false) {
-        log("Warning: User app does not support this device", className);
+        log("Warning: User application '" + appName + "' does not support this device", className);
         global::userApps::appCompatibilityDialog = true;
         global::userApps::appCompatibilityText = "<font face='u001'>Your device is not compatible with this app.<br>Continue anyway</font><font face='Inter'>?</font>";
         generalDialogWindow = new generalDialog();
@@ -157,7 +157,7 @@ void userapps::on_launchBtn_clicked()
         if(global::userApps::launchApp == true) {
             global::userApps::launchApp = false;
             QString message = "Launching user application at: ";
-            message.append(appDir.path() + execPath.fileName());
+            message.append("[" + appDir.path() + "]" + execPath.fileName());
             log(message, className);
             // Tell the OS that we're not running anymore
             string_writeconfig("/tmp/inkbox_running", "false");
