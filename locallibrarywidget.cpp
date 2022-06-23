@@ -51,21 +51,18 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         // Horizontal layout that will contain the book button and its icon
         QHBoxLayout * horizontalLayout = new QHBoxLayout(this);
 
-        // Book icon
+        // Book icon label
         bookIconArray[i] = new QLabel(this);
+        bookIconArray[i]->setStyleSheet("padding: 20px");
 
         // Book button
         bookBtnArray[i] = new QClickableLabel(this);
-        bookBtnArray[i]->setProperty("type", "borderless");
-        bookIconArray[i]->setStyleSheet("padding: 20px");
+        bookBtnArray[i]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+        bookBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 20px");
         bookBtnArray[i]->setFont(QFont("u001"));
-
-        // Spacer
-        QSpacerItem * horizontalSpacer = new QSpacerItem(0, 0, QSizePolicy::Expanding, QSizePolicy::Expanding);
 
         horizontalLayout->addWidget(bookIconArray[i]);
         horizontalLayout->addWidget(bookBtnArray[i]);
-        horizontalLayout->addSpacerItem(horizontalSpacer);
         ui->booksVerticalLayout->addLayout(horizontalLayout);
     }
     setupBooksList();

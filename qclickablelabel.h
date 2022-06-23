@@ -14,9 +14,11 @@ public:
 
 signals:
     void clicked();
+    void unclicked();
 
 protected:
-    void mousePressEvent(QMouseEvent* event);
+    void mousePressEvent(QMouseEvent * event);
+    void mouseReleaseEvent(QMouseEvent * event);
 
 };
 
