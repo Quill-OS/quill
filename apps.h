@@ -7,6 +7,8 @@
 #include <koboxappsdialog.h>
 #include <generaldialog.h>
 
+#include <QJsonDocument>
+
 namespace Ui {
 class apps;
 }
@@ -30,9 +32,14 @@ private slots:
     void on_koboxAppsOpenButton_clicked();
     void on_vncLaunchBtn_clicked();
     void on_reversiLaunchBtn_clicked();
+    void on_editUserAppsBtn_clicked();
     void refreshScreenNative();
     void on_g2048LaunchBtn_clicked();
     void showToastNative(QString messageToDisplay);
+    bool parseJson();
+    void showUserApps(bool showDisabledJson);
+    void updateJsonFileSlot(QJsonDocument jsonDocument);
+    void showFailedToParseMainUserAppsJsonFile();
 
 private:
     Ui::apps *ui;
@@ -41,9 +48,18 @@ private:
     koboxAppsDialog *koboxAppsDialogWindow;
     generalDialog *generalDialogWindow;
 
+    QFile jsonFile;
+    QJsonDocument jsonDocument;
+    bool jsonParseSuccess = false;
+    bool userAppsSecondPage = false;
+    bool userAppsAvailable = false;
+
 signals:
     void refreshScreen();
     void showToast(QString messageToDisplay);
+    void updateJsonFileSignal(QJsonDocument jsonDocument);
+    void clearAppsLayout();
+    void showUserAppsEdit(bool show);
 };
 
 #endif // APPS_H

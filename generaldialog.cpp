@@ -13,6 +13,7 @@
 #include <QStringListModel>
 #include <QListView>
 #include <QDateTime>
+#include <QTextEdit>
 
 generalDialog::generalDialog(QWidget *parent) :
     QDialog(parent),
@@ -131,6 +132,7 @@ generalDialog::generalDialog(QWidget *parent) :
     }
     else if(global::usbms::usbmsDialog == true) {
         usbmsDialog = true;
+        ui->stackedWidget->setCurrentIndex(0);
         ui->okBtn->setText("Connect");
         ui->cancelBtn->setText("Not now");
         ui->bodyLabel->setText("<font face='u001'>Do you want to connect your device to a computer to manage books</font><font face='Inter'>?</font>");
@@ -187,9 +189,29 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->bodyLabel->setText("<font face='u001'>New files have been found in 'encfs-dropbox'. Would you want to repack your encrypted storage</font><font face='Inter'>?</font>");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
+    else if(global::userApps::appCompatibilityDialog == true) {
+            appCompatibilityDialog = true;
+            global::userApps::appCompatibilityLastContinueStatus = true;
+            ui->okBtn->setText("Continue");
+            ui->cancelBtn->setText("Cancel");
+            ui->bodyLabel->setText(global::userApps::appCompatibilityText);
+            ui->headerLabel->setText("Compatibility warning");
+            QTimer::singleShot(50, this, SLOT(adjust_size()));
+    }
+    else if(global::userApps::appInfoDialog == true) {
+        appInfoDialog = true;
+        textwidgetWindow = new textwidget();
+
+        ui->headerLabel->setText("App info");
+        ui->stackedWidget->setCurrentIndex(1);
+        ui->mainStackedWidget->insertWidget(1, textwidgetWindow);
+        ui->mainStackedWidget->setCurrentIndex(1);
+        yIncrease = 1.8;
+        QTimer::singleShot(50, this, SLOT(increaseSize()));
+    }
     else {
         // We shouldn't be there ;)
-        ;
+        log("Launched without settings", className);
     }
 
     // Centering dialog
@@ -247,6 +269,12 @@ void generalDialog::on_cancelBtn_clicked()
         }
         else if(global::encfs::repackDialog == true) {
             global::encfs::repackDialog = false;
+        }
+        else if(global::userApps::appCompatibilityDialog == true) {
+            global::userApps::launchApp = false;
+            global::userApps::appCompatibilityLastContinueStatus = false;
+            global::userApps::appCompatibilityText = "";
+            global::userApps::appCompatibilityDialog = false;
         }
         generalDialog::close();
     }
@@ -507,6 +535,13 @@ void generalDialog::on_okBtn_clicked()
         string_writeconfig("/external_root/run/encfs_repack", "true");
         quit_restart();
     }
+    else if(global::userApps::appCompatibilityDialog == true) {
+       global::userApps::launchApp = true;
+       global::userApps::appCompatibilityText = "";
+       global::userApps::appCompatibilityLastContinueStatus = true; // Not really necceserry, only if something fails horibly
+       global::userApps::appCompatibilityDialog = false;
+       generalDialog::close();
+    }
 }
 void generalDialog::on_acceptBtn_clicked()
 {
@@ -533,6 +568,11 @@ void generalDialog::on_acceptBtn_clicked()
         global::text::textBrowserDialog = false;
     }
 
+    if(appInfoDialog == true) {
+        global::text::textBrowserContents = "";
+        global::userApps::appInfoDialog = false;
+    }
+
     // We don't have any other option ;p
     generalDialog::close();
 }
@@ -552,6 +592,7 @@ void generalDialog::restartSearchDialog() {
 }
 
 void generalDialog::setupKeyboardDialog() {
+    ui->stackedWidget->setCurrentIndex(0);
     keyboardDialog = true;
     ui->stackedWidget->setVisible(true);
     if(global::keyboard::searchDialog == true) {
@@ -731,4 +772,26 @@ void generalDialog::waitForGutenbergSearchDone() {
             }
         }
     }
+}
+
+void generalDialog::increaseSize()
+{
+    log("Resizing generalDialog", className);
+
+    ui->topStackedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    ui->mainStackedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+    ui->stackedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+
+    QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
+    int wx = screenGeometry.width();
+
+    int x = wx - 25;
+    int y = this->height() * yIncrease;
+    this->setFixedWidth(x);
+    this->setFixedHeight(y);
+
+    ui->bodyLabel->sizePolicy().setVerticalPolicy(QSizePolicy::Expanding);
+    ui->bodyLabel->sizePolicy().setHorizontalPolicy(QSizePolicy::Expanding);
+
+    adjust_size();
 }
