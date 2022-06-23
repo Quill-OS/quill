@@ -74,6 +74,7 @@
         <file>resources/clock.png</file>
         <file>resources/eink-square-encfs.qss</file>
         <file>resources/tzlist</file>
-	<file>resources/edit.png</file>
+        <file>resources/edit.png</file>
+        <file>resources/save.png</file>
     </qresource>
 </RCC>

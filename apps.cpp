@@ -305,6 +305,7 @@ void apps::on_editUserAppsBtn_clicked()
         userAppsSecondPage = true;
 
         // Settings page
+        ui->editUserAppsBtn->setIcon(QIcon(":/resources/save.png"));
         showUserApps(userAppsSecondPage);
         emit showUserAppsEdit(userAppsSecondPage);
 
@@ -313,8 +314,9 @@ void apps::on_editUserAppsBtn_clicked()
     else {
         userAppsSecondPage = false;
         userAppsAvailable = false;
-        // Launch page
 
+        // Launch page
+        ui->editUserAppsBtn->setIcon(QIcon(":/resources/edit.png"));
         // It changed via updateJsonFileSlot, and now it writes it only once
         jsonFile.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
         jsonFile.write(jsonDocument.toJson());
