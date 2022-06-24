@@ -25,6 +25,7 @@ apps::apps(QWidget *parent) :
     ui->reversiLaunchBtn->setProperty("type", "borderless");
     ui->g2048LaunchBtn->setProperty("type", "borderless");
 
+    ui->label->setStyleSheet("padding-top: 2px; padding-bottom: 5px");
     ui->koboxAppsOpenButton->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->scribbleLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->lightmapsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
