@@ -1,7 +1,7 @@
 #include "locallibrarywidget.h"
 #include "ui_locallibrarywidget.h"
 
-#include <QHBoxLayout>
+#include <QVBoxLayout>
 #include <QSpacerItem>
 #include <QScreen>
 
@@ -13,10 +13,12 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     this->setFont(QFont("u001"));
 
     ui->previousPageBtn->setProperty("type", "borderless");
+    ui->previousPageBtn->setEnabled(false);
     ui->nextPageBtn->setProperty("type", "borderless");
     ui->previousPageBtn->setIcon(QIcon(":/resources/chevron-left.png"));
     ui->nextPageBtn->setIcon(QIcon(":/resources/chevron-right.png"));
     ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
+    ui->verticalLayout->setSpacing(4);
 
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
         buttonsNumber = 4;
@@ -55,7 +57,7 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
 
     for(int i = 1; i <= buttonsNumber; i++) {
         // Horizontal layout that will contain the book button and its icon
-        QHBoxLayout * horizontalLayout = new QHBoxLayout(this);
+        horizontalLayoutArray[i] = new QHBoxLayout(this);
 
         // Book icon label
         bookIconArray[i] = new QLabel(this);
@@ -69,9 +71,18 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         bookBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
         bookBtnArray[i]->setFont(QFont("u001"));
 
-        horizontalLayout->addWidget(bookIconArray[i]);
-        horizontalLayout->addWidget(bookBtnArray[i]);
-        ui->booksVerticalLayout->addLayout(horizontalLayout);
+        horizontalLayoutArray[i]->addWidget(bookIconArray[i]);
+        horizontalLayoutArray[i]->addWidget(bookBtnArray[i]);
+        ui->booksVerticalLayout->addLayout(horizontalLayoutArray[i]);
+
+        // Line
+        if(i < buttonsNumber) {
+            lineArray[i] = new QFrame(this);
+            lineArray[i]->setFrameShape(QFrame::HLine);
+            lineArray[i]->setFrameShadow(QFrame::Plain);
+            lineArray[i]->setLineWidth(1);
+            ui->booksVerticalLayout->addWidget(lineArray[i]);
+        }
     }
     setupDatabase();
     setupBooksList(currentPageNumber);
@@ -130,6 +141,9 @@ void localLibraryWidget::setupDatabase() {
     // Parse JSON data
     databaseJsonObject = databaseJsonDocument.object();
     databaseJsonArrayList = databaseJsonObject["database"].toArray();
+    // Determine maximum page number
+    booksNumber = databaseJsonArrayList.size();
+    pagesNumber = std::ceil((double)booksNumber / buttonsNumber);
 }
 
 void localLibraryWidget::setupBooksList(int pageNumber) {
@@ -137,25 +151,50 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
     int in = 1;
     for(int i = (1 * pageNumber * buttonsNumber) - (buttonsNumber - 1); i <= (1 * pageNumber * buttonsNumber); i++) {
         // Read database info for each book and display the corresponding information on each button
+        bookIconArray[in]->show();
+        bookBtnArray[in]->show();
+        lineArray[(in - 1)]->show();
+
         QJsonObject jsonObject = databaseJsonArrayList.at(i - 1).toObject();
         QString bookTitle = jsonObject["Title"].toString();
         QString bookAuthor = jsonObject["Author"].toString();
         QString coverPath = jsonObject["CoverPath"].toString();
         QString bookID = jsonObject["BookID"].toString();
         if(!coverPath.isEmpty()) {
+            // Display book cover if found
             QPixmap pixmap(coverPath);
             bookIconArray[in]->setPixmap(pixmap);
         }
+        else {
+            QPixmap pixmap(":/resources/cover_unavailable.png");
+            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+        }
+        // Display book title
         idList->append(bookID.toInt());
         bookBtnArray[in]->setText("<b>" + bookTitle + "</b>" + "<br>" + bookAuthor);
-        in++;
+        if(!bookID.isEmpty()) {
+            in++;
+        }
     }
-    ui->pageNumberLabel->setText("Page " + QString::number(pageNumber) + " <i>of</i> " + "10");
+    if(in < buttonsNumber) {
+        for(int i = in; i <= buttonsNumber; i++) {
+            bookIconArray[i]->hide();
+            bookBtnArray[i]->hide();
+            if(i - 1 <= buttonsNumber) {
+                lineArray[(i - 1)]->hide();
+            }
+        }
+    }
+    ui->pageNumberLabel->setText("Page " + QString::number(pageNumber) + " <i>of</i> " + QString::number(pagesNumber));
 }
 
 void localLibraryWidget::on_previousPageBtn_clicked()
 {
     currentPageNumber--;
+    if(currentPageNumber - 1 < 1) {
+        ui->previousPageBtn->setEnabled(false);
+        ui->nextPageBtn->setEnabled(true);
+    }
     setupBooksList(currentPageNumber);
 }
 
@@ -163,6 +202,10 @@ void localLibraryWidget::on_previousPageBtn_clicked()
 void localLibraryWidget::on_nextPageBtn_clicked()
 {
     currentPageNumber++;
+    if(currentPageNumber + 1 > pagesNumber) {
+        ui->previousPageBtn->setEnabled(true);
+        ui->nextPageBtn->setEnabled(false);
+    }
     setupBooksList(currentPageNumber);
 }
 
@@ -176,5 +219,5 @@ void localLibraryWidget::openBook(int bookID) {
 void localLibraryWidget::btnOpenBook(int buttonNumber) {
     int id = idList->at(buttonNumber - 1);
     openBook(id);
-    // localLibraryWidget::close();
+    localLibraryWidget::close();
 }

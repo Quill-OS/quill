@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QHBoxLayout>
 
 #include "functions.h"
 #include "qclickablelabel.h"
@@ -28,6 +29,8 @@ public:
     QJsonObject databaseJsonObject;
     QJsonArray databaseJsonArrayList;
     int currentPageNumber = 1;
+    int pagesNumber;
+    int booksNumber;
     QList<int> idList[4];
 
 private slots:
@@ -40,8 +43,10 @@ private slots:
 
 private:
     Ui::localLibraryWidget * ui;
+    QHBoxLayout * horizontalLayoutArray[4];
     QLabel * bookIconArray[4];
     QClickableLabel * bookBtnArray[4];
+    QFrame * lineArray[3];
 
 signals:
     void openBookSignal(QString bookFile, bool relativePath);
