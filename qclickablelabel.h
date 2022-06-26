@@ -15,6 +15,7 @@ public:
 signals:
     void clicked();
     void unclicked();
+    void bookID(int id);
 
 protected:
     void mousePressEvent(QMouseEvent * event);

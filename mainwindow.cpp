@@ -934,7 +934,7 @@ void MainWindow::on_libraryButton_clicked()
             ui->libraryButton->setIcon(QIcon(":/resources/online-library-inverted.png"));
 
             // Create widget
-            libraryWidgetWindow = new libraryWidget();
+            libraryWidget * libraryWidgetWindow = new libraryWidget();
             connect(libraryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(resetFullWindow()));
             libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
             ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
@@ -996,8 +996,9 @@ void MainWindow::resetWifiIconClickedWhileReconnecting() {
 }
 
 void MainWindow::setupLocalLibraryWidget() {
-    localLibraryWidgetWindow = new localLibraryWidget();
-    libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+    localLibraryWidget * localLibraryWidgetWindow = new localLibraryWidget();
+    connect(localLibraryWidgetWindow, SIGNAL(openBookSignal(QString, bool)), SLOT(openBookFile(QString, bool)));
+    localLibraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
     ui->homeStackedWidget->insertWidget(1, localLibraryWidgetWindow);
     ui->homeStackedWidget->setCurrentIndex(1);
 }

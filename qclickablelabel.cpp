@@ -9,10 +9,11 @@ QClickableLabel::~QClickableLabel() {}
 
 void QClickableLabel::mousePressEvent(QMouseEvent * event) {
     emit clicked();
-    QClickableLabel::setStyleSheet("color: white; background-color: black; border-radius: 10px; padding: 20px");
+    QClickableLabel::setStyleSheet("color: white; background-color: black; border-radius: 10px; padding: 10px");
 }
 
 void QClickableLabel::mouseReleaseEvent(QMouseEvent * event) {
     emit unclicked();
-    QClickableLabel::setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 20px");
+    emit bookID(objectName().toInt());
+    QClickableLabel::setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
 }

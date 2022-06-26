@@ -282,6 +282,16 @@ namespace {
         return quoteNumber;
         return 0;
     }
+    void writeFile(QString filename, QString content) {
+        QFile file(filename);
+        if(file.open(QIODevice::ReadWrite)) {
+            QTextStream stream(&file);
+            stream << content;
+        }
+        else {
+            QString function = __func__; log(function + ": Failed to write string '" + content + "' to file '" + filename + "'", "functions");
+        }
+    }
     void string_writeconfig(std::string file, std::string config_option) {
         std::ofstream fhandler;
         fhandler.open(file);

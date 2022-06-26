@@ -822,8 +822,17 @@ void settings::on_showSystemInfoBtn_clicked()
     // Show a system info dialog
     log("Showing system info dialog", className);
     generalDialogWindow = new generalDialog();
-    if(global::deviceID == "n306\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+        generalDialogWindow->yIncrease = 2;
+    }
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
         generalDialogWindow->yIncrease = 2.6;
+    }
+    else if(global::deviceID == "n437\n" or global::deviceID == "n873\n") {
+        generalDialogWindow->yIncrease = 3;
+    }
+    else {
+        generalDialogWindow->yIncrease = 2;
     }
     generalDialogWindow->increaseSize();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);

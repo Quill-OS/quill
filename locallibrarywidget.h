@@ -24,14 +24,27 @@ public:
     int sH;
     int stdIconWidth;
     int stdIconHeight;
+    QJsonDocument databaseJsonDocument;
+    QJsonObject databaseJsonObject;
+    QJsonArray databaseJsonArrayList;
+    int currentPageNumber = 1;
+    QList<int> idList[4];
 
 private slots:
-    void setupBooksList();
+    void setupDatabase();
+    void setupBooksList(int pageNumber);
+    void on_previousPageBtn_clicked();
+    void on_nextPageBtn_clicked();
+    void openBook(int id);
+    void btnOpenBook(int buttonNumber);
 
 private:
     Ui::localLibraryWidget * ui;
-    QLabel * bookIconArray[10];
-    QClickableLabel * bookBtnArray[10];
+    QLabel * bookIconArray[4];
+    QClickableLabel * bookBtnArray[4];
+
+signals:
+    void openBookSignal(QString bookFile, bool relativePath);
 };
 
 #endif // LOCALLIBRARYWIDGET_H
