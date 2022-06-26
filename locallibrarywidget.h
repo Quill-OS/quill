@@ -41,6 +41,7 @@ private slots:
     void on_nextPageBtn_clicked();
     void openBook(int id);
     void btnOpenBook(int buttonNumber);
+    void refreshScreenNative();
 
 private:
     Ui::localLibraryWidget * ui;
@@ -51,6 +52,7 @@ private:
 
 signals:
     void openBookSignal(QString bookFile, bool relativePath);
+    void refreshScreen();
 };
 
 #endif // LOCALLIBRARYWIDGET_H

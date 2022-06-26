@@ -49,23 +49,8 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     sW = QGuiApplication::screens()[0]->size().width();
     sH = QGuiApplication::screens()[0]->size().height();
 
-    // Defining what the default icon size will be
-    if(global::deviceID == "n705\n") {
-        stdIconWidth = sW / 16;
-        stdIconHeight = sH / 16;
-    }
-    else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        stdIconWidth = sW / 18;
-        stdIconHeight = sH / 18;
-    }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
-        stdIconWidth = sW / 16.5;
-        stdIconHeight = sH / 16.5;
-    }
-    else {
-        stdIconWidth = sW / 18;
-        stdIconHeight = sH / 18;
-    }
+    stdIconWidth = sW / 9.5;
+    stdIconHeight = sH / 9.5;
 
     for(int i = 1; i <= buttonsNumber; i++) {
         // Horizontal layout that will contain the book button and its icon
@@ -199,7 +184,7 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
             in++;
         }
     }
-    if(in < buttonsNumber) {
+    if(in <= buttonsNumber) {
         for(int i = in; i <= buttonsNumber; i++) {
             bookIconArray[i]->hide();
             bookBtnArray[i]->hide();
@@ -210,7 +195,11 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
     }
     ui->pageNumberLabel->setText("Page " + QString::number(pageNumber) + " <i>of</i> " + QString::number(pagesNumber));
     // NOTICE: Memory leak?
-    ui->verticalLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
+    // Do it twice, otherwise the layout doesn't show as intended
+    for(int i = 0; i <= 1; i++) {
+        ui->verticalLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
+    }
+    QTimer::singleShot(100, this, SLOT(refreshScreenNative()));
 }
 
 void localLibraryWidget::on_previousPageBtn_clicked()
@@ -245,4 +234,8 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
     int id = idList.at(buttonNumber - 1);
     openBook(id);
     localLibraryWidget::close();
+}
+
+void localLibraryWidget::refreshScreenNative() {
+    emit refreshScreen();
 }
