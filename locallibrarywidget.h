@@ -31,7 +31,8 @@ public:
     int currentPageNumber = 1;
     int pagesNumber;
     int booksNumber;
-    QList<int> idList[4];
+    int bookTitleTruncateThreshold;
+    QVector<int> idList;
 
 private slots:
     void setupDatabase();
@@ -43,10 +44,10 @@ private slots:
 
 private:
     Ui::localLibraryWidget * ui;
-    QHBoxLayout * horizontalLayoutArray[4];
-    QLabel * bookIconArray[4];
-    QClickableLabel * bookBtnArray[4];
-    QFrame * lineArray[3];
+    QVector<QHBoxLayout*> horizontalLayoutArray;
+    QVector<QLabel*> bookIconArray;
+    QVector<QClickableLabel*> bookBtnArray;
+    QVector<QFrame*> lineArray;
 
 signals:
     void openBookSignal(QString bookFile, bool relativePath);

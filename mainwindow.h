@@ -94,7 +94,6 @@ private slots:
     void on_libraryButton_clicked();
     void resetWindow(bool resetStackedWidget);
     void resetFullWindow();
-    void setRecentBooksLabelsTruncateThreshold();
     void resetWifiIconClickedWhileReconnecting();
     void setupLocalLibraryWidget();
 

@@ -30,8 +30,20 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         buttonsNumber = 5;
     }
     else {
-        buttonsNumber = 3;
+        buttonsNumber = 4;
     }
+
+    if(global::deviceID == "n873\n") {
+        bookTitleTruncateThreshold = 50;
+    }
+    else {
+        bookTitleTruncateThreshold = 40;
+    }
+
+    bookIconArray.resize(buttonsNumber);
+    bookBtnArray.resize(buttonsNumber);
+    horizontalLayoutArray.resize(buttonsNumber);
+    lineArray.resize(buttonsNumber);
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -97,6 +109,7 @@ void localLibraryWidget::setupDatabase() {
     QString localLibraryDatabasePath = "/mnt/onboard/onboard/.inkbox/LocalLibrary.db";
     setDefaultWorkDir();
     if(!QFile::exists(localLibraryDatabasePath)) {
+        log("Generating database", className);
         QStringList booksList;
         QDir dir("/mnt/onboard/onboard");
 
@@ -126,6 +139,7 @@ void localLibraryWidget::setupDatabase() {
     }
 
     // Read library database from file
+    log("Reading database", className);
     QFile database(localLibraryDatabasePath);
     QByteArray data;
     if(database.open(QIODevice::ReadOnly)) {
@@ -144,16 +158,21 @@ void localLibraryWidget::setupDatabase() {
     // Determine maximum page number
     booksNumber = databaseJsonArrayList.size();
     pagesNumber = std::ceil((double)booksNumber / buttonsNumber);
+    if(pagesNumber == 1) {
+        ui->nextPageBtn->setEnabled(false);
+    }
 }
 
 void localLibraryWidget::setupBooksList(int pageNumber) {
-    idList->clear();
+    idList.clear();
     int in = 1;
     for(int i = (1 * pageNumber * buttonsNumber) - (buttonsNumber - 1); i <= (1 * pageNumber * buttonsNumber); i++) {
         // Read database info for each book and display the corresponding information on each button
         bookIconArray[in]->show();
         bookBtnArray[in]->show();
-        lineArray[(in - 1)]->show();
+        if(buttonsNumber - in > 0) {
+            lineArray[in]->show();
+        }
 
         QJsonObject jsonObject = databaseJsonArrayList.at(i - 1).toObject();
         QString bookTitle = jsonObject["Title"].toString();
@@ -170,8 +189,12 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
             bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
         }
         // Display book title
-        idList->append(bookID.toInt());
-        bookBtnArray[in]->setText("<b>" + bookTitle + "</b>" + "<br>" + bookAuthor);
+        idList.append(bookID.toInt());
+        if(bookTitle.length() > bookTitleTruncateThreshold) {
+            bookTitle.truncate(bookTitleTruncateThreshold);
+            bookTitle.append("...");
+        }
+        bookBtnArray[in]->setText("<font face='Inter'><b>" + bookTitle + "</b></font>" + "<br>" + bookAuthor);
         if(!bookID.isEmpty()) {
             in++;
         }
@@ -180,12 +203,14 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
         for(int i = in; i <= buttonsNumber; i++) {
             bookIconArray[i]->hide();
             bookBtnArray[i]->hide();
-            if(i - 1 <= buttonsNumber) {
+            if(i - 1 < buttonsNumber) {
                 lineArray[(i - 1)]->hide();
             }
         }
     }
     ui->pageNumberLabel->setText("Page " + QString::number(pageNumber) + " <i>of</i> " + QString::number(pagesNumber));
+    // NOTICE: Memory leak?
+    ui->verticalLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
 }
 
 void localLibraryWidget::on_previousPageBtn_clicked()
@@ -217,7 +242,7 @@ void localLibraryWidget::openBook(int bookID) {
 }
 
 void localLibraryWidget::btnOpenBook(int buttonNumber) {
-    int id = idList->at(buttonNumber - 1);
+    int id = idList.at(buttonNumber - 1);
     openBook(id);
     localLibraryWidget::close();
 }

@@ -962,18 +962,6 @@ void MainWindow::resetFullWindow() {
     }
 }
 
-void MainWindow::setRecentBooksLabelsTruncateThreshold() {
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        truncateThreshold = 12;
-    }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n"){
-        truncateThreshold = 20;
-    }
-    else {
-        truncateThreshold = 12;
-    }
-}
-
 void MainWindow::checkForOtaUpdate() {
     if(global::network::isConnected == true) {
         string_checkconfig_ro("/external_root/opt/storage/update/last_sync");
