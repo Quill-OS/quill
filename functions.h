@@ -58,6 +58,8 @@ namespace global {
             inline bool settingsChooserWidgetSelected;
             inline bool libraryWidgetCreated;
             inline bool libraryWidgetSelected;
+            inline bool localLibraryWidgetCreated;
+            inline bool localLibraryWidgetSelected;
         }
         inline bool updateDialog;
         inline bool lowBatteryDialog;
@@ -121,6 +123,10 @@ namespace global {
         inline QString bookTitle;
         inline bool librarySearchDialog;
         inline bool libraryResults;
+    }
+    namespace localLibrary {
+        static inline QString rawDatabasePath = "/inkbox/LocalLibrary.db.raw";
+        static inline QString databasePath = "/mnt/onboard/onboard/.inkbox/LocalLibrary.db";
     }
     namespace localStorage {
         inline QStringList searchResultsPaths;

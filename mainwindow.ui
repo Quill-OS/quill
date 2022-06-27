@@ -386,6 +386,7 @@
               </property>
              </layout>
             </widget>
+            <widget class="QWidget" name="page_7"/>
            </widget>
           </item>
          </layout>

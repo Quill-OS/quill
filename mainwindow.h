@@ -96,6 +96,7 @@ private slots:
     void resetFullWindow();
     void resetWifiIconClickedWhileReconnecting();
     void setupLocalLibraryWidget();
+    void setupHomePageWidget();
 
 private:
     Ui::MainWindow * ui;

@@ -411,19 +411,6 @@
        </widget>
       </widget>
      </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="recentlyAddedLabel">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Recently added books on Gutenberg</string>
-       </property>
-      </widget>
-     </item>
      <item row="5" column="0">
       <spacer name="verticalSpacer">
        <property name="orientation">
@@ -437,19 +424,12 @@
        </property>
       </spacer>
      </item>
-     <item row="6" column="0">
+     <item row="0" column="0">
       <layout class="QGridLayout" name="gridLayout_4">
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="0" column="0">
-        <widget class="QPushButton" name="previousBtn">
-         <property name="text">
-          <string>Previous</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="1">
+       <item row="0" column="3">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -462,7 +442,27 @@
          </property>
         </spacer>
        </item>
+       <item row="0" column="5">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item row="0" column="4">
+        <widget class="QLabel" name="pageLabel">
+         <property name="text">
+          <string>1 of 2</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="6">
         <widget class="QPushButton" name="nextBtn">
          <property name="text">
           <string>Next</string>
@@ -470,14 +470,30 @@
         </widget>
        </item>
        <item row="0" column="2">
-        <widget class="QLabel" name="pageLabel">
+        <widget class="QPushButton" name="previousBtn">
          <property name="text">
-          <string>1 of 2</string>
+          <string>Previous</string>
          </property>
         </widget>
        </item>
-       <item row="0" column="3">
-        <spacer name="horizontalSpacer_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="recentlyAddedLabel">
+         <property name="font">
+          <font>
+           <family>Inter</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Project Gutenberg's latest books</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <spacer name="horizontalSpacer_3">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>

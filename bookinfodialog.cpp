@@ -122,6 +122,7 @@ void bookInfoDialog::waitForBookFetch() {
                 QString function = __func__; log(function + ": Download successful", className);
                 emit showToast("Download successful");
                 QFile::remove("/inkbox/gutenberg/getBookDone");
+                QFile::remove(global::localLibrary::databasePath);
                 break;
             }
             else {

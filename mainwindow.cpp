@@ -313,7 +313,7 @@ MainWindow::MainWindow(QWidget *parent)
         ui->homeStackedWidget->setCurrentIndex(0);
     }
     else {
-        setupLocalLibraryWidget();
+        setupHomePageWidget();
     }
 
     // Check if it's the first boot since an update and confirm that it installed successfully
@@ -507,7 +507,23 @@ void MainWindow::on_appsBtn_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
-    openReaderFramework();
+    resetFullWindowException = true;
+    resetWindow(false);
+    if(global::mainwindow::tabSwitcher::localLibraryWidgetSelected != true) {
+        ui->pushButton->setStyleSheet("background: black; color: white");
+        ui->pushButton->setIcon(QIcon(":/resources/book_inverted.png"));
+
+        // Create widget
+        setupLocalLibraryWidget();
+        global::mainwindow::tabSwitcher::localLibraryWidgetCreated = true;
+
+        // Switch tab
+        ui->stackedWidget->setCurrentIndex(0);
+        global::mainwindow::tabSwitcher::localLibraryWidgetSelected = true;
+
+        // Repaint
+        this->repaint();
+    }
 }
 
 void MainWindow::on_searchBtn_clicked()
@@ -543,6 +559,7 @@ void MainWindow::on_homeBtn_clicked()
 void MainWindow::resetWindow(bool resetStackedWidget) {
     // Reset layout
     if(resetStackedWidget == true) {
+        ui->homeStackedWidget->setCurrentIndex(2);
         ui->stackedWidget->setCurrentIndex(0);
     }
 
@@ -556,6 +573,9 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
     if(global::mainwindow::tabSwitcher::libraryWidgetCreated == true) {
         libraryWidgetWindow->deleteLater();
     }
+    if(global::mainwindow::tabSwitcher::localLibraryWidgetCreated == true) {
+        localLibraryWidgetWindow->deleteLater();
+    }
 
     global::mainwindow::tabSwitcher::appsWidgetCreated = false;
     global::mainwindow::tabSwitcher::settingsChooserWidgetCreated = false;
@@ -563,11 +583,16 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
     global::mainwindow::tabSwitcher::settingsChooserWidgetSelected = false;
     global::mainwindow::tabSwitcher::libraryWidgetCreated = false;
     global::mainwindow::tabSwitcher::libraryWidgetSelected = false;
+    global::mainwindow::tabSwitcher::localLibraryWidgetCreated = false;
+    global::mainwindow::tabSwitcher::localLibraryWidgetSelected = false;
 
     resetIcons();
     setBatteryIcon();
     if(global::mainwindow::tabSwitcher::repaint == true) {
         this->repaint();
+    }
+    if(resetStackedWidget == true) {
+        setupHomePageWidget();
     }
 }
 
@@ -579,6 +604,8 @@ void MainWindow::resetIcons() {
     ui->settingsBtn->setIcon(QIcon(":/resources/settings.png"));
     ui->libraryButton->setStyleSheet("background: white");
     ui->libraryButton->setIcon(QIcon(":/resources/online-library.png"));
+    ui->pushButton->setStyleSheet("background: white");
+    ui->pushButton->setIcon(QIcon(":/resources/book.png"));
 }
 
 void MainWindow::setBatteryIcon() {
@@ -927,7 +954,7 @@ void MainWindow::on_libraryButton_clicked()
 {
     log("Launching Online Library", className);
     if(testPing(true) == 0 or global::deviceID == "emu\n") {
-        resetFullWindowException = false;
+        resetFullWindowException = true;
         resetWindow(false);
         if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
             ui->libraryButton->setStyleSheet("background: black; color: white");
@@ -984,10 +1011,14 @@ void MainWindow::resetWifiIconClickedWhileReconnecting() {
 }
 
 void MainWindow::setupLocalLibraryWidget() {
-    localLibraryWidget * localLibraryWidgetWindow = new localLibraryWidget();
+    localLibraryWidgetWindow = new localLibraryWidget(this);
     connect(localLibraryWidgetWindow, SIGNAL(openBookSignal(QString, bool)), SLOT(openBookFile(QString, bool)));
     connect(localLibraryWidgetWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
     localLibraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
     ui->homeStackedWidget->insertWidget(1, localLibraryWidgetWindow);
     ui->homeStackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::setupHomePageWidget() {
+    ui->homeStackedWidget->setCurrentIndex(2);
 }

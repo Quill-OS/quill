@@ -703,7 +703,7 @@ void generalDialog::syncGutenbergCatalog() {
 
     string_writeconfig("/opt/ibxd", "gutenberg_sync\n");
     QTimer * syncCheckTimer = new QTimer(this);
-    syncCheckTimer->setInterval(100);
+    syncCheckTimer->setInterval(500);
     connect(syncCheckTimer, &QTimer::timeout, [&]() {
         if(QFile::exists("/inkbox/gutenbergSyncDone") == true) {
             if(checkconfig("/inkbox/gutenbergSyncDone") == true) {

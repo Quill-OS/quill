@@ -76,5 +76,6 @@
         <file>resources/tzlist</file>
         <file>resources/edit.png</file>
         <file>resources/save.png</file>
+        <file>resources/book_inverted.png</file>
     </qresource>
 </RCC>

@@ -32,9 +32,11 @@ public:
     QJsonArray databaseJsonArrayList;
     int currentPageNumber = 1;
     int pagesNumber;
+    int pagesTurned = 0;
     int booksNumber;
     int bookTitleTruncateThreshold;
     QVector<int> idList;
+    bool noBooksInDatabase = true;
 
 private slots:
     void setupDatabase();
