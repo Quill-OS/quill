@@ -109,11 +109,10 @@ void localLibraryWidget::setupDatabase() {
             }
         }
 
-        QString prog("sh");
+        QString prog("busybox-initrd");
         QStringList args;
-        args << "explore_local_library.sh" << booksList;
+        args << "sh" << "explore_local_library.sh" << booksList;
         QProcess *proc = new QProcess();
-        proc->setEnvironment((QStringList() << "EXTRACT_COVER=1"));
         proc->start(prog, args);
         proc->waitForFinished();
         QJsonDocument jsonDocument = QJsonDocument::fromJson(proc->readAllStandardOutput());
@@ -164,6 +163,7 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
         QString bookAuthor = jsonObject["Author"].toString();
         QString coverPath = jsonObject["CoverPath"].toString();
         QString bookID = jsonObject["BookID"].toString();
+
         if(!coverPath.isEmpty()) {
             // Display book cover if found
             QPixmap pixmap(coverPath);
@@ -173,13 +173,22 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
             QPixmap pixmap(":/resources/cover_unavailable.png");
             bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
         }
+
         // Display book title
         idList.append(bookID.toInt());
         if(bookTitle.length() > bookTitleTruncateThreshold) {
             bookTitle.truncate(bookTitleTruncateThreshold);
             bookTitle.append("...");
         }
-        bookBtnArray[in]->setText("<font face='Inter'><b>" + bookTitle + "</b></font>" + "<br>" + bookAuthor);
+        if(!bookAuthor.isEmpty()) {
+            // Book is likely an ePUB
+            bookBtnArray[in]->setText("<font face='Inter'><b>" + bookTitle + "</b></font>" + "<br>" + bookAuthor);
+        }
+        else {
+            // Book is likely a PDF or a picture
+            bookBtnArray[in]->setText("<font face='Inter'><b>" + bookTitle + "</b></font>");
+        }
+
         if(!bookID.isEmpty()) {
             in++;
         }
