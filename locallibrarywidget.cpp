@@ -20,24 +20,24 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
     ui->verticalLayout->setSpacing(4);
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
-        buttonsNumber = 4;
+    if(global::deviceID == "n705\n") {
+        buttonsNumber = 3;
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
-        buttonsNumber = 5;
-    }
-    else if(global::deviceID == "n437\n" or global::deviceID == "n873\n") {
+    else if(global::deviceID == "n873\n") {
         buttonsNumber = 5;
     }
     else {
         buttonsNumber = 4;
     }
 
-    if(global::deviceID == "n873\n") {
-        bookTitleTruncateThreshold = 50;
+    if(global::deviceID == "n705\n") {
+        bookTitleTruncateThreshold = 30;
+    }
+    else if(global::deviceID == "n873\n") {
+        bookTitleTruncateThreshold = 45;
     }
     else {
-        bookTitleTruncateThreshold = 40;
+        bookTitleTruncateThreshold = 35;
     }
 
     bookIconArray.resize(buttonsNumber);
@@ -49,8 +49,36 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     sW = QGuiApplication::screens()[0]->size().width();
     sH = QGuiApplication::screens()[0]->size().height();
 
-    stdIconWidth = sW / 9.5;
-    stdIconHeight = sH / 9.5;
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        stdIconWidthDivider = 9.5;
+        stdIconHeightDivider = 9.5;
+        stdIconWidth = sW / stdIconWidthDivider;
+        stdIconHeight = sH / stdIconHeightDivider;
+    }
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
+        stdIconWidthDivider = 8.5;
+        stdIconHeightDivider = 8.5;
+        stdIconWidth = sW / stdIconWidthDivider;
+        stdIconWidth = sH / stdIconHeightDivider;
+    }
+    else if(global::deviceID == "n437\n") {
+        stdIconWidthDivider = 7.5;
+        stdIconHeightDivider = 7.5;
+        stdIconWidth = sW / stdIconWidthDivider;
+        stdIconHeight = sH / stdIconHeightDivider;
+    }
+    else if(global::deviceID == "n873\n") {
+        stdIconWidthDivider = 7.5;
+        stdIconHeightDivider = 7.5;
+        stdIconWidth = sW / stdIconWidthDivider;
+        stdIconHeight = sH / stdIconHeightDivider;
+    }
+    else {
+        stdIconWidthDivider = 9.5;
+        stdIconHeightDivider = 9.5;
+        stdIconWidth = sW / stdIconWidthDivider;
+        stdIconHeight = sH / stdIconHeightDivider;
+    }
 
     for(int i = 1; i <= buttonsNumber; i++) {
         // Horizontal layout that will contain the book button and its icon
@@ -91,6 +119,7 @@ localLibraryWidget::~localLibraryWidget()
 }
 
 void localLibraryWidget::setupDatabase() {
+    QString localLibraryDatabasePathRaw = "/inkbox/LocalLibrary.db.raw";
     QString localLibraryDatabasePath = "/mnt/onboard/onboard/.inkbox/LocalLibrary.db";
     setDefaultWorkDir();
     if(!QFile::exists(localLibraryDatabasePath)) {
@@ -111,11 +140,12 @@ void localLibraryWidget::setupDatabase() {
 
         QString prog("busybox-initrd");
         QStringList args;
-        args << "sh" << "explore_local_library.sh" << booksList;
+        args << "env" << "icon_width_divider=" + QString::number(stdIconWidthDivider) << "icon_height_divider=" + QString::number(stdIconHeightDivider) << "./explore_local_library.sh" << booksList;
         QProcess *proc = new QProcess();
         proc->start(prog, args);
         proc->waitForFinished();
-        QJsonDocument jsonDocument = QJsonDocument::fromJson(proc->readAllStandardOutput());
+        QJsonDocument jsonDocument = QJsonDocument::fromJson(readFile(localLibraryDatabasePathRaw).toUtf8());
+        QFile::remove(localLibraryDatabasePathRaw);
         proc->deleteLater();
 
         // Write database in compressed form, encoded in Base64 format

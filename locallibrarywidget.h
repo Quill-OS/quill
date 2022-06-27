@@ -23,6 +23,8 @@ public:
     int buttonsNumber;
     int sW;
     int sH;
+    float stdIconWidthDivider;
+    float stdIconHeightDivider;
     int stdIconWidth;
     int stdIconHeight;
     QJsonDocument databaseJsonDocument;

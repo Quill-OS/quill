@@ -934,7 +934,7 @@ void MainWindow::on_libraryButton_clicked()
             ui->libraryButton->setIcon(QIcon(":/resources/online-library-inverted.png"));
 
             // Create widget
-            libraryWidget * libraryWidgetWindow = new libraryWidget();
+            libraryWidgetWindow = new libraryWidget();
             connect(libraryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(resetFullWindow()));
             libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
             ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
