@@ -16,6 +16,16 @@ homePageWidget::homePageWidget(QWidget *parent) :
     bookBtnArray.resize(global::homePageWidget::recentBooksNumber);
     bookTitleArray.resize(global::homePageWidget::recentBooksNumber);
 
+    if(global::deviceID == "n705\n") {
+        bookTitleTruncateThreshold = 20;
+    }
+    else if(global::deviceID == "n873\n") {
+        bookTitleTruncateThreshold = 35;
+    }
+    else {
+        bookTitleTruncateThreshold = 25;
+    }
+
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
     sH = QGuiApplication::screens()[0]->size().height();
@@ -77,6 +87,7 @@ homePageWidget::homePageWidget(QWidget *parent) :
             QJsonObject jsonObject = recentBooksJsonObject[objectName].toObject();
             QString bookPath = jsonObject.value("BookPath").toString();
             bookBtnArray[i] = new QClickableLabel(this);
+            bookTitleArray[i] = new QToolTipLabel(this);
 
             // Iterate until we find a book matching the recently opened book's "BookPath" key/value pair
             for(int in = i; in <= databaseBooksNumber; in++) {
@@ -88,10 +99,32 @@ homePageWidget::homePageWidget(QWidget *parent) :
 
             verticalLayoutArray[i] = new QVBoxLayout();
 
+            // Book icon button
             QObject::connect(bookBtnArray[i], &QClickableLabel::bookPath, this, &homePageWidget::openBook);
             bookBtnArray[i]->setAlignment(Qt::AlignCenter);
             bookBtnArray[i]->setFont(QFont("u001"));
             bookBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
+            // Book title label
+            bookTitleArray[i]->setWordWrap(true);
+            bookTitleArray[i]->setAlignment(Qt::AlignCenter);
+            bookTitleArray[i]->setFont(QFont("u001"));
+            bookTitleArray[i]->setStyleSheet("font-size: 7pt");
+
+            QString bookTitle = QJsonDocument::fromJson(bookBtnArray[i]->objectName().toUtf8()).object()["Title"].toString();
+            bookTitleArray[i]->setObjectName(bookTitle);
+
+            int localBookTitleTruncateThreshold;
+            if(!bookTitle.contains(" ")) {
+                localBookTitleTruncateThreshold = bookTitleTruncateThreshold - 10;
+            }
+            else {
+                localBookTitleTruncateThreshold = bookTitleTruncateThreshold;
+            }
+            if(bookTitle.length() > localBookTitleTruncateThreshold) {
+                bookTitle.truncate(localBookTitleTruncateThreshold);
+                bookTitle.append("...");
+            }
+            bookTitleArray[i]->setText(bookTitle);
 
             QString bookIcon = QJsonDocument::fromJson(bookBtnArray[i]->objectName().toUtf8()).object()["CoverPath"].toString();
             if(QFile::exists(bookIcon)) {
@@ -102,6 +135,7 @@ homePageWidget::homePageWidget(QWidget *parent) :
             }
 
             verticalLayoutArray[i]->addWidget(bookBtnArray[i]);
+            verticalLayoutArray[i]->addWidget(bookTitleArray[i]);
         }
 
         if(newRow == true) {

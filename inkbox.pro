@@ -42,6 +42,7 @@ SOURCES += \
     mainwindow.cpp \
     otamanager.cpp \
     qclickablelabel.cpp \
+    qtooltiplabel.cpp \
     quit.cpp \
     reader.cpp \
     savedwords.cpp \
@@ -75,6 +76,7 @@ HEADERS += \
     mainwindow.h \
     otamanager.h \
     qclickablelabel.h \
+    qtooltiplabel.h \
     quit.h \
     reader.h \
     savedwords.h \

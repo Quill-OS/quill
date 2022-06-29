@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QVBoxLayout>
 #include "qclickablelabel.h"
+#include "qtooltiplabel.h"
 
 namespace Ui {
 class homePageWidget;
@@ -23,6 +24,7 @@ public:
     int stdIconHeight;
     float stdIconWidthDivider;
     float stdIconHeightDivider;
+    int bookTitleTruncateThreshold;
 
 signals:
     void openBookSignal(QString bookPath, bool relativePath);
@@ -34,7 +36,7 @@ private slots:
 
 private:
     Ui::homePageWidget *ui;
-    QVector<QLabel*> bookTitleArray;
+    QVector<QToolTipLabel*> bookTitleArray;
     QVector<QHBoxLayout*> horizontalLayoutArray;
     QVector<QVBoxLayout*> verticalLayoutArray;
     QVector<QClickableLabel*> bookBtnArray;

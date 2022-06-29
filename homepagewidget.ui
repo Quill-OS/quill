@@ -55,9 +55,19 @@
       <enum>QLayout::SetNoConstraint</enum>
      </property>
      <property name="topMargin">
-      <number>25</number>
+      <number>0</number>
      </property>
     </layout>
+   </item>
+   <item>
+    <widget class="Line" name="line">
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
    </item>
    <item>
     <spacer name="verticalSpacer">

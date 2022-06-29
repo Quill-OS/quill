@@ -448,6 +448,9 @@
       <property name="frameShadow">
        <enum>QFrame::Plain</enum>
       </property>
+      <property name="lineWidth">
+       <number>4</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
