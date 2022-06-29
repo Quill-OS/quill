@@ -18,6 +18,7 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     ui->previousPageBtn->setIcon(QIcon(":/resources/chevron-left.png"));
     ui->nextPageBtn->setIcon(QIcon(":/resources/chevron-right.png"));
     ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
+    ui->pageNumberLabel->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding-left: 10px; padding-right: 10px");
     ui->verticalLayout->setSpacing(4);
 
     if(global::deviceID == "n705\n") {
@@ -146,7 +147,7 @@ void localLibraryWidget::setupDatabase() {
 
         QString prog("busybox-initrd");
         QStringList args;
-        args << "env" << "icon_width_divider=" + QString::number(stdIconWidthDivider) << "icon_height_divider=" + QString::number(stdIconHeightDivider) << "./explore_local_library.sh" << booksList;
+        args << "env" << "icon_width_divider=" + QString::number(stdIconWidthDivider - 1.5) << "icon_height_divider=" + QString::number(stdIconHeightDivider - 1.5) << "./explore_local_library.sh" << booksList;
         QProcess *proc = new QProcess();
         proc->start(prog, args);
         proc->waitForFinished();
@@ -210,7 +211,7 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
         if(!coverPath.isEmpty()) {
             // Display book cover if found
             QPixmap pixmap(coverPath);
-            bookIconArray[in]->setPixmap(pixmap);
+            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
         }
         else {
             QPixmap pixmap(":/resources/cover_unavailable.png");
@@ -260,6 +261,10 @@ void localLibraryWidget::on_previousPageBtn_clicked()
         ui->previousPageBtn->setEnabled(false);
         ui->nextPageBtn->setEnabled(true);
     }
+    else {
+        ui->previousPageBtn->setEnabled(true);
+        ui->nextPageBtn->setEnabled(true);
+    }
     setupBooksList(currentPageNumber);
 
     pagesTurned = pagesTurned + 1;
@@ -276,6 +281,10 @@ void localLibraryWidget::on_nextPageBtn_clicked()
     if(currentPageNumber + 1 > pagesNumber) {
         ui->previousPageBtn->setEnabled(true);
         ui->nextPageBtn->setEnabled(false);
+    }
+    else {
+        ui->previousPageBtn->setEnabled(true);
+        ui->nextPageBtn->setEnabled(true);
     }
     setupBooksList(currentPageNumber);
 

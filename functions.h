@@ -19,6 +19,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
+#include <QCryptographicHash>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -52,6 +53,7 @@ namespace global {
     namespace mainwindow {
         namespace tabSwitcher {
             inline bool repaint;
+            inline bool homePageWidgetCreated;
             inline bool appsWidgetCreated;
             inline bool appsWidgetSelected;
             inline bool settingsChooserWidgetCreated;
@@ -127,6 +129,7 @@ namespace global {
     namespace localLibrary {
         static inline QString rawDatabasePath = "/inkbox/LocalLibrary.db.raw";
         static inline QString databasePath = "/mnt/onboard/onboard/.inkbox/LocalLibrary.db";
+        static inline QString recentBooksDatabasePath = "/mnt/onboard/onboard/.inkbox/RecentBooks.db";
     }
     namespace localStorage {
         inline QStringList searchResultsPaths;
@@ -135,11 +138,14 @@ namespace global {
         inline bool status;
     }
     namespace userApps {
-       inline bool appCompatibilityDialog;
-       inline QString appCompatibilityText;
-       inline bool appCompatibilityLastContinueStatus = true; // This is for RequiredFeatures to show only one dialog if 'Cancel' is clicked.
-       inline bool appInfoDialog;
-       inline bool launchApp;
+        inline bool appCompatibilityDialog;
+        inline QString appCompatibilityText;
+        inline bool appCompatibilityLastContinueStatus = true; // This is for RequiredFeatures to show only one dialog if 'Cancel' is clicked.
+        inline bool appInfoDialog;
+        inline bool launchApp;
+    }
+    namespace homePageWidget {
+        inline int recentBooksNumber = 4;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -956,6 +962,15 @@ namespace {
                         }
                     }
                 }
+            }
+        }
+    }
+    QByteArray fileChecksum(const QString &fileName, QCryptographicHash::Algorithm hashAlgorithm) {
+        QFile f(fileName);
+        if (f.open(QFile::ReadOnly)) {
+            QCryptographicHash hash(hashAlgorithm);
+            if (hash.addData(&f)) {
+                return hash.result();
             }
         }
     }

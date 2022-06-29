@@ -1070,6 +1070,7 @@ void settings::on_generateSystemReportBtn_clicked()
     while(true) {
         if(QFile::exists("/inkbox/systemReportDone")) {
             if(checkconfig("/inkbox/systemReportDone") == true) {
+                QFile::remove(global::localLibrary::databasePath);
                 emit showToast("System report generated successfully");
             }
             else {

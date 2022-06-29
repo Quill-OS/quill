@@ -43,13 +43,27 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="1">
-      <spacer name="horizontalSpacer">
+     <item row="0" column="6">
+      <widget class="QPushButton" name="nextPageBtn">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QClickableLabel" name="pageNumberLabel">
+       <property name="text">
+        <string>Page</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::MinimumExpanding</enum>
+        <enum>QSizePolicy::Maximum</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -58,40 +72,6 @@
         </size>
        </property>
       </spacer>
-     </item>
-     <item row="0" column="4">
-      <widget class="QLabel" name="pageNumberLabel">
-       <property name="text">
-        <string>Page</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="6">
-      <widget class="QPushButton" name="nextPageBtn">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="localLibraryLabel">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>&lt;b&gt;Local library&lt;/b&gt;</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="previousPageBtn">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
      </item>
      <item row="0" column="3">
       <spacer name="horizontalSpacer_2">
@@ -109,13 +89,13 @@
        </property>
       </spacer>
      </item>
-     <item row="0" column="5">
-      <spacer name="horizontalSpacer_3">
+     <item row="0" column="1">
+      <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="sizeType">
-        <enum>QSizePolicy::Maximum</enum>
+        <enum>QSizePolicy::MinimumExpanding</enum>
        </property>
        <property name="sizeHint" stdset="0">
         <size>
@@ -124,6 +104,26 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="0" column="2">
+      <widget class="QPushButton" name="previousPageBtn">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="localLibraryLabel">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&lt;b&gt;Local library&lt;/b&gt;</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -150,6 +150,9 @@
         <layout class="QVBoxLayout" name="booksVerticalLayout">
          <property name="sizeConstraint">
           <enum>QLayout::SetNoConstraint</enum>
+         </property>
+         <property name="topMargin">
+          <number>10</number>
          </property>
         </layout>
        </item>

@@ -19,6 +19,7 @@
 #include "otamanager.h"
 #include "librarywidget.h"
 #include "locallibrarywidget.h"
+#include "homepagewidget.h"
 
 using namespace std;
 
@@ -116,6 +117,7 @@ private:
     otaManager * otaManagerWindow;
     libraryWidget * libraryWidgetWindow;
     localLibraryWidget * localLibraryWidgetWindow;
+    homePageWidget * homePageWidgetWindow;
 };
 
 #endif // MAINWINDOW_H

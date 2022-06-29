@@ -564,6 +564,9 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
     }
 
     // Destroy widgets
+    if(global::mainwindow::tabSwitcher::homePageWidgetCreated == true) {
+        homePageWidgetWindow->deleteLater();
+    }
     if(global::mainwindow::tabSwitcher::appsWidgetCreated == true) {
         appsWindow->deleteLater();
     }
@@ -577,6 +580,7 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
         localLibraryWidgetWindow->deleteLater();
     }
 
+    global::mainwindow::tabSwitcher::homePageWidgetCreated = false;
     global::mainwindow::tabSwitcher::appsWidgetCreated = false;
     global::mainwindow::tabSwitcher::settingsChooserWidgetCreated = false;
     global::mainwindow::tabSwitcher::appsWidgetSelected = false;
@@ -1012,13 +1016,19 @@ void MainWindow::resetWifiIconClickedWhileReconnecting() {
 
 void MainWindow::setupLocalLibraryWidget() {
     localLibraryWidgetWindow = new localLibraryWidget(this);
-    connect(localLibraryWidgetWindow, SIGNAL(openBookSignal(QString, bool)), SLOT(openBookFile(QString, bool)));
-    connect(localLibraryWidgetWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
+    QObject::connect(localLibraryWidgetWindow, &localLibraryWidget::openBookSignal, this, &MainWindow::openBookFile);
+    QObject::connect(localLibraryWidgetWindow, &localLibraryWidget::refreshScreen, this, &MainWindow::refreshScreen);
     localLibraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
     ui->homeStackedWidget->insertWidget(1, localLibraryWidgetWindow);
     ui->homeStackedWidget->setCurrentIndex(1);
 }
 
 void MainWindow::setupHomePageWidget() {
+    homePageWidgetWindow = new homePageWidget(this);
+    QObject::connect(homePageWidgetWindow, &homePageWidget::openBookSignal, this, &MainWindow::openBookFile);
+    QObject::connect(homePageWidgetWindow, &homePageWidget::refreshScreen, this, &MainWindow::refreshScreen);
+    homePageWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+    ui->homeStackedWidget->insertWidget(2, homePageWidgetWindow);
     ui->homeStackedWidget->setCurrentIndex(2);
+    global::mainwindow::tabSwitcher::homePageWidgetCreated = true;
 }

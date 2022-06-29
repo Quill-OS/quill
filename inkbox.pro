@@ -32,6 +32,7 @@ SOURCES += \
     dictionarywidget.cpp \
     encryptionmanager.cpp \
     generaldialog.cpp \
+    homepagewidget.cpp \
     hourglassanimationwidget.cpp \
     koboxappsdialog.cpp \
     koboxsettings.cpp \
@@ -65,6 +66,7 @@ HEADERS += \
     encryptionmanager.h \
     functions.h \
     generaldialog.h \
+    homepagewidget.h \
     hourglassanimationwidget.h \
     koboxappsdialog.h \
     koboxsettings.h \
@@ -96,6 +98,7 @@ FORMS += \
     dictionarywidget.ui \
     encryptionmanager.ui \
     generaldialog.ui \
+    homepagewidget.ui \
     hourglassanimationwidget.ui \
     koboxappsdialog.ui \
     koboxsettings.ui \

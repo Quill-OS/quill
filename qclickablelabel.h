@@ -16,6 +16,7 @@ signals:
     void clicked();
     void unclicked();
     void bookID(int id);
+    void bookPath(QString path);
 
 protected:
     void mousePressEvent(QMouseEvent * event);
