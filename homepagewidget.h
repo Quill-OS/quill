@@ -35,6 +35,7 @@ private slots:
 private:
     Ui::homePageWidget *ui;
     QVector<QLabel*> bookTitleArray;
+    QVector<QHBoxLayout*> horizontalLayoutArray;
     QVector<QVBoxLayout*> verticalLayoutArray;
     QVector<QClickableLabel*> bookBtnArray;
 };

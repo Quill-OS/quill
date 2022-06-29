@@ -11,6 +11,7 @@ homePageWidget::homePageWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    horizontalLayoutArray.resize(global::homePageWidget::recentBooksRowNumber);
     verticalLayoutArray.resize(global::homePageWidget::recentBooksNumber);
     bookBtnArray.resize(global::homePageWidget::recentBooksNumber);
     bookTitleArray.resize(global::homePageWidget::recentBooksNumber);
@@ -68,37 +69,53 @@ homePageWidget::homePageWidget(QWidget *parent) :
 
     log("Setting up home page", className);
 
-    for(int i = 1; i <= global::homePageWidget::recentBooksNumber; i++) {
-        QString objectName = "Book" + QString::number(i);
-        QJsonObject jsonObject = recentBooksJsonObject[objectName].toObject();
-        QString bookPath = jsonObject.value("BookPath").toString();
-        bookBtnArray[i] = new QClickableLabel(this);
+    int in = 0;
+    bool newRow = false;
+    for(int i = 1; i <= (global::homePageWidget::recentBooksNumber + 1); i++) {
+        if(in < global::homePageWidget::recentBooksRowNumber) {
+            QString objectName = "Book" + QString::number(i);
+            QJsonObject jsonObject = recentBooksJsonObject[objectName].toObject();
+            QString bookPath = jsonObject.value("BookPath").toString();
+            bookBtnArray[i] = new QClickableLabel(this);
 
-        // Iterate until we find a book matching the recently opened book's "BookPath" key/value pair
-        for(int in = i; in <= databaseBooksNumber; in++) {
-            QJsonObject bookJsonObject = databaseJsonArrayList.at(in - 1).toObject();
-            if(bookJsonObject["BookPath"] == bookPath) {
-                bookBtnArray[i]->setObjectName(QJsonDocument(bookJsonObject).toJson());
+            // Iterate until we find a book matching the recently opened book's "BookPath" key/value pair
+            for(int in = i; in <= databaseBooksNumber; in++) {
+                QJsonObject bookJsonObject = databaseJsonArrayList.at(in - 1).toObject();
+                if(bookJsonObject["BookPath"] == bookPath) {
+                    bookBtnArray[i]->setObjectName(QJsonDocument(bookJsonObject).toJson());
+                }
             }
+
+            verticalLayoutArray[i] = new QVBoxLayout();
+
+            QObject::connect(bookBtnArray[i], &QClickableLabel::bookPath, this, &homePageWidget::openBook);
+            bookBtnArray[i]->setAlignment(Qt::AlignCenter);
+            bookBtnArray[i]->setFont(QFont("u001"));
+            bookBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
+
+            QString bookIcon = QJsonDocument::fromJson(bookBtnArray[i]->objectName().toUtf8()).object()["CoverPath"].toString();
+            if(QFile::exists(bookIcon)) {
+                bookBtnArray[i]->setPixmap(QPixmap(bookIcon).scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+            }
+            else {
+                bookBtnArray[i]->setPixmap(QPixmap(":/resources/cover_unavailable").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+            }
+
+            verticalLayoutArray[i]->addWidget(bookBtnArray[i]);
         }
 
-        verticalLayoutArray[i] = new QVBoxLayout(this);
-
-        QObject::connect(bookBtnArray[i], &QClickableLabel::bookPath, this, &homePageWidget::openBook);
-        bookBtnArray[i]->setAlignment(Qt::AlignCenter);
-        bookBtnArray[i]->setFont(QFont("u001"));
-        bookBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
-
-        QString bookIcon = QJsonDocument::fromJson(bookBtnArray[i]->objectName().toUtf8()).object()["CoverPath"].toString();
-        if(QFile::exists(bookIcon)) {
-            bookBtnArray[i]->setPixmap(QPixmap(bookIcon).scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+        if(newRow == true) {
+            newRow = false;
+            horizontalLayoutArray[in] = new QHBoxLayout();
+            for(int n = ((i - 1) - (global::homePageWidget::recentBooksNumberPerRow - 1)); n < (((i - 1) - (global::homePageWidget::recentBooksNumberPerRow - 1)) + global::homePageWidget::recentBooksNumberPerRow); n++) {
+                horizontalLayoutArray[in]->addLayout(verticalLayoutArray[n]);
+            }
+            ui->booksVerticalLayout->addLayout(horizontalLayoutArray[in]);
         }
-        else {
-            bookBtnArray[i]->setPixmap(QPixmap(":/resources/cover_unavailable").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+        if(!(i % global::homePageWidget::recentBooksNumberPerRow)) {
+            newRow = true;
+            in++;
         }
-
-        verticalLayoutArray[i]->addWidget(bookBtnArray[i]);
-        ui->horizontalLayout->addLayout(verticalLayoutArray[i]);
     }
     QTimer::singleShot(500, this, SLOT(refreshScreenNative()));
 }

@@ -11,6 +11,7 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setFont(QFont("u001"));
+    QObject::connect(ui->pageNumberLabel, &QClickableLabel::clicked, this, &localLibraryWidget::openGoToPageDialog);
 
     ui->previousPageBtn->setProperty("type", "borderless");
     ui->previousPageBtn->setEnabled(false);
@@ -306,6 +307,25 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
     int id = idList.at(buttonNumber - 1);
     openBook(id);
     localLibraryWidget::close();
+}
+
+void localLibraryWidget::openGoToPageDialog() {
+    log("Showing 'Go to page' dialog", className);
+    global::keyboard::keypadDialog = true;
+    generalDialogWindow = new generalDialog();
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    QObject::connect(generalDialogWindow, &generalDialog::gotoPageSelected, this, &localLibraryWidget::goToPage);
+}
+
+void localLibraryWidget::goToPage(int page) {
+    if(page > pagesNumber or page <= 0) {
+        log("Page number specified (" + QString::number(page) + ") is out of range", className);
+    }
+    else {
+        log("Going to page " + QString::number(page), className);
+        setupBooksList(page);
+        emit refreshScreen();
+    }
 }
 
 void localLibraryWidget::refreshScreenNative() {

@@ -145,7 +145,9 @@ namespace global {
         inline bool launchApp;
     }
     namespace homePageWidget {
-        inline int recentBooksNumber = 4;
+        inline int recentBooksNumber = 8;
+        inline int recentBooksNumberPerRow = 4;
+        inline int recentBooksRowNumber = global::homePageWidget::recentBooksNumber / global::homePageWidget::recentBooksNumberPerRow;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;

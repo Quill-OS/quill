@@ -7,6 +7,7 @@
 
 #include "functions.h"
 #include "qclickablelabel.h"
+#include "generaldialog.h"
 
 namespace Ui {
 class localLibraryWidget;
@@ -46,9 +47,12 @@ private slots:
     void openBook(int id);
     void btnOpenBook(int buttonNumber);
     void refreshScreenNative();
+    void openGoToPageDialog();
+    void goToPage(int page);
 
 private:
     Ui::localLibraryWidget * ui;
+    generalDialog * generalDialogWindow;
     QVector<QHBoxLayout*> horizontalLayoutArray;
     QVector<QLabel*> bookIconArray;
     QVector<QClickableLabel*> bookBtnArray;
