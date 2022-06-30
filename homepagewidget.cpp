@@ -61,6 +61,35 @@ homePageWidget::homePageWidget(QWidget *parent) :
         stdIconHeight = sH / stdIconHeightDivider;
     }
 
+    if(!QFile::exists(global::localLibrary::databasePath)) {
+        global::toast::modalToast = true;
+        global::toast::indefiniteToast = true;
+        showToast("Generating database");
+        QTimer::singleShot(100, this, SLOT(setupDisplayWithDatabase()));
+    }
+    else {
+        setupDisplay(false);
+    }
+}
+
+homePageWidget::~homePageWidget()
+{
+    delete ui;
+}
+
+void homePageWidget::openBook(QString bookPath) {
+    emit openBookSignal(bookPath, false);
+}
+
+void homePageWidget::refreshScreenNative() {
+    emit refreshScreen();
+}
+
+void homePageWidget::setupDisplay(bool databaseGenerated) {
+    if(databaseGenerated == true) {
+        toastWindow->close();
+    }
+
     log("Reading database", className);
     QFile database(global::localLibrary::databasePath);
     QByteArray data;
@@ -90,10 +119,12 @@ homePageWidget::homePageWidget(QWidget *parent) :
             bookTitleArray[i] = new QToolTipLabel(this);
 
             // Iterate until we find a book matching the recently opened book's "BookPath" key/value pair
-            for(int in = i; in <= databaseBooksNumber; in++) {
+            for(int in = 1; in <= databaseBooksNumber; in++) {
                 QJsonObject bookJsonObject = databaseJsonArrayList.at(in - 1).toObject();
-                if(bookJsonObject["BookPath"] == bookPath) {
-                    bookBtnArray[i]->setObjectName(QJsonDocument(bookJsonObject).toJson());
+                if(bookJsonObject["BookPath"].toString() == bookPath) {
+                    QByteArray data = qCompress(QJsonDocument(bookJsonObject).toJson()).toBase64();
+                    QString dataString = QString(data);
+                    bookBtnArray[i]->setObjectName(dataString);
                 }
             }
 
@@ -110,7 +141,8 @@ homePageWidget::homePageWidget(QWidget *parent) :
             bookTitleArray[i]->setFont(QFont("u001"));
             bookTitleArray[i]->setStyleSheet("font-size: 7pt");
 
-            QString bookTitle = QJsonDocument::fromJson(bookBtnArray[i]->objectName().toUtf8()).object()["Title"].toString();
+            QJsonObject uncompressedJsonObject = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(bookBtnArray[i]->objectName().toUtf8()))).object();
+            QString bookTitle = uncompressedJsonObject["Title"].toString();
             bookTitleArray[i]->setObjectName(bookTitle);
 
             int localBookTitleTruncateThreshold;
@@ -126,7 +158,7 @@ homePageWidget::homePageWidget(QWidget *parent) :
             }
             bookTitleArray[i]->setText(bookTitle);
 
-            QString bookIcon = QJsonDocument::fromJson(bookBtnArray[i]->objectName().toUtf8()).object()["CoverPath"].toString();
+            QString bookIcon = uncompressedJsonObject["CoverPath"].toString();
             if(QFile::exists(bookIcon)) {
                 bookBtnArray[i]->setPixmap(QPixmap(bookIcon).scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
             }
@@ -154,15 +186,21 @@ homePageWidget::homePageWidget(QWidget *parent) :
     QTimer::singleShot(500, this, SLOT(refreshScreenNative()));
 }
 
-homePageWidget::~homePageWidget()
-{
-    delete ui;
+void homePageWidget::setupDisplaySlot() {
+    setupDisplay(true);
 }
 
-void homePageWidget::openBook(QString bookPath) {
-    emit openBookSignal(bookPath, false);
+void homePageWidget::setupDisplayWithDatabase() {
+    global::localLibrary::headless = true;
+    localLibraryWidget * localLibraryWidgetWindow = new localLibraryWidget(this);
+    localLibraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+    localLibraryWidgetWindow->hide();
+    QObject::connect(localLibraryWidgetWindow, &localLibraryWidget::destroyed, this, &homePageWidget::setupDisplaySlot);
 }
 
-void homePageWidget::refreshScreenNative() {
-    emit refreshScreen();
+void homePageWidget::showToast(QString messageToDisplay) {
+    global::toast::message = messageToDisplay;
+    toastWindow = new toast(this);
+    toastWindow->setAttribute(Qt::WA_DeleteOnClose);
+    toastWindow->show();
 }

@@ -5,6 +5,8 @@
 #include <QVBoxLayout>
 #include "qclickablelabel.h"
 #include "qtooltiplabel.h"
+#include "locallibrarywidget.h"
+#include "toast.h"
 
 namespace Ui {
 class homePageWidget;
@@ -33,9 +35,15 @@ signals:
 private slots:
     void openBook(QString bookPath);
     void refreshScreenNative();
+    void setupDisplay(bool databaseGenerated);
+    void setupDisplaySlot();
+    void setupDisplayWithDatabase();
+    void showToast(QString messageToDisplay);
 
 private:
     Ui::homePageWidget *ui;
+    localLibraryWidget * localLibraryWidgetWindow;
+    toast * toastWindow;
     QVector<QToolTipLabel*> bookTitleArray;
     QVector<QHBoxLayout*> horizontalLayoutArray;
     QVector<QVBoxLayout*> verticalLayoutArray;

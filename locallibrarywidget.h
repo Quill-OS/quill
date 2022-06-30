@@ -8,6 +8,7 @@
 #include "functions.h"
 #include "qclickablelabel.h"
 #include "generaldialog.h"
+#include "toast.h"
 
 namespace Ui {
 class localLibraryWidget;
@@ -49,10 +50,13 @@ private slots:
     void refreshScreenNative();
     void openGoToPageDialog();
     void goToPage(int page);
+    void setupDisplay();
+    void showToast(QString messageToDisplay);
 
 private:
     Ui::localLibraryWidget * ui;
     generalDialog * generalDialogWindow;
+    toast * toastWindow;
     QVector<QHBoxLayout*> horizontalLayoutArray;
     QVector<QLabel*> bookIconArray;
     QVector<QClickableLabel*> bookBtnArray;

@@ -622,6 +622,7 @@ reader::reader(QWidget *parent) :
     // Way to tell shell scripts that we're in the Reader framework
     string_writeconfig("/tmp/inkboxReading", "true");
 
+    // Maintain a 'Recent books' list
     QJsonObject recentBooksObject;
     if(QFile::exists(global::localLibrary::recentBooksDatabasePath)) {
         QJsonObject mainJsonObject = QJsonDocument::fromJson(readFile(global::localLibrary::recentBooksDatabasePath).toUtf8()).object();

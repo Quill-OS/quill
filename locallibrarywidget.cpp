@@ -70,8 +70,8 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         stdIconHeight = sH / stdIconHeightDivider;
     }
     else if(global::deviceID == "n873\n") {
-        stdIconWidthDivider = 7.5;
-        stdIconHeightDivider = 7.5;
+        stdIconWidthDivider = 9.7;
+        stdIconHeightDivider = 9.7;
         stdIconWidth = sW / stdIconWidthDivider;
         stdIconHeight = sH / stdIconHeightDivider;
     }
@@ -111,16 +111,13 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
             ui->booksVerticalLayout->addWidget(lineArray[i]);
         }
     }
-    setupDatabase();
-    if(noBooksInDatabase == false) {
-        setupBooksList(currentPageNumber);
+
+    if(!QFile::exists(global::localLibrary::databasePath)) {
+        global::toast::modalToast = true;
+        global::toast::indefiniteToast = true;
+        showToast("Generating database");
     }
-    else {
-        ui->previousPageBtn->setEnabled(false);
-        ui->nextPageBtn->setEnabled(false);
-        ui->pageNumberLabel->setText("1 <i>of</i> 1");
-        ui->stackedWidget->setCurrentIndex(1);
-    }
+    QTimer::singleShot(100, this, SLOT(setupDisplay()));
 }
 
 localLibraryWidget::~localLibraryWidget()
@@ -151,13 +148,14 @@ void localLibraryWidget::setupDatabase() {
         args << "env" << "icon_width_divider=" + QString::number(stdIconWidthDivider - 1.5) << "icon_height_divider=" + QString::number(stdIconHeightDivider - 1.5) << "./explore_local_library.sh" << booksList;
         QProcess *proc = new QProcess();
         proc->start(prog, args);
-        proc->waitForFinished();
+        proc->waitForFinished(-1);
         QJsonDocument jsonDocument = QJsonDocument::fromJson(readFile(global::localLibrary::rawDatabasePath).toUtf8());
         QFile::remove(global::localLibrary::rawDatabasePath);
         proc->deleteLater();
 
         // Write database in compressed form, encoded in Base64 format
         writeFile(global::localLibrary::databasePath, qCompress(jsonDocument.toJson()).toBase64());
+        toastWindow->close();
     }
 
     // Read library database from file
@@ -189,6 +187,11 @@ void localLibraryWidget::setupDatabase() {
         if(pagesNumber == 1) {
             ui->nextPageBtn->setEnabled(false);
         }
+    }
+
+    if(global::localLibrary::headless == true) {
+        global::localLibrary::headless = false;
+        localLibraryWidget::close();
     }
 }
 
@@ -253,19 +256,26 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
     for(int i = 0; i <= 1; i++) {
         ui->verticalLayout->addItem(new QSpacerItem(0, 0, QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding));
     }
-}
 
-void localLibraryWidget::on_previousPageBtn_clicked()
-{
-    currentPageNumber--;
+    // Set boundaries for 'Previous'/'Next' page turn buttons
+    currentPageNumber = pageNumber;
     if(currentPageNumber - 1 < 1) {
         ui->previousPageBtn->setEnabled(false);
         ui->nextPageBtn->setEnabled(true);
+    }
+    else if(currentPageNumber + 1 > pagesNumber) {
+        ui->previousPageBtn->setEnabled(true);
+        ui->nextPageBtn->setEnabled(false);
     }
     else {
         ui->previousPageBtn->setEnabled(true);
         ui->nextPageBtn->setEnabled(true);
     }
+}
+
+void localLibraryWidget::on_previousPageBtn_clicked()
+{
+    currentPageNumber--;
     setupBooksList(currentPageNumber);
 
     pagesTurned = pagesTurned + 1;
@@ -279,14 +289,6 @@ void localLibraryWidget::on_previousPageBtn_clicked()
 void localLibraryWidget::on_nextPageBtn_clicked()
 {
     currentPageNumber++;
-    if(currentPageNumber + 1 > pagesNumber) {
-        ui->previousPageBtn->setEnabled(true);
-        ui->nextPageBtn->setEnabled(false);
-    }
-    else {
-        ui->previousPageBtn->setEnabled(true);
-        ui->nextPageBtn->setEnabled(true);
-    }
     setupBooksList(currentPageNumber);
 
     pagesTurned = pagesTurned + 1;
@@ -330,4 +332,24 @@ void localLibraryWidget::goToPage(int page) {
 
 void localLibraryWidget::refreshScreenNative() {
     emit refreshScreen();
+}
+
+void localLibraryWidget::setupDisplay() {
+    setupDatabase();
+    if(noBooksInDatabase == false) {
+        setupBooksList(currentPageNumber);
+    }
+    else {
+        ui->previousPageBtn->setEnabled(false);
+        ui->nextPageBtn->setEnabled(false);
+        ui->pageNumberLabel->setText("1 <i>of</i> 1");
+        ui->stackedWidget->setCurrentIndex(1);
+    }
+}
+
+void localLibraryWidget::showToast(QString messageToDisplay) {
+    global::toast::message = messageToDisplay;
+    toastWindow = new toast(this);
+    toastWindow->setAttribute(Qt::WA_DeleteOnClose);
+    toastWindow->show();
 }

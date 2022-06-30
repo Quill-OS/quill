@@ -130,6 +130,7 @@ namespace global {
         static inline QString rawDatabasePath = "/inkbox/LocalLibrary.db.raw";
         static inline QString databasePath = "/mnt/onboard/onboard/.inkbox/LocalLibrary.db";
         static inline QString recentBooksDatabasePath = "/mnt/onboard/onboard/.inkbox/RecentBooks.db";
+        inline bool headless;
     }
     namespace localStorage {
         inline QStringList searchResultsPaths;
@@ -145,9 +146,9 @@ namespace global {
         inline bool launchApp;
     }
     namespace homePageWidget {
-        inline int recentBooksNumber = 8;
-        inline int recentBooksNumberPerRow = 4;
-        inline int recentBooksRowNumber = global::homePageWidget::recentBooksNumber / global::homePageWidget::recentBooksNumberPerRow;
+        static inline int recentBooksNumber = 8;
+        static inline int recentBooksNumberPerRow = 4;
+        static inline int recentBooksRowNumber = global::homePageWidget::recentBooksNumber / global::homePageWidget::recentBooksNumberPerRow;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;

@@ -23,7 +23,7 @@ void QClickableLabel::mousePressEvent(QMouseEvent * event) {
 void QClickableLabel::mouseReleaseEvent(QMouseEvent * event) {
     emit unclicked();
     emit bookID(objectName().toInt());
-    emit bookPath(QJsonDocument::fromJson(objectName().toUtf8()).object()["BookPath"].toString());
+    emit bookPath(QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(objectName().toUtf8()))).object()["BookPath"].toString());
     if(objectName() == "pageNumberLabel") {
         QClickableLabel::setStyleSheet("color: black; background-color: white; border-radius: 10px; padding-left: 10px; padding-right: 10px");
     }
