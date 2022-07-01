@@ -259,17 +259,19 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
 
     // Set boundaries for 'Previous'/'Next' page turn buttons
     currentPageNumber = pageNumber;
+    ui->previousPageBtn->setEnabled(true);
+    ui->nextPageBtn->setEnabled(true);
     if(currentPageNumber - 1 < 1) {
         ui->previousPageBtn->setEnabled(false);
         ui->nextPageBtn->setEnabled(true);
     }
-    else if(currentPageNumber + 1 > pagesNumber) {
+    if(currentPageNumber + 1 > pagesNumber) {
         ui->previousPageBtn->setEnabled(true);
         ui->nextPageBtn->setEnabled(false);
     }
-    else {
-        ui->previousPageBtn->setEnabled(true);
-        ui->nextPageBtn->setEnabled(true);
+    if(currentPageNumber - 1 < 1 and currentPageNumber + 1 > pagesNumber) {
+        ui->previousPageBtn->setEnabled(false);
+        ui->nextPageBtn->setEnabled(false);
     }
 }
 
@@ -322,6 +324,7 @@ void localLibraryWidget::openGoToPageDialog() {
 void localLibraryWidget::goToPage(int page) {
     if(page > pagesNumber or page <= 0) {
         log("Page number specified (" + QString::number(page) + ") is out of range", className);
+        showToast("Request is beyond page range");
     }
     else {
         log("Going to page " + QString::number(page), className);

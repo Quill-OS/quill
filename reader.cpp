@@ -625,7 +625,17 @@ reader::reader(QWidget *parent) :
     // Maintain a 'Recent books' list
     QJsonObject recentBooksObject;
     if(QFile::exists(global::localLibrary::recentBooksDatabasePath)) {
-        QJsonObject mainJsonObject = QJsonDocument::fromJson(readFile(global::localLibrary::recentBooksDatabasePath).toUtf8()).object();
+        log("Reading recent books database", className);
+        QFile recentBooksDatabase(global::localLibrary::recentBooksDatabasePath);
+        QByteArray recentBooksData;
+        if(recentBooksDatabase.open(QIODevice::ReadOnly)) {
+            recentBooksData = recentBooksDatabase.readAll();
+            recentBooksDatabase.close();
+        }
+        else {
+            QString function = __func__; log(function + ": Failed to open recent books database file for reading at '" + recentBooksDatabase.fileName() + "'", className);
+        }
+        QJsonObject mainJsonObject = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(recentBooksData))).object();
         for(int i = 1; i <= global::homePageWidget::recentBooksNumber; i++) {
             QString objectName = "Book" + QString::number(i);
             QJsonObject jsonObject = mainJsonObject[objectName].toObject();
@@ -656,7 +666,7 @@ reader::reader(QWidget *parent) :
         recentBooksObject = mainJsonObject;
     }
     QFile::remove(global::localLibrary::recentBooksDatabasePath);
-    writeFile(global::localLibrary::recentBooksDatabasePath, QString(QJsonDocument(recentBooksObject).toJson()));
+    writeFile(global::localLibrary::recentBooksDatabasePath, qCompress(QJsonDocument(recentBooksObject).toJson()).toBase64());
 
     // USB mass storage prompt
     if(global::reader::startUsbmsPrompt == true) {

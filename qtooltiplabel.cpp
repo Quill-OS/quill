@@ -1,4 +1,5 @@
 #include <QToolTip>
+#include <QVariant>
 
 #include "qtooltiplabel.h"
 
@@ -10,7 +11,9 @@ QToolTipLabel::QToolTipLabel(QWidget* parent, Qt::WindowFlags f)
 QToolTipLabel::~QToolTipLabel() {}
 
 void QToolTipLabel::mousePressEvent(QMouseEvent * event) {
-    QToolTip::showText(mapToGlobal(QPoint(0, 0)), "<font face='u001' size=-2>" + objectName() + "</font>");
+    if(QToolTipLabel::property("showToolTip").toString() == "true") {
+        QToolTip::showText(mapToGlobal(QPoint(0, 0)), "<font face='u001' size=-2>" + objectName() + "</font>");
+    }
 }
 
 void QToolTipLabel::mouseReleaseEvent(QMouseEvent * event) {

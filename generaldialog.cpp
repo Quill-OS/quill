@@ -241,6 +241,10 @@ void generalDialog::on_cancelBtn_clicked()
         global::kobox::resetKoboxDialog = false;
         generalDialog::close();
     }
+    else if(keypadDialog == true) {
+        global::keyboard::keypadDialog = false;
+        generalDialog::close();
+    }
     else if(global::encfs::disableStorageEncryptionDialog == true) {
         emit cancelDisableStorageEncryption();
         global::encfs::disableStorageEncryptionDialog = false;

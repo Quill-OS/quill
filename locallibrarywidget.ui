@@ -51,9 +51,9 @@
       </widget>
      </item>
      <item row="0" column="4">
-      <widget class="QClickableLabel" name="pageNumberLabel">
-       <property name="text">
-        <string>Page</string>
+      <widget class="QClickableLabel" name="pageNumberLabel" native="true">
+       <property name="text" stdset="0">
+        <string/>
        </property>
       </widget>
      </item>
@@ -205,6 +205,13 @@ Add some via USB or explore the Online Library.</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QClickableLabel</class>
+   <extends>QWidget</extends>
+   <header>qclickablelabel.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
