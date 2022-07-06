@@ -10,12 +10,14 @@ class QClickableLabel : public QLabel {
 public:
     explicit QClickableLabel(QWidget* parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
     ~QClickableLabel();
+    long long timeAtClick;
 
 signals:
     void clicked();
     void unclicked();
     void bookID(int id);
     void bookPath(QString path);
+    void longPress(int id);
 
 protected:
     void mousePressEvent(QMouseEvent * event);

@@ -11,6 +11,7 @@ QClickableLabel::QClickableLabel(QWidget* parent, Qt::WindowFlags f)
 QClickableLabel::~QClickableLabel() {}
 
 void QClickableLabel::mousePressEvent(QMouseEvent * event) {
+    timeAtClick = QDateTime::currentMSecsSinceEpoch();
     emit clicked();
     if(objectName() == "pageNumberLabel") {
         QClickableLabel::setStyleSheet("border-radius: 10px; padding-left: 10px; padding-right: 10px");
@@ -21,8 +22,13 @@ void QClickableLabel::mousePressEvent(QMouseEvent * event) {
 }
 
 void QClickableLabel::mouseReleaseEvent(QMouseEvent * event) {
-    emit unclicked();
-    emit bookID(objectName().toInt());
+    if(QDateTime::currentMSecsSinceEpoch() >= timeAtClick + 500) {
+        emit longPress(objectName().toInt());
+    }
+    else {
+        emit unclicked();
+        emit bookID(objectName().toInt());
+    }
     emit bookPath(QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(objectName().toUtf8()))).object()["BookPath"].toString());
     if(objectName() == "pageNumberLabel") {
         QClickableLabel::setStyleSheet("border-radius: 10px; padding-left: 10px; padding-right: 10px");

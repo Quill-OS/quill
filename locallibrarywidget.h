@@ -9,6 +9,7 @@
 #include "qclickablelabel.h"
 #include "generaldialog.h"
 #include "toast.h"
+#include "bookoptionsdialog.h"
 
 namespace Ui {
 class localLibraryWidget;
@@ -52,10 +53,13 @@ private slots:
     void goToPage(int page);
     void setupDisplay();
     void showToast(QString messageToDisplay);
+    void openBookOptionsDialog(int bookID);
+    void handlePossibleBookDeletion();
 
 private:
     Ui::localLibraryWidget * ui;
     generalDialog * generalDialogWindow;
+    bookOptionsDialog * bookOptionsDialogWindow;
     toast * toastWindow;
     QVector<QHBoxLayout*> horizontalLayoutArray;
     QVector<QLabel*> bookIconArray;

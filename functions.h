@@ -128,9 +128,15 @@ namespace global {
     }
     namespace localLibrary {
         static inline QString rawDatabasePath = "/inkbox/LocalLibrary.db.raw";
-        static inline QString databasePath = "/mnt/onboard/onboard/.inkbox/LocalLibrary.db";
-        static inline QString recentBooksDatabasePath = "/mnt/onboard/onboard/.inkbox/RecentBooks.db";
+        static inline QString databaseDirectoryPath = "/mnt/onboard/onboard/.database/";
+        static inline QString databasePath = databaseDirectoryPath + "LocalLibrary.db";
+        static inline QString recentBooksDatabasePath = databaseDirectoryPath + "RecentBooks.db";
+        static inline QString pinnedBooksDatabasePath = databaseDirectoryPath + "PinnedBooks.db";
         inline bool headless;
+        namespace bookOptionsDialog {
+            inline int bookID;
+            inline bool bookDeleted;
+        }
     }
     namespace localStorage {
         inline QStringList searchResultsPaths;
@@ -976,6 +982,24 @@ namespace {
                 return hash.result();
             }
         }
+    }
+    QJsonObject getBookMetadata(int bookID) {
+        // Read library database from file
+        log("Reading database", "functions");
+        QFile database(global::localLibrary::databasePath);
+        QByteArray data;
+        if(database.open(QIODevice::ReadOnly)) {
+            data = database.readAll();
+            database.close();
+        }
+        else {
+            QString function = __func__; log(function + ": Failed to open local library database file for reading at '" + database.fileName() + "'", "functions");
+        }
+
+        // Parse JSON data
+        QJsonObject jsonObject = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(data))).object();
+        QJsonArray jsonArrayList = jsonObject["database"].toArray();
+        return jsonArrayList.at(bookID - 1).toObject();
     }
 }
 

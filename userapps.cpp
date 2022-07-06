@@ -156,8 +156,9 @@ void userapps::on_launchBtn_clicked()
     if(manageRequiredFeatures() == true) {
         if(global::userApps::launchApp == true) {
             global::userApps::launchApp = false;
-            QString message = "Launching user application at: ";
+            QString message = "Launching user application at: '";
             message.append("[" + appDir.path() + "]" + execPath.fileName());
+            message.append("'");
             log(message, className);
             // Tell the OS that we're not running anymore
             string_writeconfig("/tmp/inkbox_running", "false");

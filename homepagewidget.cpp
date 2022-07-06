@@ -78,7 +78,12 @@ homePageWidget::~homePageWidget()
 }
 
 void homePageWidget::openBook(QString bookPath) {
-    emit openBookSignal(bookPath, false);
+    if(!bookPath.isEmpty()) {
+        emit openBookSignal(bookPath, false);
+    }
+    else {
+        showToast("Book not found");
+    }
 }
 
 void homePageWidget::refreshScreenNative() {

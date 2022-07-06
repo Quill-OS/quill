@@ -27,6 +27,7 @@ SOURCES += \
     alert.cpp \
     apps.cpp \
     bookinfodialog.cpp \
+    bookoptionsdialog.cpp \
     brightnessdialog.cpp \
     calendarapp.cpp \
     dictionarywidget.cpp \
@@ -61,6 +62,7 @@ HEADERS += \
     alert.h \
     apps.h \
     bookinfodialog.h \
+    bookoptionsdialog.h \
     brightnessdialog.h \
     calendarapp.h \
     dictionarywidget.h \
@@ -95,6 +97,7 @@ FORMS += \
     alert.ui \
     apps.ui \
     bookinfodialog.ui \
+    bookoptionsdialog.ui \
     brightnessdialog.ui \
     calendarapp.ui \
     dictionarywidget.ui \
