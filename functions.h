@@ -126,6 +126,9 @@ namespace global {
         inline bool librarySearchDialog;
         inline bool libraryResults;
     }
+    namespace bookInfoDialog {
+        inline bool localInfoDialog;
+    }
     namespace localLibrary {
         static inline QString rawDatabasePath = "/inkbox/LocalLibrary.db.raw";
         static inline QString databaseDirectoryPath = "/mnt/onboard/onboard/.database/";
@@ -184,7 +187,7 @@ namespace {
     int defaultPdfPageHeight;
     bool checked_box = false;
     QFile logFile("/external_root/var/log/inkbox-gui.log");
-    void log(QString message, QString className, bool applicationStart = false) {
+    void log(QString message, QString className = "undefined", bool applicationStart = false) {
         if(global::logger::status == true) {
             QString initialTime;
             if(applicationStart == true) {
@@ -1000,6 +1003,20 @@ namespace {
         QJsonObject jsonObject = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(data))).object();
         QJsonArray jsonArrayList = jsonObject["database"].toArray();
         return jsonArrayList.at(bookID - 1).toObject();
+    }
+    float determineYIncrease() {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+            return 2;
+        }
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
+            return 2.6;
+        }
+        else if(global::deviceID == "n437\n" or global::deviceID == "n873\n") {
+            return 3;
+        }
+        else {
+            return 2;
+        }
     }
 }
 

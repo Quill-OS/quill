@@ -23,6 +23,9 @@ private slots:
     void on_deleteBtn_clicked();
     void on_infoBtn_clicked();
 
+signals:
+    void openLocalBookInfoDialog();
+
 private:
     Ui::bookOptionsDialog *ui;
 };

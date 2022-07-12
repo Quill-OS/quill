@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+#include "textwidget.h"
+
 namespace Ui {
 class bookInfoDialog;
 }
@@ -30,7 +32,8 @@ signals:
     void closeIndefiniteToast();
 
 private:
-    Ui::bookInfoDialog *ui;
+    Ui::bookInfoDialog * ui;
+    textwidget * textwidgetWindow;
 };
 
 #endif // BOOKINFODIALOG_H

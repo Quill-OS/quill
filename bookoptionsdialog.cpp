@@ -35,9 +35,7 @@ void bookOptionsDialog::on_deleteBtn_clicked()
     ui->deleteBtn->setStyleSheet("padding: 10px; color: lightGrey");
 }
 
-
 void bookOptionsDialog::on_infoBtn_clicked()
 {
-    // TODO
+    emit openLocalBookInfoDialog();
 }
-

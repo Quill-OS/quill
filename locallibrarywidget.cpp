@@ -359,9 +359,10 @@ void localLibraryWidget::showToast(QString messageToDisplay) {
 }
 
 void localLibraryWidget::openBookOptionsDialog(int bookID) {
-    log("Opening book options dialog for book with ID " + QString::number(bookID), className);
+    log("Opening book options dialog for book with pseudo-ID " + QString::number(bookID), className);
     global::localLibrary::bookOptionsDialog::bookID = bookID;
     bookOptionsDialog * bookOptionsDialogWindow = new bookOptionsDialog(this);
+    QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::openLocalBookInfoDialog, this, &localLibraryWidget::openLocalBookInfoDialog);
     QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::destroyed, this, &localLibraryWidget::handlePossibleBookDeletion);
     bookOptionsDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     bookOptionsDialogWindow->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
@@ -376,4 +377,11 @@ void localLibraryWidget::handlePossibleBookDeletion() {
         showToast("Generating database");
         QTimer::singleShot(100, this, SLOT(setupDisplay()));
     }
+}
+
+void localLibraryWidget::openLocalBookInfoDialog() {
+    global::bookInfoDialog::localInfoDialog = true;
+    bookInfoDialog * bookInfoDialogWindow = new bookInfoDialog(this);
+    bookInfoDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    bookInfoDialogWindow->show();
 }

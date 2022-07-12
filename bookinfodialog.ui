@@ -183,7 +183,9 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2"/>
+     <widget class="QWidget" name="page_2">
+      <layout class="QVBoxLayout" name="verticalLayout_3"/>
+     </widget>
     </widget>
    </item>
   </layout>
