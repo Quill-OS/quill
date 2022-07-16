@@ -910,7 +910,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
     }
 
     // Reading files
-    if(is_epub == false) {
+    if(is_epub == false && is_pdf == false && is_image == false) {
         if(run_parser == true) {
             QDirIterator it("/inkbox/book/split");
             while (it.hasNext()) {
