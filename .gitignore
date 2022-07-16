@@ -1,1 +1,8 @@
 inkbox.pro.user
+inkbox
+*.o
+ui_*
+moc_*
+qrc_*
+.qmake.stash
+.vscode
