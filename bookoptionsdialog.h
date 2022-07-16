@@ -25,6 +25,7 @@ private slots:
 
 signals:
     void openLocalBookInfoDialog();
+    void showToast(QString messageToDisplay);
 
 private:
     Ui::bookOptionsDialog *ui;

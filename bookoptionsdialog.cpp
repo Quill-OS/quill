@@ -23,16 +23,21 @@ bookOptionsDialog::~bookOptionsDialog()
 void bookOptionsDialog::on_pinBtn_clicked()
 {
     // TODO
+    log("Pinned book with ID " + QString::number(global::localLibrary::bookOptionsDialog::bookID), className);
 }
 
 void bookOptionsDialog::on_deleteBtn_clicked()
 {
     log("Deleting book '" + bookPath + "'", className);
-    QFile::remove(bookPath);
-    global::localLibrary::bookOptionsDialog::bookDeleted = true;
-    QFile::remove(global::localLibrary::databasePath);
-    ui->deleteBtn->setEnabled(false);
-    ui->deleteBtn->setStyleSheet("padding: 10px; color: lightGrey");
+    global::toast::delay = 3000;
+    if(QFile::remove(bookPath)) {
+        emit showToast("Book deleted successfully");
+        global::localLibrary::bookOptionsDialog::bookDeleted = true;
+        QFile::remove(global::localLibrary::databasePath);
+    }
+    else {
+        emit showToast("Failed to delete book");
+    }
 }
 
 void bookOptionsDialog::on_infoBtn_clicked()

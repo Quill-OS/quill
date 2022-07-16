@@ -358,11 +358,15 @@ void localLibraryWidget::showToast(QString messageToDisplay) {
     toastWindow->show();
 }
 
-void localLibraryWidget::openBookOptionsDialog(int bookID) {
-    log("Opening book options dialog for book with pseudo-ID " + QString::number(bookID), className);
+void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
+    // Determine book ID from the book's button number
+    int bookID = ((currentPageNumber * buttonsNumber) - (buttonsNumber - 1)) + (pseudoBookID - 1);
+
+    log("Opening book options dialog for book with pseudo-ID " + QString::number(pseudoBookID) + ", ID " + QString::number(bookID), className);
     global::localLibrary::bookOptionsDialog::bookID = bookID;
     bookOptionsDialog * bookOptionsDialogWindow = new bookOptionsDialog(this);
     QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::openLocalBookInfoDialog, this, &localLibraryWidget::openLocalBookInfoDialog);
+    QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::showToast, this, &localLibraryWidget::showToast);
     QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::destroyed, this, &localLibraryWidget::handlePossibleBookDeletion);
     bookOptionsDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     bookOptionsDialogWindow->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
@@ -371,11 +375,13 @@ void localLibraryWidget::openBookOptionsDialog(int bookID) {
 
 void localLibraryWidget::handlePossibleBookDeletion() {
     if(global::localLibrary::bookOptionsDialog::bookDeleted == true) {
-        global::localLibrary::bookOptionsDialog::bookDeleted = false;
-        global::toast::modalToast = true;
-        global::toast::indefiniteToast = true;
-        showToast("Generating database");
-        QTimer::singleShot(100, this, SLOT(setupDisplay()));
+        QTimer::singleShot(3100, this, [&]() {
+            global::localLibrary::bookOptionsDialog::bookDeleted = false;
+            global::toast::modalToast = true;
+            global::toast::indefiniteToast = true;
+            showToast("Generating database");
+            QTimer::singleShot(100, this, SLOT(setupDisplay()));
+        });
     }
 }
 

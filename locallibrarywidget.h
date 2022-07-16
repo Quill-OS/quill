@@ -54,7 +54,7 @@ private slots:
     void goToPage(int page);
     void setupDisplay();
     void showToast(QString messageToDisplay);
-    void openBookOptionsDialog(int bookID);
+    void openBookOptionsDialog(int pseudoBookID);
     void handlePossibleBookDeletion();
     void openLocalBookInfoDialog();
 
