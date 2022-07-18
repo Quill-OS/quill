@@ -104,6 +104,12 @@ reader::reader(QWidget *parent) :
     ui->decreaseScaleBtn->setIcon(QIcon(":/resources/zoom-out.png"));
     ui->quitBtn->setText("");
     ui->quitBtn->setIcon(QIcon(":/resources/power.png"));
+    ui->previousBtn->setText("");
+    ui->previousBtn->setIcon(QIcon(":/resources/arrow-left.png"));
+    ui->optionsBtn->setText("");
+    ui->optionsBtn->setIcon(QIcon(":/resources/settings.png"));
+    ui->nextBtn->setText("");
+    ui->nextBtn->setIcon(QIcon(":/resources/arrow-right.png"));
 
     // On the Mini with QT_FONT_DPI set to 187 (default for this device), quitBtn makes the UI go beyond the limits of the screen when the menu bar is shown
     if(global::deviceID == "n705\n") {
@@ -291,6 +297,11 @@ reader::reader(QWidget *parent) :
         ui->nextBtn->setStyleSheet("padding: 13.5px");
         ui->previousBtn->setStyleSheet("padding: 13.5px");
         ui->optionsBtn->setStyleSheet("padding: 13.5px");
+    }
+    else if(global::deviceID == "n437\n") {
+        ui->nextBtn->setStyleSheet("padding: 12.5px");
+        ui->previousBtn->setStyleSheet("padding: 12.5px");
+        ui->optionsBtn->setStyleSheet("padding: 12.5px");
     }
     ui->sizeValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
@@ -1151,9 +1162,13 @@ void reader::on_optionsBtn_clicked()
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 13.5px");
         }
+        else if(global::deviceID == "n437\n") {
+            ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 12.5px");
+        }
         else {
             ui->optionsBtn->setStyleSheet("background: white; color: black");
         }
+        ui->optionsBtn->setIcon(QIcon(":/resources/settings.png"));
         // The Glo HD (N437) has a newer platform plugin that doesn't need this
         if(global::deviceID != "n437\n") {
             QTimer::singleShot(500, this, SLOT(repaint()));
@@ -1165,9 +1180,13 @@ void reader::on_optionsBtn_clicked()
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 13.5px");
         }
+        else if(global::deviceID == "n437\n") {
+            ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 12.5px");
+        }
         else {
             ui->optionsBtn->setStyleSheet("background: black; color: white");
         }
+        ui->optionsBtn->setIcon(QIcon(":/resources/settings-inverted.png"));
         this->repaint();
         menubar_shown = true;
     }

@@ -77,5 +77,7 @@
         <file>resources/edit.png</file>
         <file>resources/save.png</file>
         <file>resources/book_inverted.png</file>
+        <file>resources/arrow-left.png</file>
+        <file>resources/arrow-right.png</file>
     </qresource>
 </RCC>
