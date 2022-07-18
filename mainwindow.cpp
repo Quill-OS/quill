@@ -551,7 +551,13 @@ void MainWindow::on_brightnessBtn_clicked()
 void MainWindow::on_homeBtn_clicked()
 {
     log("Showing home screen", className);
-    global::mainwindow::tabSwitcher::repaint = true;
+    if(global::localLibrary::bookOptionsDialog::bookPinAction == true) {
+        global::localLibrary::bookOptionsDialog::bookPinAction = false;
+        global::mainwindow::tabSwitcher::repaint = false;
+    }
+    else {
+        global::mainwindow::tabSwitcher::repaint = true;
+    }
     resetFullWindowException = true;
     resetWindow(true);
 }
@@ -1027,6 +1033,7 @@ void MainWindow::setupHomePageWidget() {
     homePageWidgetWindow = new homePageWidget(this);
     QObject::connect(homePageWidgetWindow, &homePageWidget::openBookSignal, this, &MainWindow::openBookFile);
     QObject::connect(homePageWidgetWindow, &homePageWidget::refreshScreen, this, &MainWindow::refreshScreen);
+    QObject::connect(homePageWidgetWindow, &homePageWidget::relaunchHomePageWidget, this, &MainWindow::on_homeBtn_clicked);
     homePageWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
     ui->homeStackedWidget->insertWidget(2, homePageWidgetWindow);
     ui->homeStackedWidget->setCurrentIndex(2);

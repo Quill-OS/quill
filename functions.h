@@ -138,7 +138,9 @@ namespace global {
         inline bool headless;
         namespace bookOptionsDialog {
             inline int bookID;
+            inline bool deleteOption = true;
             inline bool bookDeleted;
+            inline bool bookPinAction;
         }
     }
     namespace localStorage {
@@ -158,6 +160,9 @@ namespace global {
         static inline int recentBooksNumber = 8;
         static inline int recentBooksNumberPerRow = 4;
         static inline int recentBooksRowNumber = global::homePageWidget::recentBooksNumber / global::homePageWidget::recentBooksNumberPerRow;
+        static inline int pinnedBooksNumber = 4;
+        static inline int pinnedBooksNumberPerRow = 4;
+        static inline int pinnedBooksRowNumber = global::homePageWidget::pinnedBooksNumber / global::homePageWidget::pinnedBooksNumberPerRow;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -602,7 +607,7 @@ namespace {
         global::systemInfoText = "<b>InkBox OS version ";
         string_checkconfig_ro("/external_root/opt/isa/version");
         global::systemInfoText.append(checkconfig_str_val);
-        global::systemInfoText.append("</b>");
+        global::systemInfoText.append("</b><br>Copyright <font face='Inter'>©</font> 2021-2022 Nicolas Mailloux and contributors");
         global::systemInfoText.append("<br><b>Git:</b> ");
         global::systemInfoText.append(GIT_VERSION);
         global::systemInfoText.append("<br><b>Device UID:</b> ");
@@ -988,7 +993,6 @@ namespace {
     }
     QJsonObject getBookMetadata(int bookID) {
         // Read library database from file
-        log("Reading database", "functions");
         QFile database(global::localLibrary::databasePath);
         QByteArray data;
         if(database.open(QIODevice::ReadOnly)) {

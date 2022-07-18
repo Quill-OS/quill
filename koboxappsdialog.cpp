@@ -53,7 +53,7 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     this->move(x, y);
 
     checkApps();
-    QStringListModel* model = new QStringListModel(this);
+    QStringListModel * model = new QStringListModel(this);
     QStringList list = apps.split("\n", QString::SkipEmptyParts);
 
     // Apps that aren't extensions

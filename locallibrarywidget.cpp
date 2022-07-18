@@ -94,7 +94,7 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         bookBtnArray[i] = new QClickableLabel(this);
         bookBtnArray[i]->setObjectName(QString::number(i));
         QObject::connect(bookBtnArray[i], &QClickableLabel::bookID, this, &localLibraryWidget::btnOpenBook);
-        QObject::connect(bookBtnArray[i], &QClickableLabel::longPress, this, &localLibraryWidget::openBookOptionsDialog);
+        QObject::connect(bookBtnArray[i], &QClickableLabel::longPressInt, this, &localLibraryWidget::openBookOptionsDialog);
         bookBtnArray[i]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
         bookBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
         bookBtnArray[i]->setFont(QFont("u001"));
@@ -341,7 +341,13 @@ void localLibraryWidget::refreshScreenNative() {
 void localLibraryWidget::setupDisplay() {
     setupDatabase();
     if(noBooksInDatabase == false) {
-        setupBooksList(currentPageNumber);
+        // Prevent segmentation fault if a book was the last of its page
+        if(currentPageNumber > pagesNumber) {
+            setupBooksList(currentPageNumber - 1);
+        }
+        else {
+            setupBooksList(currentPageNumber);
+        }
     }
     else {
         ui->previousPageBtn->setEnabled(false);

@@ -99,7 +99,6 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
             bookInfo.append("<b>Path:</b> " + path + "<br>");
         }
 
-        log(bookInfo, className);
         global::text::textBrowserContents = bookInfo;
         textwidget * textwidgetWindow = new textwidget(this);
         ui->stackedWidget->insertWidget(1, textwidgetWindow);

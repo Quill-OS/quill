@@ -17,11 +17,15 @@ public:
     explicit bookOptionsDialog(QWidget *parent = nullptr);
     ~bookOptionsDialog();
     QString bookPath;
+    bool bookPinned;
 
 private slots:
     void on_pinBtn_clicked();
     void on_deleteBtn_clicked();
     void on_infoBtn_clicked();
+    void pinBook(int bookID);
+    void unpinBook(int bookID);
+    bool isBookPinned(int bookID);
 
 signals:
     void openLocalBookInfoDialog();
