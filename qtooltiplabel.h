@@ -17,4 +17,4 @@ protected:
 
 };
 
-#endif // CLICKABLELABEL_H
+#endif // QTOOLTIPLABEL_H

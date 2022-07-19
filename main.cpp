@@ -27,9 +27,13 @@
 #include <QTextStream>
 #include <QRect>
 #include <QScreen>
+#include <QTextCodec>
 
 int main(int argc, char *argv[])
 {
+    QApplication a(argc, argv);
+    QTextCodec::setCodecForLocale(QTextCodec::codecForName("utf8"));
+
     if(char * debug = std::getenv("DEBUG")) {
         if(std::atoi(debug) == 1) {
             global::logger::status = true;
@@ -77,7 +81,6 @@ int main(int argc, char *argv[])
 
     if(checkconfig(".config/18-encrypted_storage/status") == true and checkconfig("/external_root/run/encfs_mounted") == false) {
         // Open Encryption Manager to unlock encrypted storage
-        QApplication a(argc, argv);
         encryptionManager w;
         const QScreen * screen = qApp->primaryScreen();
         w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
@@ -86,7 +89,6 @@ int main(int argc, char *argv[])
     }
     else if(checkconfig("/external_root/run/encfs_mounted") == true and checkconfig("/external_root/run/encfs_repack") == true) {
         log("Launching encryptionManager", "main");
-        QApplication a(argc, argv);
         encryptionManager w;
         const QScreen * screen = qApp->primaryScreen();
         w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
@@ -103,7 +105,6 @@ int main(int argc, char *argv[])
             if(isBatteryCritical() == true) {
                 if(!isUsbPluggedIn()) {
                     global::battery::showCriticalBatteryAlert = true;
-                    QApplication a(argc, argv);
                     alert w;
 
                     const QScreen* screen = qApp->primaryScreen();
@@ -116,7 +117,6 @@ int main(int argc, char *argv[])
 
         // Checking if there has been an ALERT flag set up, and if there is, show a big warning
         if(checkconfig("/external_root/boot/flags/ALERT") == true) {
-            QApplication a(argc, argv);
             alert w;
 
             const QScreen * screen = qApp->primaryScreen();
@@ -161,7 +161,6 @@ int main(int argc, char *argv[])
                 ;
             }
 
-            QApplication a(argc, argv);
             reader w;
 
             const QScreen* screen = qApp->primaryScreen();
@@ -173,7 +172,6 @@ int main(int argc, char *argv[])
         else {
             QProcess::execute("remount_tmpfs_launch.sh", QStringList());
 
-            QApplication a(argc, argv);
             MainWindow w;
 
             QApplication::setStyle("windows");
