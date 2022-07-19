@@ -75,10 +75,6 @@ public:
     bool wordwidgetLock;
     bool isNightModeActive;
     bool goToSavedPageDone;
-    QString book_1;
-    QString book_2;
-    QString book_3;
-    QString book_4;
     QString ittext;
     QString book_file;
     bool batt_status;

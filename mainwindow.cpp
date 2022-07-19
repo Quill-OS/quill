@@ -140,19 +140,6 @@ MainWindow::MainWindow(QWidget *parent)
     }
     setBatteryIcon();
 
-    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
-    QFont crimson(family);
-
-    ui->book1Btn->setFont(QFont(crimson));
-    ui->book2Btn->setFont(QFont(crimson));
-    ui->book3Btn->setFont(QFont(crimson));
-    ui->book4Btn->setFont(QFont(crimson));
-    ui->book1Btn->setStyleSheet("font-size: 11pt; padding: 25px");
-    ui->book2Btn->setStyleSheet("font-size: 11pt; padding: 25px");
-    ui->book3Btn->setStyleSheet("font-size: 11pt; padding: 25px");
-    ui->book4Btn->setStyleSheet("font-size: 11pt; padding: 25px");
-
     ui->brightnessBtn->setStyleSheet("font-size: 9pt; padding-bottom: 5px; padding-top: 5px; padding-left: 8px; padding-right: 8px;");
     ui->wifiBtn->setStyleSheet("font-size: 9pt; padding-bottom: 0px; padding-top: 0px; padding-left: 8px; padding-right: 8px");
 
@@ -176,13 +163,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->timeLabel->setText("");
     ui->batteryLabel->setStyleSheet("padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px");
 
-    ui->book1Btn->hide();
-    ui->book2Btn->hide();
-    ui->book3Btn->hide();
-    ui->book4Btn->hide();
-
-    ui->recentBooksLabel->hide();
-
     // Deleting/Hiding "Library" button if device is not WiFi-able
     // NOTE: Using deleteLater() on these elements causes a segmentation fault and aborts the whole program when the Settings, Apps or Home button is pressed. No idea why.
     if(global::device::isWifiAble == false && global::deviceID != "emu\n") {
@@ -196,73 +176,8 @@ MainWindow::MainWindow(QWidget *parent)
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
-    // Running rootfs changes script if it's there
-    // Not a big security flaw anymore. InkBox OS verifies the digital signature of the update package and aborts the update if it's not genuine.
-    if(checkconfig("/opt/inkbox_genuine") == true) {
-        if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
-            // Checking if we need to reboot after running the two scripts
-            if(checkconfig("/mnt/onboard/onboard/.inkbox/reboot") == true) {
-                reboot_after_update = true;
-                QFile::remove("/mnt/onboard/onboard/.inkbox/reboot");
-            }
-            else {
-                reboot_after_update = false;
-            }
-
-            QFile::copy("/mnt/onboard/onboard/.inkbox/rootfs.sh", "/external_root/tmp/rootfs.sh");
-            QFile::copy("/mnt/onboard/onboard/.inkbox/rootfs-internal.sh", "/tmp/rootfs-internal.sh");
-
-            // First script
-            QString rootfs_internal_prog ("sh");
-            QStringList rootfs_internal_args;
-            rootfs_internal_args << "/tmp/rootfs-internal.sh";
-            // Removing script
-            QFile::remove("/mnt/onboard/onboard/.inkbox/rootfs-internal.sh");
-            QProcess *rootfs_internal_proc = new QProcess();
-            rootfs_internal_proc->start(rootfs_internal_prog, rootfs_internal_args);
-            rootfs_internal_proc->waitForFinished();
-            rootfs_internal_proc->deleteLater();
-
-            // Second script
-            QString rootfs_prog ("chroot");
-            QStringList rootfs_args;
-            rootfs_args << "/external_root" << "/tmp/rootfs.sh";
-            // Removing script
-            QFile::remove("/mnt/onboard/onboard/.inkbox/rootfs.sh");
-            QProcess *rootfs_proc = new QProcess();
-            rootfs_proc->start(rootfs_prog, rootfs_args);
-            rootfs_proc->waitForFinished();
-            rootfs_proc->deleteLater();
-
-            // Removing update directory contents
-            QDir dir("/mnt/onboard/onboard/.inkbox");
-            dir.removeRecursively();
-            // Re-creating update directory
-            QString path("/mnt/onboard/onboard/.inkbox");
-            dir.mkpath(path);
-
-            // Rebooting if needed
-            if(reboot_after_update == true) {
-                reboot(false);
-                qApp->quit();
-            }
-            else {
-                // Update process finished.
-                ;
-            }
-        }
-    }
-    else {
-        ;
-    }
-
     // Custom settings
     // Reading from the config files and tweaking the program according to the options set
-
-    // Safety mesure; /inkbox is a tmpfs
-    string_writeconfig("/tmp/skip_opendialog", "true");
-    global::reader::skipOpenDialog = false;
-
     // Demo setting, changes "Welcome to InkBox" label to "InkBox"
     if(checkconfig(".config/01-demo/config") == true) {
         ui->inkboxLabel->setText("InkBox");
@@ -354,19 +269,6 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
-    // Display quote if requested; otherwise, display recent books
-    string_checkconfig(".config/05-quote/config");
-    if(checkconfig_str_val == "") {
-        if(checkconfig("/opt/inkbox_genuine") == true) {
-            checked_box = true;
-            writeconfig(".config/05-quote/config", "DisableQuote=");
-        }
-        else {
-            checked_box = false;
-            writeconfig(".config/05-quote/config", "DisableQuote=");
-        }
-    }
-
     // Global reading settings
     string_checkconfig(".config/16-global_reading_settings/config");
     if(checkconfig_str_val == "") {
@@ -408,91 +310,10 @@ MainWindow::MainWindow(QWidget *parent)
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“One of the saddest things in life, is the things one remembers.”\n― Agatha Christie");
         }
+        ui->homeStackedWidget->setCurrentIndex(0);
     }
     else {
-        ui->gridLayout_4->deleteLater();
-        ui->quotePictureLabel->deleteLater();
-        ui->quoteLabel->deleteLater();
-        ui->quoteHeadingLabel->setText("Books");
-        ui->book1Btn->show();
-        ui->book2Btn->show();
-        ui->book3Btn->show();
-        ui->book4Btn->show();
-
-        setRecentBooksLabelsTruncateThreshold();
-        // Book 1
-        string_checkconfig(".config/08-recent_books/1");
-        if(checkconfig_str_val == "") {
-            ui->book1Btn->hide();
-        }
-        else {
-            relative_path = checkconfig_str_val.split("/").last();
-            if(relative_path.length() > truncateThreshold) {
-                relative_path.truncate(truncateThreshold);
-                relative_path.append(" ...");
-            }
-            ui->book1Btn->setText(relative_path);
-            existing_recent_books = true;
-        }
-        // Book 2
-        string_checkconfig(".config/08-recent_books/2");
-        if(checkconfig_str_val == "") {
-            ui->book2Btn->hide();
-        }
-        else {
-            relative_path = checkconfig_str_val.split("/").last();
-            if(relative_path.length() > truncateThreshold) {
-                relative_path.truncate(truncateThreshold);
-                relative_path.append(" ...");
-            }
-            ui->book2Btn->setText(relative_path);
-            existing_recent_books = true;
-        }
-        // Book 3
-        string_checkconfig(".config/08-recent_books/3");
-        if(checkconfig_str_val == "") {
-            ui->book3Btn->hide();
-        }
-        else {
-            relative_path = checkconfig_str_val.split("/").last();
-            if(relative_path.length() > truncateThreshold) {
-                relative_path.truncate(truncateThreshold);
-                relative_path.append(" ...");
-            }
-            ui->book3Btn->setText(relative_path);
-            existing_recent_books = true;
-        }
-        // Book 4
-        string_checkconfig(".config/08-recent_books/4");
-        if(checkconfig_str_val == "") {
-            ui->book4Btn->hide();
-        }
-        else {
-            relative_path = checkconfig_str_val.split("/").last();
-            if(relative_path.length() > truncateThreshold) {
-                relative_path.truncate(truncateThreshold);
-                relative_path.append(" ...");
-            }
-            ui->book4Btn->setText(relative_path);
-            existing_recent_books = true;
-        }
-
-        // Preventing from having the same label two times
-        if(ui->book2Btn->text() == ui->book1Btn->text()) {
-            ui->book2Btn->hide();
-        }
-        else if(ui->book3Btn->text() == ui->book1Btn->text()) {
-            ui->book3Btn->hide();
-        }
-        else if(ui->book4Btn->text() == ui->book1Btn->text()) {
-            ui->book4Btn->hide();
-        }
-        else if(existing_recent_books == false) {
-            ui->recentBooksLabel->show();
-        }
-        else {
-            ui->recentBooksLabel->hide();
-        }
+        setupHomePageWidget();
     }
 
     // Check if it's the first boot since an update and confirm that it installed successfully
@@ -686,7 +507,23 @@ void MainWindow::on_appsBtn_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
-    openReaderFramework();
+    resetFullWindowException = true;
+    resetWindow(false);
+    if(global::mainwindow::tabSwitcher::localLibraryWidgetSelected != true) {
+        ui->pushButton->setStyleSheet("background: black; color: white");
+        ui->pushButton->setIcon(QIcon(":/resources/book_inverted.png"));
+
+        // Create widget
+        setupLocalLibraryWidget();
+        global::mainwindow::tabSwitcher::localLibraryWidgetCreated = true;
+
+        // Switch tab
+        ui->stackedWidget->setCurrentIndex(0);
+        global::mainwindow::tabSwitcher::localLibraryWidgetSelected = true;
+
+        // Repaint
+        this->repaint();
+    }
 }
 
 void MainWindow::on_searchBtn_clicked()
@@ -703,38 +540,6 @@ void MainWindow::on_quitBtn_clicked()
     quitWindow->showFullScreen();
 }
 
-void MainWindow::on_book1Btn_clicked()
-{
-    global::reader::skipOpenDialog = true;
-    global::reader::bookNumber = 1;
-
-    openReaderFramework();
-}
-
-void MainWindow::on_book2Btn_clicked()
-{
-    global::reader::skipOpenDialog = true;
-    global::reader::bookNumber = 2;
-
-    openReaderFramework();
-}
-
-void MainWindow::on_book3Btn_clicked()
-{
-    global::reader::skipOpenDialog = true;
-    global::reader::bookNumber = 3;
-
-    openReaderFramework();
-}
-
-void MainWindow::on_book4Btn_clicked()
-{
-    global::reader::skipOpenDialog = true;
-    global::reader::bookNumber = 4;
-
-    openReaderFramework();
-}
-
 void MainWindow::on_brightnessBtn_clicked()
 {
     log("Showing Brightness Dialog", className);
@@ -746,7 +551,13 @@ void MainWindow::on_brightnessBtn_clicked()
 void MainWindow::on_homeBtn_clicked()
 {
     log("Showing home screen", className);
-    global::mainwindow::tabSwitcher::repaint = true;
+    if(global::localLibrary::bookOptionsDialog::bookPinAction == true) {
+        global::localLibrary::bookOptionsDialog::bookPinAction = false;
+        global::mainwindow::tabSwitcher::repaint = false;
+    }
+    else {
+        global::mainwindow::tabSwitcher::repaint = true;
+    }
     resetFullWindowException = true;
     resetWindow(true);
 }
@@ -754,10 +565,14 @@ void MainWindow::on_homeBtn_clicked()
 void MainWindow::resetWindow(bool resetStackedWidget) {
     // Reset layout
     if(resetStackedWidget == true) {
+        ui->homeStackedWidget->setCurrentIndex(2);
         ui->stackedWidget->setCurrentIndex(0);
     }
 
     // Destroy widgets
+    if(global::mainwindow::tabSwitcher::homePageWidgetCreated == true) {
+        homePageWidgetWindow->deleteLater();
+    }
     if(global::mainwindow::tabSwitcher::appsWidgetCreated == true) {
         appsWindow->deleteLater();
     }
@@ -767,18 +582,27 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
     if(global::mainwindow::tabSwitcher::libraryWidgetCreated == true) {
         libraryWidgetWindow->deleteLater();
     }
+    if(global::mainwindow::tabSwitcher::localLibraryWidgetCreated == true) {
+        localLibraryWidgetWindow->deleteLater();
+    }
 
+    global::mainwindow::tabSwitcher::homePageWidgetCreated = false;
     global::mainwindow::tabSwitcher::appsWidgetCreated = false;
     global::mainwindow::tabSwitcher::settingsChooserWidgetCreated = false;
     global::mainwindow::tabSwitcher::appsWidgetSelected = false;
     global::mainwindow::tabSwitcher::settingsChooserWidgetSelected = false;
     global::mainwindow::tabSwitcher::libraryWidgetCreated = false;
     global::mainwindow::tabSwitcher::libraryWidgetSelected = false;
+    global::mainwindow::tabSwitcher::localLibraryWidgetCreated = false;
+    global::mainwindow::tabSwitcher::localLibraryWidgetSelected = false;
 
     resetIcons();
     setBatteryIcon();
     if(global::mainwindow::tabSwitcher::repaint == true) {
         this->repaint();
+    }
+    if(resetStackedWidget == true) {
+        setupHomePageWidget();
     }
 }
 
@@ -790,6 +614,8 @@ void MainWindow::resetIcons() {
     ui->settingsBtn->setIcon(QIcon(":/resources/settings.png"));
     ui->libraryButton->setStyleSheet("background: white");
     ui->libraryButton->setIcon(QIcon(":/resources/online-library.png"));
+    ui->pushButton->setStyleSheet("background: white");
+    ui->pushButton->setIcon(QIcon(":/resources/book.png"));
 }
 
 void MainWindow::setBatteryIcon() {
@@ -1138,7 +964,7 @@ void MainWindow::on_libraryButton_clicked()
 {
     log("Launching Online Library", className);
     if(testPing(true) == 0 or global::deviceID == "emu\n") {
-        resetFullWindowException = false;
+        resetFullWindowException = true;
         resetWindow(false);
         if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
             ui->libraryButton->setStyleSheet("background: black; color: white");
@@ -1173,18 +999,6 @@ void MainWindow::resetFullWindow() {
     }
 }
 
-void MainWindow::setRecentBooksLabelsTruncateThreshold() {
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        truncateThreshold = 12;
-    }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n"){
-        truncateThreshold = 20;
-    }
-    else {
-        truncateThreshold = 12;
-    }
-}
-
 void MainWindow::checkForOtaUpdate() {
     if(global::network::isConnected == true) {
         string_checkconfig_ro("/external_root/opt/storage/update/last_sync");
@@ -1204,4 +1018,24 @@ void MainWindow::checkForOtaUpdate() {
 
 void MainWindow::resetWifiIconClickedWhileReconnecting() {
     wifiIconClickedWhileReconnecting = false;
+}
+
+void MainWindow::setupLocalLibraryWidget() {
+    localLibraryWidgetWindow = new localLibraryWidget(this);
+    QObject::connect(localLibraryWidgetWindow, &localLibraryWidget::openBookSignal, this, &MainWindow::openBookFile);
+    QObject::connect(localLibraryWidgetWindow, &localLibraryWidget::refreshScreen, this, &MainWindow::refreshScreen);
+    localLibraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+    ui->homeStackedWidget->insertWidget(1, localLibraryWidgetWindow);
+    ui->homeStackedWidget->setCurrentIndex(1);
+}
+
+void MainWindow::setupHomePageWidget() {
+    homePageWidgetWindow = new homePageWidget(this);
+    QObject::connect(homePageWidgetWindow, &homePageWidget::openBookSignal, this, &MainWindow::openBookFile);
+    QObject::connect(homePageWidgetWindow, &homePageWidget::refreshScreen, this, &MainWindow::refreshScreen);
+    QObject::connect(homePageWidgetWindow, &homePageWidget::relaunchHomePageWidget, this, &MainWindow::on_homeBtn_clicked);
+    homePageWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+    ui->homeStackedWidget->insertWidget(2, homePageWidgetWindow);
+    ui->homeStackedWidget->setCurrentIndex(2);
+    global::mainwindow::tabSwitcher::homePageWidgetCreated = true;
 }

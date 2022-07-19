@@ -27,18 +27,23 @@ SOURCES += \
     alert.cpp \
     apps.cpp \
     bookinfodialog.cpp \
+    bookoptionsdialog.cpp \
     brightnessdialog.cpp \
     calendarapp.cpp \
     dictionarywidget.cpp \
     encryptionmanager.cpp \
     generaldialog.cpp \
+    homepagewidget.cpp \
     hourglassanimationwidget.cpp \
     koboxappsdialog.cpp \
     koboxsettings.cpp \
     librarywidget.cpp \
+    locallibrarywidget.cpp \
     main.cpp \
     mainwindow.cpp \
     otamanager.cpp \
+    qclickablelabel.cpp \
+    qtooltiplabel.cpp \
     quit.cpp \
     reader.cpp \
     savedwords.cpp \
@@ -57,18 +62,23 @@ HEADERS += \
     alert.h \
     apps.h \
     bookinfodialog.h \
+    bookoptionsdialog.h \
     brightnessdialog.h \
     calendarapp.h \
     dictionarywidget.h \
     encryptionmanager.h \
     functions.h \
     generaldialog.h \
+    homepagewidget.h \
     hourglassanimationwidget.h \
     koboxappsdialog.h \
     koboxsettings.h \
     librarywidget.h \
+    locallibrarywidget.h \
     mainwindow.h \
     otamanager.h \
+    qclickablelabel.h \
+    qtooltiplabel.h \
     quit.h \
     reader.h \
     savedwords.h \
@@ -87,15 +97,18 @@ FORMS += \
     alert.ui \
     apps.ui \
     bookinfodialog.ui \
+    bookoptionsdialog.ui \
     brightnessdialog.ui \
     calendarapp.ui \
     dictionarywidget.ui \
     encryptionmanager.ui \
     generaldialog.ui \
+    homepagewidget.ui \
     hourglassanimationwidget.ui \
     koboxappsdialog.ui \
     koboxsettings.ui \
     librarywidget.ui \
+    locallibrarywidget.ui \
     mainwindow.ui \
     otamanager.ui \
     quit.ui \

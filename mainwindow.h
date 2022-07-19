@@ -18,6 +18,8 @@
 #include "toast.h"
 #include "otamanager.h"
 #include "librarywidget.h"
+#include "locallibrarywidget.h"
+#include "homepagewidget.h"
 
 using namespace std;
 
@@ -70,10 +72,6 @@ private slots:
     void on_pushButton_clicked();
     void on_searchBtn_clicked();
     void on_quitBtn_clicked();
-    void on_book1Btn_clicked();
-    void on_book2Btn_clicked();
-    void on_book3Btn_clicked();
-    void on_book4Btn_clicked();
     void on_brightnessBtn_clicked();
     void openUpdateDialog();
     void openWifiDialog();
@@ -97,8 +95,9 @@ private slots:
     void on_libraryButton_clicked();
     void resetWindow(bool resetStackedWidget);
     void resetFullWindow();
-    void setRecentBooksLabelsTruncateThreshold();
     void resetWifiIconClickedWhileReconnecting();
+    void setupLocalLibraryWidget();
+    void setupHomePageWidget();
 
 private:
     Ui::MainWindow * ui;
@@ -117,6 +116,8 @@ private:
     toast * toastWindow;
     otaManager * otaManagerWindow;
     libraryWidget * libraryWidgetWindow;
+    localLibraryWidget * localLibraryWidgetWindow;
+    homePageWidget * homePageWidgetWindow;
 };
 
 #endif // MAINWINDOW_H

@@ -241,6 +241,10 @@ void generalDialog::on_cancelBtn_clicked()
         global::kobox::resetKoboxDialog = false;
         generalDialog::close();
     }
+    else if(keypadDialog == true) {
+        global::keyboard::keypadDialog = false;
+        generalDialog::close();
+    }
     else if(global::encfs::disableStorageEncryptionDialog == true) {
         emit cancelDisableStorageEncryption();
         global::encfs::disableStorageEncryptionDialog = false;
@@ -703,7 +707,7 @@ void generalDialog::syncGutenbergCatalog() {
 
     string_writeconfig("/opt/ibxd", "gutenberg_sync\n");
     QTimer * syncCheckTimer = new QTimer(this);
-    syncCheckTimer->setInterval(100);
+    syncCheckTimer->setInterval(500);
     connect(syncCheckTimer, &QTimer::timeout, [&]() {
         if(QFile::exists("/inkbox/gutenbergSyncDone") == true) {
             if(checkconfig("/inkbox/gutenbergSyncDone") == true) {

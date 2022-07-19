@@ -20,11 +20,11 @@ otaManager::otaManager(QWidget *parent) :
         connect(otaCheckTimer, &QTimer::timeout, [&]() {
             if(QFile::exists("/run/can_ota_update") == true) {
                 if(checkconfig("/run/can_ota_update") == true) {
-                    log("OTA update is available!", className);
+                    log("OTA update is available", className);
                     emit canOtaUpdate(true);
                 }
                 else {
-                    log("No OTA update available.", className);
+                    log("No OTA update available", className);
                     emit canOtaUpdate(false);
                 }
                 unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
@@ -44,12 +44,12 @@ otaManager::otaManager(QWidget *parent) :
         connect(otaDownloadTimer, &QTimer::timeout, [&]() {
             if(QFile::exists("/run/can_install_ota_update") == true) {
                 if(checkconfig("/run/can_install_ota_update") == true) {
-                    log("Download succeeded.", className);
+                    log("Download succeeded", className);
                     emit downloadedOtaUpdate(true);
                     global::otaUpdate::downloadOta = false;
                 }
                 else {
-                    log("Download failed.", className);
+                    log("Download failed", className);
                     emit downloadedOtaUpdate(false);
                     global::otaUpdate::downloadOta = false;
                 }

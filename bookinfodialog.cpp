@@ -30,57 +30,94 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
     stdIconWidth = sW / 4;
     stdIconHeight = sH / 4;
 
-    if(global::library::isLatestBook == true) {
-        QString bookNumberQstr = QString::number(global::library::latestBookNumber);
+    if(global::bookInfoDialog::localInfoDialog == false) {
+        if(global::library::isLatestBook == true) {
+            QString bookNumberQstr = QString::number(global::library::latestBookNumber);
 
-        QString coverPath = "/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/";
-        coverPath = coverPath.append(bookNumberQstr);
-        coverPath = coverPath.append("/cover.jpg");
+            QString coverPath = "/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/";
+            coverPath = coverPath.append(bookNumberQstr);
+            coverPath = coverPath.append("/cover.jpg");
 
-        QString idPath = "/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/";
-        idPath = idPath.append(bookNumberQstr);
-        idPath = idPath.append("/id");
-        global::library::bookId = readFile(idPath).toULong();
+            QString idPath = "/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/";
+            idPath = idPath.append(bookNumberQstr);
+            idPath = idPath.append("/id");
+            global::library::bookId = readFile(idPath).toULong();
 
-        QPixmap coverPixmap(coverPath);
-        QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-        ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
-        global::library::isLatestBook = false;
+            QPixmap coverPixmap(coverPath);
+            QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
+            global::library::isLatestBook = false;
 
-        ui->bookTitleLabel->setText(global::library::bookTitle);
-    }
-    else {
-        ui->bookTitleLabel->setText(global::library::bookTitle);
+            ui->bookTitleLabel->setText(global::library::bookTitle);
+        }
+        else {
+            ui->bookTitleLabel->setText(global::library::bookTitle);
 
-        QDir gutenbergDir;
-        gutenbergDir.mkpath("/inkbox/gutenberg");
-        string_writeconfig("/inkbox/gutenberg/bookid", QString::number(global::library::bookId).toStdString());
-        string_writeconfig("/opt/ibxd", "gutenberg_get_cover\n");
-        while(true) {
-            if(QFile::exists("/inkbox/gutenberg/getCoverDone")) {
-                if(checkconfig("/inkbox/gutenberg/getCoverDone") == true) {
-                    QPixmap coverPixmap("/inkbox/gutenberg/book_cover.jpg");
-                    QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-                    ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
-                    QFile::remove("/inkbox/gutenberg/getCoverDone");
-                    break;
-                }
-                else {
-                    QPixmap coverPixmap(":/resources/cover_unavailable.png");
-                    QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-                    ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
-                    QFile::remove("/inkbox/gutenberg/getCoverDone");
-                    break;
+            QDir gutenbergDir;
+            gutenbergDir.mkpath("/inkbox/gutenberg");
+            string_writeconfig("/inkbox/gutenberg/bookid", QString::number(global::library::bookId).toStdString());
+            string_writeconfig("/opt/ibxd", "gutenberg_get_cover\n");
+            while(true) {
+                if(QFile::exists("/inkbox/gutenberg/getCoverDone")) {
+                    if(checkconfig("/inkbox/gutenberg/getCoverDone") == true) {
+                        QPixmap coverPixmap("/inkbox/gutenberg/book_cover.jpg");
+                        QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+                        ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
+                        QFile::remove("/inkbox/gutenberg/getCoverDone");
+                        break;
+                    }
+                    else {
+                        QPixmap coverPixmap(":/resources/cover_unavailable.png");
+                        QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+                        ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
+                        QFile::remove("/inkbox/gutenberg/getCoverDone");
+                        break;
+                    }
                 }
             }
         }
+
+        log("Setting up book info dialog, ID: " + QString::number(global::library::bookId) + ", title: " + global::library::bookTitle, className);
+    }
+    else {
+        QJsonObject bookJsonObject = getBookMetadata(global::localLibrary::bookOptionsDialog::bookID);
+        QString bookInfo;
+        QString title = bookJsonObject["Title"].toString();
+        QString author = bookJsonObject["Author"].toString();
+        QString publicationDate = bookJsonObject["PublicationDate"].toString();
+        QString path = bookJsonObject["BookPath"].toString();
+        if(!title.isEmpty()) {
+            bookInfo.append("<b>Title:</b> " + title + "<br>");
+        }
+        if(!author.isEmpty()) {
+            bookInfo.append("<b>Author:</b> " + author + "<br>");
+        }
+        if(!publicationDate.isEmpty()) {
+            bookInfo.append("<b>Publication date:</b> " + publicationDate + "<br>");
+        }
+        if(!path.isEmpty()) {
+            bookInfo.append("<b>Path:</b> " + path + "<br>");
+        }
+
+        global::text::textBrowserContents = bookInfo;
+        textwidget * textwidgetWindow = new textwidget(this);
+        ui->stackedWidget->insertWidget(1, textwidgetWindow);
+        ui->stackedWidget->setCurrentIndex(1);
     }
 
-    log("Setting up book info dialog, ID: " + QString::number(global::library::bookId) + ", title: " + global::library::bookTitle, className);
+    QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
+    {
+        int wx = screenGeometry.width();
+
+        int x = wx - 25;
+        int y = this->height() * determineYIncrease();
+        this->setFixedWidth(x);
+        this->setFixedHeight(y);
+
+        this->adjustSize();
+    }
 
     // Centering dialog
-    this->adjustSize();
-    QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
     int x = (screenGeometry.width() - this->width()) / 2;
     int y = (screenGeometry.height() - this->height()) / 2;
     this->move(x, y);
@@ -94,6 +131,7 @@ bookInfoDialog::~bookInfoDialog()
 void bookInfoDialog::on_closeBtn_clicked()
 {
     global::library::bookTitle = "";
+    global::bookInfoDialog::localInfoDialog = false;
     bookInfoDialog::close();
 }
 
@@ -122,6 +160,7 @@ void bookInfoDialog::waitForBookFetch() {
                 QString function = __func__; log(function + ": Download successful", className);
                 emit showToast("Download successful");
                 QFile::remove("/inkbox/gutenberg/getBookDone");
+                QFile::remove(global::localLibrary::databasePath);
                 break;
             }
             else {

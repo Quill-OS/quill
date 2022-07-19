@@ -822,9 +822,7 @@ void settings::on_showSystemInfoBtn_clicked()
     // Show a system info dialog
     log("Showing system info dialog", className);
     generalDialogWindow = new generalDialog();
-    if(global::deviceID == "n306\n") {
-        generalDialogWindow->yIncrease = 2.6;
-    }
+    generalDialogWindow->yIncrease = determineYIncrease();
     generalDialogWindow->increaseSize();
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
 }
@@ -1061,6 +1059,7 @@ void settings::on_generateSystemReportBtn_clicked()
     while(true) {
         if(QFile::exists("/inkbox/systemReportDone")) {
             if(checkconfig("/inkbox/systemReportDone") == true) {
+                QFile::remove(global::localLibrary::databasePath);
                 emit showToast("System report generated successfully");
             }
             else {

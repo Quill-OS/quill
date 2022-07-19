@@ -19,6 +19,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
+#include <QCryptographicHash>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -52,12 +53,15 @@ namespace global {
     namespace mainwindow {
         namespace tabSwitcher {
             inline bool repaint;
+            inline bool homePageWidgetCreated;
             inline bool appsWidgetCreated;
             inline bool appsWidgetSelected;
             inline bool settingsChooserWidgetCreated;
             inline bool settingsChooserWidgetSelected;
             inline bool libraryWidgetCreated;
             inline bool libraryWidgetSelected;
+            inline bool localLibraryWidgetCreated;
+            inline bool localLibraryWidgetSelected;
         }
         inline bool updateDialog;
         inline bool lowBatteryDialog;
@@ -122,6 +126,23 @@ namespace global {
         inline bool librarySearchDialog;
         inline bool libraryResults;
     }
+    namespace bookInfoDialog {
+        inline bool localInfoDialog;
+    }
+    namespace localLibrary {
+        static inline QString rawDatabasePath = "/inkbox/LocalLibrary.db.raw";
+        static inline QString databaseDirectoryPath = "/mnt/onboard/onboard/.database/";
+        static inline QString databasePath = databaseDirectoryPath + "LocalLibrary.db";
+        static inline QString recentBooksDatabasePath = databaseDirectoryPath + "RecentBooks.db";
+        static inline QString pinnedBooksDatabasePath = databaseDirectoryPath + "PinnedBooks.db";
+        inline bool headless;
+        namespace bookOptionsDialog {
+            inline int bookID;
+            inline bool deleteOption = true;
+            inline bool bookDeleted;
+            inline bool bookPinAction;
+        }
+    }
     namespace localStorage {
         inline QStringList searchResultsPaths;
     }
@@ -129,11 +150,19 @@ namespace global {
         inline bool status;
     }
     namespace userApps {
-       inline bool appCompatibilityDialog;
-       inline QString appCompatibilityText;
-       inline bool appCompatibilityLastContinueStatus = true; // This is for RequiredFeatures to show only one dialog if 'Cancel' is clicked.
-       inline bool appInfoDialog;
-       inline bool launchApp;
+        inline bool appCompatibilityDialog;
+        inline QString appCompatibilityText;
+        inline bool appCompatibilityLastContinueStatus = true; // This is for RequiredFeatures to show only one dialog if 'Cancel' is clicked.
+        inline bool appInfoDialog;
+        inline bool launchApp;
+    }
+    namespace homePageWidget {
+        static inline int recentBooksNumber = 8;
+        static inline int recentBooksNumberPerRow = 4;
+        static inline int recentBooksRowNumber = global::homePageWidget::recentBooksNumber / global::homePageWidget::recentBooksNumberPerRow;
+        static inline int pinnedBooksNumber = 4;
+        static inline int pinnedBooksNumberPerRow = 4;
+        static inline int pinnedBooksRowNumber = global::homePageWidget::pinnedBooksNumber / global::homePageWidget::pinnedBooksNumberPerRow;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -163,7 +192,7 @@ namespace {
     int defaultPdfPageHeight;
     bool checked_box = false;
     QFile logFile("/external_root/var/log/inkbox-gui.log");
-    void log(QString message, QString className, bool applicationStart = false) {
+    void log(QString message, QString className = "undefined", bool applicationStart = false) {
         if(global::logger::status == true) {
             QString initialTime;
             if(applicationStart == true) {
@@ -281,6 +310,16 @@ namespace {
         int quoteNumber = QRandomGenerator::global()->bounded(1, 6);
         return quoteNumber;
         return 0;
+    }
+    void writeFile(QString filename, QString content) {
+        QFile file(filename);
+        if(file.open(QIODevice::ReadWrite)) {
+            QTextStream stream(&file);
+            stream << content;
+        }
+        else {
+            QString function = __func__; log(function + ": Failed to write string '" + content + "' to file '" + filename + "'", "functions");
+        }
     }
     void string_writeconfig(std::string file, std::string config_option) {
         std::ofstream fhandler;
@@ -568,7 +607,7 @@ namespace {
         global::systemInfoText = "<b>InkBox OS version ";
         string_checkconfig_ro("/external_root/opt/isa/version");
         global::systemInfoText.append(checkconfig_str_val);
-        global::systemInfoText.append("</b>");
+        global::systemInfoText.append("</b><br>Copyright <font face='Inter'>©</font> 2021-2022 Nicolas Mailloux and contributors");
         global::systemInfoText.append("<br><b>Git:</b> ");
         global::systemInfoText.append(GIT_VERSION);
         global::systemInfoText.append("<br><b>Device UID:</b> ");
@@ -941,6 +980,46 @@ namespace {
                     }
                 }
             }
+        }
+    }
+    QByteArray fileChecksum(const QString &fileName, QCryptographicHash::Algorithm hashAlgorithm) {
+        QFile f(fileName);
+        if (f.open(QFile::ReadOnly)) {
+            QCryptographicHash hash(hashAlgorithm);
+            if (hash.addData(&f)) {
+                return hash.result();
+            }
+        }
+    }
+    QJsonObject getBookMetadata(int bookID) {
+        // Read library database from file
+        QFile database(global::localLibrary::databasePath);
+        QByteArray data;
+        if(database.open(QIODevice::ReadOnly)) {
+            data = database.readAll();
+            database.close();
+        }
+        else {
+            QString function = __func__; log(function + ": Failed to open local library database file for reading at '" + database.fileName() + "'", "functions");
+        }
+
+        // Parse JSON data
+        QJsonObject jsonObject = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(data))).object();
+        QJsonArray jsonArrayList = jsonObject["database"].toArray();
+        return jsonArrayList.at(bookID - 1).toObject();
+    }
+    float determineYIncrease() {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+            return 2;
+        }
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
+            return 2.6;
+        }
+        else if(global::deviceID == "n437\n" or global::deviceID == "n873\n") {
+            return 3;
+        }
+        else {
+            return 2;
         }
     }
 }

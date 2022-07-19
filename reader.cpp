@@ -15,8 +15,8 @@
 #include <QFontDatabase>
 #include <QDirIterator>
 #include <QTextCursor>
-#include <QDebug>
 #include <QGraphicsScene>
+#include <QJsonDocument>
 
 using namespace std;
 
@@ -104,6 +104,12 @@ reader::reader(QWidget *parent) :
     ui->decreaseScaleBtn->setIcon(QIcon(":/resources/zoom-out.png"));
     ui->quitBtn->setText("");
     ui->quitBtn->setIcon(QIcon(":/resources/power.png"));
+    ui->previousBtn->setText("");
+    ui->previousBtn->setIcon(QIcon(":/resources/arrow-left.png"));
+    ui->optionsBtn->setText("");
+    ui->optionsBtn->setIcon(QIcon(":/resources/settings.png"));
+    ui->nextBtn->setText("");
+    ui->nextBtn->setIcon(QIcon(":/resources/arrow-right.png"));
 
     // On the Mini with QT_FONT_DPI set to 187 (default for this device), quitBtn makes the UI go beyond the limits of the screen when the menu bar is shown
     if(global::deviceID == "n705\n") {
@@ -141,24 +147,6 @@ reader::reader(QWidget *parent) :
         else if(global::reader::bookFile.isEmpty() == false) {
             book_file = global::reader::bookFile;
             global::reader::bookFile = "";
-        }
-        else {
-            if(global::reader::bookNumber == 1) {
-                string_checkconfig(".config/08-recent_books/1");
-                book_file = checkconfig_str_val;
-            }
-            if(global::reader::bookNumber == 2) {
-                string_checkconfig(".config/08-recent_books/2");
-                book_file = checkconfig_str_val;
-            }
-            if(global::reader::bookNumber == 3) {
-                string_checkconfig(".config/08-recent_books/3");
-                book_file = checkconfig_str_val;
-            }
-            if(global::reader::bookNumber == 4) {
-                string_checkconfig(".config/08-recent_books/4");
-                book_file = checkconfig_str_val;
-            }
         }
     }
     else {
@@ -309,6 +297,11 @@ reader::reader(QWidget *parent) :
         ui->nextBtn->setStyleSheet("padding: 13.5px");
         ui->previousBtn->setStyleSheet("padding: 13.5px");
         ui->optionsBtn->setStyleSheet("padding: 13.5px");
+    }
+    else if(global::deviceID == "n437\n") {
+        ui->nextBtn->setStyleSheet("padding: 12.5px");
+        ui->previousBtn->setStyleSheet("padding: 12.5px");
+        ui->optionsBtn->setStyleSheet("padding: 12.5px");
     }
     ui->sizeValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
@@ -640,40 +633,51 @@ reader::reader(QWidget *parent) :
     // Way to tell shell scripts that we're in the Reader framework
     string_writeconfig("/tmp/inkboxReading", "true");
 
-    // Saving the book opened in the favorites list
-    string_checkconfig(".config/08-recent_books/1");
-    book_1 = checkconfig_str_val;
-    string str_book_1 = book_1.toStdString();
-    string_checkconfig(".config/08-recent_books/2");
-    book_2 = checkconfig_str_val;
-    string str_book_2 = book_2.toStdString();
-    string_checkconfig(".config/08-recent_books/3");
-    book_3 = checkconfig_str_val;
-    string str_book_3 = book_3.toStdString();
-    string_checkconfig(".config/08-recent_books/4");
-    book_4 = checkconfig_str_val;
-    std::string str_book_4 = book_4.toStdString();
-
-    // Don't mess up "Recently read books" with random "book.txt" buttons...
-    if(wakeFromSleep == true) {
-        string_checkconfig("/tmp/inkboxBookPath");
-        book_file_str = checkconfig_str_val.toStdString();
+    // Maintain a 'Recent books' list
+    QJsonObject recentBooksObject;
+    if(QFile::exists(global::localLibrary::recentBooksDatabasePath)) {
+        log("Reading recent books database", className);
+        QFile recentBooksDatabase(global::localLibrary::recentBooksDatabasePath);
+        QByteArray recentBooksData;
+        if(recentBooksDatabase.open(QIODevice::ReadOnly)) {
+            recentBooksData = recentBooksDatabase.readAll();
+            recentBooksDatabase.close();
+        }
+        else {
+            QString function = __func__; log(function + ": Failed to open recent books database file for reading at '" + recentBooksDatabase.fileName() + "'", className);
+        }
+        QJsonObject mainJsonObject = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(recentBooksData))).object();
+        for(int i = 1; i <= global::homePageWidget::recentBooksNumber; i++) {
+            QString objectName = "Book" + QString::number(i);
+            QJsonObject jsonObject = mainJsonObject[objectName].toObject();
+            if(i == 1) {
+                if(jsonObject.value("BookPath").toString() != book_file) {
+                    // Circular buffer
+                    for(int i = global::homePageWidget::recentBooksNumber; i >= 2; i--) {
+                        mainJsonObject["Book" + QString::number(i)] = mainJsonObject["Book" + QString::number(i - 1)];
+                    }
+                    jsonObject.insert("BookPath", QJsonValue(book_file));
+                    mainJsonObject[objectName] = jsonObject;
+                }
+            }
+        }
+        recentBooksObject = mainJsonObject;
     }
     else {
-        book_file_str = book_file.toStdString();
-        string_writeconfig("/tmp/inkboxBookPath", book_file_str);
-    }
+        QJsonObject mainJsonObject;
+        QJsonObject firstJsonObject;
+        firstJsonObject.insert("BookPath", QJsonValue(book_file));
+        mainJsonObject["Book1"] = firstJsonObject;
 
-    if(book_1 == book_file) {
-        ;
+        for(int i = 2; i <= global::homePageWidget::recentBooksNumber; i++) {
+            QJsonObject jsonObject;
+            jsonObject.insert("BookPath", QJsonValue(""));
+            mainJsonObject["Book" + QString::number(i)] = jsonObject;
+        }
+        recentBooksObject = mainJsonObject;
     }
-    else {
-        // Moves old items to the right and puts the new one at the left side
-        string_writeconfig(".config/08-recent_books/1", book_file_str);
-        string_writeconfig(".config/08-recent_books/2", str_book_1);
-        string_writeconfig(".config/08-recent_books/3", str_book_2);
-        string_writeconfig(".config/08-recent_books/4", str_book_3);
-    }
+    QFile::remove(global::localLibrary::recentBooksDatabasePath);
+    writeFile(global::localLibrary::recentBooksDatabasePath, qCompress(QJsonDocument(recentBooksObject).toJson()).toBase64());
 
     // USB mass storage prompt
     if(global::reader::startUsbmsPrompt == true) {
@@ -1158,9 +1162,13 @@ void reader::on_optionsBtn_clicked()
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 13.5px");
         }
+        else if(global::deviceID == "n437\n") {
+            ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 12.5px");
+        }
         else {
             ui->optionsBtn->setStyleSheet("background: white; color: black");
         }
+        ui->optionsBtn->setIcon(QIcon(":/resources/settings.png"));
         // The Glo HD (N437) has a newer platform plugin that doesn't need this
         if(global::deviceID != "n437\n") {
             QTimer::singleShot(500, this, SLOT(repaint()));
@@ -1172,9 +1180,13 @@ void reader::on_optionsBtn_clicked()
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 13.5px");
         }
+        else if(global::deviceID == "n437\n") {
+            ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 12.5px");
+        }
         else {
             ui->optionsBtn->setStyleSheet("background: black; color: white");
         }
+        ui->optionsBtn->setIcon(QIcon(":/resources/settings-inverted.png"));
         this->repaint();
         menubar_shown = true;
     }

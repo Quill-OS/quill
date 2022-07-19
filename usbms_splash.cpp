@@ -216,6 +216,8 @@ void usbms_splash::restartServices() {
             }
         }
     }
+    // Re-generate local library on next launch
+    QFile::remove(global::localLibrary::databasePath);
 
     quit_restart();
 }
