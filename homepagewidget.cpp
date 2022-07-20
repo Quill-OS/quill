@@ -10,6 +10,24 @@ homePageWidget::homePageWidget(QWidget *parent) :
     ui(new Ui::homePageWidget)
 {
     ui->setupUi(this);
+    if(global::deviceID == "n705\n") {
+        stdIconWidth = sW / 52;
+        stdIconHeight = sH / 52;
+    }
+    else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        stdIconWidth = sW / 54;
+        stdIconHeight = sH / 54;
+    }
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        stdIconWidth = sW / 52.5;
+        stdIconHeight = sH / 52.5;
+    }
+    else {
+        stdIconWidth = sW / 54;
+        stdIconHeight = sH / 54;
+    }
+    ui->recentBooksIconLabel->setPixmap(QPixmap(":/resources/file-text.png").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    ui->pinnedBooksIconLabel->setPixmap(QPixmap(":/resources/pin.png").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
     horizontalLayoutArray.resize(global::homePageWidget::recentBooksRowNumber);
     verticalLayoutArray.resize(global::homePageWidget::recentBooksNumber);

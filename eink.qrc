@@ -79,5 +79,7 @@
         <file>resources/book_inverted.png</file>
         <file>resources/arrow-left.png</file>
         <file>resources/arrow-right.png</file>
+        <file>resources/file-text.png</file>
+        <file>resources/pin.png</file>
     </qresource>
 </RCC>
