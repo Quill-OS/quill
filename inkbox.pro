@@ -18,112 +18,112 @@ PRE_TARGETDEPS += $$PRE_BUILD_TARGET
 QMAKE_EXTRA_TARGETS += updatemakefiles
 DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
 DEFINES += GIT_COMMIT=\\\"$$GIT_COMMIT\\\"
-
+wi
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    alert.cpp \
-    apps.cpp \
-    bookinfodialog.cpp \
-    bookoptionsdialog.cpp \
-    brightnessdialog.cpp \
-    calendarapp.cpp \
-    dictionarywidget.cpp \
-    encryptionmanager.cpp \
-    generaldialog.cpp \
-    homepagewidget.cpp \
-    hourglassanimationwidget.cpp \
-    koboxappsdialog.cpp \
-    koboxsettings.cpp \
-    librarywidget.cpp \
-    locallibrarywidget.cpp \
-    main.cpp \
-    mainwindow.cpp \
-    otamanager.cpp \
-    qclickablelabel.cpp \
-    qtooltiplabel.cpp \
-    quit.cpp \
-    reader.cpp \
-    savedwords.cpp \
-    searchresultswidget.cpp \
-    settings.cpp \
-    settingschooser.cpp \
-    textwidget.cpp \
-    toast.cpp \
-    usbms_splash.cpp \
-    userapps.cpp \
-    virtualkeyboard.cpp \
-    virtualkeypad.cpp \
-    wifidialog.cpp
+    src/splash/alert.cpp \
+    src/apps/apps.cpp \
+    src/widgets/dialogs/library/bookinfodialog.cpp \
+    src/widgets/dialogs/library/bookoptionsdialog.cpp \
+    src/widgets/dialogs/brightnessdialog.cpp \
+    src/apps/calendarapp.cpp \
+    src/widgets/reader/dictionarywidget.cpp \
+    src/encfs/encryptionmanager.cpp \
+    src/widgets/dialogs/generaldialog.cpp \
+    src/homeWidget/homepagewidget.cpp \
+    src/widgets/misc/hourglassanimationwidget.cpp \
+    src/widgets/dialogs/kobox/koboxappsdialog.cpp \
+    src/settings/koboxsettings.cpp \
+    src/onlineLibrary/librarywidget.cpp \
+    src/localLibrary/locallibrarywidget.cpp \
+    src/main.cpp \
+    src/homeWidget/mainwindow.cpp \
+    src/otaUpdate/otamanager.cpp \
+    src/widgets/interfaceWidgets/qclickablelabel.cpp \
+    src/widgets/interfaceWidgets/qtooltiplabel.cpp \
+    src/quit/quit.cpp \
+    src/reader/reader.cpp \
+    src/apps/savedwords.cpp \
+    src/widgets/text/searchresultswidget.cpp \
+    src/settings/settings.cpp \
+    src/settings/settingschooser.cpp \
+    src/widgets/text/textwidget.cpp \
+    src/widgets/interfaceWidgets/toast.cpp \
+    src/splash/usbms_splash.cpp \
+    src/apps/userapps.cpp \
+    src/widgets/virtualKeyboard/virtualkeyboard.cpp \
+    src/widgets/virtualKeyboard/virtualkeypad.cpp \
+    src/widgets/dialogs/wifi/wifidialog.cpp
 
 HEADERS += \
-    alert.h \
-    apps.h \
-    bookinfodialog.h \
-    bookoptionsdialog.h \
-    brightnessdialog.h \
-    calendarapp.h \
-    dictionarywidget.h \
-    encryptionmanager.h \
-    functions.h \
-    generaldialog.h \
-    homepagewidget.h \
-    hourglassanimationwidget.h \
-    koboxappsdialog.h \
-    koboxsettings.h \
-    librarywidget.h \
-    locallibrarywidget.h \
-    mainwindow.h \
-    otamanager.h \
-    qclickablelabel.h \
-    qtooltiplabel.h \
-    quit.h \
-    reader.h \
-    savedwords.h \
-    searchresultswidget.h \
-    settings.h \
-    settingschooser.h \
-    textwidget.h \
-    toast.h \
-    usbms_splash.h \
-    userapps.h \
-    virtualkeyboard.h \
-    virtualkeypad.h \
-    wifidialog.h
+    src/splash/alert.h \
+    src/apps/apps.h \
+    src/widgets/dialogs/library/bookinfodialog.h \
+    src/widgets/dialogs/library/bookoptionsdialog.h \
+    src/widgets/dialogs/brightnessdialog.h \
+    src/apps/calendarapp.h \
+    src/widgets/reader/dictionarywidget.h \
+    src/encfs/encryptionmanager.h \
+    src/functions.h \
+    src/widgets/dialogs/generaldialog.h \
+    src/homeWidget/homepagewidget.h \
+    src/widgets/misc/hourglassanimationwidget.h \
+    src/widgets/dialogs/kobox/koboxappsdialog.h \
+    src/settings/koboxsettings.h \
+    src/onlineLibrary/librarywidget.h \
+    src/localLibrary/locallibrarywidget.h \
+    src/homeWidget/mainwindow.h \
+    src/otaUpdate/otamanager.h \
+    src/widgets/interfaceWidgets/qclickablelabel.h \
+    src/widgets/interfaceWidgets/qtooltiplabel.h \
+    src/quit/quit.h \
+    src/reader/reader.h \
+    src/apps/savedwords.h \
+    src/widgets/text/searchresultswidget.h \
+    src/settings/settings.h \
+    src/settings/settingschooser.h \
+    src/widgets/text/textwidget.h \
+    src/widgets/interfaceWidgets/toast.h \
+    src/splash/usbms_splash.h \
+    src/apps/userapps.h \
+    src/widgets/virtualKeyboard/virtualkeyboard.h \
+    src/widgets/virtualKeyboard/virtualkeypad.h \
+    src/widgets/dialogs/wifi/wifidialog.h
 
 FORMS += \
-    alert.ui \
-    apps.ui \
-    bookinfodialog.ui \
-    bookoptionsdialog.ui \
-    brightnessdialog.ui \
-    calendarapp.ui \
-    dictionarywidget.ui \
-    encryptionmanager.ui \
-    generaldialog.ui \
-    homepagewidget.ui \
-    hourglassanimationwidget.ui \
-    koboxappsdialog.ui \
-    koboxsettings.ui \
-    librarywidget.ui \
-    locallibrarywidget.ui \
-    mainwindow.ui \
-    otamanager.ui \
-    quit.ui \
-    reader.ui \
-    savedwords.ui \
-    searchresultswidget.ui \
-    settings.ui \
-    settingschooser.ui \
-    textwidget.ui \
-    toast.ui \
-    usbms_splash.ui \
-    userapps.ui \
-    virtualkeyboard.ui \
-    virtualkeypad.ui \
-    wifidialog.ui
+    src/splash/alert.ui \
+    src/apps/apps.ui \
+    src/widgets/dialogs/library/bookinfodialog.ui \
+    src/widgets/dialogs/library/bookoptionsdialog.ui \
+    src/widgets/dialogs/brightnessdialog.ui \
+    src/apps/calendarapp.ui \
+    src/widgets/reader/dictionarywidget.ui \
+    src/encfs/encryptionmanager.ui \
+    src/widgets/dialogs/generaldialog.ui \
+    src/homeWidget/homepagewidget.ui \
+    src/widgets/misc/hourglassanimationwidget.ui \
+    src/widgets/dialogs/kobox/koboxappsdialog.ui \
+    src/settings/koboxsettings.ui \
+    src/onlineLibrary/librarywidget.ui \
+    src/localLibrary/locallibrarywidget.ui \
+    src/homeWidget/mainwindow.ui \
+    src/otaUpdate/otamanager.ui \
+    src/quit/quit.ui \
+    src/reader/reader.ui \
+    src/apps/savedwords.ui \
+    src/widgets/text/searchresultswidget.ui \
+    src/settings/settings.ui \
+    src/settings/settingschooser.ui \
+    src/widgets/text/textwidget.ui \
+    src/widgets/interfaceWidgets/toast.ui \
+    src/splash/usbms_splash.ui \
+    src/apps/userapps.ui \
+    src/widgets/virtualKeyboard/virtualkeyboard.ui \
+    src/widgets/virtualKeyboard/virtualkeypad.ui \
+    src/widgets/dialogs/wifi/wifidialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -131,4 +131,6 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 RESOURCES += \
-    eink.qrc
+    src/eink.qrc
+
+INCLUDEPATH += $$system(find $path -type d)
