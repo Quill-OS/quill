@@ -1,0 +1,344 @@
+#include "powerdaemonsettings.h"
+#include "ui_powerdaemonsettings.h"
+#include "functions.h"
+
+#include <QFile>
+
+powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::powerDaemonSettings)
+{
+    ui->setupUi(this);
+    powerDaemonSettings::setFont(QFont("u001"));
+    ui->mainLabel->setFont(QFont("Inter"));
+    ui->CBSLabel->setFont(QFont("Inter"));
+    ui->idleSleepLabel->setFont(QFont("Inter"));
+    ui->label_2->setFont(QFont("Inter"));
+    ui->exitBtn->setFont(QFont("Inter"));
+
+    // UI tweaks
+    ui->exitBtn->setProperty("type", "borderless");
+    ui->expBtn->setProperty("type", "borderless");
+    ui->hWhenChargerSleepBtn->setProperty("type", "borderless");
+    ui->hChargerWakeUpBtn->setProperty("type", "borderless");
+    ui->wifiReconnectBtn->setProperty("type", "borderless");
+    ui->ledUsageBtn->setProperty("type", "borderless");
+    ui->hCustomCaseBtn->setProperty("type", "borderless");
+    ui->deepSleepBtn->setProperty("type", "borderless");
+    ui->CBSDecreaseBtn->setProperty("type", "borderless");
+    ui->CBSIncreaseBtn->setProperty("type", "borderless");
+    ui->idleSleepDecreaseBtn->setProperty("type", "borderless");
+    ui->idleSleepIncreaseBtn->setProperty("type", "borderless");
+
+    ui->mainLabel->setStyleSheet("font-weight: bold");
+    ui->CBSLabel->setStyleSheet("font-weight: bold");
+    ui->idleSleepLabel->setStyleSheet("font-weight: bold");
+    ui->exitBtn->setStyleSheet("font-weight: bold");
+    // Experimental features label
+    ui->label_2->setStyleSheet("font-weight: bold");
+
+    // Icons
+    ui->CBSDecreaseBtn->setIcon(QIcon(":/resources/minus.png"));
+    ui->CBSIncreaseBtn->setIcon(QIcon(":/resources/plus.png"));
+    ui->idleSleepDecreaseBtn->setIcon(QIcon(":/resources/minus.png"));
+    ui->idleSleepIncreaseBtn->setIcon(QIcon(":/resources/plus.png"));
+    // Padding
+    ui->CBSDecreaseBtn->setStyleSheet("padding: 10px");
+    ui->CBSIncreaseBtn->setStyleSheet("padding: 10px");
+    ui->idleSleepDecreaseBtn->setStyleSheet("padding: 10px");
+    ui->idleSleepIncreaseBtn->setStyleSheet("padding: 10px");
+
+    // Stylesheet
+    QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
+    stylesheetFile.open(QFile::ReadOnly);
+    this->setStyleSheet(stylesheetFile.readAll());
+    stylesheetFile.close();
+
+    // Button tweaks
+    ui->CBSDecreaseBtn->setAutoRepeat(true);
+    ui->CBSIncreaseBtn->setAutoRepeat(true);
+    ui->idleSleepDecreaseBtn->setAutoRepeat(true);
+    ui->idleSleepIncreaseBtn->setAutoRepeat(true);
+
+    // Hide items
+    ui->hLabel_3->hide();
+    ui->hCpuFreqComboBox->hide();
+
+    ui->hWhenChargerSleepBtn->hide();
+    ui->hChargerWakeUpBtn->hide();
+    ui->hCustomCaseBtn->hide();
+
+    // Prepare variables from system configuration (20-sleep_daemon)
+    log("Reading variables from power daemon configuration", className);
+
+    // 1 - cinematicBrightnessDelayMs
+    QString cinematicBrightnessMs = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/1-cinematicBrightnessDelayMs");
+    log("cinematicBrightnessDelayMs setting is: " + cinematicBrightnessMs, className);
+
+    ui->CBSLabel->setText(cinematicBrightnessMs);
+
+    // 2- cpuGovernor
+    QString cpuGovernor = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/2-cpuGovernor");
+
+    QStringList cpuGovernorList = QStringList{cpuGovernor};
+    if(cpuGovernorList.contains("interactive") == false) {
+        cpuGovernorList.append("interactive");
+    }
+    if(cpuGovernorList.contains("conservative") == false) {
+        cpuGovernorList.append("conservative");
+    }
+    if(cpuGovernorList.contains("userspace") == false) {
+        cpuGovernorList.append("userspace");
+    }
+    if(cpuGovernorList.contains("powersave") == false) {
+        cpuGovernorList.append("powersave");
+    }
+    if(cpuGovernorList.contains("ondemand") == false) {
+        cpuGovernorList.append("ondemand");
+    }
+    if(cpuGovernorList.contains("performance") == false) {
+        cpuGovernorList.append("performance");
+    }
+
+    ui->hCpuFreqComboBox->addItems(cpuGovernorList);
+    ui->hCpuFreqComboBox->setCurrentIndex(0);
+
+    log("cpuGovernor setting is: " + cpuGovernor, className);
+
+    // 3 - whenChargerSleep
+    QString whenChargerSleep = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/3-whenChargerSleep");
+    if(whenChargerSleep == "true") {
+        whenChargerSleepBool = true;
+	ui->hWhenChargerSleepBtn->click();
+    }
+    else {
+        whenChargerSleepBool = false;
+    }
+
+    // 4 - chargerWakeUp
+    QString chargerWakeUp = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/4-chargerWakeUp");
+    if(chargerWakeUp == "true") {
+        chargerWakeUpBool = true;
+	ui->hChargerWakeUpBtn->click();
+    }
+    else {
+        chargerWakeUpBool = false;
+    }
+
+    // 5 - wifiReconnect
+    QString wifiReconnect = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/5-wifiReconnect");
+    if(wifiReconnect == "true") {
+	ui->wifiReconnectBtn->click();
+        wifiReconnectBool = true;
+    }
+    else {
+        wifiReconnectBool = false;
+    }
+
+    // 6 - ledUsage
+    QString ledUsagePath = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/6-ledUsage");
+    if(ledUsagePath == "true") {
+	ui->ledUsageBtn->click();
+        ledUsageBool = true;
+    }
+    else {
+        ledUsageBool = false;
+    }
+
+    // 7 - idleSleep
+    QString idleSleepString = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/7-idleSleep");
+    idleSleepInt = idleSleepString.replace("\n", "").toInt();
+    convertIdleSleepInt();
+
+    // 8 - customCase
+    QString customCaseString = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/8-customCase");
+    if(customCaseString == "true") {
+	ui->hCustomCaseBtn->click();
+        customCaseBool = true;
+    }
+    else {
+        customCaseBool = false;
+    }
+
+    // 9 - deepSleep
+    QString deepSleepString = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/9-deepSleep");
+    if(deepSleepString == "true") {
+	ui->deepSleepBtn->click();
+        deepSleepBool = true;
+    }
+    else {
+        deepSleepBool = false;
+    }
+}
+
+powerDaemonSettings::~powerDaemonSettings()
+{
+    delete ui;
+}
+
+void powerDaemonSettings::on_CBSIncreaseBtn_clicked()
+{
+    int value = ui->CBSLabel->text().toInt() + 1;
+    ui->CBSLabel->setText(QString::number(value));
+}
+
+void powerDaemonSettings::on_CBSDecreaseBtn_clicked()
+{
+    int value = ui->CBSLabel->text().toInt();
+    if(value != 0) {
+        value = value - 1;
+        ui->CBSLabel->setText(QString::number(value));
+    }
+}
+
+void powerDaemonSettings::on_exitBtn_clicked()
+{
+    // Save all to files
+    // 1 - cinematicBrightnessdelayMs
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/1-cinematicBrightnessDelayMs", ui->CBSLabel->text());
+    // 2 - cpuGovernor
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/2-cpuGovernor", ui->hCpuFreqComboBox->currentText());
+    // 3 - whenChargerSleep
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/3-whenChargerSleep", QVariant(whenChargerSleepBool).toString());
+    // 4 - chargerWakeUp
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/4-chargerWakeUp", QVariant(chargerWakeUpBool).toString());
+    // 5 - wifiReconnect
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/5-wifiReconnect", QVariant(wifiReconnectBool).toString());
+    // 6 - ledUsage
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/6-ledUsage", QVariant(ledUsageBool).toString());
+    // 7 - idleSleep
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/7-idleSleep", QString::number(idleSleepInt));
+    // 8 - customCase
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/8-customCase", QVariant(customCaseBool).toString());
+    // 9 - deepSleep
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/9-deepSleep", QVariant(deepSleepBool).toString());
+
+    // Notify power daemon of configuration update
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/updateConfig", "true");
+
+    powerDaemonSettings::close();
+}
+
+void powerDaemonSettings::on_expBtn_clicked()
+{
+    // TODO: Implement additional warning
+    ui->hLabel_3->show();
+    ui->hCpuFreqComboBox->show();
+
+    ui->hWhenChargerSleepBtn->show();
+    ui->hChargerWakeUpBtn->show();
+    ui->hCustomCaseBtn->show();
+
+    ui->expBtn->hide();
+}
+
+void powerDaemonSettings::on_hWhenChargerSleepBtn_clicked()
+{
+    if(whenChargerSleepBool == false) {
+        whenChargerSleepBool = true;
+    }
+    else {
+        whenChargerSleepBool = false;
+    }
+}
+
+void powerDaemonSettings::on_hChargerWakeUpBtn_clicked()
+{
+    if(chargerWakeUpBool == false) {
+        chargerWakeUpBool = true;
+    }
+    else {
+        chargerWakeUpBool = false;
+    }
+}
+
+void powerDaemonSettings::on_wifiReconnectBtn_clicked()
+{
+    if(wifiReconnectBool == false) {
+        wifiReconnectBool = true;
+    }
+    else {
+        wifiReconnectBool = false;
+    }
+}
+
+void powerDaemonSettings::on_ledUsageBtn_clicked()
+{
+    if(ledUsageBool == false) {
+        ledUsageBool = true;
+    }
+    else {
+        ledUsageBool = false;
+    }
+}
+
+void powerDaemonSettings::on_idleSleepIncreaseBtn_clicked()
+{
+    if(idleSleepInt >= 15) {
+        idleSleepInt = idleSleepInt + 1;
+    }
+    else {
+        idleSleepInt = 15;
+    }
+    convertIdleSleepInt();
+}
+
+void powerDaemonSettings::on_idleSleepDecreaseBtn_clicked() {
+    if(idleSleepInt >= 15) {
+        idleSleepInt = idleSleepInt - 1;
+        if(idleSleepInt == 14) {
+            idleSleepInt = 0;
+        }
+    }
+    else {
+        idleSleepInt = 0;
+    }
+
+    convertIdleSleepInt();
+}
+
+void powerDaemonSettings::convertIdleSleepInt()
+{
+    int copiedIdleSleepInt = idleSleepInt;
+    int minutes = 0;
+    int seconds = 0;
+    if(copiedIdleSleepInt == 0) {
+        ui->idleSleepLabel->setText("Never");
+        return;
+    }
+    while(copiedIdleSleepInt > 60) {
+        minutes = minutes + 1;
+        copiedIdleSleepInt = copiedIdleSleepInt - 60;
+    }
+    seconds = copiedIdleSleepInt;
+
+    QString text;
+    if(minutes != 0) {
+        text.append(QString::number(minutes) + "m");
+    }
+    if(seconds != 0) {
+        text.append(" " + QString::number(seconds) + "s");
+    }
+
+    ui->idleSleepLabel->setText(text);
+}
+
+void powerDaemonSettings::on_hCustomCaseBtn_clicked()
+{
+    if(customCaseBool == false) {
+        customCaseBool = true;
+    }
+    else {
+        customCaseBool = false;
+    }
+}
+
+void powerDaemonSettings::on_deepSleepBtn_clicked()
+{
+    if(deepSleepBool == false) {
+        deepSleepBool = true;
+    }
+    else {
+        deepSleepBool = false;
+    }
+}

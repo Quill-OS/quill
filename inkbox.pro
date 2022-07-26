@@ -56,7 +56,10 @@ SOURCES += \
     src/apps/userapps.cpp \
     src/widgets/virtualKeyboard/virtualkeyboard.cpp \
     src/widgets/virtualKeyboard/virtualkeypad.cpp \
-    src/widgets/dialogs/wifi/wifidialog.cpp
+    src/widgets/dialogs/wifi/wifidialog.cpp \
+    src/widgets/dialogs/powerDaemon/sleepdialog.cpp \
+    src/powerDaemon/sleepthread.cpp \
+    src/settings/powerdaemonSettings.cpp
 
 HEADERS += \
     src/splash/alert.h \
@@ -91,7 +94,10 @@ HEADERS += \
     src/apps/userapps.h \
     src/widgets/virtualKeyboard/virtualkeyboard.h \
     src/widgets/virtualKeyboard/virtualkeypad.h \
-    src/widgets/dialogs/wifi/wifidialog.h
+    src/widgets/dialogs/wifi/wifidialog.h \
+    src/widgets/dialogs/powerDaemon/sleepdialog.h \
+    src/powerDaemon/sleepthread.h \
+    src/settings/powerdaemonsettings.h
 
 FORMS += \
     src/splash/alert.ui \
@@ -123,7 +129,9 @@ FORMS += \
     src/apps/userapps.ui \
     src/widgets/virtualKeyboard/virtualkeyboard.ui \
     src/widgets/virtualKeyboard/virtualkeypad.ui \
-    src/widgets/dialogs/wifi/wifidialog.ui
+    src/widgets/dialogs/wifi/wifidialog.ui \
+    src/widgets/dialogs/powerDaemon/sleepdialog.ui \
+    src/settings/powerdaemonsettings.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

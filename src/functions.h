@@ -313,7 +313,7 @@ namespace {
     }
     void writeFile(QString filename, QString content) {
         QFile file(filename);
-        if(file.open(QIODevice::ReadWrite)) {
+        if(file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
             QTextStream stream(&file);
             stream << content;
         }

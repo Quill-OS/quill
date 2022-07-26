@@ -5,3 +5,4 @@ ui_*
 moc_*
 qrc_*
 .qmake.stash
+.vscode

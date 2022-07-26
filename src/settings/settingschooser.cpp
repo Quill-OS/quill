@@ -1,6 +1,7 @@
 #include "settingschooser.h"
 #include "ui_settingschooser.h"
 #include "functions.h"
+#include "powerdaemonsettings.h"
 
 #include <QFile>
 #include <QScreen>
@@ -39,27 +40,34 @@ settingsChooser::settingsChooser(QWidget *parent) :
 
     ui->inkboxSettingsBtn->setProperty("type", "borderless");
     ui->koboxSettingsBtn->setProperty("type", "borderless");
+    ui->powerSettingsBtn->setProperty("type", "borderless");
 
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
+        ui->powerSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
     }
     else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 25px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding:25px; Text-align: left");
+        ui->powerSettingsBtn->setStyleSheet("padding:25px; Text-align: left");
     }
     else {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
+        ui->powerSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
     }
 
     ui->inkboxSettingsBtn->setText("\t\t\tInkBox settings");
     ui->koboxSettingsBtn->setText("\t\t\tKoBox settings");
+    ui->powerSettingsBtn->setText("\t\t\tPower settings");
 
     ui->inkboxSettingsBtn->setIcon(QIcon(":/resources/settings.png"));
     ui->inkboxSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
     ui->koboxSettingsBtn->setIcon(QIcon(":/resources/X11.png"));
     ui->koboxSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
+    ui->powerSettingsBtn->setIcon(QIcon(":/resources/power.png"));
+    ui->powerSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
 }
 
 settingsChooser::~settingsChooser()
@@ -83,6 +91,14 @@ void settingsChooser::on_koboxSettingsBtn_clicked()
     koboxSettingsWindow = new koboxSettings();
     koboxSettingsWindow->setAttribute(Qt::WA_DeleteOnClose);
     koboxSettingsWindow->showFullScreen();
+}
+
+void settingsChooser::on_powerSettingsBtn_clicked()
+{
+    log("Launching Power Daemon Settings", className);
+    powerDaemonSettings * powerSettingsWindow = new powerDaemonSettings();
+    powerSettingsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    powerSettingsWindow->showFullScreen();
 }
 
 void settingsChooser::showToastNative(QString messageToDisplay) {

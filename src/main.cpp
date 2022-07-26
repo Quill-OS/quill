@@ -21,6 +21,8 @@
 #include "functions.h"
 #include "reader.h"
 #include "encryptionmanager.h"
+#include "sleepthread.h"
+#include "sleepdialog.h"
 
 #include <QApplication>
 #include <QFile>
@@ -78,6 +80,17 @@ int main(int argc, char *argv[])
         }
         updateUserAppsMainJsonFile();
     }
+
+    // Power daemon-related stuff
+    sleepDialog * sleepDialogWindow = new sleepDialog;
+    // https://wiki.qt.io/QThreads_general_usage
+    QThread * IPDThread = new QThread();
+    sleepThread * sleepThreadWindow = new sleepThread();
+    sleepThreadWindow->moveToThread(IPDThread);
+    QObject::connect(IPDThread, &QThread::started, sleepThreadWindow, &sleepThread::start);
+    QObject::connect(sleepThreadWindow, &sleepThread::startDialog, sleepDialogWindow, &sleepDialog::launchSleepDialog);
+    QObject::connect(sleepThreadWindow, &sleepThread::stopDialog, sleepDialogWindow, &sleepDialog::hideSleepDialog);
+    IPDThread->start();
 
     if(checkconfig(".config/18-encrypted_storage/status") == true and checkconfig("/external_root/run/encfs_mounted") == false) {
         // Open Encryption Manager to unlock encrypted storage

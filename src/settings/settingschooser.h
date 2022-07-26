@@ -27,6 +27,7 @@ public:
 private slots:
     void on_inkboxSettingsBtn_clicked();
     void on_koboxSettingsBtn_clicked();
+    void on_powerSettingsBtn_clicked();
     void showToastNative(QString messageToDisplay);
     void closeIndefiniteToastNative();
 

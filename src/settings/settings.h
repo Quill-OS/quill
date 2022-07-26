@@ -55,7 +55,6 @@ private slots:
     void on_pageSizeWidthSpinBox_valueChanged(int arg1);
     void on_pageSizeHeightSpinBox_valueChanged(int arg1);
     void on_readerScrollBarCheckBox_toggled(bool checked);
-    void on_sleepTimeoutComboBox_currentIndexChanged(const QString &arg1);
     void brightnessDown();
     void on_globalReadingSettingsCheckBox_toggled(bool checked);
     void on_checkOtaUpdateBtn_clicked();

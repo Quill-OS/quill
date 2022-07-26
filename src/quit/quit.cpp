@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QDebug>
 #include <QScreen>
+#include <linux/input.h>
 
 quit::quit(QWidget *parent) :
     QWidget(parent),
@@ -38,6 +39,9 @@ quit::quit(QWidget *parent) :
     QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
     ui->label->setPixmap(scaledPixmap);
 
+    if(checkconfig("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/9-deepSleep") == true) {
+        ui->pushButton_3->setText("Deep suspend");
+    }
 }
 
 quit::~quit()
@@ -86,6 +90,46 @@ void quit::on_backBtn_clicked()
 void quit::on_pushButton_3_clicked()
 {
     log("Suspending", className);
-    // inotifywait waits for a MODIFY event, so we just do it instead of evtest and the power button
-    string_writeconfig("/external_root/tmp/power", "KEY_POWER");
+    if(checkconfig("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/9-deepSleep") == true) {
+        writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/sleepCall", "deepsleep");
+    }
+    else {
+        emulatePowerButtonInputEvent();
+    }
+}
+
+void quit::emulatePowerButtonInputEvent() {
+    log("Emulating power button input event", className);
+    // Input event
+    struct input_event inputEvent = {};
+    inputEvent.type = EV_KEY;
+    inputEvent.code = KEY_POWER;
+    // SYN report event
+    struct input_event synReportEvent = {};
+    synReportEvent.type = EV_SYN;
+    synReportEvent.code = SYN_REPORT;
+    synReportEvent.value = 0;
+
+    int fd = open("/dev/input/event0", O_WRONLY);
+    if(fd != -1) {
+        // Send press event
+        inputEvent.value = 1;
+        ::write(fd, &inputEvent, sizeof(inputEvent));
+
+        // Send SYN report event
+        ::write(fd, &synReportEvent, sizeof(synReportEvent));
+
+        // Some sleep
+        QThread::msleep(50);
+
+        // Send release event
+        inputEvent.value = 0;
+        ::write(fd, &inputEvent, sizeof(inputEvent));
+        ::write(fd, &synReportEvent, sizeof(synReportEvent));
+
+        ::close(fd);
+    }
+    else {
+        QString function = __func__; log(function + ": Failed to open input device node at '/dev/input/event0'", className);
+    }
 }
