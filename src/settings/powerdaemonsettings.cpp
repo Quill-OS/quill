@@ -11,8 +11,11 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->setupUi(this);
     powerDaemonSettings::setFont(QFont("u001"));
     ui->mainLabel->setFont(QFont("Inter"));
-    ui->CBSLabel->setFont(QFont("Inter"));
-    ui->idleSleepLabel->setFont(QFont("Inter"));
+
+    // Avoid some display issues (label moving because width of text would change with a proportional font)
+    ui->CBSLabel->setFont(QFont("Noto Sans Mono"));
+    ui->idleSleepLabel->setFont(QFont("Noto Sans Mono"));
+
     ui->label_2->setFont(QFont("Inter"));
     ui->exitBtn->setFont(QFont("Inter"));
 
@@ -25,10 +28,6 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->ledUsageBtn->setProperty("type", "borderless");
     ui->hCustomCaseBtn->setProperty("type", "borderless");
     ui->deepSleepBtn->setProperty("type", "borderless");
-    ui->CBSDecreaseBtn->setProperty("type", "borderless");
-    ui->CBSIncreaseBtn->setProperty("type", "borderless");
-    ui->idleSleepDecreaseBtn->setProperty("type", "borderless");
-    ui->idleSleepIncreaseBtn->setProperty("type", "borderless");
 
     ui->mainLabel->setStyleSheet("font-weight: bold");
     ui->CBSLabel->setStyleSheet("font-weight: bold");
@@ -73,7 +72,6 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
 
     // 1 - cinematicBrightnessDelayMs
     QString cinematicBrightnessMs = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/1-cinematicBrightnessDelayMs");
-    log("cinematicBrightnessDelayMs setting is: " + cinematicBrightnessMs, className);
 
     ui->CBSLabel->setText(cinematicBrightnessMs);
 
@@ -103,13 +101,11 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->hCpuFreqComboBox->addItems(cpuGovernorList);
     ui->hCpuFreqComboBox->setCurrentIndex(0);
 
-    log("cpuGovernor setting is: " + cpuGovernor, className);
-
     // 3 - whenChargerSleep
     QString whenChargerSleep = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/3-whenChargerSleep");
     if(whenChargerSleep == "true") {
         whenChargerSleepBool = true;
-	ui->hWhenChargerSleepBtn->click();
+	    ui->hWhenChargerSleepBtn->click();
     }
     else {
         whenChargerSleepBool = false;
@@ -119,7 +115,7 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     QString chargerWakeUp = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/4-chargerWakeUp");
     if(chargerWakeUp == "true") {
         chargerWakeUpBool = true;
-	ui->hChargerWakeUpBtn->click();
+	    ui->hChargerWakeUpBtn->click();
     }
     else {
         chargerWakeUpBool = false;
@@ -128,7 +124,7 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     // 5 - wifiReconnect
     QString wifiReconnect = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/5-wifiReconnect");
     if(wifiReconnect == "true") {
-	ui->wifiReconnectBtn->click();
+	    ui->wifiReconnectBtn->click();
         wifiReconnectBool = true;
     }
     else {
@@ -138,7 +134,7 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     // 6 - ledUsage
     QString ledUsagePath = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/6-ledUsage");
     if(ledUsagePath == "true") {
-	ui->ledUsageBtn->click();
+	    ui->ledUsageBtn->click();
         ledUsageBool = true;
     }
     else {
@@ -153,7 +149,7 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     // 8 - customCase
     QString customCaseString = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/8-customCase");
     if(customCaseString == "true") {
-	ui->hCustomCaseBtn->click();
+	    ui->hCustomCaseBtn->click();
         customCaseBool = true;
     }
     else {
@@ -163,7 +159,7 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     // 9 - deepSleep
     QString deepSleepString = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/9-deepSleep");
     if(deepSleepString == "true") {
-	ui->deepSleepBtn->click();
+	    ui->deepSleepBtn->click();
         deepSleepBool = true;
     }
     else {
@@ -232,42 +228,54 @@ void powerDaemonSettings::on_expBtn_clicked()
     ui->expBtn->hide();
 }
 
-void powerDaemonSettings::on_hWhenChargerSleepBtn_clicked()
+void powerDaemonSettings::on_hWhenChargerSleepBtn_clicked(bool checked)
 {
-    if(whenChargerSleepBool == false) {
+    QString settingString = "suspend when charging";
+    if(checked == true) {
+        logEnabled(settingString, className);
         whenChargerSleepBool = true;
     }
     else {
+        logDisabled(settingString, className);
         whenChargerSleepBool = false;
     }
 }
 
-void powerDaemonSettings::on_hChargerWakeUpBtn_clicked()
+void powerDaemonSettings::on_hChargerWakeUpBtn_clicked(bool checked)
 {
-    if(chargerWakeUpBool == false) {
+    QString settingString = "ignore charger wake-up events";
+    if(checked == true) {
+        logEnabled(settingString, className);
         chargerWakeUpBool = true;
     }
     else {
+        logDisabled(settingString, className);
         chargerWakeUpBool = false;
     }
 }
 
-void powerDaemonSettings::on_wifiReconnectBtn_clicked()
+void powerDaemonSettings::on_wifiReconnectBtn_clicked(bool checked)
 {
-    if(wifiReconnectBool == false) {
+    QString settingString = "Wi-Fi reconnection on wake-up";
+    if(checked == true) {
+        logEnabled(settingString, className);
         wifiReconnectBool = true;
     }
     else {
+        logDisabled(settingString, className);
         wifiReconnectBool = false;
     }
 }
 
-void powerDaemonSettings::on_ledUsageBtn_clicked()
+void powerDaemonSettings::on_ledUsageBtn_clicked(bool checked)
 {
-    if(ledUsageBool == false) {
+    QString settingString = "use LED";
+    if(checked == true) {
+        logEnabled(settingString, className);
         ledUsageBool = true;
     }
     else {
+        logDisabled(settingString, className);
         ledUsageBool = false;
     }
 }
@@ -317,28 +325,34 @@ void powerDaemonSettings::convertIdleSleepInt()
         text.append(QString::number(minutes) + "m");
     }
     if(seconds != 0) {
-        text.append(" " + QString::number(seconds) + "s");
+        text.append(QString::number(seconds) + "s");
     }
 
     ui->idleSleepLabel->setText(text);
 }
 
-void powerDaemonSettings::on_hCustomCaseBtn_clicked()
+void powerDaemonSettings::on_hCustomCaseBtn_clicked(bool checked)
 {
-    if(customCaseBool == false) {
+    QString settingString = "custom case";
+    if(checked == true) {
+        logEnabled(settingString, className);
         customCaseBool = true;
     }
     else {
+        logDisabled(settingString, className);
         customCaseBool = false;
     }
 }
 
-void powerDaemonSettings::on_deepSleepBtn_clicked()
+void powerDaemonSettings::on_deepSleepBtn_clicked(bool checked)
 {
-    if(deepSleepBool == false) {
+    QString settingString = "deep sleep";
+    if(checked == true) {
+        logEnabled(settingString, className);
         deepSleepBool = true;
     }
     else {
+        logDisabled(settingString, className);
         deepSleepBool = false;
     }
 }

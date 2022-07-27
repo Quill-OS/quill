@@ -13,8 +13,8 @@ void sleepThread::start()
         QThread::sleep(1);
         if(pipePath.exists() == true) {
             log("Looking for messages in pipe", className);
-            char * myfifo = "/run/ipd/fifo";
-            int fd = ::open(myfifo, O_RDONLY);
+            char * pipe = "/dev/ipd/fifo";
+            int fd = ::open(pipe, O_RDONLY);
             char * readchar[5];
             ::read(fd, readchar, 5);
 

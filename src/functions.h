@@ -217,6 +217,12 @@ namespace {
             logFile.close();
         }
     }
+    void logEnabled(QString configOption, QString className) {
+        log("Enabling " + configOption + " setting", className);
+    }
+    void logDisabled(QString configOption, QString className) {
+        log("Disabling " + configOption + " setting", className);
+    }
     bool checkconfig(QString file) {
         if(QFile::exists(file)) {
             QFile config(file);

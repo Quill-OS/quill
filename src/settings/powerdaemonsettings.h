@@ -22,15 +22,15 @@ private slots:
     void on_CBSDecreaseBtn_clicked();
     void on_exitBtn_clicked();
     void on_expBtn_clicked();
-    void on_hWhenChargerSleepBtn_clicked();
-    void on_hChargerWakeUpBtn_clicked();
-    void on_wifiReconnectBtn_clicked();
-    void on_ledUsageBtn_clicked();
+    void on_hWhenChargerSleepBtn_clicked(bool checked);
+    void on_hChargerWakeUpBtn_clicked(bool checked);
+    void on_wifiReconnectBtn_clicked(bool checked);
+    void on_ledUsageBtn_clicked(bool checked);
     void on_idleSleepIncreaseBtn_clicked();
     void on_idleSleepDecreaseBtn_clicked();
     void convertIdleSleepInt();
-    void on_hCustomCaseBtn_clicked();
-    void on_deepSleepBtn_clicked();
+    void on_hCustomCaseBtn_clicked(bool checked);
+    void on_deepSleepBtn_clicked(bool checked);
 
 private:
     Ui::powerDaemonSettings * ui;

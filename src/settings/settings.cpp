@@ -401,15 +401,15 @@ void settings::on_aboutBtn_clicked()
 
 void settings::on_demoCheckBox_toggled(bool checked)
 {
-    QString settingString = "demo setting (change MainWindow label)";
+    QString settingString = "change MainWindow label demo";
     // Write to config file
     if(checked == true) {
-        logEnabled(settingString);
+        logEnabled(settingString, className);
         checked_box = true;
         writeconfig(".config/01-demo/config", "InkboxChangeLabel=");
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         checked_box = false;
         writeconfig(".config/01-demo/config", "InkboxChangeLabel=");
     }
@@ -417,15 +417,15 @@ void settings::on_demoCheckBox_toggled(bool checked)
 
 void settings::on_clockCheckBox_toggled(bool checked)
 {
-    QString settingString = "clock with seconds setting";
+    QString settingString = "clock with seconds";
     // Write to config file
     if(checked == true) {
-        logEnabled(settingString);
+        logEnabled(settingString, className);
         checked_box = true;
         writeconfig(".config/02-clock/config", "ClockShowSeconds=");
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         checked_box = false;
         writeconfig(".config/02-clock/config", "ClockShowSeconds=");
     }
@@ -433,14 +433,14 @@ void settings::on_clockCheckBox_toggled(bool checked)
 
 void settings::on_quoteCheckBox_toggled(bool checked)
 {
-    QString settingString = "show quotes setting";
+    QString settingString = "disable show quotes";
     if(checked == true) {
-        logEnabled(settingString);
+        logEnabled(settingString, className);
         checked_box = true;
         writeconfig(".config/05-quote/config", "DisableQuote=");
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         checked_box = false;
         writeconfig(".config/05-quote/config", "DisableQuote=");
     }
@@ -566,14 +566,14 @@ void settings::on_updateBtn_clicked()
 
 void settings::on_darkModeCheckBox_toggled(bool checked)
 {
-    QString settingString = "dark mode setting";
+    QString settingString = "dark mode";
     if(checked == true) {
-        logEnabled(settingString);
+        logEnabled(settingString, className);
         string_writeconfig(".config/10-dark_mode/config", "true");
         string_writeconfig("/tmp/invertScreen", "y");
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         string_writeconfig(".config/10-dark_mode/config", "false");
         string_writeconfig("/tmp/invertScreen", "n");
     }
@@ -652,14 +652,14 @@ void settings::on_uiScalingSlider_valueChanged(int value)
 
 void settings::on_menuBarCheckBox_toggled(bool checked)
 {
-    QString settingString = "sticky menu bar setting";
+    QString settingString = "sticky menu bar";
     if(checked == true) {
-        logEnabled(settingString);
+        logEnabled(settingString, className);
         checked_box = true;
         writeconfig(".config/11-menubar/sticky", "StickyMenuBar=");
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         checked_box = false;
         writeconfig(".config/11-menubar/sticky", "StickyMenuBar=");
     }
@@ -718,22 +718,22 @@ void settings::on_setPasscodeBtn_clicked()
 
 void settings::on_enableLockscreenCheckBox_toggled(bool checked)
 {
-    QString settingString = "lockscreen setting";
+    QString settingString = "lockscreen";
     if(checked == true) {
-        logEnabled(settingString);
+        logEnabled(settingString, className);
         string_writeconfig(".config/12-lockscreen/config", "true");
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         string_writeconfig(".config/12-lockscreen/config", "false");
     }
 }
 
 void settings::on_enableUiScalingCheckBox_toggled(bool checked)
 {
-    QString settingString = "UI scaling setting";
+    QString settingString = "UI scaling";
     if(checked == true) {
-        logEnabled(settingString);
+        logEnabled(settingString, className);
         // Writing default value depending on the device
         if(global::deviceID == "n705\n") {
             string_writeconfig(".config/09-dpi/config", "187");
@@ -766,7 +766,7 @@ void settings::on_enableUiScalingCheckBox_toggled(bool checked)
         }
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         string_writeconfig(".config/09-dpi/config", "false");
         string_writeconfig(".config/09-dpi/config-enabled", "false");
         ui->uiScaleNumberLabel->hide();
@@ -811,13 +811,13 @@ void settings::on_pageSizeHeightSpinBox_valueChanged(int arg1)
 
 void settings::on_readerScrollBarCheckBox_toggled(bool checked)
 {
-    QString settingString = "scrollbar display if necessary setting";
+    QString settingString = "scrollbar display if necessary";
     if(checked == true) {
-        logEnabled(settingString);
+        logEnabled(settingString, className);
         string_writeconfig(".config/14-reader_scrollbar/config", "true");
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         string_writeconfig(".config/14-reader_scrollbar/config", "false");
     }
 }
@@ -828,14 +828,14 @@ void settings::brightnessDown() {
 
 void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)
 {
-    QString settingString = "global reading settings setting";
+    QString settingString = "global reading settings";
     if(checked == true) {
-        logEnabled(settingString);
+        logEnabled(settingString, className);
         checked_box = true;
         writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         checked_box = false;
         writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
     }
@@ -917,10 +917,10 @@ void settings::quit_restart() {
 
 void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
 {
-    QString settingString = "encrypted storage setting";
+    QString settingString = "encrypted storage";
     if(checked == true) {
         if(enableEncryptedStorageUserChange == true) {
-            logEnabled(settingString);
+            logEnabled(settingString, className);
             setDefaultWorkDir();
             string_writeconfig(".config/18-encrypted_storage/initial_setup_done", "false");
             string_writeconfig(".config/18-encrypted_storage/status", "true");
@@ -937,7 +937,7 @@ void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
         }
     }
     else {
-        logDisabled(settingString);
+        logDisabled(settingString, className);
         global::encfs::disableStorageEncryptionDialog = true;
         generalDialogWindow = new generalDialog(this);
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
@@ -1026,12 +1026,4 @@ void settings::on_tzComboBox_currentTextChanged(const QString &arg1)
             QThread::msleep(500);
         }
     }
-}
-
-void settings::logEnabled(QString settingString) {
-    log("Enabling " + settingString, className);
-}
-
-void settings::logDisabled(QString settingString) {
-    log("Disabling " + settingString, className);
 }
