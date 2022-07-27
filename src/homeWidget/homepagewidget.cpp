@@ -10,21 +10,26 @@ homePageWidget::homePageWidget(QWidget *parent) :
     ui(new Ui::homePageWidget)
 {
     ui->setupUi(this);
+
+    // Getting the screen's size
+    sW = QGuiApplication::screens()[0]->size().width();
+    sH = QGuiApplication::screens()[0]->size().height();
+
     if(global::deviceID == "n705\n") {
-        stdIconWidth = sW / 52;
-        stdIconHeight = sH / 52;
+        stdIconWidth = sW / 23;
+        stdIconHeight = sH / 23;
     }
     else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        stdIconWidth = sW / 54;
-        stdIconHeight = sH / 54;
+        stdIconWidth = sW / 25;
+        stdIconHeight = sH / 25;
     }
     else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
-        stdIconWidth = sW / 52.5;
-        stdIconHeight = sH / 52.5;
+        stdIconWidth = sW / 23.5;
+        stdIconHeight = sH / 23.5;
     }
     else {
-        stdIconWidth = sW / 54;
-        stdIconHeight = sH / 54;
+        stdIconWidth = sW / 25;
+        stdIconHeight = sH / 25;
     }
     ui->recentBooksIconLabel->setPixmap(QPixmap(":/resources/file-text.png").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
     ui->pinnedBooksIconLabel->setPixmap(QPixmap(":/resources/pin.png").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
@@ -47,10 +52,6 @@ homePageWidget::homePageWidget(QWidget *parent) :
     else {
         bookTitleTruncateThreshold = 25;
     }
-
-    // Getting the screen's size
-    sW = QGuiApplication::screens()[0]->size().width();
-    sH = QGuiApplication::screens()[0]->size().height();
 
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         stdIconWidthDivider = 8;
@@ -205,7 +206,7 @@ void homePageWidget::setupDisplay(bool databaseGenerated) {
                     bookBtnArray[i]->setPixmap(QPixmap(bookIcon).scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
                 }
                 else {
-                    bookBtnArray[i]->setPixmap(QPixmap(":/resources/cover_unavailable").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+                    bookBtnArray[i]->setPixmap(QPixmap(":/resources/cover_unavailable.png").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
                 }
 
                 verticalLayoutArray[i]->addWidget(bookBtnArray[i]);
@@ -321,7 +322,7 @@ void homePageWidget::setupDisplay(bool databaseGenerated) {
                     pinnedBooksBtnArray[i]->setPixmap(QPixmap(bookIcon).scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
                 }
                 else {
-                    pinnedBooksBtnArray[i]->setPixmap(QPixmap(":/resources/cover_unavailable").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+                    pinnedBooksBtnArray[i]->setPixmap(QPixmap(":/resources/cover_unavailable.png").scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
                 }
 
                 pinnedBooksVerticalLayoutArray[i]->addWidget(pinnedBooksBtnArray[i]);

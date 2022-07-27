@@ -57,6 +57,10 @@ int main(int argc, char *argv[])
         global::device::isWifiAble = false;
     }
 
+    if(QFile::exists("/tmp/currentlyRunningUserApplication")) {
+        QFile::remove("/tmp/currentlyRunningUserApplication");
+    }
+
     if(QFile::exists("/tmp/rescan_userapps")) {
         QFile::remove("/tmp/rescan_userapps");
         log("Re-scanning user applications from explicit request", "main");

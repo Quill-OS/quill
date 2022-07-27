@@ -161,7 +161,8 @@ void userapps::on_launchBtn_clicked()
             message.append("'");
             log(message, className);
             // Tell the OS that we're not running anymore
-            string_writeconfig("/tmp/inkbox_running", "false");
+            writeFile("/tmp/inkbox_running", "false");
+            writeFile("/tmp/currentlyRunningUserApplication", appName);
 
             QProcess process;
             QStringList args;

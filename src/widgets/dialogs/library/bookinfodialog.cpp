@@ -68,7 +68,7 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
                     }
                     else {
                         QPixmap coverPixmap(":/resources/cover_unavailable.png");
-                        QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+                        QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
                         ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
                         QFile::remove("/inkbox/gutenberg/getCoverDone");
                         break;

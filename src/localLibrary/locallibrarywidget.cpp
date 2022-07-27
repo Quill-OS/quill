@@ -220,7 +220,7 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
         }
         else {
             QPixmap pixmap(":/resources/cover_unavailable.png");
-            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight));
+            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
         }
 
         // Display book title
