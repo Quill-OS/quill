@@ -75,10 +75,25 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     stylesheetFile.close();
 
     // Button tweaks
+    int autoRepeatDelay = 1250;
+    int autoRepeatInterval = 20;
+
     ui->CBSDecreaseBtn->setAutoRepeat(true);
+    ui->CBSDecreaseBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->CBSDecreaseBtn->setAutoRepeatInterval(autoRepeatInterval);
+
     ui->CBSIncreaseBtn->setAutoRepeat(true);
+    ui->CBSIncreaseBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->CBSIncreaseBtn->setAutoRepeatInterval(autoRepeatInterval);
+
     ui->idleSleepDecreaseBtn->setAutoRepeat(true);
+    ui->idleSleepDecreaseBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->idleSleepDecreaseBtn->setAutoRepeatInterval(autoRepeatInterval);
+
     ui->idleSleepIncreaseBtn->setAutoRepeat(true);
+    ui->idleSleepIncreaseBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->idleSleepIncreaseBtn->setAutoRepeatInterval(autoRepeatInterval);
+
 
     // Hide items
     ui->hLabel_3->hide();
