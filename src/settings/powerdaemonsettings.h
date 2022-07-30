@@ -40,10 +40,9 @@ private:
     bool chargerWakeUpBool;
     bool wifiReconnectBool;
     bool ledUsageBool;
-    int idleSleepInt;
     bool customCaseBool;
     bool deepSleepBool;
+    int idleSleepInt;
     int cinematicBrightnessInt;
 };
-
 #endif // POWERDAEMONSETTINGS_H

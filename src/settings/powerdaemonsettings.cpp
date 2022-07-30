@@ -36,21 +36,6 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     // Experimental features label
     ui->label_2->setStyleSheet("font-weight: bold");
 
-    /*
-    if(global::deviceID == "n306")
-    {
-        ui->wifiReconnectBtn->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
-        ui->ledUsageBtn->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
-        ui->deepSleepBtn->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
-        ui->hWhenChargerSleepBtn->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
-        ui->hChargerWakeUpBtn->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
-        ui->hCustomCaseBtn->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
-        ui->wifiReconnectBtn->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
-        ui->wifiReconnectBtn->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
-    }
-    */
-
-
     // Icons
     ui->CBSDecreaseBtn->setIcon(QIcon(":/resources/minus.png"));
     ui->CBSDecreaseBtn->setFixedWidth(80);
@@ -97,7 +82,7 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     cinematicBrightnessInt = cinematicBrightnessMs.toInt();
     convertCinematicInt();
 
-    // 2- cpuGovernor
+    // 2 - cpuGovernor
     QString cpuGovernor = readFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/2-cpuGovernor");
 
     QStringList cpuGovernorList = QStringList{cpuGovernor};
@@ -190,8 +175,7 @@ powerDaemonSettings::~powerDaemonSettings()
 
 void powerDaemonSettings::on_CBSIncreaseBtn_clicked()
 {
-    if(cinematicBrightnessInt < 500)
-    {
+    if(cinematicBrightnessInt < 500) {
         cinematicBrightnessInt = cinematicBrightnessInt + 1;
         convertCinematicInt();
     }
@@ -199,8 +183,7 @@ void powerDaemonSettings::on_CBSIncreaseBtn_clicked()
 
 void powerDaemonSettings::on_CBSDecreaseBtn_clicked()
 {
-    if(cinematicBrightnessInt != 0)
-    {
+    if(cinematicBrightnessInt != 0) {
         cinematicBrightnessInt = cinematicBrightnessInt - 1;
         convertCinematicInt();
     }
@@ -381,6 +364,4 @@ void powerDaemonSettings::convertCinematicInt()
     // To avoid moving other widgets when the value changes
     text.append("ms");
     ui->CBSLabel->setText(text);
-
-
 }
