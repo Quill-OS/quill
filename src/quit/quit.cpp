@@ -91,7 +91,7 @@ void quit::on_pushButton_3_clicked()
 {
     log("Suspending", className);
     if(checkconfig("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/9-deepSleep") == true) {
-        writeFile("/dev/ipd/sleepCall", "deepsleep");
+        writeFile("/dev/ipd/sleepCall", "deepSleep");
     }
     else {
         writeFile("/dev/ipd/sleepCall", "sleep");
