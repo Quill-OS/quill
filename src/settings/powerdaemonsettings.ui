@@ -494,7 +494,7 @@
          <item>
           <widget class="QCheckBox" name="hCustomCaseBtn">
            <property name="text">
-            <string>Custom case</string>
+            <string>Custom case support</string>
            </property>
           </widget>
          </item>
