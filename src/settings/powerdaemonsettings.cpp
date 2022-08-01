@@ -373,8 +373,7 @@ void powerDaemonSettings::on_deepSleepBtn_clicked(bool checked)
     }
 }
 
-void powerDaemonSettings::convertCinematicInt()
-{
+void powerDaemonSettings::convertCinematicInt() {
     QString text = QString::number(cinematicBrightnessInt);
     // To avoid moving other widgets when the value changes
     text.append("ms");
