@@ -124,7 +124,7 @@ int main(int argc, char *argv[])
                     global::battery::showCriticalBatteryAlert = true;
                     alert w;
 
-                    const QScreen* screen = qApp->primaryScreen();
+                    const QScreen * screen = qApp->primaryScreen();
                     w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
                     w.show();
                     return a.exec();

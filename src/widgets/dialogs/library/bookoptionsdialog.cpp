@@ -15,12 +15,12 @@ bookOptionsDialog::bookOptionsDialog(QWidget *parent) :
         ui->line_2->hide();
         ui->deleteBtn->deleteLater();
         ui->line_2->deleteLater();
-        this->adjustSize();
     }
     else {
         ui->deleteBtn->setProperty("type", "borderless");
     }
     ui->infoBtn->setProperty("type", "borderless");
+    this->adjustSize();
 
     global::localLibrary::bookOptionsDialog::bookPinAction = false;
 
@@ -124,6 +124,11 @@ void bookOptionsDialog::pinBook(int bookID) {
             mainJsonObject["Book" + QString::number(i)] = jsonObject;
         }
         pinnedBooksObject = mainJsonObject;
+
+        QString function = __func__; log(function + ": Pinned book with ID " + QString::number(global::localLibrary::bookOptionsDialog::bookID), className);
+        global::toast::delay = 3000;
+        emit showToast("Book pinned successfully");
+        global::localLibrary::bookOptionsDialog::bookPinAction = true;
     }
     // Writing database to file
     QFile::remove(global::localLibrary::pinnedBooksDatabasePath);

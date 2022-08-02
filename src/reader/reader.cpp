@@ -303,6 +303,11 @@ reader::reader(QWidget *parent) :
         ui->previousBtn->setStyleSheet("padding: 12.5px");
         ui->optionsBtn->setStyleSheet("padding: 12.5px");
     }
+    else {
+        ui->nextBtn->setStyleSheet("padding: 10px");
+        ui->previousBtn->setStyleSheet("padding: 10px");
+        ui->optionsBtn->setStyleSheet("padding: 10px");
+    }
     ui->sizeValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->aboutBtn->setStyleSheet("font-size: 9pt; padding: 5px");
@@ -1166,7 +1171,7 @@ void reader::on_optionsBtn_clicked()
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 12.5px");
         }
         else {
-            ui->optionsBtn->setStyleSheet("background: white; color: black");
+            ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 10px");
         }
         ui->optionsBtn->setIcon(QIcon(":/resources/settings.png"));
         // The Glo HD (N437) has a newer platform plugin that doesn't need this
@@ -1184,7 +1189,7 @@ void reader::on_optionsBtn_clicked()
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 12.5px");
         }
         else {
-            ui->optionsBtn->setStyleSheet("background: black; color: white");
+            ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 10px");
         }
         ui->optionsBtn->setIcon(QIcon(":/resources/settings-inverted.png"));
         this->repaint();
