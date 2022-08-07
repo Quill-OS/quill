@@ -37,15 +37,23 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->label_2->setStyleSheet("font-weight: bold");
 
     // Icons
+    int controlBtnFixedLength;
+    if(global::deviceID == "n705\n") {
+        controlBtnFixedLength = 50;
+    }
+    else {
+        controlBtnFixedLength = 80;
+    }
+
     ui->CBSDecreaseBtn->setIcon(QIcon(":/resources/minus.png"));
-    ui->CBSDecreaseBtn->setFixedWidth(80);
+    ui->CBSDecreaseBtn->setFixedWidth(controlBtnFixedLength);
     ui->CBSIncreaseBtn->setIcon(QIcon(":/resources/plus.png"));
-    ui->CBSIncreaseBtn->setFixedWidth(80);
+    ui->CBSIncreaseBtn->setFixedWidth(controlBtnFixedLength);
 
     ui->idleSleepDecreaseBtn->setIcon(QIcon(":/resources/minus.png"));
-    ui->idleSleepDecreaseBtn->setFixedWidth(80);
+    ui->idleSleepDecreaseBtn->setFixedWidth(controlBtnFixedLength);
     ui->idleSleepIncreaseBtn->setIcon(QIcon(":/resources/plus.png"));
-    ui->idleSleepIncreaseBtn->setFixedWidth(80);
+    ui->idleSleepIncreaseBtn->setFixedWidth(controlBtnFixedLength);
 
     // Padding
     ui->CBSDecreaseBtn->setStyleSheet("padding: 10px");
