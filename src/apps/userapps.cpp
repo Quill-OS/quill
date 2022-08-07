@@ -193,7 +193,7 @@ bool userapps::manageRequiredFeatures()
         }
         // Rooted kernel required
         if(featureId == 1) {
-            if(checkconfig("/external_root/opt/root/rooted") == true) {
+            if(checkconfig("/external_root/opt/root/rooted") == false) {
                 global::userApps::appCompatibilityText = "<font face='u001'>This app needs a rooted kernel, continue anyway</font><font face='Inter'>?</font>";
                 launchDialog = true;
             }
