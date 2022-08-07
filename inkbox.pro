@@ -59,7 +59,7 @@ SOURCES += \
     src/widgets/dialogs/wifi/wifidialog.cpp \
     src/widgets/dialogs/powerDaemon/sleepdialog.cpp \
     src/powerDaemon/sleepthread.cpp \
-    src/settings/powerdaemonSettings.cpp
+    src/settings/powerdaemonsettings.cpp
 
 HEADERS += \
     src/splash/alert.h \
