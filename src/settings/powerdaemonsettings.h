@@ -34,6 +34,10 @@ private slots:
     void convertIdleSleepInt();
     void convertCinematicInt();
 
+    void on_idleSleepIncreaseMBtn_clicked();
+
+    void on_idleSleepDecreaseMBtn_clicked();
+
 private:
     Ui::powerDaemonSettings * ui;
     bool whenChargerSleepBool;

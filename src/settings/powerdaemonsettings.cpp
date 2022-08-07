@@ -50,16 +50,26 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->CBSIncreaseBtn->setIcon(QIcon(":/resources/plus.png"));
     ui->CBSIncreaseBtn->setFixedWidth(controlBtnFixedLength);
 
-    ui->idleSleepDecreaseBtn->setIcon(QIcon(":/resources/minus.png"));
-    ui->idleSleepDecreaseBtn->setFixedWidth(controlBtnFixedLength);
-    ui->idleSleepIncreaseBtn->setIcon(QIcon(":/resources/plus.png"));
-    ui->idleSleepIncreaseBtn->setFixedWidth(controlBtnFixedLength);
+
+    int idleButtonsWidth;
+    if(global::deviceID == "n306\n") {
+        idleButtonsWidth = 100;
+    }
+    else {
+        idleButtonsWidth = 100;
+    }
+    ui->idleSleepDecreaseBtn->setFixedWidth(idleButtonsWidth);
+    ui->idleSleepIncreaseBtn->setFixedWidth(idleButtonsWidth);
+    ui->idleSleepDecreaseMBtn->setFixedWidth(idleButtonsWidth);
+    ui->idleSleepIncreaseMBtn->setFixedWidth(idleButtonsWidth);
 
     // Padding
     ui->CBSDecreaseBtn->setStyleSheet("padding: 10px");
     ui->CBSIncreaseBtn->setStyleSheet("padding: 10px");
     ui->idleSleepDecreaseBtn->setStyleSheet("padding: 10px");
     ui->idleSleepIncreaseBtn->setStyleSheet("padding: 10px");
+    ui->idleSleepDecreaseMBtn->setStyleSheet("padding: 10px");
+    ui->idleSleepIncreaseMBtn->setStyleSheet("padding: 10px");
 
     // Stylesheet
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
@@ -87,6 +97,13 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->idleSleepIncreaseBtn->setAutoRepeatDelay(autoRepeatDelay);
     ui->idleSleepIncreaseBtn->setAutoRepeatInterval(autoRepeatInterval);
 
+    ui->idleSleepDecreaseMBtn->setAutoRepeat(true);
+    ui->idleSleepDecreaseMBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->idleSleepDecreaseMBtn->setAutoRepeatInterval(autoRepeatInterval);
+
+    ui->idleSleepIncreaseMBtn->setAutoRepeat(true);
+    ui->idleSleepIncreaseMBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->idleSleepIncreaseMBtn->setAutoRepeatInterval(autoRepeatInterval);
 
     // Hide items
     ui->hLabel_3->hide();
@@ -339,7 +356,7 @@ void powerDaemonSettings::convertIdleSleepInt()
         ui->idleSleepLabel->setText("Never");
         return;
     }
-    while(copiedIdleSleepInt > 60) {
+    while(copiedIdleSleepInt >= 60) {
         minutes = minutes + 1;
         copiedIdleSleepInt = copiedIdleSleepInt - 60;
     }
@@ -347,9 +364,10 @@ void powerDaemonSettings::convertIdleSleepInt()
 
     QString text;
     if(minutes != 0) {
-        text.append(QString::number(minutes) + "m ");
+        text.append(QString::number(minutes) + "m");
     }
     if(seconds != 0) {
+        text.append(" ");
         text.append(QString::number(seconds) + "s");
     }
     ui->idleSleepLabel->setText(text);
@@ -386,4 +404,30 @@ void powerDaemonSettings::convertCinematicInt() {
     // To avoid moving other widgets when the value changes
     text.append("ms");
     ui->CBSLabel->setText(text);
+}
+
+void powerDaemonSettings::on_idleSleepIncreaseMBtn_clicked()
+{
+    if(idleSleepInt >= 15) {
+        idleSleepInt = idleSleepInt + 60;
+    }
+    else {
+        idleSleepInt = 60;
+    }
+    convertIdleSleepInt();
+}
+
+void powerDaemonSettings::on_idleSleepDecreaseMBtn_clicked()
+{
+    if(idleSleepInt >= 60) {
+        idleSleepInt = idleSleepInt - 60;
+        if(idleSleepInt < 14) {
+            idleSleepInt = 0;
+        }
+    }
+    else {
+        idleSleepInt = 0;
+    }
+
+    convertIdleSleepInt();
 }
