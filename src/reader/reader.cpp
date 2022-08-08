@@ -30,11 +30,13 @@ reader::reader(QWidget *parent) :
     // Variables
     global::battery::showLowBatteryDialog = true;
     global::battery::showCriticalBatteryAlert = true;
+    global::reader::highlightAlreadyDone = false;
     if(global::reader::bookIsEpub == true) {
         is_epub = true;
     }
     mupdf::convertRelativeValues = false;
     wordwidgetLock = false;
+    textDialogLock = false;
     goToSavedPageDone = false;
     initialPdfRotationDone = false;
 
@@ -555,19 +557,19 @@ reader::reader(QWidget *parent) :
     else {
         if(checkconfig_str_val == "Left") {
                 textAlignment = 0;
-                alignText(0);
+                alignAndHighlightText(0);
         }
         if(checkconfig_str_val == "Center") {
                 textAlignment = 1;
-                alignText(1);
+                alignAndHighlightText(1);
         }
         if(checkconfig_str_val == "Right") {
                 textAlignment = 2;
-                alignText(2);
+                alignAndHighlightText(2);
         }
         if(checkconfig_str_val == "Justify") {
                 textAlignment = 3;
-                alignText(3);
+                alignAndHighlightText(3);
         }
         log("Setting text alignment to '" + checkconfig_str_val + "'", className);
     }
@@ -1041,7 +1043,7 @@ void reader::on_nextBtn_clicked()
 
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
-            alignText(textAlignment);
+            alignAndHighlightText(textAlignment);
         }
     }
     else if(is_epub == true) {
@@ -1057,7 +1059,7 @@ void reader::on_nextBtn_clicked()
 
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
-            alignText(textAlignment);
+            alignAndHighlightText(textAlignment);
         }
     }
     else if(is_pdf == true) {
@@ -1101,7 +1103,7 @@ void reader::on_previousBtn_clicked()
             // We always increment pagesTurned regardless whether we press the Previous or Next button or not
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
-            alignText(textAlignment);
+            alignAndHighlightText(textAlignment);
         }
     }
     else if (is_pdf == true) {
@@ -1136,7 +1138,7 @@ void reader::on_previousBtn_clicked()
             // We always increment pagesTurned regardless whether we press the Previous or Next button not
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
-            alignText(textAlignment);
+            alignAndHighlightText(textAlignment);
         }
     }
     setupPageWidget();
@@ -1324,6 +1326,7 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
         ui->text->setFont(QFont("u001"));
         string_writeconfig(".config/04-book/font", "u001");
     }
+    alignAndHighlightText(textAlignment);
 }
 
 void reader::on_alignLeftBtn_clicked()
@@ -1333,7 +1336,7 @@ void reader::on_alignLeftBtn_clicked()
         ui->text->setAlignment(Qt::AlignLeft);
     }
     else {
-        alignText(0);
+        alignAndHighlightText(0);
     }
     string_writeconfig(".config/04-book/alignment", "Left");
 }
@@ -1345,7 +1348,7 @@ void reader::on_alignCenterBtn_clicked()
         ui->text->setAlignment(Qt::AlignHCenter);
     }
     else {
-        alignText(1);
+        alignAndHighlightText(1);
     }
     string_writeconfig(".config/04-book/alignment", "Center");
 }
@@ -1357,7 +1360,7 @@ void reader::on_alignRightBtn_clicked()
         ui->text->setAlignment(Qt::AlignRight);
     }
     else {
-        alignText(2);
+        alignAndHighlightText(2);
     }
     string_writeconfig(".config/04-book/alignment", "Right");
 }
@@ -1369,12 +1372,13 @@ void reader::on_alignJustifyBtn_clicked()
         ui->text->setAlignment(Qt::AlignJustify);
     }
     else {
-        alignText(3);
+        alignAndHighlightText(3);
     }
     string_writeconfig(".config/04-book/alignment", "Justify");
 }
 
-void reader::alignText(int alignment) {
+void reader::alignAndHighlightText(int alignment) {
+    // Alignment
     /*
      * 0 - Left
      * 1 - Center
@@ -1382,58 +1386,74 @@ void reader::alignText(int alignment) {
      * 3 - Justify
     */
     textAlignment = alignment;
+    QString modifiedPageContent;
+
     if(is_epub == true) {
         if(alignment == 0) {
-            QString epubPageContent_alignChange = epubPageContent;
-            epubPageContent_alignChange.prepend("<div align='left'>");
-            epubPageContent_alignChange.append("</div>");
-            ui->text->setText(epubPageContent_alignChange);
+            modifiedPageContent = epubPageContent;
+            modifiedPageContent.prepend("<div align='left'>");
+            modifiedPageContent.append("</div>");
         }
         if(alignment == 1) {
-            QString epubPageContent_alignChange = epubPageContent;
-            epubPageContent_alignChange.prepend("<div align='center'>");
-            epubPageContent_alignChange.append("</div>");
-            ui->text->setText(epubPageContent_alignChange);
+            modifiedPageContent = epubPageContent;
+            modifiedPageContent.prepend("<div align='center'>");
+            modifiedPageContent.append("</div>");
         }
         if(alignment == 2) {
-            QString epubPageContent_alignChange = epubPageContent;
-            epubPageContent_alignChange.prepend("<div align='right'>");
-            epubPageContent_alignChange.append("</div>");
-            ui->text->setText(epubPageContent_alignChange);
+            modifiedPageContent = epubPageContent;
+            modifiedPageContent.prepend("<div align='right'>");
+            modifiedPageContent.append("</div>");
         }
         if(alignment == 3) {
-            QString epubPageContent_alignChange = epubPageContent;
-            epubPageContent_alignChange.prepend("<div align='justify'>");
-            epubPageContent_alignChange.append("</div>");
-            ui->text->setText(epubPageContent_alignChange);
+            modifiedPageContent = epubPageContent;
+            modifiedPageContent.prepend("<div align='justify'>");
+            modifiedPageContent.append("</div>");
         }
     }
     else {
         if(alignment == 0) {
-            QString ittext_alignChange = ittext;
-            ittext_alignChange.prepend("<div align='left'>");
-            ittext_alignChange.append("</div>");
-            ui->text->setText(ittext_alignChange);
+            modifiedPageContent = ittext;
+            modifiedPageContent.prepend("<div align='left'>");
+            modifiedPageContent.append("</div>");
         }
         if(alignment == 1) {
-            QString ittext_alignChange = ittext;
-            ittext_alignChange.prepend("<div align='center'>");
-            ittext_alignChange.append("</div>");
-            ui->text->setText(ittext_alignChange);
+            modifiedPageContent = ittext;
+            modifiedPageContent.prepend("<div align='center'>");
+            modifiedPageContent.append("</div>");
         }
         if(alignment == 2) {
-            QString ittext_alignChange = ittext;
-            ittext_alignChange.prepend("<div align='right'>");
-            ittext_alignChange.append("</div>");
-            ui->text->setText(ittext_alignChange);
+            modifiedPageContent = ittext;
+            modifiedPageContent.prepend("<div align='right'>");
+            modifiedPageContent.append("</div>");
         }
         if(alignment == 3) {
-            QString ittext_alignChange = ittext;
-            ittext_alignChange.prepend("<div align='justify'>");
-            ittext_alignChange.append("</div>");
-            ui->text->setText(ittext_alignChange);
+            modifiedPageContent = ittext;
+            modifiedPageContent.prepend("<div align='justify'>");
+            modifiedPageContent.append("</div>");
         }
     }
+    ui->text->setText(modifiedPageContent);
+
+    // Highlight
+    QString htmlText = ui->text->toHtml();
+    QJsonObject jsonObject = getHighlightsForBook(book_file);
+    int keyCount = 1;
+    foreach(const QString& key, jsonObject.keys()) {
+        if(keyCount <= 1) {
+            keyCount++;
+            continue;
+        }
+        else {
+            QString highlight = jsonObject.value(key).toString();
+            textDialogLock = true;
+            if(htmlText.contains(highlight)) {
+                htmlText.replace(highlight, "<span style=\" background-color:#bbbbbb;\">" + highlight + "</span>");
+            }
+            textDialogLock = false;
+        }
+        keyCount++;
+    }
+    ui->text->setText(htmlText);
 }
 
 void reader::menubar_show() {
@@ -1852,34 +1872,57 @@ void reader::delay(int mseconds) {
 
 void reader::on_text_selectionChanged() {
     delay(100);
-    if(wordwidgetLock != true) {
+    if(wordwidgetLock == false and textDialogLock == false) {
         QTextCursor cursor = ui->text->textCursor();
         selected_text = cursor.selectedText();
-        if(selected_text != "") {
+        if(!selected_text.isEmpty()) {
             log("Text selection changed; selected text: '" + selected_text + "'", className);
-            QString dictionary_position_str = QString::number(dictionary_position);
-            ui->definitionStatusLabel->setText(dictionary_position_str);
+            if(!selected_text.contains(" ")) {
+                // Word selection
+                QString dictionary_position_str = QString::number(dictionary_position);
+                ui->definitionStatusLabel->setText(dictionary_position_str);
 
-            selected_text = selected_text.toLower();
-            QStringList parts = selected_text.split(' ', QString::SkipEmptyParts);
-            for (int i = 0; i < parts.size(); ++i)
-                parts[i].replace(0, 1, parts[i][0].toUpper());
-            word = parts.join(" ");
-            letter = word.left(1);
-            selected_text_str = word.toStdString();
-            dictionary_lookup(selected_text_str, letter, dictionary_position);
-            ui->wordLabel->setText(word);
-            ui->definitionLabel->setText(definition);
-            if(checkconfig_match(".config/06-words/config", selected_text_str) == true) {
-                ui->saveWordBtn->setText("");
-                ui->saveWordBtn->setIcon(QIcon(":/resources/starred_star.png"));
+                selected_text = selected_text.toLower();
+                QStringList parts = selected_text.split(' ', QString::SkipEmptyParts);
+                for (int i = 0; i < parts.size(); ++i)
+                    parts[i].replace(0, 1, parts[i][0].toUpper());
+                word = parts.join(" ");
+                letter = word.left(1);
+                selected_text_str = word.toStdString();
+                dictionary_lookup(selected_text_str, letter, dictionary_position);
+                ui->wordLabel->setText(word);
+                ui->definitionLabel->setText(definition);
+                if(checkconfig_match(".config/06-words/config", selected_text_str) == true) {
+                    ui->saveWordBtn->setText("");
+                    ui->saveWordBtn->setIcon(QIcon(":/resources/starred_star.png"));
+                }
+                else {
+                    ui->saveWordBtn->setText("");
+                    ui->saveWordBtn->setIcon(QIcon(":/resources/star.png"));
+                }
+                wordwidgetLock = true;
+                wordwidget_show();
             }
             else {
-                ui->saveWordBtn->setText("");
-                ui->saveWordBtn->setIcon(QIcon(":/resources/star.png"));
+                // Highlight
+                textDialogLock = true;
+                global::reader::highlightAlreadyDone = false;
+                QJsonObject jsonObject = getHighlightsForBook(book_file);
+                QString htmlText = ui->text->toHtml();
+                if(htmlText.contains("<span style=\" background-color:#bbbbbb;\">" + selected_text + "</span>")) {
+                    log("Highlight already done", className);
+                    global::reader::highlightAlreadyDone = true;
+                }
+
+                textDialog * textDialogWindow = new textDialog(this);
+                QObject::connect(textDialogWindow, &textDialog::destroyed, this, &reader::unsetTextDialogLock);
+                QObject::connect(textDialogWindow, &textDialog::highlightText, this, &reader::highlightText);
+                QObject::connect(textDialogWindow, &textDialog::unhighlightText, this, &reader::unhighlightText);
+                textDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+                textDialogWindow->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
+                textDialogWindow->move(mapFromGlobal(QCursor::pos()));
+                textDialogWindow->show();
             }
-            wordwidgetLock = true;
-            wordwidget_show();
         }
         else {
             ;
@@ -2000,7 +2043,7 @@ void reader::gotoPage(int pageNumber) {
 
             pagesTurned = 0;
             writeconfig_pagenumber(false);
-            alignText(textAlignment);
+            alignAndHighlightText(textAlignment);
         }
     }
     else if(is_pdf == true) {
@@ -2029,7 +2072,7 @@ void reader::gotoPage(int pageNumber) {
 
             pagesTurned = 0;
             writeconfig_pagenumber(false);
-            alignText(textAlignment);
+            alignAndHighlightText(textAlignment);
         }
     }
     setupPageWidget();
@@ -2343,4 +2386,24 @@ void reader::getPdfOrientation(QString file) {
             break;
         }
     }
+}
+
+void reader::unsetTextDialogLock() {
+    QTextCursor cursor = ui->text->textCursor();
+    cursor.clearSelection();
+    ui->text->setTextCursor(cursor);
+
+    textDialogLock = false;
+}
+
+void reader::highlightText() {
+    log("Highlighting text '" + selected_text + "'", className);
+    highlightBookText(selected_text, book_file, false);
+    alignAndHighlightText(textAlignment);
+}
+
+void reader::unhighlightText() {
+    log("Removing highlighted text '" + selected_text + "'", className);
+    highlightBookText(selected_text, book_file, true);
+    alignAndHighlightText(textAlignment);
 }

@@ -43,6 +43,7 @@ namespace global {
         inline bool bookIsEpub;
         inline bool globalReadingSettings;
         inline int pdfOrientation;
+        inline bool highlightAlreadyDone;
     }
     namespace kobox {
         inline bool showKoboxSplash;
@@ -135,6 +136,7 @@ namespace global {
         static inline QString databasePath = databaseDirectoryPath + "LocalLibrary.db";
         static inline QString recentBooksDatabasePath = databaseDirectoryPath + "RecentBooks.db";
         static inline QString pinnedBooksDatabasePath = databaseDirectoryPath + "PinnedBooks.db";
+        static inline QString highlightsDatabasePath = databaseDirectoryPath + "Highlights.db";
         inline bool headless;
         namespace bookOptionsDialog {
             inline int bookID;
@@ -1013,6 +1015,112 @@ namespace {
         QJsonObject jsonObject = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(data))).object();
         QJsonArray jsonArrayList = jsonObject["database"].toArray();
         return jsonArrayList.at(bookID - 1).toObject();
+    }
+    QJsonObject readHighlightsDatabase() {
+        // Read highlights database from file
+        QFile database(global::localLibrary::highlightsDatabasePath);
+        QByteArray data;
+        if(database.open(QIODevice::ReadOnly)) {
+            data = database.readAll();
+            database.close();
+        }
+        else {
+            QString function = __func__; log(function + ": Failed to open highlights database file for reading at '" + database.fileName() + "'", "functions");
+        }
+
+        // Parse JSON data
+        return QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(data))).object();
+    }
+    void writeHighlightsDatabase(QJsonObject jsonObject) {
+        QFile::remove(global::localLibrary::highlightsDatabasePath);
+        writeFile(global::localLibrary::highlightsDatabasePath, qCompress(QJsonDocument(jsonObject).toJson()).toBase64());
+    }
+    void highlightBookText(QString text, QString bookPath, bool remove) {
+        if(remove == false) {
+            if(!QFile::exists(global::localLibrary::highlightsDatabasePath)) {
+                QJsonObject mainJsonObject;
+                QJsonObject firstJsonObject;
+                firstJsonObject.insert("BookPath", QJsonValue(bookPath));
+                firstJsonObject.insert("Text1", QJsonValue(text));
+                mainJsonObject["Book1"] = firstJsonObject;
+                writeHighlightsDatabase(mainJsonObject);
+            }
+            else {
+                QJsonObject jsonObject = readHighlightsDatabase();
+                bool highlightWrote = false;
+                int length = jsonObject.length();
+                for(int i = 1; i <= length; i++) {
+                    if(jsonObject["Book" + QString::number(i)].toObject().value("BookPath").toString() == bookPath) {
+                        log("highlightBookText: Found existing book with path '" + bookPath + "'", "functions");
+                        int keyCount = 0;
+                        // Counting number of highlights for book
+                        foreach(const QString& key, jsonObject["Book" + QString::number(i)].toObject().keys()) {
+                            keyCount++;
+                        }
+                        // First key is 'BookPath'
+                        int highlightsCount = keyCount - 1;
+                        int currentHighlightPosition = highlightsCount + 1;
+
+                        // Insert highlight
+                        QJsonObject highlightJsonObject = jsonObject["Book" + QString::number(i)].toObject();
+                        // Finding available slot for highlight in case the one we are looking for is already occupied
+                        if(highlightJsonObject.contains("Text" + QString::number(currentHighlightPosition))) {
+                            while(true) {
+                                if(highlightJsonObject.contains("Text" + QString::number(currentHighlightPosition))) {
+                                    currentHighlightPosition++;
+                                }
+                                else {
+                                    break;
+                                }
+                            }
+                        }
+                        highlightJsonObject.insert("Text" + QString::number(currentHighlightPosition), text);
+                        jsonObject["Book" + QString::number(i)] = highlightJsonObject;
+
+                        writeHighlightsDatabase(jsonObject);
+                        highlightWrote = true;
+                    }
+                }
+
+                if(highlightWrote == false) {
+                    QJsonObject bookJsonObject;
+                    bookJsonObject.insert("BookPath", QJsonValue(bookPath));
+                    bookJsonObject.insert("Text1", QJsonValue(text));
+                    jsonObject["Book" + QString::number(length + 1)] = bookJsonObject;
+
+                    writeHighlightsDatabase(jsonObject);
+                    highlightWrote = true;
+                }
+            }
+        }
+        else {
+            QJsonObject jsonObject = readHighlightsDatabase();
+            int length = jsonObject.length();
+            for(int i = 1; i <= length; i++) {
+                if(jsonObject["Book" + QString::number(i)].toObject().value("BookPath").toString() == bookPath) {
+                    QJsonObject bookJsonObject = jsonObject["Book" + QString::number(i)].toObject();
+                    foreach(const QString& key, bookJsonObject.keys()) {
+                        if(bookJsonObject.value(key).toString() == text) {
+                            log("Found matching highlight to remove with text '" + text + "'", "functions.h");
+                            bookJsonObject.remove(key);
+                        }
+                    }
+                    jsonObject["Book" + QString::number(i)] = bookJsonObject;
+                    writeHighlightsDatabase(jsonObject);
+                }
+            }
+        }
+    }
+    QJsonObject getHighlightsForBook(QString bookPath) {
+        QJsonObject jsonObject = readHighlightsDatabase();
+        int length = jsonObject.length();
+        for(int i = 1; i <= length; i++) {
+            if(jsonObject["Book" + QString::number(i)].toObject().value("BookPath").toString() == bookPath) {
+                return jsonObject["Book" + QString::number(i)].toObject();
+                break;
+            }
+        }
+        return QJsonObject();
     }
     float determineYIncrease() {
         if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {

@@ -6,6 +6,7 @@
 #include "generaldialog.h"
 #include "toast.h"
 #include "quit.h"
+#include "textdialog.h"
 
 #include <QWidget>
 #include <QGraphicsScene>
@@ -73,6 +74,7 @@ public:
     bool remount = true;
     bool showTopbarWidget;
     bool wordwidgetLock;
+    bool textDialogLock;
     bool isNightModeActive;
     bool goToSavedPageDone;
     QString ittext;
@@ -110,7 +112,7 @@ public:
     void convertMuPdfVars(int fileType, bool convertAll);
     void refreshScreen();
     void setPageStyle(int fileType);
-    void alignText(int alignment);
+    void alignAndHighlightText(int alignment);
     void delay(int seconds);
     void openUsbmsDialog();
     QString setPageNumberLabelContent();
@@ -161,6 +163,9 @@ private slots:
     void on_quitBtn_clicked();
     void closeIndefiniteToast();
     void getPdfOrientation(QString file);
+    void unsetTextDialogLock();
+    void highlightText();
+    void unhighlightText();
 
 signals:
     void openBookFile(QString book, bool relativePath);
@@ -171,6 +176,7 @@ private:
     generalDialog * generalDialogWindow;
     toast * toastWindow;
     quit * quitWindow;
+    textDialog * textDialogWindow;
     QGraphicsScene * graphicsScene;
 };
 

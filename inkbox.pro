@@ -30,6 +30,7 @@ SOURCES += \
     src/widgets/dialogs/library/bookoptionsdialog.cpp \
     src/widgets/dialogs/brightnessdialog.cpp \
     src/apps/calendarapp.cpp \
+    src/widgets/dialogs/reader/textdialog.cpp \
     src/widgets/reader/dictionarywidget.cpp \
     src/encfs/encryptionmanager.cpp \
     src/widgets/dialogs/generaldialog.cpp \
@@ -68,6 +69,7 @@ HEADERS += \
     src/widgets/dialogs/library/bookoptionsdialog.h \
     src/widgets/dialogs/brightnessdialog.h \
     src/apps/calendarapp.h \
+    src/widgets/dialogs/reader/textdialog.h \
     src/widgets/reader/dictionarywidget.h \
     src/encfs/encryptionmanager.h \
     src/functions.h \
@@ -106,6 +108,7 @@ FORMS += \
     src/widgets/dialogs/library/bookoptionsdialog.ui \
     src/widgets/dialogs/brightnessdialog.ui \
     src/apps/calendarapp.ui \
+    src/widgets/dialogs/reader/textdialog.ui \
     src/widgets/reader/dictionarywidget.ui \
     src/encfs/encryptionmanager.ui \
     src/widgets/dialogs/generaldialog.ui \
@@ -141,4 +144,4 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 RESOURCES += \
     src/eink.qrc
 
-INCLUDEPATH += $$system(find $path -type d)
+INCLUDEPATH += $$system(find ./ -type d -print -path ./.git -prune | grep -v "./.git")
