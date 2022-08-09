@@ -19,8 +19,8 @@ bookOptionsDialog::bookOptionsDialog(QWidget *parent) :
     else {
         ui->deleteBtn->setProperty("type", "borderless");
     }
+    ui->wipeLocalReadingSettingsBtn->setProperty("type", "borderless");
     ui->infoBtn->setProperty("type", "borderless");
-    this->adjustSize();
 
     global::localLibrary::bookOptionsDialog::bookPinAction = false;
 
@@ -32,6 +32,17 @@ bookOptionsDialog::bookOptionsDialog(QWidget *parent) :
     else {
         bookPinned = false;
     }
+
+    bookChecksum = fileChecksum(bookPath, QCryptographicHash::Sha256);
+    QDir localReadingSettingsPath("/mnt/onboard/onboard/." + bookChecksum);
+    if(!localReadingSettingsPath.exists()) {
+        ui->wipeLocalReadingSettingsBtn->hide();
+        ui->line_3->hide();
+        ui->wipeLocalReadingSettingsBtn->deleteLater();
+        ui->line_3->deleteLater();
+    }
+
+    this->adjustSize();
 }
 
 bookOptionsDialog::~bookOptionsDialog()
@@ -207,4 +218,12 @@ bool bookOptionsDialog::isBookPinned(int bookID) {
         }
     }
     return bookPinned;
+}
+
+void bookOptionsDialog::on_wipeLocalReadingSettingsBtn_clicked()
+{
+    log("Removing local reading settings directory for book '" + bookPath + "' at '/mnt/onboard/onboard/." + bookChecksum + "'", className);
+    QDir dir("/mnt/onboard/onboard/." + bookChecksum);
+    dir.removeRecursively();
+    bookOptionsDialog::close();
 }
