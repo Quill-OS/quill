@@ -81,7 +81,8 @@
         <file>resources/arrow-right.png</file>
         <file>resources/file-text.png</file>
         <file>resources/pin.png</file>
-	<file>resources/highlight.png</file>
-	<file>resources/unhighlight.png</file>
+        <file>resources/highlight.png</file>
+        <file>resources/unhighlight.png</file>
+        <file>resources/view-highlights.png</file>
     </qresource>
 </RCC>

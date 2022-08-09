@@ -72,6 +72,7 @@ reader::reader(QWidget *parent) :
     ui->increaseScaleBtn->setProperty("type", "borderless");
     ui->decreaseScaleBtn->setProperty("type", "borderless");
     ui->quitBtn->setProperty("type", "borderless");
+    ui->viewHighlightsBtn->setProperty("type", "borderless");
 
     // Icons
     ui->alignLeftBtn->setText("");
@@ -112,6 +113,8 @@ reader::reader(QWidget *parent) :
     ui->optionsBtn->setIcon(QIcon(":/resources/settings.png"));
     ui->nextBtn->setText("");
     ui->nextBtn->setIcon(QIcon(":/resources/arrow-right.png"));
+    ui->viewHighlightsBtn->setText("");
+    ui->viewHighlightsBtn->setIcon(QIcon(":/resources/view-highlights.png"));
 
     // On the Mini with QT_FONT_DPI set to 187 (default for this device), quitBtn makes the UI go beyond the limits of the screen when the menu bar is shown
     if(global::deviceID == "n705\n") {
@@ -316,6 +319,7 @@ reader::reader(QWidget *parent) :
     ui->fontChooser->setStyleSheet("font-size: 9pt");
     ui->gotoBtn->setStyleSheet("font-size: 9pt; padding: 9px; font-weight: bold; background: lightGrey");
     ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
+    ui->viewHighlightsBtn->setStyleSheet("padding: 9px");
 
     // Hiding the menubar + definition widget + brightness widget + buttons bar widget
     ui->menuWidget->setVisible(false);
@@ -536,11 +540,19 @@ reader::reader(QWidget *parent) :
     else if(is_pdf == true) {
         ui->text->hide();
         ui->text->deleteLater();
+        ui->line_20->hide();
+        ui->line_20->deleteLater();
+        ui->viewHighlightsBtn->hide();
+        ui->viewHighlightsBtn->deleteLater();
         setupPng();
     }
     else if(is_image == true) {
         ui->text->hide();
         ui->text->deleteLater();
+        ui->line_20->hide();
+        ui->line_20->deleteLater();
+        ui->viewHighlightsBtn->hide();
+        ui->viewHighlightsBtn->deleteLater();
         setupPng();
     }
     else {
@@ -1437,6 +1449,7 @@ void reader::alignAndHighlightText(int alignment) {
     // Highlight
     QString htmlText = ui->text->toHtml();
     QJsonObject jsonObject = getHighlightsForBook(book_file);
+    qDebug() << jsonObject;
     int keyCount = 1;
     foreach(const QString& key, jsonObject.keys()) {
         if(keyCount <= 1) {

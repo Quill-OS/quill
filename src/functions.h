@@ -1041,7 +1041,7 @@ namespace {
                 QJsonObject mainJsonObject;
                 QJsonObject firstJsonObject;
                 firstJsonObject.insert("BookPath", QJsonValue(bookPath));
-                firstJsonObject.insert("Text1", QJsonValue(text));
+                firstJsonObject.insert("T-" + QUuid::createUuid().toString(QUuid::WithoutBraces), QJsonValue(text));
                 mainJsonObject["Book1"] = firstJsonObject;
                 writeHighlightsDatabase(mainJsonObject);
             }
@@ -1051,30 +1051,23 @@ namespace {
                 int length = jsonObject.length();
                 for(int i = 1; i <= length; i++) {
                     if(jsonObject["Book" + QString::number(i)].toObject().value("BookPath").toString() == bookPath) {
-                        log("highlightBookText: Found existing book with path '" + bookPath + "'", "functions");
-                        int keyCount = 0;
-                        // Counting number of highlights for book
-                        foreach(const QString& key, jsonObject["Book" + QString::number(i)].toObject().keys()) {
-                            keyCount++;
-                        }
-                        // First key is 'BookPath'
-                        int highlightsCount = keyCount - 1;
-                        int currentHighlightPosition = highlightsCount + 1;
+                        log("highlightBookText: Found existing book in database with path '" + bookPath + "'", "functions");
 
                         // Insert highlight
                         QJsonObject highlightJsonObject = jsonObject["Book" + QString::number(i)].toObject();
                         // Finding available slot for highlight in case the one we are looking for is already occupied
-                        if(highlightJsonObject.contains("Text" + QString::number(currentHighlightPosition))) {
+                        QString uuid = "T-"+ QUuid::createUuid().toString(QUuid::WithoutBraces);
+                        if(highlightJsonObject.contains(uuid)) {
                             while(true) {
-                                if(highlightJsonObject.contains("Text" + QString::number(currentHighlightPosition))) {
-                                    currentHighlightPosition++;
+                                if(highlightJsonObject.contains(uuid)) {
+                                    uuid = "T-" + QUuid::createUuid().toString(QUuid::WithoutBraces);
                                 }
                                 else {
                                     break;
                                 }
                             }
                         }
-                        highlightJsonObject.insert("Text" + QString::number(currentHighlightPosition), text);
+                        highlightJsonObject.insert(uuid, text);
                         jsonObject["Book" + QString::number(i)] = highlightJsonObject;
 
                         writeHighlightsDatabase(jsonObject);
@@ -1083,9 +1076,10 @@ namespace {
                 }
 
                 if(highlightWrote == false) {
+                    // This block of code is called when the book is referenced in the database, but no highlights are currently indexed
                     QJsonObject bookJsonObject;
                     bookJsonObject.insert("BookPath", QJsonValue(bookPath));
-                    bookJsonObject.insert("Text1", QJsonValue(text));
+                    bookJsonObject.insert("T-" + QUuid::createUuid().toString(QUuid::WithoutBraces), QJsonValue(text));
                     jsonObject["Book" + QString::number(length + 1)] = bookJsonObject;
 
                     writeHighlightsDatabase(jsonObject);
