@@ -16,6 +16,7 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->CBSLabel->setFont(QFont("Noto Sans Mono"));
     ui->idleSleepLabel->setFont(QFont("Noto Sans Mono"));
 
+    // Font tweaks
     ui->label_2->setFont(QFont("Inter"));
     ui->exitBtn->setFont(QFont("Inter"));
 
@@ -37,29 +38,39 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->label_2->setStyleSheet("font-weight: bold");
 
     // Icons
-    int controlBtnFixedLength;
+    int controlBtnFixedWidth;
     if(global::deviceID == "n705\n") {
-        controlBtnFixedLength = 50;
+        controlBtnFixedWidth = 50;
     }
     else {
-        controlBtnFixedLength = 80;
+        controlBtnFixedWidth = 80;
     }
 
     ui->CBSDecreaseBtn->setIcon(QIcon(":/resources/minus.png"));
-    ui->CBSDecreaseBtn->setFixedWidth(controlBtnFixedLength);
+    ui->CBSDecreaseBtn->setFixedWidth(controlBtnFixedWidth);
     ui->CBSIncreaseBtn->setIcon(QIcon(":/resources/plus.png"));
-    ui->CBSIncreaseBtn->setFixedWidth(controlBtnFixedLength);
+    ui->CBSIncreaseBtn->setFixedWidth(controlBtnFixedWidth);
 
-    ui->idleSleepDecreaseBtn->setIcon(QIcon(":/resources/minus.png"));
-    ui->idleSleepDecreaseBtn->setFixedWidth(controlBtnFixedLength);
-    ui->idleSleepIncreaseBtn->setIcon(QIcon(":/resources/plus.png"));
-    ui->idleSleepIncreaseBtn->setFixedWidth(controlBtnFixedLength);
+
+    int idleBtnsFixedWidth;
+    if(global::deviceID == "n705\n") {
+        idleBtnsFixedWidth = 80;
+    }
+    else {
+        idleBtnsFixedWidth = 100;
+    }
+    ui->idleSleepDecreaseBtn->setFixedWidth(idleBtnsFixedWidth);
+    ui->idleSleepIncreaseBtn->setFixedWidth(idleBtnsFixedWidth);
+    ui->idleSleepDecreaseMBtn->setFixedWidth(idleBtnsFixedWidth);
+    ui->idleSleepIncreaseMBtn->setFixedWidth(idleBtnsFixedWidth);
 
     // Padding
-    ui->CBSDecreaseBtn->setStyleSheet("padding: 10px");
-    ui->CBSIncreaseBtn->setStyleSheet("padding: 10px");
-    ui->idleSleepDecreaseBtn->setStyleSheet("padding: 10px");
-    ui->idleSleepIncreaseBtn->setStyleSheet("padding: 10px");
+    ui->CBSDecreaseBtn->setStyleSheet("padding: 10px; font-size: 10pt");
+    ui->CBSIncreaseBtn->setStyleSheet("padding: 10px; font-size: 10pt");
+    ui->idleSleepDecreaseBtn->setStyleSheet("padding: 10px; font-size: 10pt");
+    ui->idleSleepIncreaseBtn->setStyleSheet("padding: 10px; font-size: 10pt");
+    ui->idleSleepDecreaseMBtn->setStyleSheet("padding: 10px; font-size: 10pt");
+    ui->idleSleepIncreaseMBtn->setStyleSheet("padding: 10px; font-size: 10pt");
 
     // Stylesheet
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
@@ -87,6 +98,13 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->idleSleepIncreaseBtn->setAutoRepeatDelay(autoRepeatDelay);
     ui->idleSleepIncreaseBtn->setAutoRepeatInterval(autoRepeatInterval);
 
+    ui->idleSleepDecreaseMBtn->setAutoRepeat(true);
+    ui->idleSleepDecreaseMBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->idleSleepDecreaseMBtn->setAutoRepeatInterval(autoRepeatInterval);
+
+    ui->idleSleepIncreaseMBtn->setAutoRepeat(true);
+    ui->idleSleepIncreaseMBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->idleSleepIncreaseMBtn->setAutoRepeatInterval(autoRepeatInterval);
 
     // Hide items
     ui->hLabel_3->hide();
@@ -339,7 +357,7 @@ void powerDaemonSettings::convertIdleSleepInt()
         ui->idleSleepLabel->setText("Never");
         return;
     }
-    while(copiedIdleSleepInt > 60) {
+    while(copiedIdleSleepInt >= 60) {
         minutes = minutes + 1;
         copiedIdleSleepInt = copiedIdleSleepInt - 60;
     }
@@ -347,9 +365,10 @@ void powerDaemonSettings::convertIdleSleepInt()
 
     QString text;
     if(minutes != 0) {
-        text.append(QString::number(minutes) + "m ");
+        text.append(QString::number(minutes) + "m");
     }
     if(seconds != 0) {
+        text.append(" ");
         text.append(QString::number(seconds) + "s");
     }
     ui->idleSleepLabel->setText(text);
@@ -386,4 +405,30 @@ void powerDaemonSettings::convertCinematicInt() {
     // To avoid moving other widgets when the value changes
     text.append("ms");
     ui->CBSLabel->setText(text);
+}
+
+void powerDaemonSettings::on_idleSleepIncreaseMBtn_clicked()
+{
+    if(idleSleepInt >= 15) {
+        idleSleepInt = idleSleepInt + 60;
+    }
+    else {
+        idleSleepInt = 60;
+    }
+    convertIdleSleepInt();
+}
+
+void powerDaemonSettings::on_idleSleepDecreaseMBtn_clicked()
+{
+    if(idleSleepInt >= 60) {
+        idleSleepInt = idleSleepInt - 60;
+        if(idleSleepInt < 14) {
+            idleSleepInt = 0;
+        }
+    }
+    else {
+        idleSleepInt = 0;
+    }
+
+    convertIdleSleepInt();
 }
