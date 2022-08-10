@@ -780,7 +780,7 @@ void generalDialog::waitForGutenbergSearchDone() {
 
 void generalDialog::increaseSize()
 {
-    log("Resizing generalDialog", className);
+    log("Resizing", className);
 
     ui->topStackedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     ui->mainStackedWidget->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);

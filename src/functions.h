@@ -166,6 +166,9 @@ namespace global {
         static inline int pinnedBooksNumberPerRow = 4;
         static inline int pinnedBooksRowNumber = global::homePageWidget::pinnedBooksNumber / global::homePageWidget::pinnedBooksNumberPerRow;
     }
+    namespace highlightsListDialog {
+        inline QString bookPath;
+    }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705 = false;

@@ -7,6 +7,7 @@
 #include "toast.h"
 #include "quit.h"
 #include "textdialog.h"
+#include "highlightslistdialog.h"
 
 #include <QWidget>
 #include <QGraphicsScene>
@@ -166,6 +167,8 @@ private slots:
     void unsetTextDialogLock();
     void highlightText();
     void unhighlightText();
+    void on_viewHighlightsBtn_clicked();
+    void alignAndHighlightTextSlot();
 
 signals:
     void openBookFile(QString book, bool relativePath);
@@ -177,6 +180,7 @@ private:
     toast * toastWindow;
     quit * quitWindow;
     textDialog * textDialogWindow;
+    highlightsListDialog * highlightsListDialogWindow;
     QGraphicsScene * graphicsScene;
 };
 

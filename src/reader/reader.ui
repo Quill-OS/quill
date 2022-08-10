@@ -102,10 +102,20 @@
              <property name="bottomMargin">
               <number>0</number>
              </property>
-             <item row="0" column="0">
-              <widget class="QLabel" name="pageNumberLabel">
+             <item row="0" column="1">
+              <widget class="QProgressBar" name="pageProgressBar">
+               <property name="value">
+                <number>0</number>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="4">
+              <widget class="QPushButton" name="viewHighlightsBtn">
+               <property name="styleSheet">
+                <string notr="true"/>
+               </property>
                <property name="text">
-                <string>x of x</string>
+                <string>View highlights</string>
                </property>
               </widget>
              </item>
@@ -116,10 +126,20 @@
                </property>
               </widget>
              </item>
-             <item row="0" column="1">
-              <widget class="QProgressBar" name="pageProgressBar">
-               <property name="value">
-                <number>0</number>
+             <item row="0" column="0">
+              <widget class="QLabel" name="pageNumberLabel">
+               <property name="text">
+                <string>x of x</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="Line" name="line_20">
+               <property name="frameShadow">
+                <enum>QFrame::Plain</enum>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
                </property>
               </widget>
              </item>

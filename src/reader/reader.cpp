@@ -1449,7 +1449,6 @@ void reader::alignAndHighlightText(int alignment) {
     // Highlight
     QString htmlText = ui->text->toHtml();
     QJsonObject jsonObject = getHighlightsForBook(book_file);
-    qDebug() << jsonObject;
     int keyCount = 1;
     foreach(const QString& key, jsonObject.keys()) {
         if(keyCount <= 1) {
@@ -2418,5 +2417,26 @@ void reader::highlightText() {
 void reader::unhighlightText() {
     log("Removing highlighted text '" + selected_text + "'", className);
     highlightBookText(selected_text, book_file, true);
+    alignAndHighlightText(textAlignment);
+}
+
+void reader::on_viewHighlightsBtn_clicked()
+{
+    log("Launching highlights list dialog for book '" + book_file + "'", className);
+    QJsonObject jsonObject = getHighlightsForBook(book_file);
+    if(jsonObject.isEmpty() or jsonObject.length() <= 1) {
+        global::toast::delay = 3000;
+        showToast("No highlights for this book");
+    }
+    else {
+        global::highlightsListDialog::bookPath = book_file;
+        highlightsListDialog * highlightsListDialogWindow = new highlightsListDialog(this);
+        QObject::connect(highlightsListDialogWindow, &highlightsListDialog::destroyed, this, &reader::alignAndHighlightTextSlot);
+        QObject::connect(highlightsListDialogWindow, &highlightsListDialog::showToast, this, &reader::showToast);
+        highlightsListDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    }
+}
+
+void reader::alignAndHighlightTextSlot() {
     alignAndHighlightText(textAlignment);
 }
