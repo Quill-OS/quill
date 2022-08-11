@@ -71,6 +71,7 @@ private slots:
     void on_repackBtn_clicked();
     void on_generateSystemReportBtn_clicked();
     void on_tzComboBox_currentTextChanged(const QString &arg1);
+    void on_exportHighlightsBtn_clicked();
 
 signals:
     void showToast(QString messageToDisplay);

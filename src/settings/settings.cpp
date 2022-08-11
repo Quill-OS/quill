@@ -43,6 +43,7 @@ settings::settings(QWidget *parent) :
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->repackBtn->setProperty("type", "borderless");
+    ui->exportHighlightsBtn->setProperty("type", "borderless");
     ui->label->setStyleSheet("font-size: 10.5pt; font-weight: bold");
     ui->okBtn->setStyleSheet("font-weight: bold");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
@@ -57,6 +58,7 @@ settings::settings(QWidget *parent) :
     ui->tzComboBox->setStyleSheet("font-size: 9pt");
     ui->setPasscodeBtn->setStyleSheet("font-size: 9pt");
     ui->repackBtn->setStyleSheet("font-size: 9pt");
+    ui->exportHighlightsBtn->setStyleSheet("font-size: 9pt");
     ui->uiScaleNumberLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
 
     ui->previousBtn->setText("");
@@ -1026,4 +1028,11 @@ void settings::on_tzComboBox_currentTextChanged(const QString &arg1)
             QThread::msleep(500);
         }
     }
+}
+
+void settings::on_exportHighlightsBtn_clicked()
+{
+    QJsonObject jsonObject = readHighlightsDatabase();
+    writeFile("/mnt/onboard/onboard/highlights-" + QDateTime::currentDateTime().toString("dd-MM-yy_hh.mm.ss") + ".json", QJsonDocument(jsonObject).toJson());
+    showToast("Highlights exported successfully");
 }

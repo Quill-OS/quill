@@ -322,14 +322,16 @@ namespace {
         return quoteNumber;
         return 0;
     }
-    void writeFile(QString filename, QString content) {
+    bool writeFile(QString filename, QString content) {
         QFile file(filename);
         if(file.open(QIODevice::ReadWrite | QIODevice::Truncate | QIODevice::Text)) {
             QTextStream stream(&file);
             stream << content;
+            return true;
         }
         else {
             QString function = __func__; log(function + ": Failed to write string '" + content + "' to file '" + filename + "'", "functions");
+            return false;
         }
     }
     void string_writeconfig(std::string file, std::string config_option) {
