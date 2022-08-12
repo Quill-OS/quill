@@ -37,7 +37,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">padding-left: 80px; padding-right: 80px; padding-top: 10px; padding-bottom: 10px</string>
+        <string notr="true">padding-left: 80px; padding-right: 80px; padding-top: 10px; padding-bottom: 10px;</string>
        </property>
        <property name="text">
         <string>Delete</string>
@@ -79,7 +79,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">padding-left: 80px; padding-right: 80px; padding-top: 10px; padding-bottom: 10px</string>
+        <string notr="true">padding-left: 80px; padding-right: 80px; padding-top: 10px; padding-bottom: 10px;</string>
        </property>
        <property name="text">
         <string>More info</string>
@@ -95,7 +95,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">padding-left: 80px; padding-right: 80px; padding-top: 10px; padding-bottom: 10px</string>
+        <string notr="true">padding-left: 80px; padding-right: 80px; padding-top: 10px; padding-bottom: 10px;</string>
        </property>
        <property name="text">
         <string>Pin</string>
@@ -111,7 +111,7 @@
         </font>
        </property>
        <property name="styleSheet">
-        <string notr="true">padding-left: 80px; padding-right: 80px; padding-top: 10px; padding-bottom: 10px</string>
+        <string notr="true">padding-left: 80px; padding-right: 80px; padding-top: 10px; padding-bottom: 10px;</string>
        </property>
        <property name="text">
         <string>Wipe reading settings</string>

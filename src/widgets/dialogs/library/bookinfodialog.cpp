@@ -10,6 +10,9 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    // Preventing outside interaction
+    this->setModal(true);
+
     // Stylesheet
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
     stylesheetFile.open(QFile::ReadOnly);

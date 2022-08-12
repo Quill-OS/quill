@@ -36,12 +36,9 @@ bookOptionsDialog::bookOptionsDialog(QWidget *parent) :
     bookChecksum = fileChecksum(bookPath, QCryptographicHash::Sha256);
     QDir localReadingSettingsPath("/mnt/onboard/onboard/." + bookChecksum);
     if(!localReadingSettingsPath.exists()) {
-        ui->wipeLocalReadingSettingsBtn->hide();
-        ui->line_3->hide();
-        ui->wipeLocalReadingSettingsBtn->deleteLater();
-        ui->line_3->deleteLater();
+        ui->wipeLocalReadingSettingsBtn->setEnabled(false);
+        ui->wipeLocalReadingSettingsBtn->setStyleSheet(ui->wipeLocalReadingSettingsBtn->styleSheet() + "color: gray");
     }
-
     this->adjustSize();
 }
 
@@ -116,10 +113,12 @@ void bookOptionsDialog::pinBook(int bookID) {
         }
         if(foundSpaceForBook == false && bookIsAlreadyPinned == false) {
             global::localLibrary::bookOptionsDialog::bookPinAction = false;
+            global::toast::delay = 3000;
             emit showToast("No space left for pinning book");
         }
         else if(bookIsAlreadyPinned == true) {
             global::localLibrary::bookOptionsDialog::bookPinAction = false;
+            global::toast::delay = 3000;
             emit showToast("Book is already pinned");
         }
     }
@@ -183,6 +182,7 @@ void bookOptionsDialog::unpinBook(int bookID) {
         }
     }
     log(function + ": Unpinned book with ID " + bookID, className);
+    global::toast::delay = 3000;
     emit showToast("Book unpinned successfully");
     global::localLibrary::bookOptionsDialog::bookPinAction = true;
 
@@ -225,5 +225,6 @@ void bookOptionsDialog::on_wipeLocalReadingSettingsBtn_clicked()
     log("Removing local reading settings directory for book '" + bookPath + "' at '/mnt/onboard/onboard/." + bookChecksum + "'", className);
     QDir dir("/mnt/onboard/onboard/." + bookChecksum);
     dir.removeRecursively();
-    bookOptionsDialog::close();
+    global::toast::delay = 3000;
+    emit showToast("Reading settings wiped successfully");
 }
