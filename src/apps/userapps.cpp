@@ -236,7 +236,6 @@ QString userapps::parseJsonShow(QJsonObject json)
             QJsonArray array = value.toArray();
             if(key == "RequiredFeatures") {
                 bool foundRequiredFeature = false;
-
                 for(QJsonValueRef ref: array) {
                     foundRequiredFeature = true;
                     int id = ref.toInt();
@@ -254,7 +253,8 @@ QString userapps::parseJsonShow(QJsonObject json)
 
                 if(foundRequiredFeature == true) {
                     appendString.remove(appendString.size() - 2, 2);
-                } else {
+                }
+                else {
                     appendString.append("None");
                 }
             }
