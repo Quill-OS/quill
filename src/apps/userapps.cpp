@@ -236,11 +236,8 @@ QString userapps::parseJsonShow(QJsonObject json)
             QJsonArray array = value.toArray();
             if(key == "RequiredFeatures") {
                 bool foundRequiredFeature = false;
-                appendString.append("None");
-
                 for(QJsonValueRef ref: array) {
                     foundRequiredFeature = true;
-                    appendString.remove(appendString.size() - 4, 4);
                     int id = ref.toInt();
                     if(id == 0) {
                         appendString.append("Wi-Fi connection");
@@ -256,6 +253,9 @@ QString userapps::parseJsonShow(QJsonObject json)
 
                 if(foundRequiredFeature == true) {
                     appendString.remove(appendString.size() - 2, 2);
+                }
+                else {
+                    appendString.append("None");
                 }
             }
             else if(key == "SupportedDevices") {
