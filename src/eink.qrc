@@ -84,5 +84,7 @@
         <file>resources/highlight.png</file>
         <file>resources/unhighlight.png</file>
         <file>resources/view-highlights.png</file>
+        <file>resources/stop.png</file>
+        <file>resources/refresh.png</file>
     </qresource>
 </RCC>

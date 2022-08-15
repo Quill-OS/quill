@@ -51,8 +51,7 @@ public:
     bool existing_recent_books = false;
     bool reboot_after_update = false;
     bool resetFullWindowException;
-    bool wifiIconClickedWhileReconnecting;
-    int lastWifiState;
+    global::wifi::WifiState lastWifiState = global::wifi::WifiState::Unknown;
     int timerTime = 0;
     QString relative_path;
     QString usbmsStatus;
@@ -62,7 +61,6 @@ public:
     void openUsbmsDialog();
     void resetIcons();
     void setBatteryIcon();
-    bool checkWifiState();
 
 public slots:
 
@@ -74,14 +72,13 @@ private slots:
     void on_quitBtn_clicked();
     void on_brightnessBtn_clicked();
     void openUpdateDialog();
-    void openWifiDialog();
     void setInitialBrightness();
     void on_homeBtn_clicked();
     void refreshScreen();
     void setupSearchDialog();
-    void setWifiIcon();
+    void updateWifiState();
     void on_wifiBtn_clicked();
-    void updateWifiIcon(int mode);
+    void updateWifiIcon(global::wifi::WifiState mode);
     void hello(int testNumber);
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();
@@ -95,7 +92,6 @@ private slots:
     void on_libraryButton_clicked();
     void resetWindow(bool resetStackedWidget);
     void resetFullWindow();
-    void resetWifiIconClickedWhileReconnecting();
     void setupLocalLibraryWidget();
     void setupHomePageWidget();
 

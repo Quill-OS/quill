@@ -63,7 +63,6 @@ private slots:
     void adjust_size();
     void restartSearchDialog();
     void refreshScreenNative();
-    void connectToNetworkSlot();
     void startOtaUpdate(bool wasDownloadSuccessful);
     void openBookFileNative(QString book, bool relativePath);
     void showToastNative(QString messageToDisplay);

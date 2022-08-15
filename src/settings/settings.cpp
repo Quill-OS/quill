@@ -846,7 +846,7 @@ void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)
 void settings::on_checkOtaUpdateBtn_clicked()
 {
     log("'Check for OTA update' button clicked", className);
-    if(testPing(true) == 0 or global::deviceID == "emu\n") {
+    if(testPing() == 0 or global::deviceID == "emu\n") {
         launchOtaUpdater();
     }
     else {

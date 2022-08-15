@@ -27,43 +27,18 @@ toast::toast(QWidget *parent) :
             global::toast::delay = 5000;
         }
     }
-    if(global::toast::wifiToast == true) {
-        global::toast::wifiToast = false;
-        this->setModal(true);
-        wifiDialogWindow = new wifiDialog(this);
-        wifiDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-        connect(wifiDialogWindow, SIGNAL(wifiNetworksListReady(int)), SLOT(showWifiDialog(int)));
-        connect(wifiDialogWindow, SIGNAL(quit(int)), SLOT(exitSlot(int)));
-        connect(wifiDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
-        connect(wifiDialogWindow, SIGNAL(updateWifiIconSig(int)), SLOT(updateWifiIcon(int)));
-        connect(wifiDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
-        connect(wifiDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
-        connect(wifiDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(close()));
+    if(global::toast::indefiniteToast == false) {
+        QTimer::singleShot(global::toast::delay, this, SLOT(close()));
+        global::toast::delay = 0;
     }
     else {
-        if(global::toast::indefiniteToast == false) {
-            QTimer::singleShot(global::toast::delay, this, SLOT(close()));
-            global::toast::delay = 0;
-        }
-        else {
-            global::toast::indefiniteToast = false;
-        }
+        global::toast::indefiniteToast = false;
     }
 }
 
 toast::~toast()
 {
     delete ui;
-}
-
-void toast::showWifiDialog(int networksFound) {
-    if(networksFound == 1) {
-        emit updateWifiIconSig(2);
-        this->hide();
-        wifiDialogWindow->show();
-        wifiDialogWindow->adjustSize();
-        wifiDialogWindow->centerDialog();
-    }
 }
 
 void toast::centerToast() {
@@ -89,10 +64,6 @@ void toast::exitSlot(int exitCode) {
 
 void toast::refreshScreenNative() {
     emit refreshScreen();
-}
-
-void toast::updateWifiIcon(int mode) {
-    emit updateWifiIconSig(mode);
 }
 
 void toast::showToastNative(QString messageToDisplay) {

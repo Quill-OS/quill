@@ -14,7 +14,6 @@ wifiDialog::wifiDialog(QWidget *parent) :
     ui(new Ui::wifiDialog)
 {
     ui->setupUi(this);
-    wifiListTimer = new QTimer(this);
 
     // Stylesheet, style & misc.
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
@@ -23,107 +22,39 @@ wifiDialog::wifiDialog(QWidget *parent) :
     stylesheetFile.close();
     this->setModal(true);
 
-    ui->cancelBtn->setProperty("type", "borderless");
-    ui->connectBtn->setProperty("type", "borderless");
-    ui->cancelBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
-    ui->connectBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
-    ui->mainLabel->setStyleSheet("padding-left: 125px; padding-right: 125px");
-    ui->networksListWidget->setFont(QFont("u001"));
-    ui->networksListWidget->setStyleSheet("font-size: 9pt");
+    ui->stopBtn->setIcon(QIcon(":/resources/stop.png"));
+    ui->logBtn->setIcon(QIcon(":/resources/file-text.png"));
+    ui->refreshBtn->setIcon(QIcon(":/resources/refresh.png"));
 
-    checkWifiNetworks();
+    ui->Wificheckbox->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
+
+    // Size
+    QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
+    this->setFixedWidth(screenGeometry.width());
+
+    int halfOfHalfHeight = ((screenGeometry.height() / 2) / 2) / 2;
+    int finalHeight = screenGeometry.height() - halfOfHalfHeight * 2;
+
+    this->setFixedHeight(finalHeight);
+    this->move(0, halfOfHalfHeight);
+
+    // Button sizes
+    ui->stopBtn->setFixedWidth(screenGeometry.width() / 8);
+    ui->logBtn->setFixedWidth(screenGeometry.width() / 8);
+    ui->refreshBtn->setFixedWidth(screenGeometry.width() / 8);
+
+    int heighIncrease = 20;
+    ui->stopBtn->setFixedHeight(ui->stopBtn->height() + heighIncrease);
+    ui->logBtn->setFixedHeight(ui->logBtn->height() + heighIncrease);
+    ui->refreshBtn->setFixedHeight(ui->refreshBtn->height() + heighIncrease);
+
+   //ui->cancelBtn->setProperty("type", "borderless");
+
 }
 
 wifiDialog::~wifiDialog()
 {
     delete ui;
-}
-
-void wifiDialog::checkWifiNetworks() {
-    string_writeconfig("/opt/ibxd", "list_wifi_networks\n");
-    wifiListTimer->setInterval(100);
-    connect(wifiListTimer, &QTimer::timeout, [&]() {
-        if(QFile::exists("/run/wifi_networks_list")) {
-           printWifiNetworks();
-           wifiListTimer->stop();
-        }
-    } );
-    wifiListTimer->start();
-}
-
-void wifiDialog::printWifiNetworks() {
-    if(readFile("/run/wifi_networks_list").isEmpty()) {
-        log("Wi-Fi networks list empty", className);
-        QFile::remove("/run/wifi_networks_list");
-        emit quit(1);
-        wifiDialog::close();
-    }
-    else {
-        log("Parsing Wi-Fi networks list", className);
-        QFile wifiNetworksListFile("/run/wifi_networks_list");
-        wifiNetworksListFile.open(QIODevice::ReadWrite);
-        QTextStream in (&wifiNetworksListFile);
-        wifiNetworksList = in.readAll();
-        wifiNetworksListFile.close();
-        QFile::remove("/run/wifi_networks_list");
-
-        QStringListModel* model = new QStringListModel(this);
-        QStringList list = wifiNetworksList.split("\n", QString::SkipEmptyParts);
-        model->setStringList(list);
-        ui->networksListWidget->setModel(model);
-        ui->networksListWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-        emit wifiNetworksListReady(1);
-    }
-}
-
-void wifiDialog::centerDialog() {
-    // Centering dialog
-    // Get current screen size
-    QRect rec = QGuiApplication::screenAt(this->pos())->geometry();
-    // Using minimum size of window
-    QSize size = this->minimumSize();
-    // Set top left point
-    QPoint topLeft = QPoint((rec.width() / 2) - (size.width() / 2), (rec.height() / 2) - (size.height() / 2));
-    // set window position
-    setGeometry(QRect(topLeft, size));
-}
-
-void wifiDialog::on_cancelBtn_clicked()
-{
-    string_writeconfig("/opt/ibxd", "toggle_wifi_off\n");
-    while(true) {
-        if(QFile::exists("/run/toggle_wifi_off_done")) {
-            QFile::remove("/run/toggle_wifi_off_done");
-            break;
-        }
-    }
-    emit quit(0);
-    wifiDialog::close();
-}
-
-void wifiDialog::on_connectBtn_clicked()
-{
-    index = ui->networksListWidget->currentIndex();
-    itemText = index.data(Qt::DisplayRole).toString();
-    if(itemText.isEmpty()) {
-        showToast("You must select a network");
-    }
-    else {
-        this->hide();
-        global::keyboard::keyboardDialog = true;
-        global::keyboard::wifiPassphraseDialog = true;
-        global::keyboard::keyboardText = "";
-        generalDialogWindow = new generalDialog();
-        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-        generalDialogWindow->wifiEssid = itemText;
-        connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
-        connect(generalDialogWindow, SIGNAL(updateWifiIcon(int)), SLOT(updateWifiIcon(int)));
-        connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
-        connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
-        connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(close()));
-        generalDialogWindow->show();
-    }
 }
 
 void wifiDialog::refreshScreenNative() {
@@ -141,3 +72,99 @@ void wifiDialog::showToastNative(QString messageToDisplay) {
 void wifiDialog::closeIndefiniteToastNative() {
     emit closeIndefiniteToast();
 }
+
+/*
+
+        this->hide();
+        global::keyboard::keyboardDialog = true;
+        global::keyboard::wifiPassphraseDialog = true;
+        global::keyboard::keyboardText = "";
+        generalDialogWindow = new generalDialog();
+        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        generalDialogWindow->wifiEssid = itemText;
+        connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
+        connect(generalDialogWindow, SIGNAL(updateWifiIcon(int)), SLOT(updateWifiIcon(int)));
+        connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
+        connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
+        connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(close()));
+        generalDialogWindow->show();
+
+*/
+
+/*
+    bool connectToNetwork(QString essid, QString passphrase) {
+        log("Connecting to network '" + essid + "'", "functions");
+        std::string essid_str = essid.toStdString();
+        std::string passphrase_str = passphrase.toStdString();
+        string_writeconfig("/run/wifi_network_essid", essid_str);
+        string_writeconfig("/run/wifi_network_passphrase", passphrase_str);
+        string_writeconfig("/opt/ibxd", "connect_to_wifi_network\n");
+
+        int connectionSuccessful = 0;
+
+        while(connectionSuccessful == 0) {
+            if(QFile::exists("/run/wifi_connected_successfully")) {
+                if(checkconfig("/run/wifi_connected_successfully") == true) {
+                    QFile::remove("/run/wifi_connected_successfully");
+                    connectionSuccessful = 1;
+                    global::network::isConnected = true;
+                    setDefaultWorkDir();
+                    string_writeconfig(".config/17-wifi_connection_information/essid", essid_str);
+                    string_writeconfig(".config/17-wifi_connection_information/passphrase", passphrase_str);
+                    QString function = __func__; log(function + ": Connection successful", "functions");
+                    return true;
+                }
+                else {
+                    QFile::remove("/run/wifi_connected_successfully");
+                    connectionSuccessful = 0;
+                    global::network::isConnected = false;
+                    QString function = __func__; log(function + ": Connection failed", "functions");
+                    return false;
+                }
+            }
+            else {
+                QThread::msleep(100);
+            }
+        }
+    }
+*/
+/*
+    int testPing(bool blocking) {
+        QProcess *pingProcess = new QProcess();
+        if(blocking == true) {
+            QString pingProg = "ping";
+            QStringList pingArgs;
+            pingArgs << "-c" << "1" << "1.1.1.1";
+            pingProcess->start(pingProg, pingArgs);
+            pingProcess->waitForFinished();
+            int exitCode = pingProcess->exitCode();
+            pingProcess->deleteLater();
+            if(exitCode == 0) {
+                global::network::isConnected = true;
+            }
+            else {
+                global::network::isConnected = false;
+            }
+            return exitCode;
+        }
+        // For some reason, implementing a non-blocking version of this functions triggers a "terminate called without an active exception" error with a platform plugin compiled with a newer GCC 11 toolchain. The problem has been solved by transplanting this function into the related area which uses it.
+        pingProcess->deleteLater();
+    }
+    bool getTestPingResults() {
+        // To be used when the testPing() function is used in non-blocking mode.
+        if(QFile::exists("/run/test_ping_status")) {
+            if(checkconfig("/run/test_ping_status") == true) {
+                global::network::isConnected = true;
+                return true;
+            }
+            else {
+                global::network::isConnected = false;
+                return false;
+            }
+        }
+        else {
+            global::network::isConnected = false;
+            return false;
+        }
+    }
+*/

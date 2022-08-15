@@ -419,7 +419,7 @@ void generalDialog::on_okBtn_clicked()
                     }
                 }
                 else if(ui->searchComboBox->currentText() == "Online library") {
-                    if(testPing(true) == 0 or global::deviceID == "emu\n") {
+                    if(testPing() == 0 or global::deviceID == "emu\n") {
                         string_writeconfig("/inkbox/searchComboBoxFunction", "Online library");
                         log("Searching online library for '" + global::keyboard::keyboardText + "'", className);
 
@@ -646,20 +646,6 @@ void generalDialog::startVNC(QString server, QString password, QString port) {
     string_writeconfig("/external_root/tmp/app_vnc_port", port_str);
     string_writeconfig("/opt/ibxd", "app_start_vnc\n");
     qApp->quit();
-}
-
-void generalDialog::connectToNetworkSlot() {
-    if(connectToNetwork(wifiEssid, wifiPassphrase) == true) {
-        emit updateWifiIcon(3);
-        emit closeIndefiniteToast();
-        emit showToast("Connection successful");
-    }
-    else {
-        emit updateWifiIcon(2);
-        emit closeIndefiniteToast();
-        emit showToast("Connection failed");
-    }
-    generalDialog::close();
 }
 
 void generalDialog::startOtaUpdate(bool wasDownloadSuccessful) {
