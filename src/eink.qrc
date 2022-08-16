@@ -86,5 +86,7 @@
         <file>resources/view-highlights.png</file>
         <file>resources/stop.png</file>
         <file>resources/refresh.png</file>
+        <file>resources/lock-fill.png</file>
+        <file>resources/lock-unlock-fill.png</file>
     </qresource>
 </RCC>

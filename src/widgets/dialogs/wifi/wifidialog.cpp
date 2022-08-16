@@ -3,6 +3,7 @@
 #include <QScreen>
 #include <QDesktopWidget>
 #include <QMessageBox>
+#include <QScrollBar>
 
 #include "wifidialog.h"
 #include "ui_wifidialog.h"
@@ -29,6 +30,12 @@ wifiDialog::wifiDialog(QWidget *parent) :
 
     ui->Wificheckbox->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
 
+    ui->returnBtn->setProperty("type", "borderless");
+
+    // Scroll bar
+    // Needed for the nia.
+    ui->scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 50px; }");
+
     // Size
     QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
     this->setFixedWidth(screenGeometry.width());
@@ -49,7 +56,13 @@ wifiDialog::wifiDialog(QWidget *parent) :
     ui->logBtn->setFixedHeight(ui->logBtn->height() + heighIncrease);
     ui->refreshBtn->setFixedHeight(ui->refreshBtn->height() + heighIncrease);
 
-   //ui->cancelBtn->setProperty("type", "borderless");
+   // And set wifi checkbox state. also ignore this first call
+   global::wifi::WifiState currentWifiState = checkWifiState();
+   if(currentWifiState != global::wifi::WifiState::Disabled and currentWifiState != global::wifi::WifiState::Unknown) {
+        ui->Wificheckbox->setChecked(true);
+   } else {
+       wifiButtonEnabled = true;
+   }
 
 }
 
@@ -161,13 +174,11 @@ void wifiDialog::on_refreshBtn_clicked()
         log("To scan, turn on wi-fi first", className);
     }
     else {
-        if(launchRefresh() == true) {
-            refreshNetworksList();
-        }
+        QTimer::singleShot(0, this, SLOT(launchRefresh()));
     }
 }
 
-bool wifiDialog::launchRefresh() {
+void wifiDialog::launchRefresh() {
     QFile fullList =  QFile("/external_root/run/wifi_list_full");
     QFile formattedList = QFile("/external_root/run/wifi_list_format");
     fullList.remove();
@@ -186,10 +197,9 @@ bool wifiDialog::launchRefresh() {
     if(fullList.exists() == false or formattedList.exists() == false) {
         emit showToast("Failed to get network list");
         log("Failed to get network list", className);
-        return false;
     }
     log("Happily got network list", className);
-    return true;
+    refreshNetworksList();
 }
 
 void wifiDialog::refreshNetworksList() {
@@ -229,7 +239,10 @@ void wifiDialog::refreshNetworksList() {
             }
             count = count + 1;
         }
-        pureNetworkList.append(singleNetwork);
+        // Really filter out empty networks
+        if(singleNetwork.name.isEmpty() == false) {
+            pureNetworkList.append(singleNetwork);
+        }
     }
     log("found valid networks: " + QString::number(pureNetworkList.count()));
     QFile currentWifiNameFile = QFile("/external_root/run/current_wifi_name");
@@ -245,7 +258,7 @@ void wifiDialog::refreshNetworksList() {
         int countVec = 0;
         int vectorNetworkLocation = 9999;
         for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
-            if(wifiNetwork.name.contains(currentWifiNetwork) == true) {
+            if(currentWifiNetwork.isEmpty() == false and wifiNetwork.name.contains(currentWifiNetwork) == true) {
                 log("Found current network in vector", className);
                 vectorNetworkLocation = countVec;
                 currentNetwork = wifiNetwork.name;
@@ -254,11 +267,68 @@ void wifiDialog::refreshNetworksList() {
                 connectedNetwork->currentlyConnectedNetwork = currentNetwork;
                 // this doesnt work so a layout is needed
                 // ui->scrollArea->addScrollBarWidget(connectedNetwork, Qt::AlignTop);
+                connectedNetwork->applyVariables();
                 ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
             }
             countVec = countVec + 1;
         }
+        if(vectorNetworkLocation != 9999) {
+            pureNetworkList.removeAt(vectorNetworkLocation);
+        }
+    }
+    // Sort based on signal strength
+    QVector<global::wifi::wifiNetworkData> sortedPureNetworkList;
+    sortedPureNetworkList.append(pureNetworkList.first());
+    pureNetworkList.removeFirst();
+    for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
+        bool stopIterating = false;
+        int counter = 0;
+        for(global::wifi::wifiNetworkData wifiNetworkToSort: sortedPureNetworkList) {
+            if(stopIterating == false) {
+                if(wifiNetwork.signal > wifiNetworkToSort.signal) {
+                    sortedPureNetworkList.insert(counter, wifiNetwork);
+                    stopIterating = true;
+                }
+                counter = counter + 1;
+            }
+        }
+    }
+
+    // And now rest of the networks
+    for(global::wifi::wifiNetworkData wifiNetwork: sortedPureNetworkList) {
+        network* connectedNetwork = new network;
+        connectedNetwork->mainData = wifiNetwork;
+        connectedNetwork->currentlyConnectedNetwork = currentNetwork;
+        connectedNetwork->applyVariables();
+        connect(this, SIGNAL(killNetworkWidgets()), connectedNetwork, SLOT(close()));
+        ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
     }
 
 }
 
+
+void wifiDialog::on_Wificheckbox_stateChanged(int arg1)
+{
+    log("wifi dialog clicked: " + QString::number(arg1), className);
+    if(wifiButtonEnabled == true) {
+        if(arg1 == 2) {
+            log("turning wifi on", className);
+            QTimer::singleShot(0, this, SLOT(turnOnWifi()));
+        } else {
+            log("turning wifi off", className);
+            QTimer::singleShot(0, this, SLOT(turnOffWifi()));
+        }
+    }
+
+    if(wifiButtonEnabled == false){
+        wifiButtonEnabled = true;
+    }
+}
+
+void wifiDialog::turnOnWifi() {
+    string_writeconfig("/opt/ibxd", "toggle_wifi_on\n");
+}
+
+void wifiDialog::turnOffWifi() {
+    string_writeconfig("/opt/ibxd", "toggle_wifi_off\n");
+}

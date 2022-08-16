@@ -21,9 +21,10 @@ public:
 
 private:
     Ui::wifiDialog *ui;
+    bool wifiButtonEnabled = false;
 
 public slots:
-    bool launchRefresh();
+    void launchRefresh();
     void refreshNetworksList();
 
 signals:
@@ -35,6 +36,9 @@ signals:
 
 private slots:
     void on_refreshBtn_clicked();
+    void on_Wificheckbox_stateChanged(int arg1);
+    void turnOnWifi();
+    void turnOffWifi();
 };
 
 #endif // WIFIDIALOG_H

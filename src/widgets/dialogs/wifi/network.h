@@ -19,6 +19,9 @@ public:
     global::wifi::wifiNetworkData mainData;
     QString currentlyConnectedNetwork;
 
+public slots:
+    void applyVariables();
+
 private:
     Ui::network *ui;
 };

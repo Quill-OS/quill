@@ -1072,6 +1072,7 @@ namespace {
     global::wifi::WifiState checkWifiState() {
         QProcess *wifiStateProcess = new QProcess();
         // Important to remember thats its in chroot...
+        // What can be run in the chroot, should be run here. ibxd is a bit a mess
         QString path = "/external_root/usr/local/bin/wifi/wifi_status.sh";
         QStringList args;
         wifiStateProcess->start(path, args);
