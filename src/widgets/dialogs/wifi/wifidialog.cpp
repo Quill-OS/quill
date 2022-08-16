@@ -8,6 +8,7 @@
 #include "ui_wifidialog.h"
 #include "functions.h"
 #include "mainwindow.h"
+#include "network.h"
 
 wifiDialog::wifiDialog(QWidget *parent) :
     QDialog(parent),
@@ -55,22 +56,6 @@ wifiDialog::wifiDialog(QWidget *parent) :
 wifiDialog::~wifiDialog()
 {
     delete ui;
-}
-
-void wifiDialog::refreshScreenNative() {
-    emit refreshScreen();
-}
-
-void wifiDialog::updateWifiIcon(int mode) {
-    emit updateWifiIconSig(mode);
-}
-
-void wifiDialog::showToastNative(QString messageToDisplay) {
-    emit showToast(messageToDisplay);
-}
-
-void wifiDialog::closeIndefiniteToastNative() {
-    emit closeIndefiniteToast();
 }
 
 /*
@@ -168,3 +153,112 @@ void wifiDialog::closeIndefiniteToastNative() {
         }
     }
 */
+
+void wifiDialog::on_refreshBtn_clicked()
+{
+    if(checkWifiState() == global::wifi::WifiState::Disabled) {
+        emit showToast("To scan, turn on wi-fi first");
+        log("To scan, turn on wi-fi first", className);
+    }
+    else {
+        if(launchRefresh() == true) {
+            refreshNetworksList();
+        }
+    }
+}
+
+bool wifiDialog::launchRefresh() {
+    QFile fullList =  QFile("/external_root/run/wifi_list_full");
+    QFile formattedList = QFile("/external_root/run/wifi_list_format");
+    fullList.remove();
+    formattedList.remove();
+    string_writeconfig("/opt/ibxd", "list_wifi_networks\n");
+    QElapsedTimer elapsedTime;
+    elapsedTime.start();
+    bool continueLoop = true;
+    while(fullList.exists() == false and formattedList.exists() == false and continueLoop == true) {
+        sleep(1);
+        if(elapsedTime.elapsed() > 6000) {
+            log("Searching for networks took too long");
+            continueLoop = false;
+        }
+    }
+    if(fullList.exists() == false or formattedList.exists() == false) {
+        emit showToast("Failed to get network list");
+        log("Failed to get network list", className);
+        return false;
+    }
+    log("Happily got network list", className);
+    return true;
+}
+
+void wifiDialog::refreshNetworksList() {
+    emit killNetworkWidgets();
+    QStringList networkList = readFile("/external_root/run/wifi_list_format").split("%%==SPLIT==%%\n");
+    QVector<global::wifi::wifiNetworkData> pureNetworkList;
+    for(QString network: networkList) {
+        QStringList data = network.split("\n");
+        int count = 1;
+        global::wifi::wifiNetworkData singleNetwork;
+        if(data.count() < 4) {
+            log("Data lines count is below 4, skipping");
+            continue;
+        }
+        for(QString singleData: data) {
+            if(count == 1) {
+                singleNetwork.mac = singleData;
+                log("Mac is: " + singleData, className);
+            }
+            if(count == 2) {
+                log("wifi name is: " + singleData, className);
+                if(singleData.isEmpty() == true) {
+                    log("Wifi name is empty", className);
+                }
+                singleNetwork.name = singleData;
+            }
+            if(count == 3) {
+                log("encryption is: " + singleData, className);
+                singleNetwork.encryption = QVariant(singleData).toBool();
+            }
+            if(count == 4) {
+                log("signal strength is: " + singleData, className);
+                singleNetwork.signal = QVariant(singleData).toInt();
+            }
+            if(count >= 5) {
+                log("Skipping additionall items in wifi", className);
+            }
+            count = count + 1;
+        }
+        pureNetworkList.append(singleNetwork);
+    }
+    log("found valid networks: " + QString::number(pureNetworkList.count()));
+    QFile currentWifiNameFile = QFile("/external_root/run/current_wifi_name");
+    currentWifiNameFile.remove();
+    string_writeconfig("/opt/ibxd", "get_current_wifi_name\n");
+    usleep(300000); // 0.3s
+    // Here its looking for the now connected network to put it on top
+    QString currentNetwork = "";
+    if(currentWifiNameFile.exists() == true) {
+        QString currentWifiNetwork = readFile(currentWifiNameFile.fileName());
+        currentWifiNetwork = currentWifiNetwork.replace("\n", "");
+        log("current network name is: " + currentWifiNetwork, className);
+        int countVec = 0;
+        int vectorNetworkLocation = 9999;
+        for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
+            if(wifiNetwork.name.contains(currentWifiNetwork) == true) {
+                log("Found current network in vector", className);
+                vectorNetworkLocation = countVec;
+                currentNetwork = wifiNetwork.name;
+                network* connectedNetwork = new network;
+                connectedNetwork->mainData = wifiNetwork;
+                connectedNetwork->currentlyConnectedNetwork = currentNetwork;
+                // this doesnt work so a layout is needed
+                // ui->scrollArea->addScrollBarWidget(connectedNetwork, Qt::AlignTop);
+                ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
+            }
+            countVec = countVec + 1;
+        }
+    }
+
+}
+

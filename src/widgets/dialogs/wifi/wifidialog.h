@@ -22,17 +22,19 @@ public:
 private:
     Ui::wifiDialog *ui;
 
+public slots:
+    bool launchRefresh();
+    void refreshNetworksList();
+
 signals:
     void refreshScreen();
     void updateWifiIconSig(int mode);
     void showToast(QString messageToDisplay);
-    void closeIndefiniteToast();
+
+    void killNetworkWidgets();
 
 private slots:
-    void refreshScreenNative();
-    void updateWifiIcon(int mode);
-    void showToastNative(QString messageToDisplay);
-    void closeIndefiniteToastNative();
+    void on_refreshBtn_clicked();
 };
 
 #endif // WIFIDIALOG_H

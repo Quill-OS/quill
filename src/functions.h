@@ -175,6 +175,13 @@ namespace global {
             Unknown, // to not confuse lastWifiState
         };
         inline bool isConnected;
+        class wifiNetworkData {
+        public:
+            QString mac;
+            QString name;
+            bool encryption;
+            int signal;
+        };
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
