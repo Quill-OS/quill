@@ -1,5 +1,6 @@
 #include "network.h"
 #include "ui_network.h"
+#include "connectiondialog.h"
 
 network::network(QWidget *parent) :
     QWidget(parent),
@@ -19,7 +20,7 @@ network::network(QWidget *parent) :
 
     ui->enterButton->setProperty("type", "borderless");
 
-
+    ui->enterButton->setFixedWidth(40);
 }
 
 network::~network()
@@ -48,7 +49,26 @@ void network::applyVariables() {
 
     if(currentlyConnectedNetwork == mainData.name) {
         ui->frame->setStyleSheet(".QFrame{background-color: grey; border: 3px solid black; border-radius: 10px;}");
+        ui->signalStrengthLabel->setStyleSheet("background-color:grey;");
+        ui->nameLabel->setStyleSheet("background-color:grey;");
+        ui->encryptionIcon->setStyleSheet("background-color:grey;");
+        ui->enterButton->setStyleSheet("background-color:grey;");
+
+        // Some stylesheet magician could make it work that it cant be clicked
+        ui->encryptionIcon->setStyleSheet("QPushButton {background-color: grey; border:  none}; QPushButton[type='borderless']:pressed { background: grey; color: grey; border: none; }");
+
+        ui->enterButton->setStyleSheet("QPushButton {background-color: grey; border:  none}; QPushButton[type='borderless']:pressed { background: grey; color: grey; border: none; }");
+
     } else {
         ui->frame->setStyleSheet(".QFrame{background-color: white; border: 3px solid black; border-radius: 10px;}");
     }
+}
+
+void network::on_enterButton_clicked()
+{
+    connectiondialog* newConnectionDiallog = new connectiondialog;
+    newConnectionDiallog->connectedNetworkData = mainData;
+    newConnectionDiallog->currentlyConnectedNetworkName = currentlyConnectedNetwork;
+    newConnectionDiallog->applyVariables();
+    newConnectionDiallog->exec();
 }

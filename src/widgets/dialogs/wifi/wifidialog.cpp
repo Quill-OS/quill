@@ -170,12 +170,16 @@ wifiDialog::~wifiDialog()
 
 void wifiDialog::on_refreshBtn_clicked()
 {
+    log("Clicked refresh button", className);
     if(checkWifiState() == global::wifi::WifiState::Disabled) {
         emit showToast("To scan, turn on wi-fi first");
         log("To scan, turn on wi-fi first", className);
     }
     else {
-        QTimer::singleShot(0, this, SLOT(launchRefresh()));
+        ui->refreshBtn->setEnabled(false);
+        // for some reason this doesnt work here
+        //ui->refreshBtn->setStyleSheet("background-color:grey;");
+        QTimer::singleShot(100, this, SLOT(launchRefresh()));
     }
 }
 
@@ -188,6 +192,7 @@ void wifiDialog::launchRefresh() {
     QElapsedTimer elapsedTime;
     elapsedTime.start();
     bool continueLoop = true;
+    ui->refreshBtn->setStyleSheet("background-color:grey;");
     while(fullList.exists() == false and formattedList.exists() == false and continueLoop == true) {
         sleep(1);
         if(elapsedTime.elapsed() > 6000) {
@@ -265,16 +270,21 @@ void wifiDialog::refreshNetworksList() {
                 currentNetwork = wifiNetwork.name;
                 network* connectedNetwork = new network;
                 connectedNetwork->mainData = wifiNetwork;
+                // to be really sure that the the info is put there
                 connectedNetwork->currentlyConnectedNetwork = currentNetwork;
                 connectedNetworkDataParent = wifiNetwork;
+                wifiLoggerDialog->connectedNetworkData = connectedNetworkDataParent;
+
                 // this doesnt work so a layout is needed
                 // ui->scrollArea->addScrollBarWidget(connectedNetwork, Qt::AlignTop);
                 connectedNetwork->applyVariables();
+                connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::close);
                 ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
             }
             countVec = countVec + 1;
         }
         if(vectorNetworkLocation != 9999) {
+            log("pureNetworkList size is: " + QString::number(pureNetworkList.count()) + " And i want to remove at: " + QString::number(vectorNetworkLocation), className);
             pureNetworkList.removeAt(vectorNetworkLocation);
         }
     }
@@ -302,10 +312,12 @@ void wifiDialog::refreshNetworksList() {
         connectedNetwork->mainData = wifiNetwork;
         connectedNetwork->currentlyConnectedNetwork = currentNetwork;
         connectedNetwork->applyVariables();
-        connect(this, SIGNAL(killNetworkWidgets()), connectedNetwork, SLOT(close()));
+        connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::close);
         ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
     }
     scannedAtLeastOnce = true;
+    ui->refreshBtn->setEnabled(true);
+    ui->refreshBtn->setStyleSheet("background-color:white;");
 }
 
 
@@ -342,7 +354,6 @@ void wifiDialog::on_logBtn_clicked()
         log("Scanning at least once is needed");
         emit showToast("Scan at least once");
     } else {
-        wifilogger* wifiLoggerDialog = new wifilogger;
         wifiLoggerDialog->connectedNetworkData = connectedNetworkDataParent;
         wifiLoggerDialog->exec();
     }

@@ -19,8 +19,10 @@ wifilogger::wifilogger(QWidget *parent) :
 
 
     setWifiInfoPage();
-    QObject::connect(&updateLogsTimer, &QTimer::timeout, this, &wifilogger::updateLogs);
-    updateLogsTimer.start(1000);
+    ui->refreshBtn->setProperty("type", "borderless");
+
+    ui->nextBtn->setFixedWidth(70);
+    ui->previousBtn->setFixedWidth(70);
 }
 
 wifilogger::~wifilogger()
@@ -41,11 +43,13 @@ void wifilogger::setWifiInfoPage() {
 }
 
 void wifilogger::setFancyLoggingPage() {
+    updateLogs();
     ui->stackedWidget->setCurrentIndex(2);
     ui->nameLabel->setText("Important logs");
 }
 
 void wifilogger::setAllLogsPage() {
+    updateLogs();
     ui->stackedWidget->setCurrentIndex(3);
     ui->nameLabel->setText("All logs");
 }
@@ -114,17 +118,26 @@ void wifilogger::getWifiInformations() {
         counter = counter + 1;
     }
 
-    ui->encryptionLabel->setText(QVariant(connectedNetworkData.encryption).toString());
+    if(connectedNetworkData.mac.isEmpty() == false) {
+        ui->encryptionLabel->setText(QVariant(connectedNetworkData.encryption).toString());
 
-    ui->signalLabel->setText(QString::number(connectedNetworkData.signal) + "%");
+        ui->signalLabel->setText(QString::number(connectedNetworkData.signal) + "%");
 
-    ui->macLabel->setText(connectedNetworkData.mac);
+        ui->macLabel->setText(connectedNetworkData.mac);
+    }
+    else {
+        // Shouldn't happen for 99%, but if anyway... its designed to be non blocking, so i cant really wait for this.
+        ui->encryptionLabel->setText("Rescan needed");
+
+        ui->signalLabel->setText("Rescan needed");
+
+        ui->macLabel->setText("Rescan needed");
+    }
 }
 
 
 void wifilogger::on_returnBtn_clicked()
 {
-    updateLogsTimer.stop();
     this->deleteLater();
 }
 
@@ -135,5 +148,15 @@ void wifilogger::updateLogs() {
 
         ui->fancyLogsText->setText(fancyLogsText);
         ui->allLogsText->setText(allLogsText);
+    }
+}
+
+void wifilogger::on_refreshBtn_clicked()
+{
+    if(currentPage == 0) {
+        setWifiInfoPage();
+    }
+    else {
+        updateLogs();
     }
 }

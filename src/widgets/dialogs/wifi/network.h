@@ -23,6 +23,9 @@ public:
 public slots:
     void applyVariables();
 
+private slots:
+    void on_enterButton_clicked();
+
 private:
     Ui::network *ui;
 };

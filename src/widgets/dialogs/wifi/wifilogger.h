@@ -26,7 +26,6 @@ private:
      * 2 is all logs
     */
     int currentPage = 0;
-    QTimer updateLogsTimer;
     QFile fancyLogs = QFile("/external_root/run/wifi_stats");
     QFile allLogs = QFile("/external_root/run/wifi_logs");
 
@@ -40,6 +39,7 @@ private slots:
     void getWifiInformations();
     void on_returnBtn_clicked();
     void updateLogs();
+    void on_refreshBtn_clicked();
 };
 
 #endif // WIFILOGGER_H

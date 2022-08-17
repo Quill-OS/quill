@@ -88,5 +88,7 @@
         <file>resources/refresh.png</file>
         <file>resources/lock-fill.png</file>
         <file>resources/lock-unlock-fill.png</file>
+        <file>resources/hide.png</file>
+        <file>resources/show.png</file>
     </qresource>
 </RCC>

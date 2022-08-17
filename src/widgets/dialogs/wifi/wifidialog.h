@@ -5,6 +5,7 @@
 #include <QModelIndex>
 
 #include "generaldialog.h"
+#include "wifilogger.h"
 
 namespace Ui {
 class wifiDialog;
@@ -19,6 +20,8 @@ public:
     explicit wifiDialog(QWidget *parent = nullptr);
     ~wifiDialog();
     global::wifi::wifiNetworkData connectedNetworkDataParent;
+    wifilogger* wifiLoggerDialog = new wifilogger;
+
 
 private:
     Ui::wifiDialog *ui;
