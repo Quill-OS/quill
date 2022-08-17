@@ -14,6 +14,7 @@ class network : public QWidget
     Q_OBJECT
 
 public:
+    QString className = this->metaObject()->className();
     explicit network(QWidget *parent = nullptr);
     ~network();
     global::wifi::wifiNetworkData mainData;

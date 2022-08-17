@@ -790,6 +790,7 @@ void MainWindow::updateWifiState() {
 void MainWindow::on_wifiBtn_clicked()
 {
     wifiDialog* newWIfiDialog = new wifiDialog();
+    QObject::connect(newWIfiDialog, &wifiDialog::showToast, this, &MainWindow::showToast);
     newWIfiDialog->exec();
 }
 

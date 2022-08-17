@@ -10,6 +10,7 @@
 #include "functions.h"
 #include "mainwindow.h"
 #include "network.h"
+#include "wifilogger.h"
 
 wifiDialog::wifiDialog(QWidget *parent) :
     QDialog(parent),
@@ -265,6 +266,7 @@ void wifiDialog::refreshNetworksList() {
                 network* connectedNetwork = new network;
                 connectedNetwork->mainData = wifiNetwork;
                 connectedNetwork->currentlyConnectedNetwork = currentNetwork;
+                connectedNetworkDataParent = wifiNetwork;
                 // this doesnt work so a layout is needed
                 // ui->scrollArea->addScrollBarWidget(connectedNetwork, Qt::AlignTop);
                 connectedNetwork->applyVariables();
@@ -303,7 +305,7 @@ void wifiDialog::refreshNetworksList() {
         connect(this, SIGNAL(killNetworkWidgets()), connectedNetwork, SLOT(close()));
         ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
     }
-
+    scannedAtLeastOnce = true;
 }
 
 
@@ -331,4 +333,18 @@ void wifiDialog::turnOnWifi() {
 
 void wifiDialog::turnOffWifi() {
     string_writeconfig("/opt/ibxd", "toggle_wifi_off\n");
+}
+
+void wifiDialog::on_logBtn_clicked()
+{
+    // To avoid half informations
+    if(scannedAtLeastOnce == false and checkWifiState() == global::wifi::WifiState::Configured) {
+        log("Scanning at least once is needed");
+        emit showToast("Scan at least once");
+    } else {
+        wifilogger* wifiLoggerDialog = new wifilogger;
+        wifiLoggerDialog->connectedNetworkData = connectedNetworkDataParent;
+        wifiLoggerDialog->exec();
+    }
+
 }

@@ -18,10 +18,12 @@ public:
     QString className = this->metaObject()->className();
     explicit wifiDialog(QWidget *parent = nullptr);
     ~wifiDialog();
+    global::wifi::wifiNetworkData connectedNetworkDataParent;
 
 private:
     Ui::wifiDialog *ui;
     bool wifiButtonEnabled = false;
+    bool scannedAtLeastOnce = false;
 
 public slots:
     void launchRefresh();
@@ -39,6 +41,7 @@ private slots:
     void on_Wificheckbox_stateChanged(int arg1);
     void turnOnWifi();
     void turnOffWifi();
+    void on_logBtn_clicked();
 };
 
 #endif // WIFIDIALOG_H

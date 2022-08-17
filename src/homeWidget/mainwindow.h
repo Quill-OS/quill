@@ -63,6 +63,8 @@ public:
     void setBatteryIcon();
 
 public slots:
+    void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
 
 private slots:
     void on_settingsBtn_clicked();
@@ -80,8 +82,6 @@ private slots:
     void on_wifiBtn_clicked();
     void updateWifiIcon(global::wifi::WifiState mode);
     void hello(int testNumber);
-    void showToast(QString messageToDisplay);
-    void closeIndefiniteToast();
     void openUpdateDialogOTA(bool open);
     void launchOtaUpdater();
     void openBookFile(QString book, bool relativePath);
