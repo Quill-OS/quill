@@ -71,6 +71,7 @@ void network::on_enterButton_clicked()
     newConnectionDiallog->currentlyConnectedNetworkName = currentlyConnectedNetwork;
     newConnectionDiallog->applyVariables();
     connect(newConnectionDiallog, &connectiondialog::showToastSignal, this, &network::showToastSlot);
+    connect(newConnectionDiallog, &connectiondialog::refreshScreenSignal, this, &network::refreshScreenSlot);
     newConnectionDiallog->exec();
 }
 
@@ -81,4 +82,8 @@ void network::closeWrapper() {
 
 void network::showToastSlot(QString message) {
     emit showToastSignal(message);
+}
+
+void network::refreshScreenSlot() {
+    emit refreshScreenSignal();
 }

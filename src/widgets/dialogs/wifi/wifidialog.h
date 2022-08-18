@@ -33,10 +33,18 @@ private:
     QFile fullList =  QFile("/external_root/run/wifi_list_full");
     QFile formattedList = QFile("/external_root/run/wifi_list_format");
 
+    // Used by watcher
+    bool forceRefresh = false;
+    int relaunchMs = 300;
+
 public slots:
     void launchRefresh();
     void refreshNetworksList();
     void showToastSlot(QString message);
+    void refreshScreenSlot();
+
+    // Shows status of wifi processes, like recconection and others. Also manages refreshing the network list after connection
+    void theWatcher();
 
 signals:
     void refreshScreen();
@@ -53,6 +61,8 @@ private slots:
     void on_logBtn_clicked();
     // This function is a more clever sleep(1), non blocking
     void refreshWait();
+    void setStatusText(QString message);
+    void on_stopBtn_clicked();
 };
 
 #endif // WIFIDIALOG_H

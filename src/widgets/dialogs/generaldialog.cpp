@@ -499,6 +499,9 @@ void generalDialog::on_okBtn_clicked()
                     global::toast::delay = 3000;
                     showToast("Minimum password length is 8 characters");
                 }
+                else {
+                    generalDialog::close();
+                }
             }
             else {
                 global::toast::delay = 3000;
@@ -591,6 +594,7 @@ void generalDialog::restartSearchDialog() {
 }
 
 void generalDialog::setupKeyboardDialog() {
+    adjust_size();
     ui->stackedWidget->setCurrentIndex(0);
     keyboardDialog = true;
     ui->stackedWidget->setVisible(true);
@@ -607,7 +611,7 @@ void generalDialog::setupKeyboardDialog() {
     }
     else if(global::keyboard::wifiPassphraseDialog == true) {
         ui->headerLabel->setText("Enter the network's passphrase");
-        ui->okBtn->setText("Connect");
+        ui->okBtn->setText("Enter");
         ui->cancelBtn->setText("Cancel");
     }
     else if(global::keyboard::encfsDialog == true) {
@@ -624,6 +628,7 @@ void generalDialog::setupKeyboardDialog() {
     connect(keyboardWidget, SIGNAL(adjust_size()), SLOT(adjust_size()));
     ui->mainStackedWidget->insertWidget(1, keyboardWidget);
     ui->mainStackedWidget->setCurrentIndex(1);
+    adjust_size();
     QTimer::singleShot(1000, this, SLOT(adjust_size()));
 }
 

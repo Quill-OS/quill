@@ -22,24 +22,41 @@ public:
 
 signals:
     void showToastSignal(QString message);
+    void refreshScreenSignal();
 
 public slots:
     void applyVariables();
     void showToastSlot(QString message);
+    void refreshScreenSlot();
 
 private slots:
-    void on_CancelBtn_clicked();
+    // I know im opening / loading json many times, its maybe not efficient but:
+    // 1. its modular
+    // 2. those operations are rare
     QString searchDatabase(QString key);
     void writeToDatabase(QString name, QString password);
+    void removeFromDatabase(QString name);
 
+
+    void finalConnectWait();
+    bool checkIfWifiBussy();
+
+    void on_CancelBtn_clicked();
 
     void on_passwordTextEdit_selectionChanged();
 
     void on_passwordTextEdit_cursorPositionChanged(int arg1, int arg2);
 
+    void on_showPasswordBtn_clicked();
+
+    void on_connectBtn_clicked();
+
 private:
     Ui::connectiondialog *ui;
     bool cursorPositionIgnore = false;
+    bool showedPasword;
+    QString savedPassword;
+    int waitTry = 0;
 };
 
 #endif // CONNECTIONDIALOG_H

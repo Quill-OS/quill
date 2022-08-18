@@ -1119,6 +1119,23 @@ namespace {
         }
         return exitCode;
     }
+    bool checkProcessName(QString name) {
+        QDirIterator appsDir("/proc", QDirIterator::NoIteratorFlags);
+        while (appsDir.hasNext()) {
+            QDir dir(appsDir.next());
+            QFile process = QFile(dir.path() + "/cmdline");
+            if(process.exists() == true) {
+                process.open(QIODevice::ReadOnly);
+                QTextStream stream(&process);
+                if(stream.readLine().contains(name) == true) {
+                    process.close();
+                    return true;
+                }
+                process.close();
+            }
+        }
+        return false;
+    }
 }
 
 #endif // FUNCTIONS_H

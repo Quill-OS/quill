@@ -22,11 +22,13 @@ public:
 
 signals:
     void showToastSignal(QString message);
+    void refreshScreenSignal();
 
 public slots:
     void applyVariables();
     void closeWrapper();
     void showToastSlot(QString message);
+    void refreshScreenSlot();
 
 private slots:
     void on_enterButton_clicked();
