@@ -139,6 +139,7 @@ void wifilogger::getWifiInformations() {
 void wifilogger::on_returnBtn_clicked()
 {
     this->deleteLater();
+    this->close();
 }
 
 void wifilogger::updateLogs() {

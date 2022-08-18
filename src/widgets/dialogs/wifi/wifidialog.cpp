@@ -176,36 +176,36 @@ void wifiDialog::on_refreshBtn_clicked()
         log("To scan, turn on wi-fi first", className);
     }
     else {
-        ui->refreshBtn->setEnabled(false);
-        // for some reason this doesnt work here
-        //ui->refreshBtn->setStyleSheet("background-color:grey;");
-        QTimer::singleShot(100, this, SLOT(launchRefresh()));
+        launchRefresh();
     }
 }
 
 void wifiDialog::launchRefresh() {
-    QFile fullList =  QFile("/external_root/run/wifi_list_full");
-    QFile formattedList = QFile("/external_root/run/wifi_list_format");
+    // Order is important
+    ui->refreshBtn->setStyleSheet("background-color:grey;");
+    ui->refreshBtn->setEnabled(false);
+
+    elapsedSeconds = 0;
     fullList.remove();
     formattedList.remove();
     string_writeconfig("/opt/ibxd", "list_wifi_networks\n");
-    QElapsedTimer elapsedTime;
-    elapsedTime.start();
-    bool continueLoop = true;
-    ui->refreshBtn->setStyleSheet("background-color:grey;");
-    while(fullList.exists() == false and formattedList.exists() == false and continueLoop == true) {
-        sleep(1);
-        if(elapsedTime.elapsed() > 6000) {
-            log("Searching for networks took too long");
-            continueLoop = false;
+    QTimer::singleShot(0, this, SLOT(refreshWait()));
+}
+
+void wifiDialog::refreshWait() {
+    if(fullList.exists() == false and formattedList.exists() == false) {
+        if(elapsedSeconds == 6) {
+            emit showToast("Failed to get network list");
+            log("Failed to get network list", className);
         }
+        else {
+            elapsedSeconds = elapsedSeconds + 1;
+            QTimer::singleShot(1000, this, SLOT(refreshWait()));
+        }
+    } else {
+        log("Happily got network list", className);
+        refreshNetworksList();
     }
-    if(fullList.exists() == false or formattedList.exists() == false) {
-        emit showToast("Failed to get network list");
-        log("Failed to get network list", className);
-    }
-    log("Happily got network list", className);
-    refreshNetworksList();
 }
 
 void wifiDialog::refreshNetworksList() {
@@ -217,7 +217,7 @@ void wifiDialog::refreshNetworksList() {
         int count = 1;
         global::wifi::wifiNetworkData singleNetwork;
         if(data.count() < 4) {
-            log("Data lines count is below 4, skipping");
+            log("Data lines count is below 4, skipping", className);
             continue;
         }
         for(QString singleData: data) {
@@ -250,7 +250,7 @@ void wifiDialog::refreshNetworksList() {
             pureNetworkList.append(singleNetwork);
         }
     }
-    log("found valid networks: " + QString::number(pureNetworkList.count()));
+    log("found valid networks: " + QString::number(pureNetworkList.count()), className);
     QFile currentWifiNameFile = QFile("/external_root/run/current_wifi_name");
     currentWifiNameFile.remove();
     string_writeconfig("/opt/ibxd", "get_current_wifi_name\n");
@@ -278,7 +278,8 @@ void wifiDialog::refreshNetworksList() {
                 // this doesnt work so a layout is needed
                 // ui->scrollArea->addScrollBarWidget(connectedNetwork, Qt::AlignTop);
                 connectedNetwork->applyVariables();
-                connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::close);
+                connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::closeWrapper);
+                connect(connectedNetwork, &network::showToastSignal, this, &wifiDialog::showToastSlot);
                 ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
             }
             countVec = countVec + 1;
@@ -288,6 +289,11 @@ void wifiDialog::refreshNetworksList() {
             pureNetworkList.removeAt(vectorNetworkLocation);
         }
     }
+    for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
+        log("signal strength without sorting: " + QString::number(wifiNetwork.signal), className);
+    }
+
+
     // Sort based on signal strength
     QVector<global::wifi::wifiNetworkData> sortedPureNetworkList;
     sortedPureNetworkList.append(pureNetworkList.first());
@@ -297,13 +303,23 @@ void wifiDialog::refreshNetworksList() {
         int counter = 0;
         for(global::wifi::wifiNetworkData wifiNetworkToSort: sortedPureNetworkList) {
             if(stopIterating == false) {
-                if(wifiNetwork.signal > wifiNetworkToSort.signal) {
+                if(wifiNetwork.signal >= wifiNetworkToSort.signal) {
                     sortedPureNetworkList.insert(counter, wifiNetwork);
                     stopIterating = true;
                 }
                 counter = counter + 1;
             }
         }
+        // this happens if its the smallest value, so insert it at the end
+        if(stopIterating == false) {
+            sortedPureNetworkList.append(wifiNetwork);
+        }
+    }
+
+    log("There are " + QString::number(sortedPureNetworkList.count()) + " sorted networks", className);
+
+    for(global::wifi::wifiNetworkData wifiNetwork: sortedPureNetworkList) {
+        log("signal strength with sorting: " + QString::number(wifiNetwork.signal), className);
     }
 
     // And now rest of the networks
@@ -312,7 +328,8 @@ void wifiDialog::refreshNetworksList() {
         connectedNetwork->mainData = wifiNetwork;
         connectedNetwork->currentlyConnectedNetwork = currentNetwork;
         connectedNetwork->applyVariables();
-        connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::close);
+        connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::closeWrapper);
+        connect(connectedNetwork, &network::showToastSignal, this, &wifiDialog::showToastSlot);
         ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
     }
     scannedAtLeastOnce = true;
@@ -332,6 +349,7 @@ void wifiDialog::on_Wificheckbox_stateChanged(int arg1)
             log("turning wifi off", className);
             QTimer::singleShot(0, this, SLOT(turnOffWifi()));
         }
+        emit killNetworkWidgets();
     }
 
     if(wifiButtonEnabled == false){
@@ -358,4 +376,8 @@ void wifiDialog::on_logBtn_clicked()
         wifiLoggerDialog->exec();
     }
 
+}
+
+void wifiDialog::showToastSlot(QString message) {
+    emit showToast(message);
 }

@@ -495,15 +495,10 @@ void generalDialog::on_okBtn_clicked()
         }
         else if(global::keyboard::wifiPassphraseDialog == true) {
             if(!global::keyboard::keyboardText.isEmpty()) {
-                log("Attempting connection to Wi-Fi network '" + wifiEssid + "'", className);
-                this->hide();
-                wifiPassphrase = global::keyboard::keyboardText;
-                global::toast::indefiniteToast = true;
-                global::toast::modalToast = true;
-                emit showToast("Connecting");
-                QTimer::singleShot(100, this, SLOT(connectToNetworkSlot()));
-                global::keyboard::wifiPassphraseDialog = false;
-                global::keyboard::keyboardDialog = false;
+                if(global::keyboard::keyboardText.count() < 8) {
+                    global::toast::delay = 3000;
+                    showToast("Minimum password length is 8 characters");
+                }
             }
             else {
                 global::toast::delay = 3000;

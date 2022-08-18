@@ -28,9 +28,15 @@ private:
     bool wifiButtonEnabled = false;
     bool scannedAtLeastOnce = false;
 
+    // variables for refreshWait() and network refresh in general
+    int elapsedSeconds = 0;
+    QFile fullList =  QFile("/external_root/run/wifi_list_full");
+    QFile formattedList = QFile("/external_root/run/wifi_list_format");
+
 public slots:
     void launchRefresh();
     void refreshNetworksList();
+    void showToastSlot(QString message);
 
 signals:
     void refreshScreen();
@@ -45,6 +51,8 @@ private slots:
     void turnOnWifi();
     void turnOffWifi();
     void on_logBtn_clicked();
+    // This function is a more clever sleep(1), non blocking
+    void refreshWait();
 };
 
 #endif // WIFIDIALOG_H

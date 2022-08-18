@@ -20,8 +20,13 @@ public:
     global::wifi::wifiNetworkData mainData;
     QString currentlyConnectedNetwork;
 
+signals:
+    void showToastSignal(QString message);
+
 public slots:
     void applyVariables();
+    void closeWrapper();
+    void showToastSlot(QString message);
 
 private slots:
     void on_enterButton_clicked();
