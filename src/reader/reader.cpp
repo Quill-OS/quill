@@ -601,7 +601,7 @@ reader::reader(QWidget *parent) :
         if(global::deviceID == "n705\n") {
             infoLabelDefinedLength = 35;
         }
-        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
             infoLabelDefinedLength = 50;
         }
         else {
@@ -630,7 +630,7 @@ reader::reader(QWidget *parent) :
         if(global::deviceID == "n705\n") {
             infoLabelDefinedLength = 35;
         }
-        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
             infoLabelDefinedLength = 50;
         }
         else {
@@ -1401,45 +1401,39 @@ void reader::alignAndHighlightText(int alignment) {
     QString modifiedPageContent;
 
     if(is_epub == true) {
+        modifiedPageContent = epubPageContent;
         if(alignment == 0) {
-            modifiedPageContent = epubPageContent;
             modifiedPageContent.prepend("<div align='left'>");
             modifiedPageContent.append("</div>");
         }
         if(alignment == 1) {
-            modifiedPageContent = epubPageContent;
             modifiedPageContent.prepend("<div align='center'>");
             modifiedPageContent.append("</div>");
         }
         if(alignment == 2) {
-            modifiedPageContent = epubPageContent;
             modifiedPageContent.prepend("<div align='right'>");
             modifiedPageContent.append("</div>");
         }
         if(alignment == 3) {
-            modifiedPageContent = epubPageContent;
             modifiedPageContent.prepend("<div align='justify'>");
             modifiedPageContent.append("</div>");
         }
     }
     else {
+        modifiedPageContent = ittext;
         if(alignment == 0) {
-            modifiedPageContent = ittext;
             modifiedPageContent.prepend("<div align='left'>");
             modifiedPageContent.append("</div>");
         }
         if(alignment == 1) {
-            modifiedPageContent = ittext;
             modifiedPageContent.prepend("<div align='center'>");
             modifiedPageContent.append("</div>");
         }
         if(alignment == 2) {
-            modifiedPageContent = ittext;
             modifiedPageContent.prepend("<div align='right'>");
             modifiedPageContent.append("</div>");
         }
         if(alignment == 3) {
-            modifiedPageContent = ittext;
             modifiedPageContent.prepend("<div align='justify'>");
             modifiedPageContent.append("</div>");
         }
@@ -1708,6 +1702,7 @@ void reader::on_sizeSlider_valueChanged(int value)
             ui->sizeValueLabel->setText("5");
         }
     }
+    alignAndHighlightText(textAlignment);
 }
 
 void reader::writeconfig_pagenumber(bool persistent) {

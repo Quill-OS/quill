@@ -47,7 +47,7 @@ settingsChooser::settingsChooser(QWidget *parent) :
         ui->koboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
         ui->powerSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 25px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding:25px; Text-align: left");
         ui->powerSettingsBtn->setStyleSheet("padding:25px; Text-align: left");

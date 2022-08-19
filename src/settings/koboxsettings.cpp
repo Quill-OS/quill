@@ -45,7 +45,7 @@ koboxSettings::koboxSettings(QWidget *parent) :
         if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             dpiSetting = "125";
         }
-        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
             dpiSetting = "175";
         }
         else if(global::deviceID == "n437\n") {

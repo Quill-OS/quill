@@ -59,7 +59,7 @@ homePageWidget::homePageWidget(QWidget *parent) :
         stdIconWidth = sW / stdIconWidthDivider;
         stdIconHeight = sH / stdIconHeightDivider;
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
         stdIconWidthDivider = 7;
         stdIconHeightDivider = 7;
         stdIconWidth = sW / stdIconWidthDivider;

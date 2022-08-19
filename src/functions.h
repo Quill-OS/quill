@@ -1125,7 +1125,7 @@ namespace {
         if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
             return 2;
         }
-        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n") {
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
             return 2.6;
         }
         else if(global::deviceID == "n437\n" or global::deviceID == "n873\n") {
