@@ -132,12 +132,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
 
-    updateWifiState();
+    updateWifiAble();
     if(global::device::isWifiAble == true) {
         // Start wifi updater
         QTimer *wifiIconTimer = new QTimer(this);
-        wifiIconTimer->setInterval(5000);
-        connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(updateWifiState()));
+        wifiIconTimer->setInterval(2500);
+        connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(updateWifiIcon()));
         wifiIconTimer->start();
     }
     setBatteryIcon();
@@ -751,37 +751,84 @@ void MainWindow::setupSearchDialog() {
     }
 }
 
-void MainWindow::updateWifiIcon(global::wifi::WifiState mode) {
+void MainWindow::updateWifiIcon() {
     /* Usage:
-     * mode 0 is handled in mainwindow()
+     * Mode 0 (looping it) is handled in mainwindow()
     */
-    if(mode == global::wifi::WifiState::Disabled) {
-        lastWifiState = global::wifi::WifiState::Disabled;
-        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
-        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
-    }
-    if(mode == global::wifi::WifiState::Enabled) {
-        lastWifiState = global::wifi::WifiState::Enabled;
-        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
-        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
-    }
-    if(mode == global::wifi::WifiState::Configured) {
-        lastWifiState = global::wifi::WifiState::Configured;
-        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
-        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
-    }
-}
 
-void MainWindow::updateWifiState() {
-    if(global::device::isWifiAble == true) {
-        global::wifi::WifiState currentWifiState = checkWifiState();
-        if(lastWifiState != currentWifiState) {
-            // This is handled by updateWifiIcon()
-            //lastWifiState = currentWifiState;
-            updateWifiIcon(currentWifiState);
+
+    global::wifi::WifiState currentWifiState = checkWifiState();
+
+    // Its executing only in Enabled mode, which is a mode between connected and disabled so don't worry about performance
+    if(isConnecting == false and isReconecting == false) {
+        if(currentWifiState == global::wifi::WifiState::Enabled) {
+            if(checkProcessName("connection_manager.sh") == true) {
+                isConnecting = true;
+            }
+            else if(checkProcessName("connect_to_network.sh") == true){
+                isConnecting = true;
+                isReconecting = true;
+            }
         }
     }
-    else {
+
+    if(lastWifiState != currentWifiState) {
+        if(currentWifiState == global::wifi::WifiState::Disabled) {
+            if(isConnecting == true) {
+                setDefaultWorkDir();
+                if(checkconfig(".config/17-wifi_connection_information/stopped") == false) {
+                    QString wifiName = readFile(".config/17-wifi_connection_information/essid").replace("\n", "");
+                    if(isReconecting == true) {
+                        showToast("Failed to reconnect to " + wifiName);
+                        isReconecting = false;
+                    }
+                    else {
+                        showToast("Failed to connect to " + wifiName);
+                    }
+                    isConnecting = false;
+                    QFile(".config/17-wifi_connection_information/essid").remove();
+                    QFile(".config/17-wifi_connection_information/passphrase").remove();
+                }
+                else {
+                    QFile(".config/17-wifi_connection_information/stopped").remove();
+                }
+            }
+            lastWifiState = global::wifi::WifiState::Disabled;
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
+            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        }
+        if(currentWifiState == global::wifi::WifiState::Enabled) {
+            lastWifiState = global::wifi::WifiState::Enabled;
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
+            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        }
+        if(currentWifiState == global::wifi::WifiState::Configured) {
+            if(isConnecting == true) {
+                setDefaultWorkDir();
+                    QString wifiName = readFile(".config/17-wifi_connection_information/essid").replace("\n", "");
+                    if(isReconecting == true) {
+                        showToast("Reconnected successfully to " + wifiName);
+                        isReconecting = false;
+                    }
+                    else {
+                        showToast("Connected successfully to " + wifiName);
+                    }
+                    isConnecting = false;
+                    QFile(".config/17-wifi_connection_information/essid").remove();
+                    QFile(".config/17-wifi_connection_information/passphrase").remove();
+                    QFile(".config/17-wifi_connection_information/stopped").remove();
+            }
+            lastWifiState = global::wifi::WifiState::Configured;
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
+            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        }
+    }
+
+
+}
+
+void MainWindow::updateWifiAble() {
+    if(global::device::isWifiAble == false) {
         ui->wifiBtn->hide();
         ui->line_9->hide();
     }
@@ -798,13 +845,13 @@ void MainWindow::showToast(QString messageToDisplay) {
     global::toast::message = messageToDisplay;
     toastWindow = new toast(this);
     toastWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(toastWindow, SIGNAL(updateWifiIconSig(int)), SLOT(updateWifiIcon(int)));
     connect(toastWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
     connect(toastWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
     connect(toastWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
     toastWindow->show();
 
-    if(messageToDisplay == "Connection successful") {
+    // I will soon manage the update thing in a more propper way somewhere else... ~ Szybet
+    if(messageToDisplay.contains("onnected successfully") == true) {
         // Give the toast some time to vanish away, then launch OTA updater
         QTimer::singleShot(5000, this, SLOT(launchOtaUpdater()));
     }

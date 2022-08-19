@@ -20,7 +20,7 @@
       <number>0</number>
      </property>
      <property name="currentIndex">
-      <number>2</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page_0">
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -312,14 +312,22 @@
      <widget class="QWidget" name="page_1">
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
-        <widget class="QTextBrowser" name="fancyLogsText"/>
+        <widget class="QTextBrowser" name="fancyLogsText">
+         <property name="textInteractionFlags">
+          <set>Qt::NoTextInteraction</set>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
      <widget class="QWidget" name="page_2">
       <layout class="QGridLayout" name="gridLayout_4">
        <item row="0" column="0">
-        <widget class="QTextBrowser" name="allLogsText"/>
+        <widget class="QTextBrowser" name="allLogsText">
+         <property name="textInteractionFlags">
+          <set>Qt::NoTextInteraction</set>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>

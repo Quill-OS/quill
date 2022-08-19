@@ -61,8 +61,13 @@ wifiDialog::wifiDialog(QWidget *parent) :
    global::wifi::WifiState currentWifiState = checkWifiState();
    if(currentWifiState != global::wifi::WifiState::Disabled and currentWifiState != global::wifi::WifiState::Unknown) {
         ui->Wificheckbox->setChecked(true);
+        // To be sure nothing breaks
+        refreshFromWatcher = true;
+        ui->refreshBtn->click();
    } else {
        wifiButtonEnabled = true;
+       ui->stopBtn->setStyleSheet("background-color:grey;");
+       ui->stopBtn->setEnabled(false);
    }
 
    QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
@@ -173,24 +178,31 @@ void wifiDialog::on_refreshBtn_clicked()
 {
     log("Clicked refresh button", className);
     if(checkWifiState() == global::wifi::WifiState::Disabled) {
-        emit showToast("To scan, turn on wi-fi first");
-        log("To scan, turn on wi-fi first", className);
+        if(refreshFromWatcher == true) {
+            refreshFromWatcher = false;
+            emit showToast("To scan, turn on wi-fi first");
+            log("To scan, turn on wi-fi first", className);
+        }
     }
     else {
+        refreshFromWatcher = false;
         launchRefresh();
     }
 }
 
 void wifiDialog::launchRefresh() {
     // Order is important
-    ui->refreshBtn->setStyleSheet("background-color:grey;");
-    ui->refreshBtn->setEnabled(false);
+    if(scanInProgress == false) {
+        scanInProgress = true;
+        ui->refreshBtn->setStyleSheet("background-color:grey;");
+        ui->refreshBtn->setEnabled(false);
 
-    elapsedSeconds = 0;
-    fullList.remove();
-    formattedList.remove();
-    string_writeconfig("/opt/ibxd", "list_wifi_networks\n");
-    QTimer::singleShot(0, this, SLOT(refreshWait()));
+        elapsedSeconds = 0;
+        fullList.remove();
+        formattedList.remove();
+        string_writeconfig("/opt/ibxd", "list_wifi_networks\n");
+        QTimer::singleShot(0, this, SLOT(refreshWait()));
+    }
 }
 
 void wifiDialog::refreshWait() {
@@ -198,6 +210,9 @@ void wifiDialog::refreshWait() {
         if(elapsedSeconds == 6) {
             emit showToast("Failed to get network list");
             log("Failed to get network list", className);
+            ui->refreshBtn->setStyleSheet("background-color:white;");
+            ui->refreshBtn->setEnabled(true);
+            scanInProgress = false;
         }
         else {
             elapsedSeconds = elapsedSeconds + 1;
@@ -252,6 +267,14 @@ void wifiDialog::refreshNetworksList() {
         }
     }
     log("found valid networks: " + QString::number(pureNetworkList.count()), className);
+    if(pureNetworkList.count() == 0) {
+        log("No networks found, skipping", className);
+        showToastSlot("No networks found");
+        ui->refreshBtn->setEnabled(true);
+        ui->refreshBtn->setStyleSheet("background-color:white;");
+        scanInProgress = false;
+        return void();
+    }
     QFile currentWifiNameFile = QFile("/external_root/run/current_wifi_name");
     currentWifiNameFile.remove();
     string_writeconfig("/opt/ibxd", "get_current_wifi_name\n");
@@ -269,22 +292,29 @@ void wifiDialog::refreshNetworksList() {
                 log("Found current network in vector", className);
                 vectorNetworkLocation = countVec;
                 currentNetwork = wifiNetwork.name;
+                log("Test", className);
                 network* connectedNetwork = new network;
                 connectedNetwork->mainData = wifiNetwork;
-                // to be really sure that the the info is put there
+                log("Test", className);
+                // To be really sure that the the info is put there
                 connectedNetwork->currentlyConnectedNetwork = currentNetwork;
+                log("Test", className);
                 connectedNetworkDataParent = wifiNetwork;
-                wifiLoggerDialog->connectedNetworkData = connectedNetworkDataParent;
+                connectedNetworkDataParentSetted = true;
+                log("Test", className);
 
-                // this doesnt work so a layout is needed
+                // This doesnt work so a layout is needed
                 // ui->scrollArea->addScrollBarWidget(connectedNetwork, Qt::AlignTop);
                 connectedNetwork->applyVariables();
+                log("Test", className);
                 connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::closeWrapper);
                 connect(connectedNetwork, &network::showToastSignal, this, &wifiDialog::showToastSlot);
                 connect(connectedNetwork, &network::refreshScreenSignal, this, &wifiDialog::refreshScreenSlot);
                 ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
             }
-            countVec = countVec + 1;
+            else {
+                countVec = countVec + 1;
+            }
         }
         if(vectorNetworkLocation != 9999) {
             log("pureNetworkList size is: " + QString::number(pureNetworkList.count()) + " And i want to remove at: " + QString::number(vectorNetworkLocation), className);
@@ -312,7 +342,7 @@ void wifiDialog::refreshNetworksList() {
                 counter = counter + 1;
             }
         }
-        // this happens if its the smallest value, so insert it at the end
+        // This happens if its the smallest value, so insert it at the end
         if(stopIterating == false) {
             sortedPureNetworkList.append(wifiNetwork);
         }
@@ -338,19 +368,27 @@ void wifiDialog::refreshNetworksList() {
     scannedAtLeastOnce = true;
     ui->refreshBtn->setEnabled(true);
     ui->refreshBtn->setStyleSheet("background-color:white;");
+    scanInProgress = false;
 }
 
 
 void wifiDialog::on_Wificheckbox_stateChanged(int arg1)
 {
+    connectedNetworkDataParentSetted = false;
     log("wifi dialog clicked: " + QString::number(arg1), className);
     if(wifiButtonEnabled == true) {
         if(arg1 == 2) {
             log("turning wifi on", className);
+            // the watcher will scan wifi
+            forceRefresh = true;
             QTimer::singleShot(0, this, SLOT(turnOnWifi()));
+            ui->stopBtn->setStyleSheet("background-color:white;");
+            ui->stopBtn->setEnabled(true);
         } else {
             log("turning wifi off", className);
             QTimer::singleShot(0, this, SLOT(turnOffWifi()));
+            ui->stopBtn->setStyleSheet("background-color:grey;");
+            ui->stopBtn->setEnabled(false);
         }
         emit killNetworkWidgets();
     }
@@ -375,10 +413,13 @@ void wifiDialog::on_logBtn_clicked()
         log("Scanning at least once is needed");
         emit showToast("Scan at least once");
     } else {
-        wifiLoggerDialog->connectedNetworkData = connectedNetworkDataParent;
+        wifilogger* wifiLoggerDialog = new wifilogger;
+        if(connectedNetworkDataParentSetted == true) {
+            wifiLoggerDialog->connectedNetworkData = connectedNetworkDataParent;
+            wifiLoggerDialog->isThereData = true;
+        }
         wifiLoggerDialog->exec();
     }
-
 }
 
 void wifiDialog::showToastSlot(QString message) {
@@ -391,14 +432,14 @@ void wifiDialog::refreshScreenSlot() {
 
 /*
 Some documentation used by the watcher
-connection_manager.sh - manages all things, launches other processes
-connect_to_network.sh - all in one connection manager. manages everything, used by ipd, should be used for recconections after sleeping / booting
+connection_manager.sh - Manages all things, launches other processes
+connect_to_network.sh - All in one connection manager. manages everything, used by ipd, should be used for recconections after sleeping / booting
 get_dhcp.sh - Gets dhcp addresses
 prepare_changing_wifi.sh - Kills everything, prepares to changing network
-smarter_time_sync.sh - synces time
-toggle.sh - turns on / off
-list_networks.bin - well lists networks
-the watcher first watches at processes that could kill other ones
+smarter_time_sync.sh - Synces time
+toggle.sh - Turns on / off
+list_networks.bin - Well lists networks
+theWatcher() first watches at processes that could kill other ones
 */
 
 void wifiDialog::theWatcher() {
@@ -407,12 +448,14 @@ void wifiDialog::theWatcher() {
     bool changing = checkProcessName("prepare_changing_wifi.sh");
     if(killing == true) {
         setStatusText("Changing wifi state");
+        log("toggle.sh is active", className);
         QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
         return void();
     }
 
     if(changing == true) {
         setStatusText("Disconnecting from a network or cleaning");
+        log("prepare_changing_wifi.sh is active", className);
         forceRefresh = true;
         QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
         return void();
@@ -456,7 +499,7 @@ void wifiDialog::theWatcher() {
         return void();
     }
 
-    bool connecting = checkProcessName("connect_to_network.sh");
+    bool connecting = checkProcessName("connection_manager.sh");
     if(connecting == true) {
         forceRefresh = true;
         setStatusText("Connecting to wifi...");
@@ -464,11 +507,21 @@ void wifiDialog::theWatcher() {
         return void();
     }
 
-    setStatusText("Idling");
+    if(ui->statusLabel->text() != "Idling") {
+        setStatusText("Idling");
+    }
+
     if(forceRefresh == true) {
         forceRefresh = false;
+        refreshFromWatcher = true;
         ui->refreshBtn->click();
     }
+
+    if(unlockCheckbox == true) {
+        ui->Wificheckbox->setEnabled(true);
+        unlockCheckbox = false;
+    }
+
     QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
 }
 
@@ -478,6 +531,27 @@ void wifiDialog::setStatusText(QString message) {
 
 void wifiDialog::on_stopBtn_clicked()
 {
+    connectedNetworkDataParentSetted = false;
+    ui->Wificheckbox->setEnabled(false);
+    unlockCheckbox = true;
+
+    // To inform the wifi icon GUI to don't show the connected / failed to connect message
+    string_writeconfig(".config/17-wifi_connection_information/stopped", "true");
+
     // Maybe limit this, idk
     string_writeconfig("/opt/ibxd", "stop_wifi_operations\n");
+
+    setDefaultWorkDir();
+    QFile(".config/17-wifi_connection_information/essid").remove();
+    QFile(".config/17-wifi_connection_information/passphrase").remove();
+
+    // This variable just avoids showing the toast so i can use it here too...
+    refreshFromWatcher = true;
+    ui->refreshBtn->click();
+}
+
+void wifiDialog::on_returnBtn_clicked()
+{
+    this->deleteLater();
+    this->close();
 }

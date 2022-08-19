@@ -29,9 +29,10 @@ network::~network()
 }
 
 void network::applyVariables() {
+    log("Applying variables for network", className);
     ui->signalStrengthLabel->setText(QString::number(mainData.signal) + "%");
 
-    // limit name size, maybe device specific
+    // Limit name size, maybe device specific
     QString cuttedSingleData = mainData.name;
     if(cuttedSingleData.count() > 27)
     {

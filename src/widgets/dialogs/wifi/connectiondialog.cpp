@@ -65,7 +65,7 @@ void connectiondialog::applyVariables() {
             if(password.isEmpty() == false) {
                 log("found password: " + password, className);
                 ui->showPasswordBtn->setIcon(QIcon("://resources/show.png"));
-                showedPasword = false;
+                showedPassword = false;
                 savedPassword = password;
 
                 ui->passwordTextEdit->setText("********");
@@ -189,10 +189,10 @@ void connectiondialog::on_passwordTextEdit_selectionChanged()
 
 void connectiondialog::on_passwordTextEdit_cursorPositionChanged(int oldpos, int newpos)
 {
-    log("detected click on text edit", className);
+    log("Detected click on text edit", className);
     if(cursorPositionIgnore == true) {
         if(newpos != 0) {
-            if(showedPasword == true) {
+            if(showedPassword == true) {
                 ui->passwordTextEdit->setCursorPosition(0);
                 global::keyboard::keyboardDialog = true;
                 global::keyboard::wifiPassphraseDialog = true;
@@ -208,12 +208,12 @@ void connectiondialog::on_passwordTextEdit_cursorPositionChanged(int oldpos, int
                 global::keyboard::keyboardDialog = false;
                 global::keyboard::wifiPassphraseDialog = false;
                 if(global::keyboard::keyboardText.isEmpty() == false) {
-                    // A bit hacky: avoid summoning the keyboard back when the text is changing ( and the cursor too ) showedPasword shouldnt be used for this, but it works and adding another bool would start being messy
-                    showedPasword = false;
+                    // A bit hacky: avoid summoning the keyboard back when the text is changing ( and the cursor too ) showedPassword shouldnt be used for this, but it works and adding another bool would start being messy
+                    showedPassword = false;
                     ui->passwordTextEdit->setText(global::keyboard::keyboardText);
                     ui->showPasswordBtn->setIcon(QIcon("://resources/hide.png"));
                     ui->showPasswordBtn->show();
-                    showedPasword = true;
+                    showedPassword = true;
                     savedPassword = global::keyboard::keyboardText;
                 }
                 global::keyboard::keyboardText = "";
@@ -232,13 +232,13 @@ void connectiondialog::showToastSlot(QString message) {
 
 void connectiondialog::on_showPasswordBtn_clicked()
 {
-    if(showedPasword == false) {
+    if(showedPassword == false) {
         ui->showPasswordBtn->setIcon(QIcon("://resources/hide.png"));
         ui->passwordTextEdit->setText(savedPassword);
-        showedPasword = true;
+        showedPassword = true;
     }
     else {
-        showedPasword = false;
+        showedPassword = false;
         ui->showPasswordBtn->setIcon(QIcon("://resources/show.png"));
         ui->passwordTextEdit->setText("********");
     }
@@ -267,7 +267,7 @@ void connectiondialog::on_connectBtn_clicked()
     string_writeconfig("/run/wifi_network_essid", connectedNetworkData.name.toStdString());
     string_writeconfig("/run/wifi_network_passphrase", finalPassword.toStdString());
     setDefaultWorkDir();
-    // this will be deleited later in mainwindow icon updater if it failed
+    // This will be deleited later in mainwindow icon updater if it failed
     string_writeconfig(".config/17-wifi_connection_information/essid", connectedNetworkData.name.toStdString());
     string_writeconfig(".config/17-wifi_connection_information/passphrase", finalPassword.toStdString());
     finalConnectWait();

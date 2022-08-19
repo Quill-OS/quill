@@ -17,6 +17,8 @@ public:
     explicit wifilogger(QWidget *parent = nullptr);
     ~wifilogger();
     global::wifi::wifiNetworkData connectedNetworkData;
+    // to the above value
+    bool isThereData = false;
 
 private:
     Ui::wifilogger *ui;
@@ -28,6 +30,7 @@ private:
     int currentPage = 0;
     QFile fancyLogs = QFile("/external_root/run/wifi_stats");
     QFile allLogs = QFile("/external_root/run/wifi_logs");
+    bool waitingForFile = false;
 
 private slots:
     void setWifiInfoPage();

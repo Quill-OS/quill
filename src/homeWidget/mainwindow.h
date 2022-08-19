@@ -51,7 +51,11 @@ public:
     bool existing_recent_books = false;
     bool reboot_after_update = false;
     bool resetFullWindowException;
+
     global::wifi::WifiState lastWifiState = global::wifi::WifiState::Unknown;
+    bool isConnecting = false;
+    bool isReconecting = false;
+
     int timerTime = 0;
     QString relative_path;
     QString usbmsStatus;
@@ -78,9 +82,9 @@ private slots:
     void on_homeBtn_clicked();
     void refreshScreen();
     void setupSearchDialog();
-    void updateWifiState();
+    void updateWifiAble();
     void on_wifiBtn_clicked();
-    void updateWifiIcon(global::wifi::WifiState mode);
+    void updateWifiIcon();
     void hello(int testNumber);
     void openUpdateDialogOTA(bool open);
     void launchOtaUpdater();

@@ -31,8 +31,8 @@ public slots:
 
 private slots:
     // I know im opening / loading json many times, its maybe not efficient but:
-    // 1. its modular
-    // 2. those operations are rare
+    // 1. Its modular
+    // 2. Those operations are rare
     QString searchDatabase(QString key);
     void writeToDatabase(QString name, QString password);
     void removeFromDatabase(QString name);
@@ -54,7 +54,7 @@ private slots:
 private:
     Ui::connectiondialog *ui;
     bool cursorPositionIgnore = false;
-    bool showedPasword;
+    bool showedPassword;
     QString savedPassword;
     int waitTry = 0;
 };

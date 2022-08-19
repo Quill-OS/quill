@@ -20,15 +20,15 @@ public:
     explicit wifiDialog(QWidget *parent = nullptr);
     ~wifiDialog();
     global::wifi::wifiNetworkData connectedNetworkDataParent;
-    wifilogger* wifiLoggerDialog = new wifilogger;
-
+    // well dont touch this until there is something, *** Error in `/tmp/exec': double free or corruption (fasttop): 0x025ed170 ***
+    bool connectedNetworkDataParentSetted = false;
 
 private:
     Ui::wifiDialog *ui;
     bool wifiButtonEnabled = false;
     bool scannedAtLeastOnce = false;
 
-    // variables for refreshWait() and network refresh in general
+    // Variables for refreshWait() and network refresh in general
     int elapsedSeconds = 0;
     QFile fullList =  QFile("/external_root/run/wifi_list_full");
     QFile formattedList = QFile("/external_root/run/wifi_list_format");
@@ -36,6 +36,9 @@ private:
     // Used by watcher
     bool forceRefresh = false;
     int relaunchMs = 300;
+    bool refreshFromWatcher = false;
+    bool unlockCheckbox = false;
+    bool scanInProgress = false;
 
 public slots:
     void launchRefresh();
@@ -63,6 +66,7 @@ private slots:
     void refreshWait();
     void setStatusText(QString message);
     void on_stopBtn_clicked();
+    void on_returnBtn_clicked();
 };
 
 #endif // WIFIDIALOG_H

@@ -18,6 +18,7 @@ wifilogger::wifilogger(QWidget *parent) :
     this->setModal(true);
 
 
+    log("Entered wifilogger", className);
     setWifiInfoPage();
     ui->refreshBtn->setProperty("type", "borderless");
 
@@ -91,14 +92,25 @@ void wifilogger::changePage() {
 }
 
 void wifilogger::getWifiInformations() {
+    log("getting wifi informations", className);
     QFile wifiInformationsPath = QFile("/external_root/run/wifi_informations");
-    wifiInformationsPath.remove();
+    if(waitingForFile == false) {
+        wifiInformationsPath.remove();
 
-    string_writeconfig("/opt/ibxd", "get_wifi_informations\n");
-    while(wifiInformationsPath.exists() == false) {
-        sleep(1);
+        log("Launching get_wifi_informations ibxd call", className);
+        string_writeconfig("/opt/ibxd", "get_wifi_informations\n");
+        waitingForFile = true;
     }
 
+    if(waitingForFile == true) {
+        if(wifiInformationsPath.exists() == false) {
+            QTimer::singleShot(1000, this, SLOT(getWifiInformations()));
+            return void();
+        }
+    }
+
+    waitingForFile = false;
+    log("Setting variables", className);
     QString wifiInfo = readFile(wifiInformationsPath.fileName());
     QStringList wifiInfoList = wifiInfo.split("\n");
     int counter = 0;
@@ -118,7 +130,7 @@ void wifilogger::getWifiInformations() {
         counter = counter + 1;
     }
 
-    if(connectedNetworkData.mac.isEmpty() == false) {
+    if(isThereData == true) {
         ui->encryptionLabel->setText(QVariant(connectedNetworkData.encryption).toString());
 
         ui->signalLabel->setText(QString::number(connectedNetworkData.signal) + "%");
@@ -138,6 +150,7 @@ void wifilogger::getWifiInformations() {
 
 void wifilogger::on_returnBtn_clicked()
 {
+    log("Exiting wifilogger", className);
     this->deleteLater();
     this->close();
 }
@@ -155,7 +168,9 @@ void wifilogger::updateLogs() {
 void wifilogger::on_refreshBtn_clicked()
 {
     if(currentPage == 0) {
-        setWifiInfoPage();
+        if(waitingForFile == false) {
+            setWifiInfoPage();
+        }
     }
     else {
         updateLogs();
