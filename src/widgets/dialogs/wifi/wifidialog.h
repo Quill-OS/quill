@@ -40,6 +40,9 @@ private:
     bool unlockCheckbox = false;
     bool scanInProgress = false;
 
+    bool isToggleRunning = false;
+    bool ignoreCheckboxCall = false;
+
 public slots:
     void launchRefresh();
     void refreshNetworksList();

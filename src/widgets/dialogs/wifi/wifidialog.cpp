@@ -203,6 +203,9 @@ void wifiDialog::launchRefresh() {
         string_writeconfig("/opt/ibxd", "list_wifi_networks\n");
         QTimer::singleShot(0, this, SLOT(refreshWait()));
     }
+    else {
+        log("Scan is already in progress", className);
+    }
 }
 
 void wifiDialog::refreshWait() {
@@ -374,28 +377,40 @@ void wifiDialog::refreshNetworksList() {
 
 void wifiDialog::on_Wificheckbox_stateChanged(int arg1)
 {
-    connectedNetworkDataParentSetted = false;
-    log("wifi dialog clicked: " + QString::number(arg1), className);
-    if(wifiButtonEnabled == true) {
-        if(arg1 == 2) {
-            log("turning wifi on", className);
-            // the watcher will scan wifi
-            forceRefresh = true;
-            QTimer::singleShot(0, this, SLOT(turnOnWifi()));
-            ui->stopBtn->setStyleSheet("background-color:white;");
-            ui->stopBtn->setEnabled(true);
-        } else {
-            log("turning wifi off", className);
-            QTimer::singleShot(0, this, SLOT(turnOffWifi()));
-            ui->stopBtn->setStyleSheet("background-color:grey;");
-            ui->stopBtn->setEnabled(false);
+    if(ignoreCheckboxCall == false) {
+        connectedNetworkDataParentSetted = false;
+        log("wifi dialog clicked: " + QString::number(arg1), className);
+        if(wifiButtonEnabled == true) {
+            if(arg1 == 2) {
+                log("turning wifi on", className);
+                // the watcher will scan wifi
+                forceRefresh = true;
+                QTimer::singleShot(0, this, SLOT(turnOnWifi()));
+                ui->stopBtn->setStyleSheet("background-color:white;");
+                ui->stopBtn->setEnabled(true);
+            } else {
+                log("turning wifi off", className);
+                QTimer::singleShot(0, this, SLOT(turnOffWifi()));
+                ui->stopBtn->setStyleSheet("background-color:grey;");
+                ui->stopBtn->setEnabled(false);
+            }
+            emit killNetworkWidgets();
         }
-        emit killNetworkWidgets();
+        if(wifiButtonEnabled == false){
+            wifiButtonEnabled = true;
+        }
+    }
+    else {
+        ignoreCheckboxCall = true;
+        if(checkWifiState() != global::wifi::WifiState::Disabled) {
+            emit killNetworkWidgets();
+            forceRefresh = true;
+        }
+        else {
+            emit killNetworkWidgets();
+        }
     }
 
-    if(wifiButtonEnabled == false){
-        wifiButtonEnabled = true;
-    }
 }
 
 void wifiDialog::turnOnWifi() {
@@ -439,6 +454,7 @@ prepare_changing_wifi.sh - Kills everything, prepares to changing network
 smarter_time_sync.sh - Synces time
 toggle.sh - Turns on / off
 list_networks.bin - Well lists networks
+check_wifi_password.sh - Checks wifi password
 theWatcher() first watches at processes that could kill other ones
 */
 
@@ -449,6 +465,7 @@ void wifiDialog::theWatcher() {
     if(killing == true) {
         setStatusText("Changing wifi state");
         log("toggle.sh is active", className);
+        isToggleRunning = true;
         QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
         return void();
     }
@@ -483,6 +500,23 @@ void wifiDialog::theWatcher() {
         return void();
     }
 
+    bool dhcp = checkProcessName("get_dhcp.sh");
+    if(dhcp == true) {
+        forceRefresh = true;
+        setStatusText("Getting IP address");
+        QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
+        return void();
+    }
+
+
+    bool passwordCheck = checkProcessName("check_wifi_password.sh");
+    if(passwordCheck == true) {
+        forceRefresh = true;
+        setStatusText("Checking wi-fi password");
+        QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
+        return void();
+    }
+
     bool time = checkProcessName("smarter_time_sync.sh");
     if(time == true) {
         forceRefresh = true;
@@ -491,13 +525,6 @@ void wifiDialog::theWatcher() {
         return void();
     }
 
-    bool dhcp = checkProcessName("get_dhcp.sh");
-    if(dhcp == true) {
-        forceRefresh = true;
-        setStatusText("Getting IP address");
-        QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
-        return void();
-    }
 
     bool connecting = checkProcessName("connection_manager.sh");
     if(connecting == true) {
@@ -520,6 +547,23 @@ void wifiDialog::theWatcher() {
     if(unlockCheckbox == true) {
         ui->Wificheckbox->setEnabled(true);
         unlockCheckbox = false;
+    }
+
+    if(isToggleRunning == true) {
+        isToggleRunning = false;
+        // To make sure the checkbox is in the right state
+        if(checkWifiState() == global::wifi::WifiState::Disabled) {
+            if(ui->Wificheckbox->isChecked() == true) {
+                ignoreCheckboxCall = true;
+                ui->Wificheckbox->setChecked(false);
+            }
+        }
+        else {
+            if(ui->Wificheckbox->isChecked() == false) {
+                ignoreCheckboxCall = true;
+                ui->Wificheckbox->setChecked(true);
+            }
+        }
     }
 
     QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
