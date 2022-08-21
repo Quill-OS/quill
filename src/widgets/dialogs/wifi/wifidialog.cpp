@@ -306,6 +306,8 @@ void wifiDialog::on_Wificheckbox_stateChanged(int arg1)
             } else {
                 log("turning wifi off", className);
                 QTimer::singleShot(0, this, SLOT(turnOffWifi()));
+                // To inform the wifi icon GUI to don't show the connected / failed to connect message
+                string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped", "true");
                 ui->stopBtn->setStyleSheet("background-color:grey;");
                 ui->stopBtn->setEnabled(false);
             }
