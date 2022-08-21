@@ -70,109 +70,14 @@ wifiDialog::wifiDialog(QWidget *parent) :
        ui->stopBtn->setEnabled(false);
    }
 
-   QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
+   // To avoid confussion with reconnecting
+   QTimer::singleShot(2000, this, SLOT(theWatcher()));
 }
 
 wifiDialog::~wifiDialog()
 {
     delete ui;
 }
-
-/*
-
-        this->hide();
-        global::keyboard::keyboardDialog = true;
-        global::keyboard::wifiPassphraseDialog = true;
-        global::keyboard::keyboardText = "";
-        generalDialogWindow = new generalDialog();
-        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-        generalDialogWindow->wifiEssid = itemText;
-        connect(generalDialogWindow, SIGNAL(refreshScreen()), SLOT(refreshScreenNative()));
-        connect(generalDialogWindow, SIGNAL(updateWifiIcon(int)), SLOT(updateWifiIcon(int)));
-        connect(generalDialogWindow, SIGNAL(showToast(QString)), SLOT(showToastNative(QString)));
-        connect(generalDialogWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToastNative()));
-        connect(generalDialogWindow, SIGNAL(destroyed(QObject*)), SLOT(close()));
-        generalDialogWindow->show();
-
-*/
-
-/*
-    bool connectToNetwork(QString essid, QString passphrase) {
-        log("Connecting to network '" + essid + "'", "functions");
-        std::string essid_str = essid.toStdString();
-        std::string passphrase_str = passphrase.toStdString();
-        string_writeconfig("/run/wifi_network_essid", essid_str);
-        string_writeconfig("/run/wifi_network_passphrase", passphrase_str);
-        string_writeconfig("/opt/ibxd", "connect_to_wifi_network\n");
-
-        int connectionSuccessful = 0;
-
-        while(connectionSuccessful == 0) {
-            if(QFile::exists("/run/wifi_connected_successfully")) {
-                if(checkconfig("/run/wifi_connected_successfully") == true) {
-                    QFile::remove("/run/wifi_connected_successfully");
-                    connectionSuccessful = 1;
-                    global::network::isConnected = true;
-                    setDefaultWorkDir();
-                    string_writeconfig(".config/17-wifi_connection_information/essid", essid_str);
-                    string_writeconfig(".config/17-wifi_connection_information/passphrase", passphrase_str);
-                    QString function = __func__; log(function + ": Connection successful", "functions");
-                    return true;
-                }
-                else {
-                    QFile::remove("/run/wifi_connected_successfully");
-                    connectionSuccessful = 0;
-                    global::network::isConnected = false;
-                    QString function = __func__; log(function + ": Connection failed", "functions");
-                    return false;
-                }
-            }
-            else {
-                QThread::msleep(100);
-            }
-        }
-    }
-*/
-/*
-    int testPing(bool blocking) {
-        QProcess *pingProcess = new QProcess();
-        if(blocking == true) {
-            QString pingProg = "ping";
-            QStringList pingArgs;
-            pingArgs << "-c" << "1" << "1.1.1.1";
-            pingProcess->start(pingProg, pingArgs);
-            pingProcess->waitForFinished();
-            int exitCode = pingProcess->exitCode();
-            pingProcess->deleteLater();
-            if(exitCode == 0) {
-                global::network::isConnected = true;
-            }
-            else {
-                global::network::isConnected = false;
-            }
-            return exitCode;
-        }
-        // For some reason, implementing a non-blocking version of this functions triggers a "terminate called without an active exception" error with a platform plugin compiled with a newer GCC 11 toolchain. The problem has been solved by transplanting this function into the related area which uses it.
-        pingProcess->deleteLater();
-    }
-    bool getTestPingResults() {
-        // To be used when the testPing() function is used in non-blocking mode.
-        if(QFile::exists("/run/test_ping_status")) {
-            if(checkconfig("/run/test_ping_status") == true) {
-                global::network::isConnected = true;
-                return true;
-            }
-            else {
-                global::network::isConnected = false;
-                return false;
-            }
-        }
-        else {
-            global::network::isConnected = false;
-            return false;
-        }
-    }
-*/
 
 void wifiDialog::on_refreshBtn_clicked()
 {
@@ -271,12 +176,27 @@ void wifiDialog::refreshNetworksList() {
     }
     log("found valid networks: " + QString::number(pureNetworkList.count()), className);
     if(pureNetworkList.count() == 0) {
-        log("No networks found, skipping", className);
-        showToastSlot("No networks found");
-        ui->refreshBtn->setEnabled(true);
-        ui->refreshBtn->setStyleSheet("background-color:white;");
-        scanInProgress = false;
-        return void();
+        if(secondScanTry == false) {
+            secondScanTry = true;
+            if(checkWifiState() != global::wifi::WifiState::Disabled) {
+                scanInProgress = false;
+                QTimer::singleShot(0, this, SLOT(launchRefresh()));
+                log("No networks found. Trying one more time");
+                return void();
+            }
+            else {
+                return void();
+            }
+        }
+        else {
+            secondScanTry = false;
+            log("No networks found, skipping", className);
+            showToastSlot("No networks found");
+            ui->refreshBtn->setEnabled(true);
+            ui->refreshBtn->setStyleSheet("background-color:white;");
+            scanInProgress = false;
+            return void();
+        }
     }
     QFile currentWifiNameFile = QFile("/external_root/run/current_wifi_name");
     currentWifiNameFile.remove();
@@ -295,21 +215,16 @@ void wifiDialog::refreshNetworksList() {
                 log("Found current network in vector", className);
                 vectorNetworkLocation = countVec;
                 currentNetwork = wifiNetwork.name;
-                log("Test", className);
                 network* connectedNetwork = new network;
                 connectedNetwork->mainData = wifiNetwork;
-                log("Test", className);
                 // To be really sure that the the info is put there
                 connectedNetwork->currentlyConnectedNetwork = currentNetwork;
-                log("Test", className);
                 connectedNetworkDataParent = wifiNetwork;
                 connectedNetworkDataParentSetted = true;
-                log("Test", className);
 
                 // This doesnt work so a layout is needed
                 // ui->scrollArea->addScrollBarWidget(connectedNetwork, Qt::AlignTop);
                 connectedNetwork->applyVariables();
-                log("Test", className);
                 connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::closeWrapper);
                 connect(connectedNetwork, &network::showToastSignal, this, &wifiDialog::showToastSlot);
                 connect(connectedNetwork, &network::refreshScreenSignal, this, &wifiDialog::refreshScreenSlot);
@@ -372,6 +287,7 @@ void wifiDialog::refreshNetworksList() {
     ui->refreshBtn->setEnabled(true);
     ui->refreshBtn->setStyleSheet("background-color:white;");
     scanInProgress = false;
+    secondScanTry = false;
 }
 
 
@@ -384,7 +300,6 @@ void wifiDialog::on_Wificheckbox_stateChanged(int arg1)
             if(arg1 == 2) {
                 log("turning wifi on", className);
                 // the watcher will scan wifi
-                forceRefresh = true;
                 QTimer::singleShot(0, this, SLOT(turnOnWifi()));
                 ui->stopBtn->setStyleSheet("background-color:white;");
                 ui->stopBtn->setEnabled(true);
@@ -401,7 +316,7 @@ void wifiDialog::on_Wificheckbox_stateChanged(int arg1)
         }
     }
     else {
-        ignoreCheckboxCall = true;
+        ignoreCheckboxCall = false;
         if(checkWifiState() != global::wifi::WifiState::Disabled) {
             emit killNetworkWidgets();
             forceRefresh = true;
@@ -415,6 +330,8 @@ void wifiDialog::on_Wificheckbox_stateChanged(int arg1)
 
 void wifiDialog::turnOnWifi() {
     string_writeconfig("/opt/ibxd", "toggle_wifi_on\n");
+    // No one will notice this freeze :>
+    waitToScan();
 }
 
 void wifiDialog::turnOffWifi() {
@@ -464,7 +381,7 @@ void wifiDialog::theWatcher() {
     bool changing = checkProcessName("prepare_changing_wifi.sh");
     if(killing == true) {
         setStatusText("Changing wifi state");
-        log("toggle.sh is active", className);
+        //log("toggle.sh is active", className);
         isToggleRunning = true;
         QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
         return void();
@@ -473,7 +390,6 @@ void wifiDialog::theWatcher() {
     if(changing == true) {
         setStatusText("Disconnecting from a network or cleaning");
         log("prepare_changing_wifi.sh is active", className);
-        forceRefresh = true;
         QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
         return void();
     }
@@ -481,13 +397,13 @@ void wifiDialog::theWatcher() {
     bool recconection = checkProcessName("connect_to_network.sh");
     if(recconection == true) {
         forceRefresh = true;
-        QFile recName = QFile(".config/17-wifi_connection_information/essid");
+        QFile recName = QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid");
         if(recName.exists() == true) {
              setStatusText("Recconecting after suspending to " + readFile(recName.fileName()).replace("\n", ""));
         }
         else {
             // Shouldn't be possible
-            setStatusText("Recconecting after sleep, but no network found?");
+            setStatusText("Recconecting after sleep");
         }
         QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
         return void();
@@ -538,12 +454,6 @@ void wifiDialog::theWatcher() {
         setStatusText("Idling");
     }
 
-    if(forceRefresh == true) {
-        forceRefresh = false;
-        refreshFromWatcher = true;
-        ui->refreshBtn->click();
-    }
-
     if(unlockCheckbox == true) {
         ui->Wificheckbox->setEnabled(true);
         unlockCheckbox = false;
@@ -553,6 +463,8 @@ void wifiDialog::theWatcher() {
         isToggleRunning = false;
         // To make sure the checkbox is in the right state
         if(checkWifiState() == global::wifi::WifiState::Disabled) {
+            // In this state, ignore forceRefresh to avoid message
+            forceRefresh = false;
             if(ui->Wificheckbox->isChecked() == true) {
                 ignoreCheckboxCall = true;
                 ui->Wificheckbox->setChecked(false);
@@ -566,6 +478,12 @@ void wifiDialog::theWatcher() {
         }
     }
 
+    if(forceRefresh == true) {
+        forceRefresh = false;
+        refreshFromWatcher = true;
+        QTimer::singleShot(1500, this, SLOT(waitToScan()));
+    }
+
     QTimer::singleShot(relaunchMs, this, SLOT(theWatcher()));
 }
 
@@ -575,27 +493,38 @@ void wifiDialog::setStatusText(QString message) {
 
 void wifiDialog::on_stopBtn_clicked()
 {
+    log("Stop button was clicked", className);
     connectedNetworkDataParentSetted = false;
     ui->Wificheckbox->setEnabled(false);
     unlockCheckbox = true;
 
     // To inform the wifi icon GUI to don't show the connected / failed to connect message
-    string_writeconfig(".config/17-wifi_connection_information/stopped", "true");
+    string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped", "true");
 
     // Maybe limit this, idk
     string_writeconfig("/opt/ibxd", "stop_wifi_operations\n");
 
-    setDefaultWorkDir();
-    QFile(".config/17-wifi_connection_information/essid").remove();
-    QFile(".config/17-wifi_connection_information/passphrase").remove();
+    QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid").remove();
+    QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/passphrase").remove();
 
     // This variable just avoids showing the toast so i can use it here too...
-    refreshFromWatcher = true;
-    ui->refreshBtn->click();
+    // Actually refreshing from watcher is smarter so this isin't needed
+    //refreshFromWatcher = true;
+    //ui->refreshBtn->click();
+    waitToScan();
 }
 
 void wifiDialog::on_returnBtn_clicked()
 {
     this->deleteLater();
     this->close();
+}
+
+void wifiDialog::waitToScan() {
+    if(checkWifiState() != global::wifi::WifiState::Disabled) {
+        ui->refreshBtn->click();
+    }
+    else {
+        QTimer::singleShot(750, this, SLOT(waitToScan()));
+    }
 }

@@ -57,6 +57,7 @@ private:
     bool showedPassword;
     QString savedPassword;
     int waitTry = 0;
+    QString passwordForReconnecting;
 };
 
 #endif // CONNECTIONDIALOG_H

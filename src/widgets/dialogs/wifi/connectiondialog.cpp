@@ -60,21 +60,20 @@ void connectiondialog::applyVariables() {
             passwordDatabase.flush();
             passwordDatabase.close();
         }
-        else {
-            QString password = searchDatabase(connectedNetworkData.name);
-            if(password.isEmpty() == false) {
-                log("found password: " + password, className);
-                ui->showPasswordBtn->setIcon(QIcon("://resources/show.png"));
-                showedPassword = false;
-                savedPassword = password;
+        QString password = searchDatabase(connectedNetworkData.name);
+        if(password.isEmpty() == false) {
+            log("found password: " + password, className);
+            ui->showPasswordBtn->setIcon(QIcon("://resources/show.png"));
+            showedPassword = false;
+            savedPassword = password;
 
-                ui->passwordTextEdit->setText("********");
-            }
-            else {
-                log("No password found", className);
-                ui->passwordTextEdit->setText("No password was saved");
-                ui->showPasswordBtn->hide();
-            }
+            ui->passwordTextEdit->setText("********");
+        }
+        else {
+            log("No password found", className);
+            ui->passwordTextEdit->setText("No password was saved");
+            showedPassword = true;
+            ui->showPasswordBtn->hide();
         }
     }
 }
@@ -92,7 +91,12 @@ QString connectiondialog::searchDatabase(QString key) {
             QString searchedName = jsonMainObject.keys().first().toUtf8();
             log("Found in database: " + searchedName, className);
             if(searchedName == key) {
-                return jsonMainObject.take(key).toString();
+                QString returnedPassword = jsonMainObject.value(key).toString();
+                log("Searched name " + searchedName + " matched " + key + " and the password is: " + returnedPassword, className);
+                return returnedPassword;
+            }
+            else {
+                log("Searched name " + searchedName + " Doesn't match " + key, className);
             }
 
         }
@@ -215,8 +219,12 @@ void connectiondialog::on_passwordTextEdit_cursorPositionChanged(int oldpos, int
                     ui->showPasswordBtn->show();
                     showedPassword = true;
                     savedPassword = global::keyboard::keyboardText;
+                    ui->showPasswordBtn->show();
                 }
                 global::keyboard::keyboardText = "";
+            }
+            else {
+                log("Password is not saved so ignoring text edit call", className);
             }
         }
     }
@@ -256,9 +264,16 @@ void connectiondialog::on_connectBtn_clicked()
         finalPassword = "NONE";
     }
     else {
-        finalPassword = savedPassword;
-        writeToDatabase(connectedNetworkData.name, savedPassword);
+        if(savedPassword.isEmpty() == false) {
+            finalPassword = savedPassword;
+            writeToDatabase(connectedNetworkData.name, savedPassword);
+        }
+        else {
+            showToastSlot("Provide a password first");
+            return void();
+        }
     }
+    passwordForReconnecting = finalPassword;
 
     ui->CancelBtn->setEnabled(false);
     if(checkWifiState() == global::wifi::WifiState::Configured) {
@@ -266,12 +281,7 @@ void connectiondialog::on_connectBtn_clicked()
     }
     string_writeconfig("/run/wifi_network_essid", connectedNetworkData.name.toStdString());
     string_writeconfig("/run/wifi_network_passphrase", finalPassword.toStdString());
-    setDefaultWorkDir();
-    // This will be deleited later in mainwindow icon updater if it failed
-    string_writeconfig(".config/17-wifi_connection_information/essid", connectedNetworkData.name.toStdString());
-    string_writeconfig(".config/17-wifi_connection_information/passphrase", finalPassword.toStdString());
     finalConnectWait();
-
 }
 
 void connectiondialog::finalConnectWait() {
@@ -293,7 +303,12 @@ void connectiondialog::finalConnectWait() {
     }
     else {
         string_writeconfig("/opt/ibxd", "connect_to_wifi_network\n");
-        ui->CancelBtn->setEnabled(true);
+
+        // This will be deleted later in mainwindow icon updater if it failed. Its also deleted in stop wifi script
+        log("Writing to config dir with connection data", className);
+        string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid", connectedNetworkData.name.toStdString());
+        string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/passphrase", passwordForReconnecting.toStdString());
+
         this->deleteLater();
         this->close();
     }
@@ -302,7 +317,7 @@ void connectiondialog::finalConnectWait() {
 bool connectiondialog::checkIfWifiBussy() {
     if(checkProcessName("connect_to_network.sh") == true or
        checkProcessName("connection_manager.sh") == true or
-       checkProcessName("only_connect_to_network.sh") == true) {
+       checkProcessName("prepare_changing_wifi.sh") == true) {
         return true;
     }
     else {

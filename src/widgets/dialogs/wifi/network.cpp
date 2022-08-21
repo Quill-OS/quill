@@ -30,7 +30,11 @@ network::~network()
 
 void network::applyVariables() {
     log("Applying variables for network", className);
-    ui->signalStrengthLabel->setText(QString::number(mainData.signal) + "%");
+    QString percent = "%";
+    if(mainData.signal < 100) {
+        percent.append(" ");
+    }
+    ui->signalStrengthLabel->setText(QString::number(mainData.signal) + percent);
 
     // Limit name size, maybe device specific
     QString cuttedSingleData = mainData.name;
@@ -42,10 +46,10 @@ void network::applyVariables() {
     ui->nameLabel->setText(cuttedSingleData);
 
     if(mainData.encryption == true) {
-        ui->encryptionIcon->setIcon(QIcon("://resources/lock-fill.png"));
+        ui->encryptionIcon->setIcon(QIcon("://resources/lock.png"));
     }
     else {
-        ui->encryptionIcon->setIcon(QIcon("://resources/lock-unlock-fill.png"));
+        ui->encryptionIcon->setIcon(QIcon("://resources/public.png"));
     }
 
     if(currentlyConnectedNetwork == mainData.name) {

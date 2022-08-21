@@ -1,4 +1,5 @@
 #include <QFile>
+#include <QScrollBar>
 
 #include "wifilogger.h"
 #include "ui_wifilogger.h"
@@ -16,6 +17,11 @@ wifilogger::wifilogger(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
     this->setModal(true);
+
+    // Scroll bar
+    // Needed for the nia.
+    ui->allLogsText->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 50px; }");
+    ui->fancyLogsText->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 50px; }");
 
 
     log("Entered wifilogger", className);

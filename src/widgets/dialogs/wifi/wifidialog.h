@@ -43,6 +43,8 @@ private:
     bool isToggleRunning = false;
     bool ignoreCheckboxCall = false;
 
+    bool secondScanTry = false;
+
 public slots:
     void launchRefresh();
     void refreshNetworksList();
@@ -70,6 +72,7 @@ private slots:
     void setStatusText(QString message);
     void on_stopBtn_clicked();
     void on_returnBtn_clicked();
+    void waitToScan();
 };
 
 #endif // WIFIDIALOG_H
