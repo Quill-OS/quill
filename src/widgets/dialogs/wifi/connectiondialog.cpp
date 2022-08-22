@@ -11,6 +11,7 @@ connectiondialog::connectiondialog(QWidget *parent) :
     ui(new Ui::connectiondialog)
 {
     ui->setupUi(this);
+    this->setFont(QFont("u001"));
 
     // Stylesheet, style & misc.
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
@@ -96,7 +97,7 @@ QString connectiondialog::searchDatabase(QString key) {
                 return returnedPassword;
             }
             else {
-                log("Searched name '" + searchedName + "' doesn't match " + key + "'", className);
+                log("Searched name '" + searchedName + "' doesn't match '" + key + "'", className);
             }
         }
         return "";

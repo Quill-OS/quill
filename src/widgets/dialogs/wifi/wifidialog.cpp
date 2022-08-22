@@ -17,6 +17,7 @@ wifiDialog::wifiDialog(QWidget *parent) :
     ui(new Ui::wifiDialog)
 {
     ui->setupUi(this);
+    this->setFont(QFont("u001"));
 
     // Stylesheet, style & misc.
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
@@ -25,33 +26,44 @@ wifiDialog::wifiDialog(QWidget *parent) :
     stylesheetFile.close();
     this->setModal(true);
 
-    ui->stopBtn->setIcon(QIcon(":/resources/stop.png"));
-    ui->logBtn->setIcon(QIcon(":/resources/file-text.png"));
-    ui->refreshBtn->setIcon(QIcon(":/resources/refresh.png"));
-    ui->wifiCheckBox->setStyleSheet("QCheckBox::indicator { width:50px; height: 50px; }");
+    ui->wifiCheckBox->setFont(QFont("Inter"));
+    ui->returnBtn->setFont(QFont("Inter"));
+    ui->returnBtn->setStyleSheet("font-weight: bold");
+
+    ui->refreshBtn->setProperty("type", "borderless");
+    ui->stopBtn->setProperty("type", "borderless");
+    ui->logBtn->setProperty("type", "borderless");
     ui->returnBtn->setProperty("type", "borderless");
+
+    ui->refreshBtn->setIcon(QIcon(":/resources/refresh.png"));
+    ui->stopBtn->setIcon(QIcon(":/resources/stop.png"));
+    ui->logBtn->setIcon(QIcon(":/resources/log.png"));
 
     // Size
     QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
-    this->setFixedWidth(screenGeometry.width());
+    this->setFixedWidth(screenGeometry.width() / 1.1);
 
     int halfOfHalfHeight = ((screenGeometry.height() / 2) / 2) / 2;
     int finalHeight = screenGeometry.height() - halfOfHalfHeight * 2;
 
     this->setFixedHeight(finalHeight);
-    this->move(0, halfOfHalfHeight);
+
+    // Centering dialog
+    int x = (screenGeometry.width() - this->width()) / 2;
+    int y = (screenGeometry.height() - this->height()) / 2;
+    this->move(x, y);
 
     // Button sizes
-    ui->stopBtn->setFixedWidth(screenGeometry.width() / 8);
-    ui->logBtn->setFixedWidth(screenGeometry.width() / 8);
-    ui->refreshBtn->setFixedWidth(screenGeometry.width() / 8);
+    ui->stopBtn->setFixedWidth(screenGeometry.width() / 9);
+    ui->logBtn->setFixedWidth(screenGeometry.width() / 9);
+    ui->refreshBtn->setFixedWidth(screenGeometry.width() / 9);
 
-    int heighIncrease = 20;
-    ui->stopBtn->setFixedHeight(ui->stopBtn->height() + heighIncrease);
-    ui->logBtn->setFixedHeight(ui->logBtn->height() + heighIncrease);
-    ui->refreshBtn->setFixedHeight(ui->refreshBtn->height() + heighIncrease);
+    int heightIncrease = 20;
+    ui->stopBtn->setFixedHeight(ui->stopBtn->height() + heightIncrease);
+    ui->logBtn->setFixedHeight(ui->logBtn->height() + heightIncrease);
+    ui->refreshBtn->setFixedHeight(ui->refreshBtn->height() + heightIncrease);
 
-   // And set wifi checkbox state. also ignore this first call
+   // Set Wi-Fi checkbox state. Ignore the first call.
    global::wifi::wifiState currentWifiState = checkWifiState();
    if(currentWifiState != global::wifi::wifiState::disabled and currentWifiState != global::wifi::wifiState::unknown) {
         ui->wifiCheckBox->setChecked(true);
@@ -65,7 +77,7 @@ wifiDialog::wifiDialog(QWidget *parent) :
    }
 
    // To avoid confusion with reconnecting
-   QTimer::singleShot(2000, this, SLOT(theWatcher()));
+   QTimer::singleShot(2000, this, SLOT(watcher()));
 }
 
 wifiDialog::~wifiDialog()
@@ -362,7 +374,7 @@ void wifiDialog::refreshScreenSlot() {
     * prepare_changing_wifi.sh - Kills everything, prepares to changing network
     * smarter_time_sync.sh - Syncs time
     * toggle.sh - Turns on/off Wi-Fi adapter
-    * list_networks.bin - Lists networks
+    * list_networks - Lists networks
     * check_wifi_password.sh - Checks Wi-Fi network password
     * watcher() first watches at processes that could kill other ones
 */
@@ -399,9 +411,9 @@ void wifiDialog::watcher() {
         return void();
     }
 
-    bool listing = checkProcessName("list_networks.bin");
+    bool listing = checkProcessName("list_networks");
     if(listing == true) {
-        setStatusText("Scanning networks ...");
+        setStatusText("Scanning available networks");
         QTimer::singleShot(relaunchMs, this, SLOT(watcher()));
         return void();
     }
@@ -433,13 +445,13 @@ void wifiDialog::watcher() {
     bool connecting = checkProcessName("connection_manager.sh");
     if(connecting == true) {
         forceRefresh = true;
-        setStatusText("Connecting to Wi-Fi network ...");
+        setStatusText("Connecting to Wi-Fi network");
         QTimer::singleShot(relaunchMs, this, SLOT(watcher()));
         return void();
     }
 
-    if(ui->statusLabel->text() != "Idling") {
-        setStatusText("Idling");
+    if(ui->statusLabel->text() != "Idle") {
+        setStatusText("Idle");
     }
 
     if(unlockCheckBox == true) {

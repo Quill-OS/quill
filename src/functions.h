@@ -166,8 +166,7 @@ namespace global {
         inline QString bookPath;
     }
     namespace wifi {
-        enum class wifiState
-        {
+        enum class wifiState {
             configured,
             enabled,
             disabled,

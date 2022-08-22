@@ -228,7 +228,6 @@ int main(int argc, char *argv[])
 
             const QScreen * screen = qApp->primaryScreen();
             w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));
-            w.setFixedSize(QSize(screen->geometry().height(), screen->geometry().width()));
             w.show();
             return a.exec();
         }

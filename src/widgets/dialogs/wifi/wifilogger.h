@@ -29,7 +29,7 @@ private:
     */
     int currentPage = 0;
     QFile fancyLogs = QFile("/external_root/run/wifi_stats");
-    QFile allLogs = QFile("/external_root/run/wifi_logs");
+    QFile allLogs = QFile("/external_root/var/log/wifi.log");
     bool waitingForFile = false;
 
 private slots:

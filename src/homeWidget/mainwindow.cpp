@@ -134,7 +134,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     updateWifiAble();
     if(global::device::isWifiAble == true) {
-        // Start wifi updater
+        // Start Wi-Fi icon updater
         QTimer *wifiIconTimer = new QTimer(this);
         wifiIconTimer->setInterval(2500);
         connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(updateWifiIcon()));
@@ -833,9 +833,9 @@ void MainWindow::updateWifiAble() {
 
 void MainWindow::on_wifiBtn_clicked()
 {
-    wifiDialog* newWIfiDialog = new wifiDialog();
-    QObject::connect(newWIfiDialog, &wifiDialog::showToast, this, &MainWindow::showToast);
-    newWIfiDialog->exec();
+    wifiDialog* newWifiDialog = new wifiDialog();
+    QObject::connect(newWifiDialog, &wifiDialog::showToast, this, &MainWindow::showToast);
+    newWifiDialog->exec();
 }
 
 void MainWindow::showToast(QString messageToDisplay) {

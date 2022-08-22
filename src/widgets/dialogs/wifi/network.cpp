@@ -2,11 +2,14 @@
 #include "ui_network.h"
 #include "connectiondialog.h"
 
+#include <QScreen>
+
 network::network(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::network)
 {
     ui->setupUi(this);
+    this->setFont(QFont("u001"));
 
     // Stylesheet, style & misc.
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
@@ -17,6 +20,8 @@ network::network(QWidget *parent) :
     // Buttons
     ui->encryptionIcon->setProperty("type", "borderless");
     ui->encryptionIcon->setStyleSheet("QPushButton[type='borderless']:pressed { background: white; color: white; border: none; }");
+    ui->signalStrengthIcon->setProperty("type", "borderless");
+    ui->signalStrengthIcon->setStyleSheet("QPushButton[type='borderless']:pressed { background: white; color: white; border: none; }");
     ui->enterButton->setProperty("type", "borderless");
 }
 
@@ -27,6 +32,7 @@ network::~network()
 
 void network::applyVariables() {
     log("Applying variables for network", className);
+
     QString percent = "%";
     if(mainData.signal < 100) {
         percent.append(" ");
@@ -34,12 +40,13 @@ void network::applyVariables() {
     ui->signalStrengthLabel->setText(QString::number(mainData.signal) + percent);
 
     // Limit name size
-    QString cutSingleData = mainData.name;
-    if(cutSingleData.count() > 27) {
-        cutSingleData = cutSingleData.remove(24, cutSingleData.count() - 24);
-        cutSingleData.append("...");
+    int nameLength = mainData.name.length();
+    QString name = mainData.name;
+    if(nameLength > 20) {
+        name.chop(nameLength - 20);
+        name.append("...");
     }
-    ui->nameLabel->setText(cutSingleData);
+    ui->nameLabel->setText(name);
 
     if(mainData.encryption == true) {
         ui->encryptionIcon->setIcon(QIcon(":/resources/lock.png"));
@@ -49,18 +56,34 @@ void network::applyVariables() {
     }
 
     if(currentlyConnectedNetwork == mainData.name) {
-        ui->frame->setStyleSheet(".QFrame{background-color: grey; border: 3px solid black; border-radius: 10px;}");
-        ui->signalStrengthLabel->setStyleSheet("background-color:grey;");
-        ui->nameLabel->setStyleSheet("background-color:grey;");
-        ui->encryptionIcon->setStyleSheet("background-color:grey;");
-        ui->enterButton->setStyleSheet("background-color:grey;");
+        ui->frame->setStyleSheet(".QFrame{background-color: lightGray; border: 2px solid black; border-radius: 10px;}");
+        ui->signalStrengthLabel->setStyleSheet("background-color: lightGray;");
+        ui->nameLabel->setStyleSheet("background-color: lightGray;");
+        ui->encryptionIcon->setStyleSheet("background-color: lightGray;");
+        ui->enterButton->setStyleSheet("background-color: lightGray;");
 
-        ui->encryptionIcon->setStyleSheet("QPushButton {background-color: grey; border:  none}; QPushButton[type='borderless']:pressed { background: grey; color: grey; border: none; }");
-        ui->enterButton->setStyleSheet("QPushButton {background-color: grey; border:  none}; QPushButton[type='borderless']:pressed { background: grey; color: grey; border: none; }");
-
+        ui->signalStrengthIcon->setStyleSheet("QPushButton {background-color: lightGray; border:  none}; QPushButton[type='borderless']:pressed { background: lightGray; color: lightGray; border: none; }");
+        ui->encryptionIcon->setStyleSheet("QPushButton {background-color: lightGray; border:  none}; QPushButton[type='borderless']:pressed { background: lightGray; color: lightGray; border: none; }");
+        ui->enterButton->setStyleSheet("QPushButton {background-color: lightGray; border:  none}; QPushButton[type='borderless']:pressed { background: lightGray; color: lightGray; border: none; }");
     }
     else {
-        ui->frame->setStyleSheet(".QFrame{background-color: white; border: 3px solid black; border-radius: 10px;}");
+        ui->frame->setStyleSheet(".QFrame{background-color: white; border: 2px solid black; border-radius: 10px;}");
+    }
+
+    if(mainData.signal >= 0 and mainData.signal <= 25) {
+        ui->signalStrengthIcon->setIcon(QIcon(":/resources/wifi-0.png"));
+    }
+    else if(mainData.signal >= 25 and mainData.signal <= 50) {
+        ui->signalStrengthIcon->setIcon(QIcon(":/resources/wifi-25.png"));
+    }
+    else if(mainData.signal >= 50 and mainData.signal <= 75) {
+        ui->signalStrengthIcon->setIcon(QIcon(":/resources/wifi-50.png"));
+    }
+    else if(mainData.signal >= 75 and mainData.signal <= 100) {
+        ui->signalStrengthIcon->setIcon(QIcon(":/resources/wifi-75.png"));
+    }
+    else if(mainData.signal == 100) {
+        ui->signalStrengthIcon->setIcon(QIcon(":/resources/wifi-100.png"));
     }
 }
 

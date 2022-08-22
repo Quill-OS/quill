@@ -1,5 +1,6 @@
 #include <QFile>
 #include <QScrollBar>
+#include <QScreen>
 
 #include "wifilogger.h"
 #include "ui_wifilogger.h"
@@ -10,6 +11,17 @@ wifilogger::wifilogger(QWidget *parent) :
     ui(new Ui::wifilogger)
 {
     ui->setupUi(this);
+    this->setFont(QFont("u001"));
+    // 'Not currently connected to a network' label
+    ui->label_8->setFont(QFont("Inter"));
+    ui->returnBtn->setFont(QFont("Inter"));
+    ui->nameLabel->setFont(QFont("Inter"));
+    ui->allLogsText->setFont(QFont("Noto Mono"));
+    ui->fancyLogsText->setFont(QFont("Noto Mono"));
+    ui->nameLabel->setStyleSheet("font-weight: bold");
+    ui->returnBtn->setStyleSheet("font-weight: bold");
+    ui->allLogsText->setStyleSheet("font-size: 7pt");
+    ui->fancyLogsText->setStyleSheet("font-size: 7pt");
 
     // Stylesheet, style & misc.
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
@@ -20,16 +32,29 @@ wifilogger::wifilogger(QWidget *parent) :
 
     // Scroll bar
     // Needed for the nia.
-    ui->allLogsText->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 50px; }");
-    ui->fancyLogsText->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 50px; }");
-
+    // ui->allLogsText->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 50px; }");
+    // ui->fancyLogsText->verticalScrollBar()->setStyleSheet("QScrollBar:vertical { width: 50px; }");
 
     log("Entered wifilogger", className);
     setWifiInfoPage();
+    ui->previousBtn->setProperty("type", "borderless");
+    ui->nextBtn->setProperty("type", "borderless");
+    ui->returnBtn->setProperty("type", "borderless");
     ui->refreshBtn->setProperty("type", "borderless");
 
-    ui->nextBtn->setFixedWidth(70);
-    ui->previousBtn->setFixedWidth(70);
+    // Size
+    QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
+    this->setFixedWidth(screenGeometry.width() / 1.2);
+
+    int halfOfHalfHeight = ((screenGeometry.height() / 2) / 2) / 2;
+    int finalHeight = screenGeometry.height() - halfOfHalfHeight * 2.4;
+
+    this->setFixedHeight(finalHeight);
+
+    // Centering dialog
+    int x = (screenGeometry.width() - this->width()) / 2;
+    int y = (screenGeometry.height() - this->height()) / 2;
+    this->move(x, y);
 }
 
 wifilogger::~wifilogger()
@@ -92,8 +117,9 @@ void wifilogger::changePage() {
     }
     else if(currentPage == 2) {
         setAllLogsPage();
-    } else {
-        log("This shouldnt happen.", className);
+    }
+    else {
+        log("This shouldn't happen", className);
     }
 }
 

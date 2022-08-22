@@ -21,13 +21,13 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="leftMargin">
-    <number>17</number>
+    <number>0</number>
    </property>
    <property name="topMargin">
     <number>4</number>
    </property>
    <property name="rightMargin">
-    <number>17</number>
+    <number>0</number>
    </property>
    <property name="bottomMargin">
     <number>4</number>
@@ -47,11 +47,11 @@
       <enum>QFrame::Plain</enum>
      </property>
      <property name="lineWidth">
-      <number>3</number>
+      <number>1</number>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="leftMargin">
-       <number>3</number>
+       <number>12</number>
       </property>
       <property name="topMargin">
        <number>3</number>
@@ -63,9 +63,21 @@
        <number>3</number>
       </property>
       <item>
-       <widget class="QLabel" name="signalStrengthLabel">
+       <widget class="QPushButton" name="signalStrengthIcon">
         <property name="text">
-         <string>SIgnal strenth</string>
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="signalStrengthLabel">
+        <property name="font">
+         <font>
+          <family>U001</family>
+         </font>
+        </property>
+        <property name="text">
+         <string>Signal strength</string>
         </property>
        </widget>
       </item>
@@ -75,7 +87,7 @@
          <enum>QFrame::Plain</enum>
         </property>
         <property name="lineWidth">
-         <number>3</number>
+         <number>1</number>
         </property>
         <property name="orientation">
          <enum>Qt::Vertical</enum>
@@ -84,8 +96,13 @@
       </item>
       <item>
        <widget class="QLabel" name="nameLabel">
+        <property name="font">
+         <font>
+          <family>U001</family>
+         </font>
+        </property>
         <property name="text">
-         <string>wifi name</string>
+         <string>Wi-Fi network name</string>
         </property>
        </widget>
       </item>
