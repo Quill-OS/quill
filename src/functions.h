@@ -92,16 +92,12 @@ namespace global {
     }
     namespace toast {
         inline QString message;
-        inline bool wifiToast;
         inline bool modalToast;
         inline bool indefiniteToast;
         inline int delay;
     }
     namespace device {
         inline bool isWifiAble;
-    }
-    namespace network {
-        inline bool isConnected;
     }
     namespace otaUpdate {
         inline bool isUpdateOta;
@@ -168,6 +164,23 @@ namespace global {
     }
     namespace highlightsListDialog {
         inline QString bookPath;
+    }
+    namespace wifi {
+        enum class wifiState
+        {
+            configured,
+            enabled,
+            disabled,
+            unknown, // To not confuse lastWifiState
+        };
+        inline bool isConnected;
+        class wifiNetworkData {
+        public:
+            QString mac;
+            QString name;
+            bool encryption;
+            int signal;
+        };
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -780,41 +793,6 @@ namespace {
             }
         }
     }
-    bool connectToNetwork(QString essid, QString passphrase) {
-        log("Connecting to network '" + essid + "'", "functions");
-        std::string essid_str = essid.toStdString();
-        std::string passphrase_str = passphrase.toStdString();
-        string_writeconfig("/run/wifi_network_essid", essid_str);
-        string_writeconfig("/run/wifi_network_passphrase", passphrase_str);
-        string_writeconfig("/opt/ibxd", "connect_to_wifi_network\n");
-
-        int connectionSuccessful = 0;
-
-        while(connectionSuccessful == 0) {
-            if(QFile::exists("/run/wifi_connected_successfully")) {
-                if(checkconfig("/run/wifi_connected_successfully") == true) {
-                    QFile::remove("/run/wifi_connected_successfully");
-                    connectionSuccessful = 1;
-                    global::network::isConnected = true;
-                    setDefaultWorkDir();
-                    string_writeconfig(".config/17-wifi_connection_information/essid", essid_str);
-                    string_writeconfig(".config/17-wifi_connection_information/passphrase", passphrase_str);
-                    QString function = __func__; log(function + ": Connection successful", "functions");
-                    return true;
-                }
-                else {
-                    QFile::remove("/run/wifi_connected_successfully");
-                    connectionSuccessful = 0;
-                    global::network::isConnected = false;
-                    QString function = __func__; log(function + ": Connection failed", "functions");
-                    return false;
-                }
-            }
-            else {
-                QThread::msleep(100);
-            }
-        }
-    }
     int get_warmth() {
         QString sysfsWarmthPath;
         if(global::deviceID == "n873\n") {
@@ -864,51 +842,6 @@ namespace {
             ioctl(ntxfd, 108, &ptr);
             close(ntxfd);
             return !!ptr;
-        }
-    }
-    int testPing(bool blocking) {
-        QProcess *pingProcess = new QProcess();
-        if(blocking == true) {
-            QString pingProg = "ping";
-            QStringList pingArgs;
-            pingArgs << "-c" << "1" << "1.1.1.1";
-            pingProcess->start(pingProg, pingArgs);
-            pingProcess->waitForFinished();
-            int exitCode = pingProcess->exitCode();
-            pingProcess->deleteLater();
-            if(exitCode == 0) {
-                global::network::isConnected = true;
-            }
-            else {
-                global::network::isConnected = false;
-            }
-            return exitCode;
-        }
-        /* For some reason, implementing a non-blocking version of this functions triggers a "terminate called without an active exception" error with a platform plugin compiled with a newer GCC 11 toolchain. The problem has been solved by transplanting this function into the related area which uses it.
-        else {
-            QString pingProg = "sh";
-            QStringList pingArgs;
-            pingArgs << "/mnt/onboard/.adds/inkbox/test_ping.sh";
-            pingProcess->startDetached(pingProg, pingArgs);
-        }
-        */
-        pingProcess->deleteLater();
-    }
-    bool getTestPingResults() {
-        // To be used when the testPing() function is used in non-blocking mode.
-        if(QFile::exists("/run/test_ping_status")) {
-            if(checkconfig("/run/test_ping_status") == true) {
-                global::network::isConnected = true;
-                return true;
-            }
-            else {
-                global::network::isConnected = false;
-                return false;
-            }
-        }
-        else {
-            global::network::isConnected = false;
-            return false;
         }
     }
     void updateUserAppsMainJsonFile() {
@@ -1134,6 +1067,72 @@ namespace {
         else {
             return 2;
         }
+    }
+    global::wifi::wifiState checkWifiState() {
+        QProcess *wifiStateProcess = new QProcess();
+        QString path = "/external_root/usr/local/bin/wifi/wifi_status.sh";
+        QStringList args;
+        wifiStateProcess->start(path, args);
+        wifiStateProcess->waitForFinished();
+        wifiStateProcess->deleteLater();
+
+        QString currentWifiState;
+        if(QFile("/run/wifi_status").exists() == true) {
+            currentWifiState = readFile("/run/wifi_status");
+        } else {
+            log("/run/wifi_status doesn't exist", "functions");
+        }
+        if (currentWifiState.contains("configured") == true) {
+            global::wifi::isConnected = true;
+            return global::wifi::wifiState::configured;
+        }
+        else if (currentWifiState.contains("enabled") == true) {
+            global::wifi::isConnected = false;
+            return global::wifi::wifiState::enabled;
+        }
+        else if (currentWifiState.contains("disabled") == true) {
+            global::wifi::isConnected = false;
+            return global::wifi::wifiState::disabled;
+        } else {
+            global::wifi::isConnected = false;
+            QString function = __func__; log(function + ": Critical error", "functions");
+            return global::wifi::wifiState::unknown;
+        }
+    }
+    int testPing() {
+        // For some reason, implementing a non-blocking version of this functions triggers a "terminate called without an active exception" error with a platform plugin compiled with a newer GCC 11 toolchain. The problem has been solved by transplanting this function into the related area which uses it.
+        QProcess *pingProcess = new QProcess();
+        QString pingProg = "ping";
+        QStringList pingArgs;
+        pingArgs << "-c" << "1" << "1.1.1.1";
+        pingProcess->start(pingProg, pingArgs);
+        pingProcess->waitForFinished();
+        int exitCode = pingProcess->exitCode();
+        pingProcess->deleteLater();
+        if(exitCode == 0) {
+            global::wifi::isConnected = true;
+        }
+        else {
+            global::wifi::isConnected = false;
+        }
+        return exitCode;
+    }
+    bool checkProcessName(QString name) {
+        QDirIterator appsDir("/proc", QDirIterator::NoIteratorFlags);
+        while (appsDir.hasNext()) {
+            QDir dir(appsDir.next());
+            QFile process = QFile(dir.path() + "/cmdline");
+            if(process.exists() == true) {
+                process.open(QIODevice::ReadOnly);
+                QTextStream stream(&process);
+                if(stream.readLine().contains(name) == true) {
+                    process.close();
+                    return true;
+                }
+                process.close();
+            }
+        }
+        return false;
     }
 }
 

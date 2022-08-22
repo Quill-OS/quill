@@ -84,5 +84,18 @@
         <file>resources/highlight.png</file>
         <file>resources/unhighlight.png</file>
         <file>resources/view-highlights.png</file>
+        <file>resources/stop.png</file>
+        <file>resources/refresh.png</file>
+        <file>resources/hide.png</file>
+        <file>resources/show.png</file>
+        <file>resources/christie.jpg</file>
+        <file>resources/encryption-small.png</file>
+        <file>resources/lock.png</file>
+        <file>resources/public.png</file>
+        <file>resources/wifi-0.png</file>
+        <file>resources/wifi-100.png</file>
+        <file>resources/wifi-25.png</file>
+        <file>resources/wifi-50.png</file>
+        <file>resources/wifi-75.png</file>
     </qresource>
 </RCC>
