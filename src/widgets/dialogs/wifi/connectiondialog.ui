@@ -71,7 +71,7 @@
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
-      <widget class="QLineEdit" name="passwordTextEdit">
+      <widget class="QLineEdit" name="passphraseTextEdit">
        <property name="cursor">
         <cursorShape>BlankCursor</cursorShape>
        </property>
@@ -81,7 +81,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="showPasswordBtn">
+      <widget class="QPushButton" name="showPassphraseBtn">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
          <horstretch>0</horstretch>

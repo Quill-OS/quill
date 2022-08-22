@@ -124,9 +124,13 @@
         <widget class="QLabel" name="label">
          <property name="font">
           <font>
+           <family>Inter</family>
            <weight>75</weight>
            <bold>true</bold>
           </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">font-family: Inter</string>
          </property>
          <property name="text">
           <string>Wi-Fi</string>
@@ -145,14 +149,38 @@
     </layout>
    </item>
    <item>
+    <widget class="Line" name="line_4">
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QLabel" name="statusLabel">
      <property name="font">
       <font>
+       <family>u001</family>
        <pointsize>9</pointsize>
       </font>
      </property>
+     <property name="styleSheet">
+      <string notr="true">padding-left: 10px; font-family: u001</string>
+     </property>
      <property name="text">
       <string>Wi-Fi status</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="Line" name="line_5">
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -182,7 +210,7 @@
         <x>0</x>
         <y>0</y>
         <width>585</width>
-        <height>557</height>
+        <height>538</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">

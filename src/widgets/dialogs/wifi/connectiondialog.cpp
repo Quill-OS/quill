@@ -21,7 +21,7 @@ connectiondialog::connectiondialog(QWidget *parent) :
 
     ui->cancelBtn->setStyleSheet("font-size: 9pt");
     ui->connectBtn->setStyleSheet("font-size: 9pt");
-    ui->showPasswordBtn->setStyleSheet("font-size: 9pt");
+    ui->showPassphraseBtn->setStyleSheet("font-size: 9pt");
 
     // Size
     QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
@@ -42,12 +42,12 @@ void connectiondialog::applyVariables() {
     ui->signalLabel->setText(QString::number(connectedNetworkData.signal) + "%");
 
     if(connectedNetworkData.encryption == false) {
-        ui->showPasswordBtn->hide();
-        ui->passwordTextEdit->setText("No password required");
-        ui->passwordTextEdit->setDisabled(true);
+        ui->showPassphraseBtn->hide();
+        ui->passphraseTextEdit->setText("No passphrase required");
+        ui->passphraseTextEdit->setDisabled(true);
     }
     else {
-        if(passwordDatabase.exists() == false) {
+        if(passphraseDatabase.exists() == false) {
             log("Creating empty database", className);
             // https://forum.qt.io/topic/104791/how-i-can-create-json-format-in-qt/5
             QJsonObject root;
@@ -56,33 +56,33 @@ void connectiondialog::applyVariables() {
             root["list"] = array;
             newJsonDocument.setObject(root);
 
-            passwordDatabase.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
-            passwordDatabase.write(newJsonDocument.toJson());
-            passwordDatabase.flush();
-            passwordDatabase.close();
+            passphraseDatabase.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
+            passphraseDatabase.write(newJsonDocument.toJson());
+            passphraseDatabase.flush();
+            passphraseDatabase.close();
         }
-        QString password = searchDatabase(connectedNetworkData.name);
-        if(password.isEmpty() == false) {
-            log("Found password: " + password, className);
-            ui->showPasswordBtn->setIcon(QIcon(":/resources/show.png"));
-            showedPassword = false;
-            savedPassword = password;
+        QString passphrase = searchDatabase(connectedNetworkData.name);
+        if(passphrase.isEmpty() == false) {
+            log("Found passphrase: " + passphrase, className);
+            ui->showPassphraseBtn->setIcon(QIcon(":/resources/show.png"));
+            showedPassphrase = false;
+            savedPassphrase = passphrase;
 
-            ui->passwordTextEdit->setText("********");
+            ui->passphraseTextEdit->setText("********");
         }
         else {
-            log("No password found", className);
-            ui->passwordTextEdit->setText("No password was saved");
-            showedPassword = true;
-            ui->showPasswordBtn->hide();
+            log("No passphrase found", className);
+            ui->passphraseTextEdit->setText("No passphrase was saved");
+            showedPassphrase = true;
+            ui->showPassphraseBtn->hide();
         }
     }
 }
 
 QString connectiondialog::searchDatabase(QString key) {
-    passwordDatabase.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString fileRead = passwordDatabase.readAll();
-    passwordDatabase.close();
+    passphraseDatabase.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString fileRead = passphraseDatabase.readAll();
+    passphraseDatabase.close();
     QJsonDocument jsonDocument = QJsonDocument::fromJson(fileRead.toUtf8());
 
     if(jsonDocument["list"].isArray() == true) {
@@ -92,9 +92,9 @@ QString connectiondialog::searchDatabase(QString key) {
             QString searchedName = jsonMainObject.keys().first().toUtf8();
             log("Found in database: '" + searchedName + "'", className);
             if(searchedName == key) {
-                QString returnedPassword = jsonMainObject.value(key).toString();
-                log("Searched name '" + searchedName + "' matched '" + key + "' and the password is: '" + returnedPassword + "'", className);
-                return returnedPassword;
+                QString returnedPassphrase = jsonMainObject.value(key).toString();
+                log("Searched name '" + searchedName + "' matched '" + key + "' and the passphrase is: '" + returnedPassphrase + "'", className);
+                return returnedPassphrase;
             }
             else {
                 log("Searched name '" + searchedName + "' doesn't match '" + key + "'", className);
@@ -107,14 +107,14 @@ QString connectiondialog::searchDatabase(QString key) {
     }
 }
 
-void connectiondialog::writeToDatabase(QString name, QString password) {
+void connectiondialog::writeToDatabase(QString name, QString passphrase) {
     if(searchDatabase(name).isEmpty() == false) {
         removeFromDatabase(name);
     }
 
-    passwordDatabase.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString fileRead = passwordDatabase.readAll();
-    passwordDatabase.close();
+    passphraseDatabase.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString fileRead = passphraseDatabase.readAll();
+    passphraseDatabase.close();
     QJsonDocument jsonDocument = QJsonDocument::fromJson(fileRead.toUtf8());
 
     if(jsonDocument["list"].isArray() == true) {
@@ -123,7 +123,7 @@ void connectiondialog::writeToDatabase(QString name, QString password) {
 
         // https://stackoverflow.com/questions/26804660/how-to-initialize-qjsonobject-from-qstring
         // I hoped this would be easier
-        QJsonObject newObject = QJsonDocument::fromJson(QString("{\"" + name + "\" : \"" + password + "\" }").toUtf8()).object();
+        QJsonObject newObject = QJsonDocument::fromJson(QString("{\"" + name + "\" : \"" + passphrase + "\" }").toUtf8()).object();
         jsonArray.append(newObject);
 
         QJsonDocument newJsonDocument;
@@ -131,10 +131,10 @@ void connectiondialog::writeToDatabase(QString name, QString password) {
         root["list"] = jsonArray;
         newJsonDocument.setObject(root);
 
-        passwordDatabase.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
-        passwordDatabase.write(newJsonDocument.toJson());
-        passwordDatabase.flush();
-        passwordDatabase.close();
+        passphraseDatabase.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
+        passphraseDatabase.write(newJsonDocument.toJson());
+        passphraseDatabase.flush();
+        passphraseDatabase.close();
     }
     else {
         log("Something went horribly wrong", className);
@@ -142,9 +142,9 @@ void connectiondialog::writeToDatabase(QString name, QString password) {
 }
 
 void connectiondialog::removeFromDatabase(QString name) {
-    passwordDatabase.open(QIODevice::ReadOnly | QIODevice::Text);
-    QString fileRead = passwordDatabase.readAll();
-    passwordDatabase.close();
+    passphraseDatabase.open(QIODevice::ReadOnly | QIODevice::Text);
+    QString fileRead = passphraseDatabase.readAll();
+    passphraseDatabase.close();
     QJsonDocument jsonDocument = QJsonDocument::fromJson(fileRead.toUtf8());
 
     int counter = 0;
@@ -169,10 +169,10 @@ void connectiondialog::removeFromDatabase(QString name) {
             root["list"] = jsonArray;
             newJsonDocument.setObject(root);
 
-            passwordDatabase.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
-            passwordDatabase.write(newJsonDocument.toJson());
-            passwordDatabase.flush();
-            passwordDatabase.close();
+            passphraseDatabase.open(QFile::WriteOnly | QFile::Text | QFile::Truncate);
+            passphraseDatabase.write(newJsonDocument.toJson());
+            passphraseDatabase.flush();
+            passphraseDatabase.close();
         }
         else {
             log("ERROR: tried to remove from database, but couldn't find key", className);
@@ -186,18 +186,18 @@ void connectiondialog::on_cancelBtn_clicked()
     this->close();
 }
 
-void connectiondialog::on_passwordTextEdit_selectionChanged()
+void connectiondialog::on_passphraseTextEdit_selectionChanged()
 {
-    ui->passwordTextEdit->setSelection(0, 0);
+    ui->passphraseTextEdit->setSelection(0, 0);
 }
 
-void connectiondialog::on_passwordTextEdit_cursorPositionChanged(int oldpos, int newpos)
+void connectiondialog::on_passphraseTextEdit_cursorPositionChanged(int oldpos, int newpos)
 {
     log("Detected click on text edit widget", className);
     if(cursorPositionIgnore == true) {
         if(newpos != 0) {
-            if(showedPassword == true) {
-                ui->passwordTextEdit->setCursorPosition(0);
+            if(showedPassphrase == true) {
+                ui->passphraseTextEdit->setCursorPosition(0);
                 global::keyboard::keyboardDialog = true;
                 global::keyboard::wifiPassphraseDialog = true;
                 global::keyboard::keyboardText = "";
@@ -212,19 +212,19 @@ void connectiondialog::on_passwordTextEdit_cursorPositionChanged(int oldpos, int
                 global::keyboard::keyboardDialog = false;
                 global::keyboard::wifiPassphraseDialog = false;
                 if(global::keyboard::keyboardText.isEmpty() == false) {
-                    // A bit hacky: avoid summoning the keyboard back when the text is changing (and the cursor too) showedPassword shouldn't be used for this, but it works and adding another boolean would start being messy
-                    showedPassword = false;
-                    ui->passwordTextEdit->setText(global::keyboard::keyboardText);
-                    ui->showPasswordBtn->setIcon(QIcon(":/resources/hide.png"));
-                    ui->showPasswordBtn->show();
-                    showedPassword = true;
-                    savedPassword = global::keyboard::keyboardText;
-                    ui->showPasswordBtn->show();
+                    // A bit hacky: avoid summoning the keyboard back when the text is changing (and the cursor too) showedPassphrase shouldn't be used for this, but it works and adding another boolean would start being messy
+                    showedPassphrase = false;
+                    ui->passphraseTextEdit->setText(global::keyboard::keyboardText);
+                    ui->showPassphraseBtn->setIcon(QIcon(":/resources/hide.png"));
+                    ui->showPassphraseBtn->show();
+                    showedPassphrase = true;
+                    savedPassphrase = global::keyboard::keyboardText;
+                    ui->showPassphraseBtn->show();
                 }
                 global::keyboard::keyboardText = "";
             }
             else {
-                log("Password is not saved; ignoring text edit call", className);
+                log("Passphrase is not saved; ignoring text edit call", className);
             }
         }
     }
@@ -238,17 +238,17 @@ void connectiondialog::showToastSlot(QString message) {
     emit showToastSignal(message);
 }
 
-void connectiondialog::on_showPasswordBtn_clicked()
+void connectiondialog::on_showPassphraseBtn_clicked()
 {
-    if(showedPassword == false) {
-        ui->showPasswordBtn->setIcon(QIcon(":/resources/hide.png"));
-        ui->passwordTextEdit->setText(savedPassword);
-        showedPassword = true;
+    if(showedPassphrase == false) {
+        ui->showPassphraseBtn->setIcon(QIcon(":/resources/hide.png"));
+        ui->passphraseTextEdit->setText(savedPassphrase);
+        showedPassphrase = true;
     }
     else {
-        showedPassword = false;
-        ui->showPasswordBtn->setIcon(QIcon(":/resources/show.png"));
-        ui->passwordTextEdit->setText("********");
+        showedPassphrase = false;
+        ui->showPassphraseBtn->setIcon(QIcon(":/resources/show.png"));
+        ui->passphraseTextEdit->setText("********");
     }
 }
 
@@ -259,28 +259,28 @@ void connectiondialog::refreshScreenSlot() {
 
 void connectiondialog::on_connectBtn_clicked()
 {
-    QString finalPassword;
+    QString finalPassphrase;
     if(connectedNetworkData.encryption == false) {
-        finalPassword = "NONE";
+        finalPassphrase = "NONE";
     }
     else {
-        if(savedPassword.isEmpty() == false) {
-            finalPassword = savedPassword;
-            writeToDatabase(connectedNetworkData.name, savedPassword);
+        if(savedPassphrase.isEmpty() == false) {
+            finalPassphrase = savedPassphrase;
+            writeToDatabase(connectedNetworkData.name, savedPassphrase);
         }
         else {
-            showToastSlot("Provide a password first");
+            showToastSlot("Provide a passphrase first");
             return void();
         }
     }
-    passwordForReconnecting = finalPassword;
+    passphraseForReconnecting = finalPassphrase;
 
     ui->cancelBtn->setEnabled(false);
     if(checkWifiState() == global::wifi::wifiState::configured) {
         string_writeconfig("/opt/ibxd", "stop_wifi_operations\n");
     }
     writeFile("/run/wifi_network_essid", connectedNetworkData.name);
-    writeFile("/run/wifi_network_passphrase", finalPassword);
+    writeFile("/run/wifi_network_passphrase", finalPassphrase);
     finalConnectWait();
 }
 
@@ -307,7 +307,7 @@ void connectiondialog::finalConnectWait() {
         // This will be deleted later in MainWindow's icon updater if it failed. It is also deleted in the Wi-Fi stop script
         log("Writing to config directory with connection information data", className);
         string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid", connectedNetworkData.name.toStdString());
-        string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/passphrase", passwordForReconnecting.toStdString());
+        string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/passphrase", passphraseForReconnecting.toStdString());
 
         this->deleteLater();
         this->close();

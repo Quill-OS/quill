@@ -72,7 +72,7 @@ wifiDialog::wifiDialog(QWidget *parent) :
         ui->refreshBtn->click();
    } else {
        wifiButtonEnabled = true;
-       ui->stopBtn->setStyleSheet("background-color: gray;");
+       ui->stopBtn->setStyleSheet("background-color: lightGray;");
        ui->stopBtn->setEnabled(false);
    }
 
@@ -105,7 +105,7 @@ void wifiDialog::launchRefresh() {
     // Order is important
     if(scanInProgress == false) {
         scanInProgress = true;
-        ui->refreshBtn->setStyleSheet("background-color: gray;");
+        ui->refreshBtn->setStyleSheet("background-color: lightGray;");
         ui->refreshBtn->setEnabled(false);
 
         elapsedSeconds = 0;
@@ -218,7 +218,7 @@ void wifiDialog::refreshNetworksList() {
         int countVec = 0;
         int vectorNetworkLocation = 9999;
         for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
-            if(currentWifiNetwork.isEmpty() == false and wifiNetwork.name.contains(currentWifiNetwork) == true) {
+            if(currentWifiNetwork.isEmpty() == false and wifiNetwork.name == currentWifiNetwork) {
                 log("Found current network in vector", className);
                 vectorNetworkLocation = countVec;
                 currentNetwork = wifiNetwork.name;
@@ -308,9 +308,9 @@ void wifiDialog::on_wifiCheckBox_stateChanged(int arg1)
             } else {
                 log("Turning Wi-Fi off", className);
                 QTimer::singleShot(0, this, SLOT(turnOffWifi()));
-                // To inform the wifi icon GUI to don't show the connected/failed to connect message
+                // To inform the Wi-Fi icon updater to not show the connected/failed to connect message
                 string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped", "true");
-                ui->stopBtn->setStyleSheet("background-color: gray;");
+                ui->stopBtn->setStyleSheet("background-color: lightGray;");
                 ui->stopBtn->setEnabled(false);
             }
             emit killNetworkWidgets();
@@ -375,7 +375,7 @@ void wifiDialog::refreshScreenSlot() {
     * smarter_time_sync.sh - Syncs time
     * toggle.sh - Turns on/off Wi-Fi adapter
     * list_networks - Lists networks
-    * check_wifi_password.sh - Checks Wi-Fi network password
+    * check_wifi_passphrase.sh - Checks Wi-Fi network passphrase
     * watcher() first watches at processes that could kill other ones
 */
 
@@ -426,10 +426,10 @@ void wifiDialog::watcher() {
         return void();
     }
 
-    bool passwordCheck = checkProcessName("check_wifi_password.sh");
-    if(passwordCheck == true) {
+    bool passphraseCheck = checkProcessName("check_wifi_passphrase.sh");
+    if(passphraseCheck == true) {
         forceRefresh = true;
-        setStatusText("Checking Wi-Fi network password");
+        setStatusText("Checking Wi-Fi network passphrase");
         QTimer::singleShot(relaunchMs, this, SLOT(watcher()));
         return void();
     }

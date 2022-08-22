@@ -497,7 +497,7 @@ void generalDialog::on_okBtn_clicked()
             if(!global::keyboard::keyboardText.isEmpty()) {
                 if(global::keyboard::keyboardText.count() < 8) {
                     global::toast::delay = 3000;
-                    showToast("Minimum password length is 8 characters");
+                    showToast("Minimum passphrase length is 8 characters");
                 }
                 else {
                     generalDialog::close();

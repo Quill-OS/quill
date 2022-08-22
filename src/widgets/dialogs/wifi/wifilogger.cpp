@@ -70,7 +70,7 @@ void wifilogger::setWifiInfoPage() {
     }
     else {
         ui->stackedWidget->setCurrentIndex(1);
-        ui->nameLabel->setText("Not currently connected to a network");
+        ui->nameLabel->setText("Not connected to a network");
     }
 }
 

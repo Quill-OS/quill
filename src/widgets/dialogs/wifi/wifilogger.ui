@@ -229,7 +229,7 @@
                 </font>
                </property>
                <property name="text">
-                <string>Password protected:</string>
+                <string>Passphrase-protected:</string>
                </property>
               </widget>
              </item>
@@ -349,9 +349,13 @@
             <widget class="QLabel" name="label_8">
              <property name="font">
               <font>
+               <family>Inter</family>
                <weight>75</weight>
                <bold>true</bold>
               </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">font-family: Inter; font-weight: bold</string>
              </property>
              <property name="lineWidth">
               <number>0</number>
