@@ -153,7 +153,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QCheckBox" name="Wificheckbox">
+        <widget class="QCheckBox" name="wifiCheckBox">
          <property name="text">
           <string/>
          </property>

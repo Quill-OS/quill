@@ -17,15 +17,15 @@ public:
     explicit wifilogger(QWidget *parent = nullptr);
     ~wifilogger();
     global::wifi::wifiNetworkData connectedNetworkData;
-    // to the above value
+    // To the above value
     bool isThereData = false;
 
 private:
     Ui::wifilogger *ui;
     /*
-     * 0 is wifi info / no wifi info page
-     * 1 is fancy logs page
-     * 2 is all logs
+     * 0 Is Wi-Fi info/no Wi-Fi info page
+     * 1 Is fancy logs page
+     * 2 Is all logs page
     */
     int currentPage = 0;
     QFile fancyLogs = QFile("/external_root/run/wifi_stats");
@@ -39,7 +39,7 @@ private slots:
     void on_nextBtn_clicked();
     void on_previousBtn_clicked();
     void changePage();
-    void getWifiInformations();
+    void getWifiInformation();
     void on_returnBtn_clicked();
     void updateLogs();
     void on_refreshBtn_clicked();

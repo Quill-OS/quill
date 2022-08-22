@@ -20,8 +20,7 @@ public:
     explicit wifiDialog(QWidget *parent = nullptr);
     ~wifiDialog();
     global::wifi::wifiNetworkData connectedNetworkDataParent;
-    // well dont touch this until there is something, *** Error in `/tmp/exec': double free or corruption (fasttop): 0x025ed170 ***
-    bool connectedNetworkDataParentSetted = false;
+    bool connectedNetworkDataParentSet = false;
 
 private:
     Ui::wifiDialog *ui;
@@ -37,11 +36,11 @@ private:
     bool forceRefresh = false;
     int relaunchMs = 300;
     bool refreshFromWatcher = false;
-    bool unlockCheckbox = false;
+    bool unlockCheckBox = false;
     bool scanInProgress = false;
 
     bool isToggleRunning = false;
-    bool ignoreCheckboxCall = false;
+    bool ignoreCheckBoxCall = false;
 
     bool secondScanTry = false;
 
@@ -51,24 +50,25 @@ public slots:
     void showToastSlot(QString message);
     void refreshScreenSlot();
 
-    // Shows status of wifi processes, like recconection and others. Also manages refreshing the network list after connection
-    void theWatcher();
+    // Shows status of Wi-Fi processes, like reconnection and others. Also manages refreshing the networks list after connection
+    void watcher();
 
 signals:
     void refreshScreen();
     void updateWifiIconSig(int mode);
     void showToast(QString messageToDisplay);
-
     void killNetworkWidgets();
 
 private slots:
     void on_refreshBtn_clicked();
-    void on_Wificheckbox_stateChanged(int arg1);
+    void on_wifiCheckBox_stateChanged(int arg1);
     void turnOnWifi();
     void turnOffWifi();
     void on_logBtn_clicked();
-    // This function is a more clever sleep(1), non blocking
+
+    // This function is a more clever sleep(1), non-blocking
     void refreshWait();
+
     void setStatusText(QString message);
     void on_stopBtn_clicked();
     void on_returnBtn_clicked();

@@ -166,13 +166,12 @@ namespace global {
         inline QString bookPath;
     }
     namespace wifi {
-        // This is the correct way to do this.
-        enum class WifiState
+        enum class wifiState
         {
-            Configured,
-            Enabled,
-            Disabled,
-            Unknown, // to not confuse lastWifiState
+            configured,
+            enabled,
+            disabled,
+            unknown, // To not confuse lastWifiState
         };
         inline bool isConnected;
         class wifiNetworkData {
@@ -1069,36 +1068,35 @@ namespace {
             return 2;
         }
     }
-    global::wifi::WifiState checkWifiState() {
+    global::wifi::wifiState checkWifiState() {
         QProcess *wifiStateProcess = new QProcess();
-        // Important to remember thats its in chroot...
-        // What can be run in the chroot, should be run here. ibxd is a bit a mess
         QString path = "/external_root/usr/local/bin/wifi/wifi_status.sh";
         QStringList args;
         wifiStateProcess->start(path, args);
         wifiStateProcess->waitForFinished();
         wifiStateProcess->deleteLater();
+
         QString currentWifiState;
         if(QFile("/run/wifi_status").exists() == true) {
             currentWifiState = readFile("/run/wifi_status");
         } else {
-            log("/run/wifi_status doesnt exist");
+            log("/run/wifi_status doesn't exist", "functions");
         }
         if (currentWifiState.contains("configured") == true) {
             global::wifi::isConnected = true;
-            return global::wifi::WifiState::Configured;
+            return global::wifi::wifiState::configured;
         }
         else if (currentWifiState.contains("enabled") == true) {
             global::wifi::isConnected = false;
-            return global::wifi::WifiState::Enabled;
+            return global::wifi::wifiState::enabled;
         }
         else if (currentWifiState.contains("disabled") == true) {
             global::wifi::isConnected = false;
-            return global::wifi::WifiState::Disabled;
+            return global::wifi::wifiState::disabled;
         } else {
             global::wifi::isConnected = false;
-            log("Critical error, checkWifiState()", "functions.h");
-            return global::wifi::WifiState::Unknown;
+            QString function = __func__; log(function + ": Critical error", "functions");
+            return global::wifi::wifiState::unknown;
         }
     }
     int testPing() {

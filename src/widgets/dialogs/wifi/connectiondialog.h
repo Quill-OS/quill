@@ -30,25 +30,20 @@ public slots:
     void refreshScreenSlot();
 
 private slots:
-    // I know im opening / loading json many times, its maybe not efficient but:
-    // 1. Its modular
+    // We are opening/loading the JSON database many times, it might not be efficient, but:
+    // 1. It's modular
     // 2. Those operations are rare
     QString searchDatabase(QString key);
     void writeToDatabase(QString name, QString password);
     void removeFromDatabase(QString name);
 
-
     void finalConnectWait();
-    bool checkIfWifiBussy();
+    bool checkIfWifiBusy();
 
-    void on_CancelBtn_clicked();
-
+    void on_cancelBtn_clicked();
     void on_passwordTextEdit_selectionChanged();
-
     void on_passwordTextEdit_cursorPositionChanged(int arg1, int arg2);
-
     void on_showPasswordBtn_clicked();
-
     void on_connectBtn_clicked();
 
 private:

@@ -38,14 +38,14 @@ wifilogger::~wifilogger()
 }
 
 void wifilogger::setWifiInfoPage() {
-    if(checkWifiState() == global::wifi::WifiState::Configured) {
-        QTimer::singleShot(0, this, SLOT(getWifiInformations()));
+    if(checkWifiState() == global::wifi::wifiState::configured) {
+        QTimer::singleShot(0, this, SLOT(getWifiInformation()));
         ui->stackedWidget->setCurrentIndex(0);
-        ui->nameLabel->setText("Network informations");
+        ui->nameLabel->setText("Network information");
     }
     else {
         ui->stackedWidget->setCurrentIndex(1);
-        ui->nameLabel->setText("No network connected");
+        ui->nameLabel->setText("Not currently connected to a network");
     }
 }
 
@@ -97,27 +97,27 @@ void wifilogger::changePage() {
     }
 }
 
-void wifilogger::getWifiInformations() {
-    log("getting wifi informations", className);
-    QFile wifiInformationsPath = QFile("/external_root/run/wifi_informations");
+void wifilogger::getWifiInformation() {
+    log("Retrieving Wi-Fi information", className);
+    QFile wifiInformationPath = QFile("/external_root/run/wifi_information");
     if(waitingForFile == false) {
-        wifiInformationsPath.remove();
+        wifiInformationPath.remove();
 
-        log("Launching get_wifi_informations ibxd call", className);
-        string_writeconfig("/opt/ibxd", "get_wifi_informations\n");
+        log("Sending get_wifi_information ibxd call", className);
+        string_writeconfig("/opt/ibxd", "get_wifi_information\n");
         waitingForFile = true;
     }
 
     if(waitingForFile == true) {
-        if(wifiInformationsPath.exists() == false) {
-            QTimer::singleShot(1000, this, SLOT(getWifiInformations()));
+        if(wifiInformationPath.exists() == false) {
+            QTimer::singleShot(1000, this, SLOT(getWifiInformation()));
             return void();
         }
     }
 
     waitingForFile = false;
     log("Setting variables", className);
-    QString wifiInfo = readFile(wifiInformationsPath.fileName());
+    QString wifiInfo = readFile(wifiInformationPath.fileName());
     QStringList wifiInfoList = wifiInfo.split("\n");
     int counter = 0;
     for(QString infomation: wifiInfoList) {
@@ -138,17 +138,13 @@ void wifilogger::getWifiInformations() {
 
     if(isThereData == true) {
         ui->encryptionLabel->setText(QVariant(connectedNetworkData.encryption).toString());
-
         ui->signalLabel->setText(QString::number(connectedNetworkData.signal) + "%");
-
         ui->macLabel->setText(connectedNetworkData.mac);
     }
     else {
-        // Shouldn't happen for 99%, but if anyway... its designed to be non blocking, so i cant really wait for this.
+        // Shouldn't happen for 99%, but if anyway... it's designed to be non-blocking, so I can't really wait for this.
         ui->encryptionLabel->setText("Rescan needed");
-
         ui->signalLabel->setText("Rescan needed");
-
         ui->macLabel->setText("Rescan needed");
     }
 }

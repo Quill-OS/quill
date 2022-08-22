@@ -41,8 +41,6 @@ int main(int argc, char *argv[])
             global::logger::status = true;
         }
     }
-    // Szybet testing
-    global::logger::status = true;
 
     global::deviceID = readFile("/opt/inkbox_device");
     log("Running on device " + global::deviceID, "main", true);

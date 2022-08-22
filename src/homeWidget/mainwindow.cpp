@@ -753,35 +753,35 @@ void MainWindow::setupSearchDialog() {
 
 void MainWindow::updateWifiIcon() {
     /* Usage:
-     * Mode 0 (looping it) is handled in mainwindow()
+     * Mode 0 (looping it) is handled in MainWindow
     */
 
-    global::wifi::WifiState currentWifiState = checkWifiState();
+    global::wifi::wifiState currentWifiState = checkWifiState();
 
-    // Its executing only in Enabled mode, which is a mode between connected and disabled so don't worry about performance
-    if(isConnecting == false and isReconecting == false) {
-        if(currentWifiState == global::wifi::WifiState::Enabled) {
+    // It's executing only in enabled mode, which is a mode between connected and disabled, so don't worry about performance
+    if(isConnecting == false and isReconnecting == false) {
+        if(currentWifiState == global::wifi::wifiState::enabled) {
             if(checkProcessName("connection_manager.sh") == true) {
                 isConnecting = true;
             }
             else if(checkProcessName("connect_to_network.sh") == true){
                 isConnecting = true;
-                isReconecting = true;
+                isReconnecting = true;
             }
         }
     }
 
-    // Ms can make diffrence so:
+    // ms can make a difference, so:
     currentWifiState = checkWifiState();
 
     if(lastWifiState != currentWifiState) {
-        if(currentWifiState == global::wifi::WifiState::Disabled) {
+        if(currentWifiState == global::wifi::wifiState::disabled) {
             if(isConnecting == true) {
                 if(checkconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped") == false) {
                     QString wifiName = readFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid").replace("\n", "");
-                    if(isReconecting == true) {
-                        showToast("Failed to reconnect to " + wifiName);
-                        isReconecting = false;
+                    if(isReconnecting == true) {
+                        showToast("Failed to reconnnect to " + wifiName);
+                        isReconnecting = false;
                     }
                     else {
                         showToast("Failed to connect to " + wifiName);
@@ -794,22 +794,22 @@ void MainWindow::updateWifiIcon() {
                     QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped").remove();
                 }
             }
-            lastWifiState = global::wifi::WifiState::Disabled;
+            lastWifiState = global::wifi::wifiState::disabled;
             ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
             ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
         }
-        if(currentWifiState == global::wifi::WifiState::Enabled) {
-            lastWifiState = global::wifi::WifiState::Enabled;
+        if(currentWifiState == global::wifi::wifiState::enabled) {
+            lastWifiState = global::wifi::wifiState::enabled;
             ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
             ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
         }
-        if(currentWifiState == global::wifi::WifiState::Configured) {
+        if(currentWifiState == global::wifi::wifiState::configured) {
             if(isConnecting == true) {
                 setDefaultWorkDir();
                     QString wifiName = readFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid").replace("\n", "");
-                    if(isReconecting == true) {
+                    if(isReconnecting == true) {
                         showToast("Reconnected successfully to " + wifiName);
-                        isReconecting = false;
+                        isReconnecting = false;
                     }
                     else {
                         showToast("Connected successfully to " + wifiName);
@@ -817,13 +817,11 @@ void MainWindow::updateWifiIcon() {
                     isConnecting = false;
                     QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped").remove();
             }
-            lastWifiState = global::wifi::WifiState::Configured;
-            ui->wifiBtn->setIcon(QIcon("://resources/wifi-100.png"));
+            lastWifiState = global::wifi::wifiState::configured;
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-100.png"));
             ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
         }
     }
-
-
 }
 
 void MainWindow::updateWifiAble() {
@@ -849,7 +847,7 @@ void MainWindow::showToast(QString messageToDisplay) {
     connect(toastWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
     toastWindow->show();
 
-    // I will soon manage the update thing in a more propper way somewhere else... ~ Szybet
+    // I will soon manage the update thing in a more proper way somewhere else... ~ Szybet
     if(messageToDisplay.contains("onnected successfully") == true) {
         // Give the toast some time to vanish away, then launch OTA updater
         QTimer::singleShot(5000, this, SLOT(launchOtaUpdater()));

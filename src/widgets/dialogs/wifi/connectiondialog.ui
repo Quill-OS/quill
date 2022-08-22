@@ -20,7 +20,7 @@
       <enum>QLayout::SetFixedSize</enum>
      </property>
      <item>
-      <widget class="QPushButton" name="CancelBtn">
+      <widget class="QPushButton" name="cancelBtn">
        <property name="text">
         <string>Cancel</string>
        </property>

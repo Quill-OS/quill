@@ -52,9 +52,9 @@ public:
     bool reboot_after_update = false;
     bool resetFullWindowException;
 
-    global::wifi::WifiState lastWifiState = global::wifi::WifiState::Unknown;
+    global::wifi::wifiState lastWifiState = global::wifi::wifiState::unknown;
     bool isConnecting = false;
-    bool isReconecting = false;
+    bool isReconnecting = false;
 
     int timerTime = 0;
     QString relative_path;
