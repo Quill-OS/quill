@@ -778,13 +778,12 @@ void MainWindow::updateWifiIcon() {
         if(currentWifiState == global::wifi::wifiState::disabled) {
             if(isConnecting == true) {
                 if(checkconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped") == false) {
-                    QString wifiName = readFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid").replace("\n", "");
                     if(isReconnecting == true) {
-                        showToast("Failed to reconnnect to " + wifiName);
+                        showToast("Reconnection failed");
                         isReconnecting = false;
                     }
                     else {
-                        showToast("Failed to connect to " + wifiName);
+                        showToast("Connection failed");
                     }
                     isConnecting = false;
                     QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid").remove();
@@ -806,13 +805,12 @@ void MainWindow::updateWifiIcon() {
         if(currentWifiState == global::wifi::wifiState::configured) {
             if(isConnecting == true) {
                 setDefaultWorkDir();
-                    QString wifiName = readFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid").replace("\n", "");
                     if(isReconnecting == true) {
-                        showToast("Reconnected successfully to " + wifiName);
+                        showToast("Reconnection successful");
                         isReconnecting = false;
                     }
                     else {
-                        showToast("Connected successfully to " + wifiName);
+                        showToast("Connection successful");
                     }
                     isConnecting = false;
                     QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped").remove();

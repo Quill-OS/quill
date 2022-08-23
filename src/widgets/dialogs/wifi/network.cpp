@@ -73,13 +73,13 @@ void network::applyVariables() {
     if(mainData.signal >= 0 and mainData.signal <= 25) {
         ui->signalStrengthIcon->setIcon(QIcon(":/resources/wifi-0.png"));
     }
-    else if(mainData.signal >= 25 and mainData.signal <= 50) {
+    else if(mainData.signal >= 25 and mainData.signal < 50) {
         ui->signalStrengthIcon->setIcon(QIcon(":/resources/wifi-25.png"));
     }
-    else if(mainData.signal >= 50 and mainData.signal <= 75) {
+    else if(mainData.signal >= 50 and mainData.signal < 75) {
         ui->signalStrengthIcon->setIcon(QIcon(":/resources/wifi-50.png"));
     }
-    else if(mainData.signal >= 75 and mainData.signal <= 100) {
+    else if(mainData.signal >= 75 and mainData.signal < 100) {
         ui->signalStrengthIcon->setIcon(QIcon(":/resources/wifi-75.png"));
     }
     else if(mainData.signal == 100) {

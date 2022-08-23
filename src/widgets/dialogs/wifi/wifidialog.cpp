@@ -91,8 +91,7 @@ void wifiDialog::on_refreshBtn_clicked()
     if(checkWifiState() == global::wifi::wifiState::disabled) {
         if(refreshFromWatcher == true) {
             refreshFromWatcher = false;
-            emit showToast("To scan, turn on wi-fi first");
-            log("To scan, turn on wi-fi first", className);
+            emit showToast("To scan, turn Wi-Fi on first");
         }
     }
     else {
@@ -159,7 +158,7 @@ void wifiDialog::refreshNetworksList() {
                     log("Network name is empty", className);
                 }
                 else {
-                    log("Network name is: " + singleData, className);
+                    log("Network name is: '" + singleData + "'", className);
                 }
                 singleNetwork.name = singleData;
             }
@@ -287,7 +286,7 @@ void wifiDialog::refreshNetworksList() {
     }
     scannedAtLeastOnce = true;
     ui->refreshBtn->setEnabled(true);
-    ui->refreshBtn->setStyleSheet("background-color:white;");
+    ui->refreshBtn->setStyleSheet("background-color: white;");
     scanInProgress = false;
     secondScanTry = false;
 }
@@ -297,11 +296,11 @@ void wifiDialog::on_wifiCheckBox_stateChanged(int arg1)
 {
     if(ignoreCheckBoxCall == false) {
         connectedNetworkDataParentSet = false;
-        log("wifi dialog clicked: " + QString::number(arg1), className);
+        log("Wi-Fi dialog checkbox clicked: " + QString::number(arg1), className);
         if(wifiButtonEnabled == true) {
             if(arg1 == 2) {
                 log("Turning Wi-Fi on", className);
-                // the watcher will scan wifi
+                // The watcher will scan Wi-Fi
                 QTimer::singleShot(0, this, SLOT(turnOnWifi()));
                 ui->stopBtn->setStyleSheet("background-color: white;");
                 ui->stopBtn->setEnabled(true);
@@ -373,7 +372,7 @@ void wifiDialog::refreshScreenSlot() {
     * get_dhcp.sh - Gets dhcp addresses
     * prepare_changing_wifi.sh - Kills everything, prepares to changing network
     * smarter_time_sync.sh - Syncs time
-    * toggle.sh - Turns on/off Wi-Fi adapter
+    * toggle.sh - Turns Wi-Fi adapter on/off
     * list_networks - Lists networks
     * check_wifi_passphrase.sh - Checks Wi-Fi network passphrase
     * watcher() first watches at processes that could kill other ones
