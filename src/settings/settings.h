@@ -3,7 +3,7 @@
 
 #include <QWidget>
 
-#include <usbms_splash.h>
+#include <usbmsSplash.h>
 #include "generaldialog.h"
 #include "otamanager.h"
 #include "toast.h"
@@ -79,7 +79,7 @@ signals:
 
 private:
     Ui::settings *ui;
-    usbms_splash *usbmsWindow;
+    usbmsSplash *usbmsWindow;
     generalDialog *generalDialogWindow;
     otaManager *otaManagerWindow;
     toast *toastWindow;

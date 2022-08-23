@@ -8,7 +8,7 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QDateTime>
-#include "usbms_splash.h"
+#include "usbmsSplash.h"
 #include "functions.h"
 
 encryptionManager::encryptionManager(QWidget *parent) :
@@ -346,7 +346,7 @@ void encryptionManager::on_usbmsBtn_clicked()
 {
     log("Showing USBMS splash", className);
     global::usbms::launchUsbms = true;
-    usbmsWindow = new usbms_splash();
+    usbmsWindow = new usbmsSplash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
     usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
     usbmsWindow->show();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>usbms_splash</class>
- <widget class="QWidget" name="usbms_splash">
+ <class>usbmsSplash</class>
+ <widget class="QWidget" name="usbmsSplash">
   <property name="geometry">
    <rect>
     <x>0</x>

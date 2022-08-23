@@ -366,30 +366,24 @@ reader::reader(QWidget *parent) :
     float sH = QGuiApplication::screens()[0]->size().height();
     // Defining what the icons' size will be
     if(checkconfig("/opt/inkbox_genuine") == true) {
+        float stdIconWidth;
+        float stdIconHeight;
         if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
-            float stdIconWidth = sW / 16;
-            float stdIconHeight = sW / 16;
-            QPixmap chargingPixmap(":/resources/battery_charging.png");
-            scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-            QPixmap fullPixmap(":/resources/battery_full.png");
-            scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-            QPixmap halfPixmap(":/resources/battery_half.png");
-            scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-            QPixmap emptyPixmap(":/resources/battery_empty.png");
-            scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            stdIconWidth = sW / 16;
+            stdIconHeight = sW / 16;
         }
         else {
-            float stdIconWidth = sW / 19;
-            float stdIconHeight = sH / 19;
-            QPixmap chargingPixmap(":/resources/battery_charging.png");
-            scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-            QPixmap fullPixmap(":/resources/battery_full.png");
-            scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-            QPixmap halfPixmap(":/resources/battery_half.png");
-            scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
-            QPixmap emptyPixmap(":/resources/battery_empty.png");
-            scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            stdIconWidth = sW / 19;
+            stdIconHeight = sH / 19;
         }
+        QPixmap chargingPixmap(":/resources/battery_charging.png");
+        scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QPixmap fullPixmap(":/resources/battery_full.png");
+        scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QPixmap halfPixmap(":/resources/battery_half.png");
+        scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        QPixmap emptyPixmap(":/resources/battery_empty.png");
+        scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
     else {
         float stdIconWidth = sW / 19;
@@ -1282,7 +1276,7 @@ void reader::on_homeBtn_clicked()
     // Remount tmpfs
     string_writeconfig("/inkbox/remount", "true");
     // Specify cinematic brightness mode
-    string_writeconfig("/tmp/inkbox-cinematic_brightness_auto", "true");
+    string_writeconfig("/tmp/inkbox-cinematicBrightness_auto", "true");
 
     // Relaunching process
     quit_restart();

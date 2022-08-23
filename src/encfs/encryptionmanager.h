@@ -48,7 +48,7 @@ private:
     toast * toastWindow;
     hourglassAnimationWidget * hourglassAnimationWidgetWindow;
     alert * alertWindow;
-    usbms_splash *usbmsWindow;
+    usbmsSplash *usbmsWindow;
 };
 
 #endif // ENCRYPTIONMANAGER_H

@@ -4,7 +4,7 @@
 #include <QWidget>
 
 #include "generaldialog.h"
-#include "usbms_splash.h"
+#include "usbmsSplash.h"
 
 namespace Ui {
 class koboxSettings;
@@ -33,7 +33,7 @@ private slots:
 private:
     Ui::koboxSettings *ui;
     generalDialog *generalDialogWindow;
-    usbms_splash *usbmsWindow;
+    usbmsSplash *usbmsWindow;
 };
 
 #endif // KOBOXSETTINGS_H

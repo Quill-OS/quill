@@ -166,7 +166,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
 
         // Re-use USBMS splash window for KoBox splash, since it's pretty much the same layout
         log("Showing KoBox splash", className);
-        usbmsSplashWindow = new usbms_splash();
+        usbmsSplashWindow = new usbmsSplash();
         usbmsSplashWindow->setAttribute(Qt::WA_DeleteOnClose);
         usbmsSplashWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry().size()));
         usbmsSplashWindow->show();

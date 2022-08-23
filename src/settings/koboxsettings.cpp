@@ -126,7 +126,7 @@ void koboxSettings::on_pushButton_clicked()
 
     log("Exporting KoBox extensions onboard storage via USB", className);
     log("Showing USBMS splash", className);
-    usbmsWindow = new usbms_splash();
+    usbmsWindow = new usbmsSplash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
     usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
     usbmsWindow->show();

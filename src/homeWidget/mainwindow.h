@@ -8,7 +8,7 @@
 #include "reader.h"
 #include "quit.h"
 #include "alert.h"
-#include "usbms_splash.h"
+#include "usbmsSplash.h"
 #include "brightnessdialog.h"
 #include "generaldialog.h"
 #include "koboxsettings.h"
@@ -106,7 +106,7 @@ private:
     reader * readerWindow;
     quit * quitWindow;
     alert * alertWindow;
-    usbms_splash * usbmsWindow;
+    usbmsSplash * usbmsWindow;
     brightnessDialog * brightnessDialogWindow;
     generalDialog * generalDialogWindow;
     koboxSettings * koboxSettingsWindow;

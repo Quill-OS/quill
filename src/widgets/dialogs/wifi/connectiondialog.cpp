@@ -12,6 +12,9 @@ connectiondialog::connectiondialog(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setFont(QFont("u001"));
+    ui->passphraseTextEdit->setFont(QFont("Noto Mono"));
+    ui->label->setFont(QFont("Inter"));
+    ui->label_2->setFont(QFont("Inter"));
 
     // Stylesheet, style & misc.
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
@@ -19,15 +22,29 @@ connectiondialog::connectiondialog(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
-    ui->cancelBtn->setStyleSheet("font-size: 9pt");
-    ui->connectBtn->setStyleSheet("font-size: 9pt");
-    ui->showPassphraseBtn->setStyleSheet("font-size: 9pt");
+    ui->cancelBtn->setProperty("type", "borderless");
+    ui->connectBtn->setProperty("type", "borderless");
+    ui->showPassphraseBtn->setProperty("type", "borderless");
+
+    ui->label->setStyleSheet("font-weight: bold");
+    ui->label_2->setStyleSheet("font-weight: bold");
+
+    ui->cancelBtn->setIcon(QIcon(":/resources/close.png"));
+    ui->connectBtn->setIcon(QIcon(":/resources/arrow-right.png"));
 
     // Size
     QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
-    this->setFixedWidth(screenGeometry.width());
+    this->setFixedWidth(screenGeometry.width() / 1.5);
 
+    int halfOfHalfHeight = ((screenGeometry.height() / 2) / 2) / 2;
+    int finalHeight = screenGeometry.height() - halfOfHalfHeight * 6.3;
 
+    this->setFixedHeight(finalHeight);
+
+    // Centering dialog
+    int x = (screenGeometry.width() - this->width()) / 2;
+    int y = (screenGeometry.height() - this->height()) / 2;
+    this->move(x, y);
 }
 
 connectiondialog::~connectiondialog()
@@ -63,12 +80,17 @@ void connectiondialog::applyVariables() {
         }
         QString passphrase = searchDatabase(connectedNetworkData.name);
         if(passphrase.isEmpty() == false) {
-            log("Found passphrase: " + passphrase, className);
+            log("Found passphrase: '" + passphrase + "'", className);
             ui->showPassphraseBtn->setIcon(QIcon(":/resources/show.png"));
             showedPassphrase = false;
             savedPassphrase = passphrase;
 
-            ui->passphraseTextEdit->setText("********");
+            int passphraseLength = passphrase.length();
+            QString hiddenPassphrase;
+            for(int i = 0; i < passphraseLength; i++) {
+                hiddenPassphrase.append("•");
+            }
+            ui->passphraseTextEdit->setText(hiddenPassphrase);
         }
         else {
             log("No passphrase found", className);
@@ -224,12 +246,12 @@ void connectiondialog::on_passphraseTextEdit_cursorPositionChanged(int oldpos, i
                 global::keyboard::keyboardText = "";
             }
             else {
-                log("Passphrase is not saved; ignoring text edit call", className);
+                log("Passphrase is not saved; ignoring text edit widget call", className);
             }
         }
     }
     else {
-        log("Ignoring click on text edit", className);
+        log("Ignoring click on text edit widget", className);
         cursorPositionIgnore = true;
     }
 }
@@ -248,7 +270,13 @@ void connectiondialog::on_showPassphraseBtn_clicked()
     else {
         showedPassphrase = false;
         ui->showPassphraseBtn->setIcon(QIcon(":/resources/show.png"));
-        ui->passphraseTextEdit->setText("********");
+
+        int passphraseLength = searchDatabase(connectedNetworkData.name).length();
+        QString hiddenPassphrase;
+        for(int i = 0; i < passphraseLength; i++) {
+            hiddenPassphrase.append("•");
+        }
+        ui->passphraseTextEdit->setText(hiddenPassphrase);
     }
 }
 

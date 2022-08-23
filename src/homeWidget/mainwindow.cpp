@@ -634,13 +634,13 @@ void MainWindow::setBatteryIcon() {
         stdIconHeight = sH / 16;
 
         QPixmap chargingPixmap(":/resources/battery_charging.png");
-        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap fullPixmap(":/resources/battery_full.png");
-        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap halfPixmap(":/resources/battery_half.png");
-        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap emptyPixmap(":/resources/battery_empty.png");
-        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         // Checking battery level and status, then displaying the relevant icon on batteryIcon
         if(isUsbPluggedIn() == true) {
@@ -664,13 +664,13 @@ void MainWindow::setBatteryIcon() {
         stdIconWidth = sW / 19;
         stdIconHeight = sH / 19;
         QPixmap chargingPixmap(":/resources/battery_charging.png");
-        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap fullPixmap(":/resources/battery_full.png");
-        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap halfPixmap(":/resources/battery_half.png");
-        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap emptyPixmap(":/resources/battery_empty.png");
-        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         // Checking battery level and status, then displaying the relevant icon on batteryIcon
         if(isUsbPluggedIn() == true) {
@@ -711,17 +711,21 @@ void MainWindow::setInitialBrightness() {
         // Coming from OOBE setup; not doing that fancy stuff again ;p
         QFile::remove("/tmp/oobe-inkbox_completed");
         pre_set_brightness(brightness_value);
+        log("Ignoring cinematic brightness call because it has already been done", className);
     }
     else {
         // Fancy brightness fade-in
-        if(checkconfig("/tmp/inkbox-cinematic_brightness_auto") == true) {
-            QFile::remove("/tmp/inkbox-cinematic_brightness_auto");
+        if(checkconfig("/tmp/inkbox-cinematicBrightness_auto") == true) {
+            QFile::remove("/tmp/inkbox-cinematicBrightness_auto");
             cinematicBrightness(brightness_value, 2);
         }
         else {
             if(checkconfig("/tmp/inkbox-cinematicBrightness_ran") == false) {
                 string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
                 cinematicBrightness(brightness_value, 0);
+            }
+            else {
+                log("Ignoring cinematic brightness call because it has already been done", className);
             }
         }
     }

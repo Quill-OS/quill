@@ -4,22 +4,22 @@
 #include <QWidget>
 
 namespace Ui {
-class usbms_splash;
+class usbmsSplash;
 }
 
-class usbms_splash : public QWidget
+class usbmsSplash : public QWidget
 {
     Q_OBJECT
 
 public:
     QString className = this->metaObject()->className();
-    explicit usbms_splash(QWidget *parent = nullptr);
-    ~usbms_splash();
+    explicit usbmsSplash(QWidget *parent = nullptr);
+    ~usbmsSplash();
     float sW;
     float sH;
     QString massStorageModule;
 
-    void usbms_launch();
+    void usbmsLaunch();
 
 private slots:
     void brightnessDown();
@@ -27,7 +27,7 @@ private slots:
     void restartServices();
 
 private:
-    Ui::usbms_splash *ui;
+    Ui::usbmsSplash *ui;
 };
 
 #endif // USBMS_SPLASH_H

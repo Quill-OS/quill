@@ -901,7 +901,7 @@ void settings::usbms_launch()
     log("Showing USBMS splash", className);
     global::usbms::launchUsbms = true;
 
-    usbmsWindow = new usbms_splash();
+    usbmsWindow = new usbmsSplash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
     usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
     usbmsWindow->show();

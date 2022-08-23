@@ -22,7 +22,7 @@
      <item>
       <widget class="QPushButton" name="cancelBtn">
        <property name="text">
-        <string>Cancel</string>
+        <string></string>
        </property>
       </widget>
      </item>
@@ -62,7 +62,7 @@
      <item>
       <widget class="QPushButton" name="connectBtn">
        <property name="text">
-        <string>Connect</string>
+        <string></string>
        </property>
       </widget>
      </item>

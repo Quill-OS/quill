@@ -57,7 +57,7 @@ SOURCES += \
     src/settings/settingschooser.cpp \
     src/widgets/text/textwidget.cpp \
     src/widgets/interfaceWidgets/toast.cpp \
-    src/splash/usbms_splash.cpp \
+    src/splash/usbmsSplash.cpp \
     src/apps/userapps.cpp \
     src/widgets/virtualKeyboard/virtualkeyboard.cpp \
     src/widgets/virtualKeyboard/virtualkeypad.cpp \
@@ -100,7 +100,7 @@ HEADERS += \
     src/settings/settingschooser.h \
     src/widgets/text/textwidget.h \
     src/widgets/interfaceWidgets/toast.h \
-    src/splash/usbms_splash.h \
+    src/splash/usbmsSplash.h \
     src/apps/userapps.h \
     src/widgets/virtualKeyboard/virtualkeyboard.h \
     src/widgets/virtualKeyboard/virtualkeypad.h \
@@ -140,7 +140,7 @@ FORMS += \
     src/settings/settingschooser.ui \
     src/widgets/text/textwidget.ui \
     src/widgets/interfaceWidgets/toast.ui \
-    src/splash/usbms_splash.ui \
+    src/splash/usbmsSplash.ui \
     src/apps/userapps.ui \
     src/widgets/virtualKeyboard/virtualkeyboard.ui \
     src/widgets/virtualKeyboard/virtualkeypad.ui \
