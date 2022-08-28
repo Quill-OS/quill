@@ -34,10 +34,21 @@ connectiondialog::connectiondialog(QWidget *parent) :
 
     // Size
     QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
-    this->setFixedWidth(screenGeometry.width() / 1.5);
+    if(global::deviceID == "n705\n") {
+        this->setFixedWidth(screenGeometry.width() / 1.2);
+    }
+    else {
+        this->setFixedWidth(screenGeometry.width() / 1.5);
+    }
 
     int halfOfHalfHeight = ((screenGeometry.height() / 2) / 2) / 2;
-    int finalHeight = screenGeometry.height() - halfOfHalfHeight * 6.3;
+    int finalHeight;
+    if(global::deviceID == "n705\n") {
+        finalHeight = screenGeometry.height() - halfOfHalfHeight * 5.9;
+    }
+    else {
+        finalHeight = screenGeometry.height() - halfOfHalfHeight * 6.3;
+    }
 
     this->setFixedHeight(finalHeight);
 
@@ -53,8 +64,21 @@ connectiondialog::~connectiondialog()
 }
 
 void connectiondialog::applyVariables() {
-    // Here, for some devices it will be propably needed to limit the size
-    ui->nameLabel->setText(connectedNetworkData.name);
+    // Limit name size
+    int truncateThreshold;
+    if(global::deviceID == "n705\n") {
+        truncateThreshold = 20;
+    }
+    else {
+        truncateThreshold = 30;
+    }
+    int nameLength = connectedNetworkData.name.length();
+    QString name = connectedNetworkData.name;
+    if(nameLength > truncateThreshold) {
+        name.chop(nameLength - truncateThreshold);
+        name.append("...");
+    }
+    ui->nameLabel->setText(name);
     ui->macLabel->setText(connectedNetworkData.mac);
     ui->signalLabel->setText(QString::number(connectedNetworkData.signal) + "%");
 
@@ -272,11 +296,22 @@ void connectiondialog::on_showPassphraseBtn_clicked()
         ui->showPassphraseBtn->setIcon(QIcon(":/resources/show.png"));
 
         int passphraseLength = searchDatabase(connectedNetworkData.name).length();
-        QString hiddenPassphrase;
-        for(int i = 0; i < passphraseLength; i++) {
-            hiddenPassphrase.append("•");
+        if(passphraseLength != 0) {
+            QString hiddenPassphrase;
+            for(int i = 0; i < passphraseLength; i++) {
+                hiddenPassphrase.append("•");
+            }
+            ui->passphraseTextEdit->setText(hiddenPassphrase);
         }
-        ui->passphraseTextEdit->setText(hiddenPassphrase);
+        else {
+            // This is executed if the user asks to hide the passphrase but it isn't saved yet (upon first connection to a network)
+            QString hiddenPassphrase;
+            int passphraseLength = ui->passphraseTextEdit->text().length();
+            for(int i = 0; i < passphraseLength; i++) {
+                hiddenPassphrase.append("•");
+            }
+            ui->passphraseTextEdit->setText(hiddenPassphrase);
+        }
     }
 }
 

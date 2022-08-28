@@ -54,14 +54,16 @@ wifiDialog::wifiDialog(QWidget *parent) :
     this->move(x, y);
 
     // Button sizes
-    ui->stopBtn->setFixedWidth(screenGeometry.width() / 9);
-    ui->logBtn->setFixedWidth(screenGeometry.width() / 9);
-    ui->refreshBtn->setFixedWidth(screenGeometry.width() / 9);
-
-    int heightIncrease = 20;
-    ui->stopBtn->setFixedHeight(ui->stopBtn->height() + heightIncrease);
-    ui->logBtn->setFixedHeight(ui->logBtn->height() + heightIncrease);
-    ui->refreshBtn->setFixedHeight(ui->refreshBtn->height() + heightIncrease);
+    if(global::deviceID == "n705\n") {
+        ui->refreshBtn->setStyleSheet("padding: 20px;");
+        ui->stopBtn->setStyleSheet("padding: 20px;");
+        ui->logBtn->setStyleSheet("padding: 20px;");
+    }
+    else {
+        ui->refreshBtn->setStyleSheet("padding: 25px;");
+        ui->stopBtn->setStyleSheet("padding: 25px;");
+        ui->logBtn->setStyleSheet("padding: 25px;");
+    }
 
    // Set Wi-Fi checkbox state. Ignore the first call.
    global::wifi::wifiState currentWifiState = checkWifiState();
@@ -72,12 +74,12 @@ wifiDialog::wifiDialog(QWidget *parent) :
         ui->refreshBtn->click();
    } else {
        wifiButtonEnabled = true;
-       ui->stopBtn->setStyleSheet("background-color: lightGray;");
+       ui->stopBtn->setStyleSheet(ui->stopBtn->styleSheet() + "background-color: lightGray;");
        ui->stopBtn->setEnabled(false);
    }
 
    // To avoid confusion with reconnecting
-   QTimer::singleShot(2000, this, SLOT(watcher()));
+   QTimer::singleShot(0, this, SLOT(watcher()));
 }
 
 wifiDialog::~wifiDialog()
@@ -104,7 +106,7 @@ void wifiDialog::launchRefresh() {
     // Order is important
     if(scanInProgress == false) {
         scanInProgress = true;
-        ui->refreshBtn->setStyleSheet("background-color: lightGray;");
+        ui->refreshBtn->setStyleSheet(ui->refreshBtn->styleSheet() + "background-color: lightGray;");
         ui->refreshBtn->setEnabled(false);
 
         elapsedSeconds = 0;
@@ -122,7 +124,7 @@ void wifiDialog::refreshWait() {
     if(fullList.exists() == false and formattedList.exists() == false) {
         if(elapsedSeconds == 6) {
             emit showToast("Failed to get networks list");
-            ui->refreshBtn->setStyleSheet("background-color:white;");
+            ui->refreshBtn->setStyleSheet(ui->refreshBtn->styleSheet() + "background-color: white;");
             ui->refreshBtn->setEnabled(true);
             scanInProgress = false;
         }
@@ -199,7 +201,7 @@ void wifiDialog::refreshNetworksList() {
             log("No networks found, skipping", className);
             showToastSlot("No networks found");
             ui->refreshBtn->setEnabled(true);
-            ui->refreshBtn->setStyleSheet("background-color: white;");
+            ui->refreshBtn->setStyleSheet(ui->refreshBtn->styleSheet() + "background-color: white;");
             scanInProgress = false;
             return void();
         }
@@ -286,7 +288,7 @@ void wifiDialog::refreshNetworksList() {
     }
     scannedAtLeastOnce = true;
     ui->refreshBtn->setEnabled(true);
-    ui->refreshBtn->setStyleSheet("background-color: white;");
+    ui->refreshBtn->setStyleSheet(ui->refreshBtn->styleSheet() + "background-color: white;");
     scanInProgress = false;
     secondScanTry = false;
 }
@@ -302,14 +304,14 @@ void wifiDialog::on_wifiCheckBox_stateChanged(int arg1)
                 log("Turning Wi-Fi on", className);
                 // The watcher will scan Wi-Fi
                 QTimer::singleShot(0, this, SLOT(turnOnWifi()));
-                ui->stopBtn->setStyleSheet("background-color: white;");
+                ui->stopBtn->setStyleSheet(ui->stopBtn->styleSheet() + "background-color: white;");
                 ui->stopBtn->setEnabled(true);
             } else {
                 log("Turning Wi-Fi off", className);
                 QTimer::singleShot(0, this, SLOT(turnOffWifi()));
                 // To inform the Wi-Fi icon updater to not show the connected/failed to connect message
                 string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped", "true");
-                ui->stopBtn->setStyleSheet("background-color: lightGray;");
+                ui->stopBtn->setStyleSheet(ui->stopBtn->styleSheet() + "background-color: lightGray;");
                 ui->stopBtn->setEnabled(false);
             }
             emit killNetworkWidgets();

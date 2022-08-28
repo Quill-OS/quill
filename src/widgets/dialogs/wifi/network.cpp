@@ -40,10 +40,17 @@ void network::applyVariables() {
     ui->signalStrengthLabel->setText(QString::number(mainData.signal) + percent);
 
     // Limit name size
+    int truncateThreshold;
+    if(global::deviceID == "n705\n") {
+        truncateThreshold = 12;
+    }
+    else {
+        truncateThreshold = 20;
+    }
     int nameLength = mainData.name.length();
     QString name = mainData.name;
-    if(nameLength > 20) {
-        name.chop(nameLength - 20);
+    if(nameLength > truncateThreshold) {
+        name.chop(nameLength - truncateThreshold);
         name.append("...");
     }
     ui->nameLabel->setText(name);

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>476</width>
-    <height>273</height>
+    <height>317</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>442</width>
-        <height>208</height>
+        <width>460</width>
+        <height>210</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -365,6 +365,9 @@
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
