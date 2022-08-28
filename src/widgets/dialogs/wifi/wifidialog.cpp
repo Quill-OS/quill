@@ -252,21 +252,24 @@ void wifiDialog::refreshNetworksList() {
     QVector<global::wifi::wifiNetworkData> sortedPureNetworkList;
     sortedPureNetworkList.append(pureNetworkList.first());
     pureNetworkList.removeFirst();
-    for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
-        bool stopIterating = false;
-        int counter = 0;
-        for(global::wifi::wifiNetworkData wifiNetworkToSort: sortedPureNetworkList) {
-            if(stopIterating == false) {
-                if(wifiNetwork.signal >= wifiNetworkToSort.signal) {
-                    sortedPureNetworkList.insert(counter, wifiNetwork);
-                    stopIterating = true;
+    // Possible fix for a segment fault
+    if(pureNetworkList.isEmpty() == false) {
+        for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
+            bool stopIterating = false;
+            int counter = 0;
+            for(global::wifi::wifiNetworkData wifiNetworkToSort: sortedPureNetworkList) {
+                if(stopIterating == false) {
+                    if(wifiNetwork.signal >= wifiNetworkToSort.signal) {
+                        sortedPureNetworkList.insert(counter, wifiNetwork);
+                        stopIterating = true;
+                    }
+                    counter = counter + 1;
                 }
-                counter = counter + 1;
             }
-        }
-        // This happens if it's the smallest value, so insert it at the end
-        if(stopIterating == false) {
-            sortedPureNetworkList.append(wifiNetwork);
+            // This happens if it's the smallest value, so insert it at the end
+            if(stopIterating == false) {
+                sortedPureNetworkList.append(wifiNetwork);
+            }
         }
     }
     log("There are " + QString::number(sortedPureNetworkList.count()) + " sorted networks", className);
@@ -438,7 +441,8 @@ void wifiDialog::watcher() {
     bool time = checkProcessName("smarter_time_sync.sh");
     if(time == true) {
         forceRefresh = true;
-        setStatusText("Syncing");
+        // Please leave it as "Syncting time" because many people will complain about innacurate time. This info will answer them
+        setStatusText("Syncing time");
         QTimer::singleShot(relaunchMs, this, SLOT(watcher()));
         return void();
     }

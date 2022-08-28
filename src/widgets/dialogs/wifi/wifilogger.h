@@ -31,6 +31,7 @@ private:
     QFile fancyLogs = QFile("/external_root/run/wifi_stats");
     QFile allLogs = QFile("/external_root/var/log/wifi.log");
     bool waitingForFile = false;
+    QTimer getWifiInformationTimer;
 
 private slots:
     void setWifiInfoPage();

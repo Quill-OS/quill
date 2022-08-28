@@ -64,7 +64,7 @@ wifilogger::~wifilogger()
 
 void wifilogger::setWifiInfoPage() {
     if(checkWifiState() == global::wifi::wifiState::configured) {
-        QTimer::singleShot(0, this, SLOT(getWifiInformation()));
+        getWifiInformationTimer.singleShot(0, this, SLOT(getWifiInformation()));
         ui->stackedWidget->setCurrentIndex(0);
         ui->nameLabel->setText("Network information");
     }
@@ -128,7 +128,6 @@ void wifilogger::getWifiInformation() {
     QFile wifiInformationPath = QFile("/external_root/run/wifi_information");
     if(waitingForFile == false) {
         wifiInformationPath.remove();
-
         log("Sending get_wifi_information ibxd call", className);
         string_writeconfig("/opt/ibxd", "get_wifi_information\n");
         waitingForFile = true;
@@ -136,7 +135,7 @@ void wifilogger::getWifiInformation() {
 
     if(waitingForFile == true) {
         if(wifiInformationPath.exists() == false) {
-            QTimer::singleShot(1000, this, SLOT(getWifiInformation()));
+            getWifiInformationTimer.singleShot(1000, this, SLOT(getWifiInformation()));
             return void();
         }
     }
@@ -179,6 +178,7 @@ void wifilogger::getWifiInformation() {
 void wifilogger::on_returnBtn_clicked()
 {
     log("Exiting wifilogger", className);
+    getWifiInformationTimer.stop();
     this->deleteLater();
     this->close();
 }
