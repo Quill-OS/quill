@@ -58,6 +58,10 @@ private slots:
     void handlePossibleBookDeletion();
     void openLocalBookInfoDialog();
 
+    void setupBooksListFolders(int pageNumber);
+    void chooseBookListSetup(int pageNumber);
+    void calculateMaxPagesForFolders();
+
 private:
     Ui::localLibraryWidget * ui;
     generalDialog * generalDialogWindow;
@@ -68,6 +72,11 @@ private:
     QVector<QLabel*> bookIconArray;
     QVector<QClickableLabel*> bookBtnArray;
     QVector<QFrame*> lineArray;
+
+    QString pathForFolders = "/mnt/onboard/onboard/";
+    bool folderFeatureEnabled = true;
+    // For folder feature
+    int firstPageForBooks;
 
 signals:
     void openBookSignal(QString bookFile, bool relativePath);
