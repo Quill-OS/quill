@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include "usbms_splash.h"
+#include "usbmsSplash.h"
 #include "textwidget.h"
 #include "virtualkeyboard.h"
 #include "virtualkeypad.h"
@@ -63,7 +63,6 @@ private slots:
     void adjust_size();
     void restartSearchDialog();
     void refreshScreenNative();
-    void connectToNetworkSlot();
     void startOtaUpdate(bool wasDownloadSuccessful);
     void openBookFileNative(QString book, bool relativePath);
     void showToastNative(QString messageToDisplay);
@@ -74,7 +73,7 @@ private slots:
 
 private:
     Ui::generalDialog *ui;
-    usbms_splash *usbmsWindow;
+    usbmsSplash *usbmsWindow;
     textwidget *textwidgetWindow;
     virtualkeyboard *keyboardWidget;
     virtualkeypad *keypadWidget;

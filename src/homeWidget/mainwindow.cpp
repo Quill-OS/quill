@@ -65,8 +65,6 @@ MainWindow::MainWindow(QWidget *parent)
     global::usbms::koboxExportExtensions = false;
     global::mainwindow::tabSwitcher::repaint = true;
     resetFullWindowException = false;
-    wifiIconClickedWhileReconnecting = false;
-    lastWifiState = 0;
 
     // Getting the screen's size
     sW = QGuiApplication::screens()[0]->size().width();
@@ -134,9 +132,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
 
-    setWifiIcon();
+    updateWifiAble();
     if(global::device::isWifiAble == true) {
-        updateWifiIcon(0);
+        // Start Wi-Fi icon updater
+        QTimer *wifiIconTimer = new QTimer(this);
+        wifiIconTimer->setInterval(2500);
+        connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(updateWifiIcon()));
+        wifiIconTimer->start();
     }
     setBatteryIcon();
 
@@ -632,13 +634,13 @@ void MainWindow::setBatteryIcon() {
         stdIconHeight = sH / 16;
 
         QPixmap chargingPixmap(":/resources/battery_charging.png");
-        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap fullPixmap(":/resources/battery_full.png");
-        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap halfPixmap(":/resources/battery_half.png");
-        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap emptyPixmap(":/resources/battery_empty.png");
-        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         // Checking battery level and status, then displaying the relevant icon on batteryIcon
         if(isUsbPluggedIn() == true) {
@@ -662,13 +664,13 @@ void MainWindow::setBatteryIcon() {
         stdIconWidth = sW / 19;
         stdIconHeight = sH / 19;
         QPixmap chargingPixmap(":/resources/battery_charging.png");
-        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap fullPixmap(":/resources/battery_full.png");
-        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap halfPixmap(":/resources/battery_half.png");
-        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap emptyPixmap(":/resources/battery_empty.png");
-        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
         // Checking battery level and status, then displaying the relevant icon on batteryIcon
         if(isUsbPluggedIn() == true) {
@@ -709,17 +711,21 @@ void MainWindow::setInitialBrightness() {
         // Coming from OOBE setup; not doing that fancy stuff again ;p
         QFile::remove("/tmp/oobe-inkbox_completed");
         pre_set_brightness(brightness_value);
+        log("Ignoring cinematic brightness call because it has already been done", className);
     }
     else {
         // Fancy brightness fade-in
-        if(checkconfig("/tmp/inkbox-cinematic_brightness_auto") == true) {
-            QFile::remove("/tmp/inkbox-cinematic_brightness_auto");
+        if(checkconfig("/tmp/inkbox-cinematicBrightness_auto") == true) {
+            QFile::remove("/tmp/inkbox-cinematicBrightness_auto");
             cinematicBrightness(brightness_value, 2);
         }
         else {
             if(checkconfig("/tmp/inkbox-cinematicBrightness_ran") == false) {
                 string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
                 cinematicBrightness(brightness_value, 0);
+            }
+            else {
+                log("Ignoring cinematic brightness call because it has already been done", className);
             }
         }
     }
@@ -749,136 +755,102 @@ void MainWindow::setupSearchDialog() {
     }
 }
 
-void MainWindow::updateWifiIcon(int mode) {
+void MainWindow::updateWifiIcon() {
     /* Usage:
-     * mode 0: auto
-     * mode 1: off
-     * mode 2: standby
-     * mode 3: connected
+     * Mode 0 (looping it) is handled in MainWindow
     */
-    if(mode == 0) {
-        lastWifiState = 0;
-        QTimer *wifiIconTimer = new QTimer(this);
-        wifiIconTimer->setInterval(10000);
-        connect(wifiIconTimer, SIGNAL(timeout()), this, SLOT(setWifiIcon()));
-        wifiIconTimer->start();
-    }
-    if(mode == 1) {
-        lastWifiState = 1;
-        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
-        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
-    }
-    if(mode == 2) {
-        lastWifiState = 2;
-        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
-        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
-    }
-    if(mode == 3) {
-        lastWifiState = 3;
-        ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
-        ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
-    }
-}
 
-bool MainWindow::checkWifiState() {
-    /* Return value:
-     * true: interface UP
-     * false: interface DOWN
-    */
-    if(global::deviceID == "n437\n") {
-        string_checkconfig_ro("/sys/class/net/wlan0/operstate");
-    }
-    else {
-        string_checkconfig_ro("/sys/class/net/eth0/operstate");
-    }
+    global::wifi::wifiState currentWifiState = checkWifiState();
 
-    if(checkconfig_str_val == "up\n") {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-void MainWindow::setWifiIcon() {
-    if(global::device::isWifiAble == true) {
-        if(checkWifiState() == true) {
-            // testPing() the non-blocking way
-            QProcess * pingProcess = new QProcess();
-            QString pingProg = "sh";
-            QStringList pingArgs;
-            pingArgs << "/mnt/onboard/.adds/inkbox/test_ping.sh";
-            pingProcess->startDetached(pingProg, pingArgs);
-            pingProcess->deleteLater();
-
-            getTestPingResults();
-            if(global::network::isConnected == true) {
-                if(lastWifiState != 3) {
-                    lastWifiState = 3;
-                    ui->wifiBtn->setIcon(QIcon(":/resources/wifi-connected.png"));
-                    ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
-                }
+    // It's executing only in enabled mode, which is a mode between connected and disabled, so don't worry about performance
+    if(isConnecting == false and isReconnecting == false) {
+        if(currentWifiState == global::wifi::wifiState::enabled) {
+            if(checkProcessName("connection_manager.sh") == true) {
+                isConnecting = true;
             }
-            else {
-                if(lastWifiState != 2) {
-                    lastWifiState = 2;
-                    ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
-                    ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
-                }
-            }
-        }
-        else {
-            if(lastWifiState != 1) {
-                lastWifiState = 1;
-                ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
-                ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+            else if(checkProcessName("connect_to_network.sh") == true){
+                isConnecting = true;
+                isReconnecting = true;
             }
         }
     }
-    else {
+
+    // ms can make a difference, so:
+    currentWifiState = checkWifiState();
+
+    if(lastWifiState != currentWifiState) {
+        if(currentWifiState == global::wifi::wifiState::disabled) {
+            if(isConnecting == true) {
+                if(checkconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped") == false) {
+                    if(isReconnecting == true) {
+                        showToast("Reconnection failed");
+                        isReconnecting = false;
+                    }
+                    else {
+                        showToast("Connection failed");
+                    }
+                    isConnecting = false;
+                    QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid").remove();
+                    QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/passphrase").remove();
+                }
+                else {
+                    QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped").remove();
+                }
+            }
+            lastWifiState = global::wifi::wifiState::disabled;
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-off.png"));
+            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        }
+        if(currentWifiState == global::wifi::wifiState::enabled) {
+            lastWifiState = global::wifi::wifiState::enabled;
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-standby.png"));
+            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        }
+        if(currentWifiState == global::wifi::wifiState::configured) {
+            if(isConnecting == true) {
+                setDefaultWorkDir();
+                    if(isReconnecting == true) {
+                        showToast("Reconnection successful");
+                        isReconnecting = false;
+                    }
+                    else {
+                        showToast("Connection successful");
+                    }
+                    isConnecting = false;
+                    QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped").remove();
+            }
+            lastWifiState = global::wifi::wifiState::configured;
+            ui->wifiBtn->setIcon(QIcon(":/resources/wifi-100.png"));
+            ui->wifiBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        }
+    }
+}
+
+void MainWindow::updateWifiAble() {
+    if(global::device::isWifiAble == false) {
         ui->wifiBtn->hide();
         ui->line_9->hide();
     }
 }
 
-void MainWindow::openWifiDialog() {
-    log("Opening Wi-Fi connection interface", className);
-    if(checkconfig("/external_root/run/was_connected_to_wifi") == true and wifiIconClickedWhileReconnecting == false) {
-        showToast("Reconnection in progress\nTap again to cancel");
-        wifiIconClickedWhileReconnecting = true;
-        QTimer::singleShot(10000, this, SLOT(resetWifiIconClickedWhileReconnecting()));
-    }
-    else {
-        if(wifiIconClickedWhileReconnecting == true) {
-            string_writeconfig("/opt/ibxd", "stop_wifi_reconnection\n");
-            while(true) {
-                if(QFile::exists("/run/stop_wifi_reconnection_done")) {
-                    QFile::remove("/run/stop_wifi_reconnection_done");
-                    break;
-                }
-            }
-        }
-        global::toast::wifiToast = true;
-        showToast("Searching for networks");
-    }
-}
-
 void MainWindow::on_wifiBtn_clicked()
 {
-    openWifiDialog();
+    wifiDialog* newWifiDialog = new wifiDialog();
+    QObject::connect(newWifiDialog, &wifiDialog::showToast, this, &MainWindow::showToast);
+    newWifiDialog->exec();
 }
 
 void MainWindow::showToast(QString messageToDisplay) {
     global::toast::message = messageToDisplay;
     toastWindow = new toast(this);
     toastWindow->setAttribute(Qt::WA_DeleteOnClose);
-    connect(toastWindow, SIGNAL(updateWifiIconSig(int)), SLOT(updateWifiIcon(int)));
     connect(toastWindow, SIGNAL(refreshScreen()), SLOT(refreshScreen()));
     connect(toastWindow, SIGNAL(showToast(QString)), SLOT(showToast(QString)));
     connect(toastWindow, SIGNAL(closeIndefiniteToast()), SLOT(closeIndefiniteToast()));
     toastWindow->show();
 
-    if(messageToDisplay == "Connection successful") {
+    // I will soon manage the update thing in a more proper way somewhere else... ~ Szybet
+    if(messageToDisplay.contains("onnected successfully") == true) {
         // Give the toast some time to vanish away, then launch OTA updater
         QTimer::singleShot(5000, this, SLOT(launchOtaUpdater()));
     }
@@ -963,7 +935,7 @@ void MainWindow::openEncfsRepackDialog() {
 void MainWindow::on_libraryButton_clicked()
 {
     log("Launching Online Library", className);
-    if(testPing(true) == 0 or global::deviceID == "emu\n") {
+    if(testPing() == 0 or global::deviceID == "emu\n") {
         resetFullWindowException = true;
         resetWindow(false);
         if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
@@ -1000,7 +972,7 @@ void MainWindow::resetFullWindow() {
 }
 
 void MainWindow::checkForOtaUpdate() {
-    if(global::network::isConnected == true) {
+    if(global::wifi::isConnected == true) {
         string_checkconfig_ro("/external_root/opt/storage/update/last_sync");
         if(!checkconfig_str_val.isEmpty()) {
             unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
@@ -1014,10 +986,6 @@ void MainWindow::checkForOtaUpdate() {
             launchOtaUpdater();
         }
     }
-}
-
-void MainWindow::resetWifiIconClickedWhileReconnecting() {
-    wifiIconClickedWhileReconnecting = false;
 }
 
 void MainWindow::setupLocalLibraryWidget() {

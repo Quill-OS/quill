@@ -21,13 +21,10 @@ public:
 
 private:
     Ui::toast *ui;
-    wifiDialog *wifiDialogWindow;
 
 private slots:
-    void showWifiDialog(int networksFound);
     void exitSlot(int exitCode);
     void refreshScreenNative();
-    void updateWifiIcon(int mode);
     void showToastNative(QString messageToDisplay);
     void closeIndefiniteToastNative();
 

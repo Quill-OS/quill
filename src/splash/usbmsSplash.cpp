@@ -1,5 +1,5 @@
-#include "usbms_splash.h"
-#include "ui_usbms_splash.h"
+#include "usbmsSplash.h"
+#include "ui_usbmsSplash.h"
 
 #include <QPixmap>
 #include <QScreen>
@@ -7,12 +7,12 @@
 
 #include "functions.h"
 
-usbms_splash::usbms_splash(QWidget *parent) :
+usbmsSplash::usbmsSplash(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::usbms_splash)
+    ui(new Ui::usbmsSplash)
 {
     ui->setupUi(this);
-    usbms_splash::setFont(QFont("u001"));
+    usbmsSplash::setFont(QFont("u001"));
     ui->label->setFont(QFont("Inter"));
 
     // Getting the screen's size
@@ -60,11 +60,11 @@ usbms_splash::usbms_splash(QWidget *parent) :
 
     if(global::usbms::launchUsbms == true) {
         global::usbms::launchUsbms = false;
-        usbms_launch();
+        usbmsLaunch();
     }
 }
 
-void usbms_splash::usbms_launch()
+void usbmsSplash::usbmsLaunch()
 {
     log("Entering USBMS session", className);
     string_writeconfig("/tmp/in_usbms", "true");
@@ -169,16 +169,17 @@ void usbms_splash::usbms_launch()
     usbms_t->start();
 }
 
-usbms_splash::~usbms_splash()
+usbmsSplash::~usbmsSplash()
 {
     delete ui;
 }
 
-void usbms_splash::brightnessDown() {
+void usbmsSplash::brightnessDown() {
     cinematicBrightness(0, 1);
+    writeFile("/tmp/inkbox-cinematicBrightness_ran", "false");
 }
 
-void usbms_splash::quit_restart() {
+void usbmsSplash::quit_restart() {
     // If existing, cleaning bookconfig_mount mountpoint
     string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
 
@@ -188,7 +189,7 @@ void usbms_splash::quit_restart() {
     qApp->quit();
 }
 
-void usbms_splash::restartServices() {
+void usbmsSplash::restartServices() {
     // Restarting USBNet
     // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet)
     string_writeconfig("/opt/ibxd", "usbnet_start\n");

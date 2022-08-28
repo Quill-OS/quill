@@ -4,7 +4,7 @@
 #include <QDialog>
 #include <QModelIndex>
 
-#include "usbms_splash.h"
+#include "usbmsSplash.h"
 
 namespace Ui {
 class koboxAppsDialog;
@@ -36,7 +36,7 @@ signals:
 
 private:
     Ui::koboxAppsDialog *ui;
-    usbms_splash *usbmsSplashWindow;
+    usbmsSplash *usbmsSplashWindow;
 };
 
 #endif // KOBOXAPPSDIALOG_H

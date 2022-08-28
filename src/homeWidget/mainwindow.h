@@ -8,7 +8,7 @@
 #include "reader.h"
 #include "quit.h"
 #include "alert.h"
-#include "usbms_splash.h"
+#include "usbmsSplash.h"
 #include "brightnessdialog.h"
 #include "generaldialog.h"
 #include "koboxsettings.h"
@@ -51,8 +51,11 @@ public:
     bool existing_recent_books = false;
     bool reboot_after_update = false;
     bool resetFullWindowException;
-    bool wifiIconClickedWhileReconnecting;
-    int lastWifiState;
+
+    global::wifi::wifiState lastWifiState = global::wifi::wifiState::unknown;
+    bool isConnecting = false;
+    bool isReconnecting = false;
+
     int timerTime = 0;
     QString relative_path;
     QString usbmsStatus;
@@ -62,9 +65,10 @@ public:
     void openUsbmsDialog();
     void resetIcons();
     void setBatteryIcon();
-    bool checkWifiState();
 
 public slots:
+    void showToast(QString messageToDisplay);
+    void closeIndefiniteToast();
 
 private slots:
     void on_settingsBtn_clicked();
@@ -74,17 +78,14 @@ private slots:
     void on_quitBtn_clicked();
     void on_brightnessBtn_clicked();
     void openUpdateDialog();
-    void openWifiDialog();
     void setInitialBrightness();
     void on_homeBtn_clicked();
     void refreshScreen();
     void setupSearchDialog();
-    void setWifiIcon();
+    void updateWifiAble();
     void on_wifiBtn_clicked();
-    void updateWifiIcon(int mode);
+    void updateWifiIcon();
     void hello(int testNumber);
-    void showToast(QString messageToDisplay);
-    void closeIndefiniteToast();
     void openUpdateDialogOTA(bool open);
     void launchOtaUpdater();
     void openBookFile(QString book, bool relativePath);
@@ -95,7 +96,6 @@ private slots:
     void on_libraryButton_clicked();
     void resetWindow(bool resetStackedWidget);
     void resetFullWindow();
-    void resetWifiIconClickedWhileReconnecting();
     void setupLocalLibraryWidget();
     void setupHomePageWidget();
 
@@ -106,7 +106,7 @@ private:
     reader * readerWindow;
     quit * quitWindow;
     alert * alertWindow;
-    usbms_splash * usbmsWindow;
+    usbmsSplash * usbmsWindow;
     brightnessDialog * brightnessDialogWindow;
     generalDialog * generalDialogWindow;
     koboxSettings * koboxSettingsWindow;

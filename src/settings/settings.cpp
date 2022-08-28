@@ -846,7 +846,7 @@ void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)
 void settings::on_checkOtaUpdateBtn_clicked()
 {
     log("'Check for OTA update' button clicked", className);
-    if(testPing(true) == 0 or global::deviceID == "emu\n") {
+    if(testPing() == 0 or global::deviceID == "emu\n") {
         launchOtaUpdater();
     }
     else {
@@ -901,7 +901,7 @@ void settings::usbms_launch()
     log("Showing USBMS splash", className);
     global::usbms::launchUsbms = true;
 
-    usbmsWindow = new usbms_splash();
+    usbmsWindow = new usbmsSplash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
     usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
     usbmsWindow->show();
