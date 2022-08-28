@@ -252,7 +252,7 @@ void wifiDialog::refreshNetworksList() {
     QVector<global::wifi::wifiNetworkData> sortedPureNetworkList;
     sortedPureNetworkList.append(pureNetworkList.first());
     pureNetworkList.removeFirst();
-    // Possible fix for a segment fault
+    // Possible fix for a segmentation fault
     if(pureNetworkList.isEmpty() == false) {
         for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
             bool stopIterating = false;
@@ -376,7 +376,7 @@ void wifiDialog::refreshScreenSlot() {
     * connect_to_network.sh - All-in-one connection manager. Manages everything, used by IPD, should be used for Wi-Fi reconnections after sleeping/booting
     * get_dhcp.sh - Gets dhcp addresses
     * prepare_changing_wifi.sh - Kills everything, prepares to changing network
-    * smarter_time_sync.sh - Syncs time
+    * timesync.sh - Syncs time
     * toggle.sh - Turns Wi-Fi adapter on/off
     * list_networks - Lists networks
     * check_wifi_passphrase.sh - Checks Wi-Fi network passphrase
@@ -438,10 +438,9 @@ void wifiDialog::watcher() {
         return void();
     }
 
-    bool time = checkProcessName("smarter_time_sync.sh");
+    bool time = checkProcessName("timesync.sh");
     if(time == true) {
         forceRefresh = true;
-        // Please leave it as "Syncting time" because many people will complain about innacurate time. This info will answer them
         setStatusText("Syncing time");
         QTimer::singleShot(relaunchMs, this, SLOT(watcher()));
         return void();

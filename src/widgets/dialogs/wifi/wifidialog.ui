@@ -121,26 +121,15 @@
         </spacer>
        </item>
        <item>
-        <widget class="QLabel" name="label">
-         <property name="font">
-          <font>
-           <family>Inter</family>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
+        <widget class="QCheckBox" name="wifiCheckBox">
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
          </property>
          <property name="styleSheet">
-          <string notr="true">font-family: Inter</string>
+          <string notr="true">font-family: Inter; font-weight: bold</string>
          </property>
          <property name="text">
           <string>Wi-Fi</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QCheckBox" name="wifiCheckBox">
-         <property name="text">
-          <string/>
          </property>
         </widget>
        </item>
