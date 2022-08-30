@@ -29,7 +29,8 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         buttonsNumber = 5;
     }
     else {
-        buttonsNumber = 3;
+        // test
+        buttonsNumber = 4;
     }
 
     if(global::deviceID == "n705\n") {
@@ -173,17 +174,21 @@ void localLibraryWidget::setupDatabase() {
 
     // Uncompress data from Base64 encoding
     databaseJsonDocument = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(data)));
+    qDebug() << databaseJsonDocument;
+
     // Parse JSON data
     databaseJsonObject = databaseJsonDocument.object();
     databaseJsonArrayList = databaseJsonObject["database"].toArray();
     // Determine maximum page number
     booksNumber = databaseJsonArrayList.size();
+
     if(folderFeatureEnabled == false) {
         pagesNumber = std::ceil((double)booksNumber / buttonsNumber);
     }
     else {
         calculateMaxPagesForFolders();
     }
+
     if(databaseJsonArrayList.isEmpty()) {
         log("Database is empty", className);
         noBooksInDatabase = true;
@@ -287,6 +292,17 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
 
 void localLibraryWidget::on_previousPageBtn_clicked()
 {
+    log("Clicked on previous button", className);
+
+    if(folderFeatureEnabled == true) {
+        log("Decreasing bookIndexVector by buttonsNumber", className);
+        bookIndexVector = (bookIndexVector - goBackInIndex) - buttonsNumber;
+        if(bookIndexVector < 0) {
+            log("ERROR: Shouldn't be possible to get here", className);
+            bookIndexVector = 0;
+        }
+    }
+
     currentPageNumber--;
     chooseBookListSetup(currentPageNumber);
 
@@ -318,9 +334,24 @@ void localLibraryWidget::openBook(int bookID) {
 }
 
 void localLibraryWidget::btnOpenBook(int buttonNumber) {
+    log("Received a click on buttons vector, buttonNumber is: " + QString::number(buttonNumber), className);
     int id = idList.at(buttonNumber - 1);
-    openBook(id);
-    localLibraryWidget::close();
+    if(id == 99990) {
+        if(folderFeatureEnabled == true) {
+            log("Clicked a folder", className);
+            QString dirToGo = bookBtnArray[buttonNumber]->text();
+            log("Dir to go is: " + dirToGo, className);
+            changePathAndRefresh(dirToGo);
+        }
+        else {
+            log("Error: how", className);
+        }
+    }
+    else {
+        log("Clicked a book", className);
+        openBook(id);
+        localLibraryWidget::close();
+    }
 }
 
 void localLibraryWidget::openGoToPageDialog() {
@@ -337,6 +368,9 @@ void localLibraryWidget::goToPage(int page) {
         showToast("Request is beyond page range");
     }
     else {
+        if(folderFeatureEnabled == true) {
+            calcIndexForPage(page);
+        }
         log("Going to page " + QString::number(page), className);
         chooseBookListSetup(page);
         emit refreshScreen();
@@ -408,6 +442,7 @@ void localLibraryWidget::openLocalBookInfoDialog() {
 }
 
 void localLibraryWidget::chooseBookListSetup(int pageNumber) {
+    log("Choosed folders setup", className);
     setupBooksListFolders(pageNumber);
 }
 
@@ -452,18 +487,33 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
     idList.clear();
     int in = 1;
     int dirCount = 0; // I want to start at 0
+    goBackInIndex = 0;
     for(int i = (1 * pageNumber * buttonsNumber) - (buttonsNumber - 1); i <= (1 * pageNumber * buttonsNumber); i++) {
         if(dirListPure.count() != dirCount) {
             // Insert a folder if here
             log("Showing a folder for index: " + QString::number(i), className);
+
+            // Show it, its maybe hided
+            bookIconArray[in]->show();
+            bookBtnArray[in]->show();
+            if(buttonsNumber - in > 0) {
+                lineArray[in]->show();
+            }
+
             bookBtnArray[in]->setText(dirListPure.at(dirCount));
+            QPixmap pixmap("://resources/folder.png");
+            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
 
-
+            // Id for indicating its a folder in btnOpenBook
+            idList.append(99990);
             dirCount = dirCount + 1;
             in++;
         }
         else {
             // Show a book otherwise
+            log("bookIndexVector used: " + QString::number(bookIndexVector), className);
+
+
             log("Showing a book for index: " + QString::number(i), className);
             // Read database info for each book and display the corresponding information on each button
             bookIconArray[in]->show();
@@ -472,7 +522,12 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
                 lineArray[in]->show();
             }
 
-            QJsonObject jsonObject = databaseJsonArrayList.at(i - 1).toObject();
+            // If a book is missing, its propably because of >= idk
+            if(bookIndexVector >= bookListForPathIndex.count()) {
+                continue;
+            }
+
+            QJsonObject jsonObject = databaseJsonArrayList.at(bookListForPathIndex.at(bookIndexVector)).toObject();
             QString bookTitle = jsonObject["Title"].toString();
             QString bookAuthor = jsonObject["Author"].toString();
             QString coverPath = jsonObject["CoverPath"].toString();
@@ -505,11 +560,14 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             if(!bookID.isEmpty()) {
                 in++;
             }
+            bookIndexVector = bookIndexVector + 1;
         }
+        goBackInIndex = goBackInIndex + 1;
     }
 
     if(in <= buttonsNumber) {
         for(int i = in; i <= buttonsNumber; i++) {
+            log("Hiding items in LocalLibrary", className);
             bookIconArray[i]->hide();
             bookBtnArray[i]->hide();
             if(i - 1 < buttonsNumber) {
@@ -543,17 +601,115 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
     }
 }
 
-// Sets pagesNumber for folders feature
+// Sets pagesNumber for folders feature, and everything else
 void localLibraryWidget::calculateMaxPagesForFolders() {
-    int fileListCount = QDir(pathForFolders).entryList(QDir::Files, QDir::Name).count();
-    log("Files count in dir: " + QString::number(fileListCount), className);
-    int dirListCount = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name).count();
-    log("Dirs count in dir: " + QString::number(dirListCount), className);
-    int completeListOfItems = fileListCount + dirListCount;
-    log("All items: " + QString::number(completeListOfItems), className);
-    pagesNumber = completeListOfItems / buttonsNumber;
-    log("Total pages: " + QString::number(completeListOfItems), className);
+    log("Main path is: " + pathForFolders, className);
 
+    fileListCount = QDir(pathForFolders).entryList(QDir::Files, QDir::Name).count();
+    log("Files count in dir: " + QString::number(fileListCount), className);
+    dirListCount = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name).count();
+    log("Dirs count in dir: " + QString::number(dirListCount), className);
+    completeListOfItems = fileListCount + dirListCount;
+    log("All items: " + QString::number(completeListOfItems), className);
+
+    pagesNumber = std::ceil((double)completeListOfItems / buttonsNumber);
+
+    log("Total pages: " + QString::number(pagesNumber), className);
+
+    // This is the last page full of folders
     firstPageForBooks = (QString::number(float(dirListCount) / buttonsNumber).split(".").first()).toInt();
     log("There are so many pages with folders: " + QString::number(firstPageForBooks), className);
+
+    // This indicates how much folders are after firstPageForBooks. its always less than buttonsNumber
+    lastPageFolderCount = dirListCount;
+    while(lastPageFolderCount >= buttonsNumber) {
+        lastPageFolderCount = lastPageFolderCount - buttonsNumber;
+    }
+    log("Start after item on the last page: " + QString::number(lastPageFolderCount), className);
+
+    // Look for books in this path
+    bookListForPathIndex.clear();
+    int count = 0;
+    for(QJsonValue object: databaseJsonArrayList) {
+        // This syntax...
+        QString bookPath = object.toObject()["BookPath"].toString();
+        QString bookDirPath = QFileInfo(bookPath).absoluteDir().path();
+
+        if(bookDirPath.at(bookDirPath.count() - 1) == "/") {
+            //log("bookDirPath last character is /, removing it");
+            bookDirPath = bookDirPath.remove(bookDirPath.count() - 1, 1);
+        }
+        //log("bookDirPath is: " + bookDirPath, className);
+
+        QString temporaryPathForFolders = pathForFolders;
+        if(temporaryPathForFolders.at(temporaryPathForFolders.count() - 1) == "/") {
+            log("temporaryPathForFolders last character is /, removing it");
+            temporaryPathForFolders = temporaryPathForFolders.remove(temporaryPathForFolders.count() - 1, 1);
+        }
+        //log("temporaryPathForFolders is: " + temporaryPathForFolders, className);
+
+        if(bookDirPath == temporaryPathForFolders) {
+            //log("Found book in folder, adding it to vector", className);
+            bookListForPathIndex.append(count);
+        }
+        count = count + 1;
+    }
+    QStringList list;
+    foreach (int number, bookListForPathIndex) {
+        list.append(QString::number(number));
+    }
+    log("bookListForPathIndex is: " + list.join(","), className);
+
+    // Sorting the vector if needed should be done here
+}
+
+// Don't touch this code. This is a warning.
+// If this code changes, and something with changing pages by keypad, or changing dirs breaks, I won't help debug it. good luck
+// ~Szybet
+void localLibraryWidget::calcIndexForPage(int pageNumber) {
+    if(pageNumber == firstPageForBooks + 1) {
+        log("Variable firstPageForBooks is 0", className);
+        bookIndexVector = 0;
+        return void();
+    }
+
+    if(pageNumber == firstPageForBooks + 2) {
+        log("The page is just after firstPageForBooks", className);
+        bookIndexVector = buttonsNumber - lastPageFolderCount;
+        return void();
+    }
+    else if(pageNumber > firstPageForBooks + 2) {
+        bookIndexVector = buttonsNumber - lastPageFolderCount;
+        int pageTillGoal = 1;
+        int pageDiffrence = pageNumber - (firstPageForBooks + 2);
+        log("Variable firstPageForBooks is: " + QString::number(firstPageForBooks), className);
+        log("Variable pageDiffrence is: " + QString::number(pageDiffrence), className);
+        if(pageDiffrence != 0) {
+            while(pageTillGoal != pageDiffrence) {
+                log("Looping for pageTillGoal");
+                bookIndexVector = bookIndexVector + buttonsNumber;
+                pageTillGoal = pageTillGoal + 1;
+            }
+        }
+        bookIndexVector = bookIndexVector + buttonsNumber;
+        log("Calculated bookIndexVector is: " + QString::number(bookIndexVector), className);
+    }
+    else {
+        log("Variable pageNumber isin't Higher than firstPageForBooks", className);
+        bookIndexVector = 0;
+    }
+}
+
+void localLibraryWidget::changePathAndRefresh(QString directory) {
+    log("Changing path", className);
+    QString temporaryPathForFolders = pathForFolders + directory + "/";
+    if(QDir(temporaryPathForFolders).isEmpty() == false) {
+        pathForFolders = temporaryPathForFolders;
+        calculateMaxPagesForFolders();
+        bookIndexVector = 0;
+        goToPage(1);
+    }
+    else {
+        showToast("Directory is empty");
+    }
 }
