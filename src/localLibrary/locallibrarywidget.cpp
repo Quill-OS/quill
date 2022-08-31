@@ -36,7 +36,6 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         buttonsNumber = 5;
     }
     else {
-        // test
         buttonsNumber = 4;
     }
 
