@@ -90,6 +90,7 @@ private:
     QVector<int> bookListForPathIndex;
     int bookIndexVector = 0;
     int goBackInIndex = 0;
+    QPixmap pixmapForFolder = QPixmap("://resources/folder.png");
 
     int fileListCount;
     int dirListCount;

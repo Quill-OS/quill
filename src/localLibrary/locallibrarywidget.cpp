@@ -537,8 +537,8 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             }
 
             bookBtnArray[in]->setText(dirListPure.at(dirCount));
-            QPixmap pixmap("://resources/folder.png");
-            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+            // Fix for aspect ratio (Ignore it) for me it looks fine
+            bookIconArray[in]->setPixmap(pixmapForFolder.scaled(stdIconWidth, stdIconHeight, Qt::IgnoreAspectRatio));
 
             // Id for indicating its a folder in btnOpenBook
             idList.append(99990);
