@@ -139,6 +139,8 @@ namespace global {
             inline bool deleteOption = true;
             inline bool bookDeleted;
             inline bool bookPinAction;
+            inline QString folderPath;
+            inline bool isFolder = false;
         }
     }
     namespace localStorage {

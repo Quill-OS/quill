@@ -43,21 +43,7 @@
    </property>
    <item>
     <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="6">
-      <widget class="QPushButton" name="nextPageBtn">
-       <property name="text">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4">
-      <widget class="QClickableLabel" name="pageNumberLabel" native="true">
-       <property name="text" stdset="0">
-        <string/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="5">
+     <item row="0" column="7">
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -74,22 +60,6 @@
       </spacer>
      </item>
      <item row="0" column="3">
-      <spacer name="horizontalSpacer_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Maximum</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="0" column="1">
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -106,9 +76,50 @@
       </spacer>
      </item>
      <item row="0" column="2">
-      <widget class="QPushButton" name="previousPageBtn">
+      <widget class="QPushButton" name="pathBtn">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../eink.qrc">
+         <normaloff>:/resources/question-mark.png</normaloff>:/resources/question-mark.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="8">
+      <widget class="QPushButton" name="nextPageBtn">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="6">
+      <widget class="QClickableLabel" name="pageNumberLabel" native="true">
+       <property name="text" stdset="0">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QPushButton" name="goUpBtn">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="../eink.qrc">
+         <normaloff>:/resources/arrow-up.png</normaloff>:/resources/arrow-up.png</iconset>
        </property>
       </widget>
      </item>
@@ -124,6 +135,29 @@
         <string>&lt;b&gt;Local library&lt;/b&gt;</string>
        </property>
       </widget>
+     </item>
+     <item row="0" column="4">
+      <widget class="QPushButton" name="previousPageBtn">
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="5">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Maximum</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>
@@ -212,6 +246,8 @@ Add some via USB or explore the Online Library.</string>
    <header>qclickablelabel.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../eink.qrc"/>
+ </resources>
  <connections/>
 </ui>

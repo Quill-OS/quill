@@ -99,5 +99,7 @@
         <file>resources/wifi-100.png</file>
         <file>resources/log.png</file>
         <file>resources/folder.png</file>
+        <file>resources/arrow-up.png</file>
+        <file>resources/question-mark.png</file>
     </qresource>
 </RCC>

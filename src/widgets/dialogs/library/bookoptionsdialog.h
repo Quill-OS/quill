@@ -29,9 +29,12 @@ private slots:
     void unpinBook(int bookID);
     bool isBookPinned(int bookID);
 
+    void on_deleteFolderBtn_clicked();
+
 signals:
     void openLocalBookInfoDialog();
     void showToast(QString messageToDisplay);
+    void removedFolder();
 
 private:
     Ui::bookOptionsDialog *ui;

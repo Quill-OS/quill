@@ -39,7 +39,17 @@ bookOptionsDialog::bookOptionsDialog(QWidget *parent) :
         ui->wipeLocalReadingSettingsBtn->setEnabled(false);
         ui->wipeLocalReadingSettingsBtn->setStyleSheet(ui->wipeLocalReadingSettingsBtn->styleSheet() + "color: gray");
     }
-    this->adjustSize();
+
+    if(global::localLibrary::bookOptionsDialog::isFolder == true) {
+        log("Detected folder feature enabled, changing pages", className);
+        ui->stackedWidget->setCurrentIndex(1);
+    }
+    else {
+        log("Changing page for books", className);
+        ui->stackedWidget->setCurrentIndex(0);
+    }
+    //this->adjustSize();
+    QTimer::singleShot(1000, this, SLOT(adjust_size()));
 }
 
 bookOptionsDialog::~bookOptionsDialog()
@@ -227,4 +237,20 @@ void bookOptionsDialog::on_wipeLocalReadingSettingsBtn_clicked()
     dir.removeRecursively();
     global::toast::delay = 3000;
     emit showToast("Reading settings wiped successfully");
+}
+
+void bookOptionsDialog::on_deleteFolderBtn_clicked()
+{
+    log("Removing empty directory: " + global::localLibrary::bookOptionsDialog::folderPath, className);
+    if(QDir(global::localLibrary::bookOptionsDialog::folderPath).isEmpty() == true) {
+        global::toast::delay = 3000;
+        emit showToast("Removed directory succeslyfully");
+        QDir(global::localLibrary::bookOptionsDialog::folderPath).removeRecursively();
+        emit removedFolder();
+    }
+    else {
+        emit showToast("Directory isin't empty");
+    }
+    this->deleteLater();
+    this->close();
 }

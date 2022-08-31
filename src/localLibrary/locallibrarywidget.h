@@ -65,6 +65,11 @@ private slots:
     void calcIndexForPage(int pageNumber);
     // Dir without "/" at the end and begining
     void changePathAndRefresh(QString directory);
+    void refreshFolders();
+
+    void on_goUpBtn_clicked();
+
+    void on_pathBtn_clicked();
 
 private:
     Ui::localLibraryWidget * ui;

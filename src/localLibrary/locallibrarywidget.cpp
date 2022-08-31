@@ -22,6 +22,13 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     ui->pageNumberLabel->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding-left: 10px; padding-right: 10px");
     ui->verticalLayout->setSpacing(4);
 
+    // Folders feature
+    //ui->goUpBtn->setProperty("type", "borderless");
+    //ui->pathBtn->setProperty("type", "borderless");
+    ui->goUpBtn->setStyleSheet("padding-left: 20px; padding-right: 20px");
+    ui->pathBtn->setStyleSheet("padding-left: 20px; padding-right: 20px");
+    ui->goUpBtn->setDisabled(true);
+
     if(global::deviceID == "n705\n") {
         buttonsNumber = 3;
     }
@@ -120,6 +127,11 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         showToast("Generating database");
     }
     QTimer::singleShot(100, this, SLOT(setupDisplay()));
+
+    if(folderFeatureEnabled == false) {
+        ui->goUpBtn->hide();
+        ui->pathBtn->hide();
+    }
 }
 
 localLibraryWidget::~localLibraryWidget()
@@ -341,6 +353,7 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
             log("Clicked a folder", className);
             QString dirToGo = bookBtnArray[buttonNumber]->text();
             log("Dir to go is: " + dirToGo, className);
+            ui->goUpBtn->setDisabled(false);
             changePathAndRefresh(dirToGo);
         }
         else {
@@ -407,16 +420,39 @@ void localLibraryWidget::showToast(QString messageToDisplay) {
     toastWindow->show();
 }
 
+// pseudoBookID = button number
 void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
+    log("Opening options dialog", className);
     // Determine book ID from the book's button number
     int bookID = ((currentPageNumber * buttonsNumber) - (buttonsNumber - 1)) + (pseudoBookID - 1);
+    log("BookID is: " + QString::number(bookID), className);
+    int id = idList.at(pseudoBookID - 1);
+    log("Id from database is: " + QString::number(id), className);
 
+    if(id == 99990) {
+        if(folderFeatureEnabled == true) {
+            log("Opening option dialog for a folder", className);
+            QString dirPath = bookBtnArray[pseudoBookID]->text();
+            log("Directory path for folder: " + dirPath, className);
+            global::localLibrary::bookOptionsDialog::isFolder = true;
+            global::localLibrary::bookOptionsDialog::folderPath = pathForFolders + dirPath;
+        }
+        else {
+            log("Error: how", className);
+
+        }
+    }
+    else {
+        global::localLibrary::bookOptionsDialog::isFolder = false;
+        global::localLibrary::bookOptionsDialog::folderPath = "";
+    }
     log("Opening book options dialog for book with pseudo-ID " + QString::number(pseudoBookID) + ", ID " + QString::number(bookID), className);
     global::localLibrary::bookOptionsDialog::bookID = bookID;
     bookOptionsDialog * bookOptionsDialogWindow = new bookOptionsDialog(this);
     QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::openLocalBookInfoDialog, this, &localLibraryWidget::openLocalBookInfoDialog);
     QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::showToast, this, &localLibraryWidget::showToast);
     QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::destroyed, this, &localLibraryWidget::handlePossibleBookDeletion);
+    QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::removedFolder, this ,&localLibraryWidget::refreshFolders);
     bookOptionsDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     bookOptionsDialogWindow->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
     bookOptionsDialogWindow->show();
@@ -712,4 +748,39 @@ void localLibraryWidget::changePathAndRefresh(QString directory) {
     else {
         showToast("Directory is empty");
     }
+}
+
+void localLibraryWidget::on_goUpBtn_clicked()
+{
+    if(pathForFolders != "/mnt/onboard/onboard/") {
+        log("Changing path; going back", className);
+        // This can't be a one liner
+        QDir temporaryPathForFolders = QDir(pathForFolders);
+        temporaryPathForFolders.cdUp();
+        pathForFolders = temporaryPathForFolders.path();
+        pathForFolders = pathForFolders + "/";
+        if(pathForFolders == "/mnt/onboard/onboard/") {
+            ui->goUpBtn->setDisabled(true);
+        }
+        log("New path: " + pathForFolders, className);
+
+        calculateMaxPagesForFolders();
+        bookIndexVector = 0;
+        goToPage(1);
+    }
+}
+
+void localLibraryWidget::on_pathBtn_clicked()
+{
+    log("Showing path dialog", className);
+    QString pathForFoldersSaved = pathForFolders;
+    showToast(pathForFolders.remove(0, 20));
+    pathForFolders = pathForFoldersSaved;
+}
+
+void localLibraryWidget::refreshFolders() {
+    log("Called refreshing folders");
+    calculateMaxPagesForFolders();
+    bookIndexVector = 0;
+    goToPage(1);
 }
