@@ -640,28 +640,6 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
 void localLibraryWidget::calculateMaxPagesForFolders() {
     log("Main path is: " + pathForFolders, className);
 
-    fileListCount = QDir(pathForFolders).entryList(QDir::Files, QDir::Name).count();
-    log("Files count in dir: " + QString::number(fileListCount), className);
-    dirListCount = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name).count();
-    log("Dirs count in dir: " + QString::number(dirListCount), className);
-    completeListOfItems = fileListCount + dirListCount;
-    log("All items: " + QString::number(completeListOfItems), className);
-
-    pagesNumber = std::ceil((double)completeListOfItems / buttonsNumber);
-
-    log("Total pages: " + QString::number(pagesNumber), className);
-
-    // This is the last page full of folders
-    firstPageForBooks = (QString::number(float(dirListCount) / buttonsNumber).split(".").first()).toInt();
-    log("There are so many pages with folders: " + QString::number(firstPageForBooks), className);
-
-    // This indicates how much folders are after firstPageForBooks. its always less than buttonsNumber
-    lastPageFolderCount = dirListCount;
-    while(lastPageFolderCount >= buttonsNumber) {
-        lastPageFolderCount = lastPageFolderCount - buttonsNumber;
-    }
-    log("Start after item on the last page: " + QString::number(lastPageFolderCount), className);
-
     // Look for books in this path
     bookListForPathIndex.clear();
     int count = 0;
@@ -694,6 +672,26 @@ void localLibraryWidget::calculateMaxPagesForFolders() {
         list.append(QString::number(number));
     }
     log("bookListForPathIndex is: " + list.join(","), className);
+
+    dirListCount = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name).count();
+    log("Dirs count in dir: " + QString::number(dirListCount), className);
+    completeListOfItems = bookListForPathIndex.count() + dirListCount;
+    log("All items: " + QString::number(completeListOfItems), className);
+
+    pagesNumber = std::ceil((double)completeListOfItems / buttonsNumber);
+
+    log("Total pages: " + QString::number(pagesNumber), className);
+
+    // This is the last page full of folders
+    firstPageForBooks = (QString::number(float(dirListCount) / buttonsNumber).split(".").first()).toInt();
+    log("There are so many pages with folders: " + QString::number(firstPageForBooks), className);
+
+    // This indicates how much folders are after firstPageForBooks. its always less than buttonsNumber
+    lastPageFolderCount = dirListCount;
+    while(lastPageFolderCount >= buttonsNumber) {
+        lastPageFolderCount = lastPageFolderCount - buttonsNumber;
+    }
+    log("Start after item on the last page: " + QString::number(lastPageFolderCount), className);
 
     // Sorting the vector if needed should be done here
 }
