@@ -70,18 +70,12 @@ private slots:
     void on_generateSystemReportBtn_clicked();
     void on_tzComboBox_currentTextChanged(const QString &arg1);
     void on_exportHighlightsBtn_clicked();
-
-    void on_wordNumberAddBtn_clicked();
-
-    void on_wordNumberDelBtn_clicked();
-
-    void on_pageSizeHeightDelBtn_clicked();
-
-    void on_pageSizeHeightAddBtn_clicked();
-
-    void on_pageSizeWidthDelBtn_clicked();
-
-    void on_pageSizeWidthAddBtn_clicked();
+    void on_wordsNumberIncBtn_clicked();
+    void on_wordsNumberDecBtn_clicked();
+    void on_pageSizeHeightDecBtn_clicked();
+    void on_pageSizeHeightIncBtn_clicked();
+    void on_pageSizeWidthDecBtn_clicked();
+    void on_pageSizeWidthIncBtn_clicked();
 
 signals:
     void showToast(QString messageToDisplay);
@@ -96,7 +90,7 @@ private:
 
     int pageSizeHeightSaved;
     int pageSizeWidthSaved;
-    int wordNumberSaved;
+    int wordsNumberSaved;
 };
 
 #endif // SETTINGS_H

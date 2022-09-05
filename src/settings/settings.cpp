@@ -66,6 +66,9 @@ settings::settings(QWidget *parent) :
     ui->nextBtn->setText("");
     ui->nextBtn->setIcon(QIcon(":/resources/chevron-right.png"));
 
+    ui->nextBtn->setFixedWidth(100);
+    ui->previousBtn->setFixedWidth(100);
+
     ui->requestLeaseBtn->hide();
     ui->usbmsBtn->hide();
     ui->label_3->hide();
@@ -114,18 +117,21 @@ settings::settings(QWidget *parent) :
     string_checkconfig(".config/07-words_number/config");
     if(checkconfig_str_val == "") {
         if(global::deviceID == "n705\n") {
-            wordNumberSaved = 120;
-        } else if(global::deviceID == "n873\n") {
-            wordNumberSaved = 250;
-        } else {
-            wordNumberSaved = 175;
+            wordsNumberSaved = 120;
+        }
+        else if(global::deviceID == "n873\n") {
+            wordsNumberSaved = 250;
+        }
+        else {
+            wordsNumberSaved = 175;
         }
     }
     else {
         QString words_number = checkconfig_str_val;
-        ui->wordNumberShowLabel->setText(words_number);
-        wordNumberSaved = checkconfig_str_val.toInt();
+        wordsNumberSaved = checkconfig_str_val.toInt();
     }
+    ui->wordsNumberValueLabel->setText(QString::number(wordsNumberSaved));
+
 
     // ePUB page size
     if(checkconfig(".config/13-epub_page_size/set") == true) {
@@ -374,33 +380,17 @@ settings::~settings()
 {
     delete ui;
 }
-/*
-void settings::on_pageSizeWidthSpinBox_valueChanged(int arg1)
-{
-    std::string value = std::to_string(arg1);
-    string_writeconfig(".config/13-epub_page_size/width", value);
-    string_writeconfig(".config/13-epub_page_size/set", "true");
-    log("Set ePUB page size width to " + QString::number(arg1), className);
-}
 
-void settings::on_pageSizeHeightSpinBox_valueChanged(int arg1)
-{
-    std::string value = std::to_string(arg1);
-    string_writeconfig(".config/13-epub_page_size/height", value);
-    string_writeconfig(".config/13-epub_page_size/set", "true");
-    log("Set ePUB page size height to " + QString::number(arg1), className);
-}
-*/
 void settings::on_okBtn_clicked() {
     // Save things
-    string_writeconfig(".config/07-words_number/config", QString::number(wordNumberSaved).toStdString());
-    log("Set text files words number to " + QString::number(wordNumberSaved), className);
+    writeFile(".config/07-words_number/config", QString::number(wordsNumberSaved));
+    log("Set text files words number to " + QString::number(wordsNumberSaved), className);
 
-    string_writeconfig(".config/13-epub_page_size/width", QString::number(pageSizeWidthSaved).toStdString());
-    string_writeconfig(".config/13-epub_page_size/set", "true");
+    writeFile(".config/13-epub_page_size/width", QString::number(pageSizeWidthSaved));
+    writeFile(".config/13-epub_page_size/set", "true");
 
-    string_writeconfig(".config/13-epub_page_size/height", QString::number(pageSizeHeightSaved).toStdString());
-    string_writeconfig(".config/13-epub_page_size/set", "true");
+    writeFile(".config/13-epub_page_size/height", QString::number(pageSizeHeightSaved));
+    writeFile(".config/13-epub_page_size/set", "true");
 
     // Prevent potential unknown damage launching via shell script this could do
     if(launch_sh == true) {
@@ -1060,22 +1050,22 @@ void settings::on_exportHighlightsBtn_clicked()
     showToast("Highlights exported successfully");
 }
 
-void settings::on_wordNumberAddBtn_clicked()
+void settings::on_wordsNumberIncBtn_clicked()
 {
-    wordNumberSaved = wordNumberSaved + 5;
-    ui->wordNumberShowLabel->setText(QString::number(wordNumberSaved));
+    wordsNumberSaved = wordsNumberSaved + 5;
+    ui->wordsNumberValueLabel->setText(QString::number(wordsNumberSaved));
 
 }
 
-void settings::on_wordNumberDelBtn_clicked()
+void settings::on_wordsNumberDecBtn_clicked()
 {
-    if(wordNumberSaved > 10) {
-        wordNumberSaved = wordNumberSaved - 5;
-        ui->wordNumberShowLabel->setText(QString::number(wordNumberSaved));
+    if(wordsNumberSaved > 10) {
+        wordsNumberSaved = wordsNumberSaved - 5;
+        ui->wordsNumberValueLabel->setText(QString::number(wordsNumberSaved));
     }
 }
 
-void settings::on_pageSizeHeightDelBtn_clicked()
+void settings::on_pageSizeHeightDecBtn_clicked()
 {
     if(pageSizeHeightSaved > 100) {
         pageSizeHeightSaved = pageSizeHeightSaved - 5;
@@ -1083,13 +1073,13 @@ void settings::on_pageSizeHeightDelBtn_clicked()
     }
 }
 
-void settings::on_pageSizeHeightAddBtn_clicked()
+void settings::on_pageSizeHeightIncBtn_clicked()
 {
     pageSizeHeightSaved = pageSizeHeightSaved + 5;
     ui->pageSizeHeightLabel->setText(QString::number(pageSizeHeightSaved));
 }
 
-void settings::on_pageSizeWidthDelBtn_clicked()
+void settings::on_pageSizeWidthDecBtn_clicked()
 {
     if(pageSizeWidthSaved > 100) {
         pageSizeWidthSaved = pageSizeWidthSaved - 5;
@@ -1097,7 +1087,7 @@ void settings::on_pageSizeWidthDelBtn_clicked()
     }
 }
 
-void settings::on_pageSizeWidthAddBtn_clicked()
+void settings::on_pageSizeWidthIncBtn_clicked()
 {
     pageSizeWidthSaved = pageSizeWidthSaved + 5;
     ui->pageSizeWidthLabel->setText(QString::number(pageSizeWidthSaved));

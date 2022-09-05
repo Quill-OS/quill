@@ -270,7 +270,7 @@
                   </spacer>
                  </item>
                  <item row="0" column="3">
-                  <widget class="QPushButton" name="pageSizeWidthDelBtn">
+                  <widget class="QPushButton" name="pageSizeWidthDecBtn">
                    <property name="text">
                     <string/>
                    </property>
@@ -281,7 +281,7 @@
                   </widget>
                  </item>
                  <item row="0" column="8">
-                  <widget class="QPushButton" name="pageSizeHeightDelBtn">
+                  <widget class="QPushButton" name="pageSizeHeightDecBtn">
                    <property name="text">
                     <string/>
                    </property>
@@ -292,7 +292,7 @@
                   </widget>
                  </item>
                  <item row="0" column="10">
-                  <widget class="QPushButton" name="pageSizeHeightAddBtn">
+                  <widget class="QPushButton" name="pageSizeHeightIncBtn">
                    <property name="text">
                     <string/>
                    </property>
@@ -303,7 +303,7 @@
                   </widget>
                  </item>
                  <item row="0" column="5">
-                  <widget class="QPushButton" name="pageSizeWidthAddBtn">
+                  <widget class="QPushButton" name="pageSizeWidthIncBtn">
                    <property name="text">
                     <string/>
                    </property>
@@ -369,7 +369,7 @@
                   <number>0</number>
                  </property>
                  <item row="1" column="4">
-                  <widget class="QPushButton" name="wordNumberAddBtn">
+                  <widget class="QPushButton" name="wordsNumberIncBtn">
                    <property name="text">
                     <string/>
                    </property>
@@ -380,7 +380,7 @@
                   </widget>
                  </item>
                  <item row="1" column="3">
-                  <widget class="QLabel" name="wordNumberShowLabel">
+                  <widget class="QLabel" name="wordsNumberValueLabel">
                    <property name="text">
                     <string>30</string>
                    </property>
@@ -407,7 +407,7 @@
                   </widget>
                  </item>
                  <item row="1" column="2">
-                  <widget class="QPushButton" name="wordNumberDelBtn">
+                  <widget class="QPushButton" name="wordsNumberDecBtn">
                    <property name="text">
                     <string/>
                    </property>
