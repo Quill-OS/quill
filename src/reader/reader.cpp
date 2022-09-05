@@ -254,6 +254,7 @@ reader::reader(QWidget *parent) :
         ui->text->setFont(QFont("Source Serif Pro"));
     }
     else {
+        log("Setting font to '" + checkconfig_str_val + "'", className);
         if(checkconfig_str_val == "Crimson Pro") {
             setCrimsonProFont();
         }
@@ -917,9 +918,9 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         ;
     }
     else {
-        QString parse_prog ("python3");
+        QString parse_prog ("/mnt/onboard/.adds/inkbox/system/bin/split-txt");
         QStringList parse_args;
-        parse_args << "split-txt.py" << checkconfig_str_val;
+        parse_args << checkconfig_str_val;
         QProcess * parse_proc = new QProcess();
         parse_proc->start(parse_prog, parse_args);
         parse_proc->waitForFinished();
@@ -936,10 +937,14 @@ int reader::setup_book(QString book, int i, bool run_parser) {
                   content << f.readAll();
                   f.close();
             }
+            content[i].replace("\n", "<br>");
+            content[i].replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
             ittext = content[i];
             return content.size();
         }
         else {
+            content[i].replace("\n", "<br>");
+            content[i].replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
             ittext = content[i];
         }
     }
@@ -1312,7 +1317,7 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
     }
     if(arg1 == "Roboto Mono") {
         ui->text->setFont(QFont("Roboto Mono"));
-        writeFile(".config/04-boot/font", "Roboto Mono");
+        writeFile(".config/04-book/font", "Roboto Mono");
     }
     if(arg1 == "Libertinus Serif") {
         QFont libertinus("Libertinus Serif");
