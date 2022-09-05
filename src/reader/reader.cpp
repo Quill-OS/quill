@@ -937,6 +937,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
                   content << f.readAll();
                   f.close();
             }
+            // These characters are replaced for consistency with ePUB text handling, highlighting and text alignment.
             content[i].replace("\n", "<br>");
             content[i].replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
             ittext = content[i];
