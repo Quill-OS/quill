@@ -169,6 +169,7 @@ private slots:
     void unhighlightText();
     void on_viewHighlightsBtn_clicked();
     void alignAndHighlightTextSlot();
+    void setFontSizeSlot();
 
 signals:
     void openBookFile(QString book, bool relativePath);

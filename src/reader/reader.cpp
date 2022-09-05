@@ -478,44 +478,6 @@ reader::reader(QWidget *parent) :
     }
 
     // Display text
-    // Checking saved font size if any
-    string_checkconfig(".config/04-book/size");
-    if(checkconfig_str_val == "0") {
-        checkconfig_str_val = "6";
-        ui->sizeSlider->setValue(0);
-        ui->sizeValueLabel->setText("1");
-    }
-    if(checkconfig_str_val == "1") {
-        checkconfig_str_val = "10";
-        ui->sizeSlider->setValue(1);
-        ui->sizeValueLabel->setText("2");
-    }
-    if(checkconfig_str_val == "2") {
-        checkconfig_str_val = "14";
-        ui->sizeSlider->setValue(2);
-        ui->sizeValueLabel->setText("3");
-    }
-    if(checkconfig_str_val == "3") {
-        checkconfig_str_val = "18";
-        ui->sizeSlider->setValue(3);
-        ui->sizeValueLabel->setText("4");
-    }
-    if(checkconfig_str_val == "4") {
-        checkconfig_str_val = "22";
-        ui->sizeSlider->setValue(4);
-        ui->sizeValueLabel->setText("5");
-    }
-    if(checkconfig_str_val == "") {
-        checkconfig_str_val = "10";
-        ui->sizeSlider->setValue(1);
-        ui->sizeValueLabel->setText("2");
-    }
-    QString font_size = "font-size: ";
-    font_size = font_size.append(checkconfig_str_val);
-    font_size = font_size.append("pt");
-    log("Setting font size to " + checkconfig_str_val + " points", className);
-    ui->text->setStyleSheet(font_size);
-
     // If needed, show scroll bar when rendering engine isn't doing its job properly
     if(checkconfig(".config/14-reader_scrollbar/config") == true) {
         ui->text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -525,6 +487,34 @@ reader::reader(QWidget *parent) :
         ui->text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         ui->text->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     }
+
+    // Text alignment
+    string_checkconfig(".config/04-book/alignment");
+    if(checkconfig_str_val == "Left") {
+        textAlignment = 0;
+        alignAndHighlightText(0);
+    }
+    else if(checkconfig_str_val == "Center") {
+        textAlignment = 1;
+        alignAndHighlightText(1);
+    }
+    else if(checkconfig_str_val == "Right") {
+        textAlignment = 2;
+        alignAndHighlightText(2);
+    }
+    else if(checkconfig_str_val == "Justify") {
+        textAlignment = 3;
+        alignAndHighlightText(3);
+    }
+    else {
+        checkconfig_str_val = "Left";
+        textAlignment = 0;
+        alignAndHighlightText(0);
+    }
+    log("Setting text alignment to '" + checkconfig_str_val + "'", className);
+
+    // Don't ask me why it doesn't work without that QTimer
+    QTimer::singleShot(0, this, SLOT(setFontSizeSlot()));
 
     // Wheeee!
     if(is_epub == true) {
@@ -554,31 +544,6 @@ reader::reader(QWidget *parent) :
         ui->graphicsView->hide();
         ui->graphicsView->deleteLater();
         ui->text->setText(ittext);
-    }
-
-    // Alignment
-    string_checkconfig(".config/04-book/alignment");
-    if (checkconfig_str_val == "") {
-        ;
-    }
-    else {
-        if(checkconfig_str_val == "Left") {
-                textAlignment = 0;
-                alignAndHighlightText(0);
-        }
-        if(checkconfig_str_val == "Center") {
-                textAlignment = 1;
-                alignAndHighlightText(1);
-        }
-        if(checkconfig_str_val == "Right") {
-                textAlignment = 2;
-                alignAndHighlightText(2);
-        }
-        if(checkconfig_str_val == "Justify") {
-                textAlignment = 3;
-                alignAndHighlightText(3);
-        }
-        log("Setting text alignment to '" + checkconfig_str_val + "'", className);
     }
 
     // Topbar info widget
@@ -1637,75 +1602,16 @@ void reader::on_saveWordBtn_clicked()
 void reader::on_sizeSlider_valueChanged(int value)
 {
     // Font size
+    int initialValue = 6;
+    log("Setting font size to " + QString::number(value + initialValue + 1) + " points", className);
+
     string value_str = to_string(value);
     string_writeconfig(".config/04-book/size", value_str);
 
-    if(global::deviceID == "n705\n") {
-        if(value == 0) {
-            ui->text->setStyleSheet("font-size: 6pt");
-            ui->sizeValueLabel->setText("1");
-        }
-        if(value == 1) {
-            ui->text->setStyleSheet("font-size: 10pt");
-            ui->sizeValueLabel->setText("2");
-        }
-        if(value == 2) {
-            ui->text->setStyleSheet("font-size: 14pt");
-            ui->sizeValueLabel->setText("3");
-        }
-        if(value == 3) {
-            ui->text->setStyleSheet("font-size: 18pt");
-            ui->sizeValueLabel->setText("4");
-        }
-        if(value == 4) {
-            ui->text->setStyleSheet("font-size: 22pt");
-            ui->sizeValueLabel->setText("5");
-        }
-    }
-    if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        if(value == 0) {
-            ui->text->setStyleSheet("font-size: 6pt");
-            ui->sizeValueLabel->setText("1");
-        }
-        if(value == 1) {
-            ui->text->setStyleSheet("font-size: 10pt");
-            ui->sizeValueLabel->setText("2");
-        }
-        if(value == 2) {
-            ui->text->setStyleSheet("font-size: 14pt");
-            ui->sizeValueLabel->setText("3");
-        }
-        if(value == 3) {
-            ui->text->setStyleSheet("font-size: 18pt");
-            ui->sizeValueLabel->setText("4");
-        }
-        if(value == 4) {
-            ui->text->setStyleSheet("font-size: 22pt");
-            ui->sizeValueLabel->setText("5");
-        }
-    }
-    else {
-        if(value == 0) {
-            ui->text->setStyleSheet("font-size: 6pt");
-            ui->sizeValueLabel->setText("1");
-        }
-        if(value == 1) {
-            ui->text->setStyleSheet("font-size: 10pt");
-            ui->sizeValueLabel->setText("2");
-        }
-        if(value == 2) {
-            ui->text->setStyleSheet("font-size: 14pt");
-            ui->sizeValueLabel->setText("3");
-        }
-        if(value == 3) {
-            ui->text->setStyleSheet("font-size: 18pt");
-            ui->sizeValueLabel->setText("4");
-        }
-        if(value == 4) {
-            ui->text->setStyleSheet("font-size: 22pt");
-            ui->sizeValueLabel->setText("5");
-        }
-    }
+    QString styleSheet = "font-size: " + QString::number(initialValue + value + 1) + "pt;";
+    ui->text->setStyleSheet(styleSheet);
+    ui->sizeValueLabel->setText(QString::number(value + 1));
+
     alignAndHighlightText(textAlignment);
 }
 
@@ -2438,4 +2344,10 @@ void reader::on_viewHighlightsBtn_clicked()
 
 void reader::alignAndHighlightTextSlot() {
     alignAndHighlightText(textAlignment);
+}
+
+void reader::setFontSizeSlot() {
+    // Checking saved font size if any, and if there is, set it
+    string_checkconfig(".config/04-book/size");
+    ui->sizeSlider->setValue(checkconfig_str_val.toInt());
 }
