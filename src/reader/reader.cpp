@@ -1310,6 +1310,10 @@ void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
         ui->text->setFont(notomono);
         string_writeconfig(".config/04-book/font", "Noto Mono");
     }
+    if(arg1 == "Roboto Mono") {
+        ui->text->setFont(QFont("Roboto Mono"));
+        writeFile(".config/04-boot/font", "Roboto Mono");
+    }
     if(arg1 == "Libertinus Serif") {
         QFont libertinus("Libertinus Serif");
         ui->text->setFont(libertinus);

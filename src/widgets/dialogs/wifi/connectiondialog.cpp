@@ -12,7 +12,7 @@ connectiondialog::connectiondialog(QWidget *parent) :
 {
     ui->setupUi(this);
     this->setFont(QFont("u001"));
-    ui->passphraseTextEdit->setFont(QFont("Noto Mono"));
+    ui->passphraseTextEdit->setFont(QFont("Roboto Mono"));
     ui->label->setFont(QFont("Inter"));
     ui->label_2->setFont(QFont("Inter"));
 
@@ -45,6 +45,9 @@ connectiondialog::connectiondialog(QWidget *parent) :
     int finalHeight;
     if(global::deviceID == "n705\n") {
         finalHeight = screenGeometry.height() - halfOfHalfHeight * 5.9;
+    }
+    else if(global::deviceID == "n873\n") {
+        finalHeight = screenGeometry.height() - halfOfHalfHeight * 6.45;
     }
     else {
         finalHeight = screenGeometry.height() - halfOfHalfHeight * 6.3;
