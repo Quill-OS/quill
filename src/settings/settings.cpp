@@ -113,37 +113,50 @@ settings::settings(QWidget *parent) :
     // Words number
     string_checkconfig(".config/07-words_number/config");
     if(checkconfig_str_val == "") {
-        ;
+        if(global::deviceID == "n705\n") {
+            wordNumberSaved = 120;
+        } else if(global::deviceID == "n873\n") {
+            wordNumberSaved = 250;
+        } else {
+            wordNumberSaved = 175;
+        }
     }
     else {
-        int words_number = checkconfig_str_val.toInt();
-        ui->wordsNumber->setValue(words_number);
+        QString words_number = checkconfig_str_val;
+        ui->wordNumberShowLabel->setText(words_number);
+        wordNumberSaved = checkconfig_str_val.toInt();
     }
 
     // ePUB page size
     if(checkconfig(".config/13-epub_page_size/set") == true) {
         string_checkconfig_ro(".config/13-epub_page_size/width");
         if(checkconfig_str_val != "") {
-            int pageWidth = checkconfig_str_val.toInt();
-            ui->pageSizeWidthSpinBox->setValue(pageWidth);
+            QString pageWidth = checkconfig_str_val;
+            ui->pageSizeWidthLabel->setText(pageWidth);
+            pageSizeWidthSaved = pageWidth.toInt();
         }
         else {
             // Failsafe: setting default
-            ui->pageSizeWidthSpinBox->setValue(defaultEpubPageWidth);
+            ui->pageSizeWidthLabel->setText(QString::number(defaultEpubPageWidth));
+            pageSizeWidthSaved = defaultEpubPageWidth;
         }
         string_checkconfig_ro(".config/13-epub_page_size/height");
         if(checkconfig_str_val != "") {
-            int pageHeight = checkconfig_str_val.toInt();
-            ui->pageSizeHeightSpinBox->setValue(pageHeight);
+            QString pageHeight = checkconfig_str_val;
+            ui->pageSizeHeightLabel->setText(pageHeight);
+            pageSizeHeightSaved = pageHeight.toInt();
         }
         else {
             // Failsafe: setting default
-            ui->pageSizeHeightSpinBox->setValue(defaultEpubPageHeight);
+            ui->pageSizeHeightLabel->setText(QString::number(defaultEpubPageHeight));
+            pageSizeHeightSaved = defaultEpubPageHeight;
         }
     }
     else {
-        ui->pageSizeWidthSpinBox->setValue(defaultEpubPageWidth);
-        ui->pageSizeHeightSpinBox->setValue(defaultEpubPageHeight);
+        ui->pageSizeWidthLabel->setText("Width: " + QString::number(defaultEpubPageWidth));
+        ui->pageSizeHeightLabel->setText("Height: " + QString::number(defaultEpubPageHeight));
+        pageSizeHeightSaved = defaultEpubPageHeight;
+        pageSizeWidthSaved = defaultEpubPageWidth;
     }
 
     // QTextEdit scroll bar in Reader framework
@@ -361,8 +374,34 @@ settings::~settings()
 {
     delete ui;
 }
+/*
+void settings::on_pageSizeWidthSpinBox_valueChanged(int arg1)
+{
+    std::string value = std::to_string(arg1);
+    string_writeconfig(".config/13-epub_page_size/width", value);
+    string_writeconfig(".config/13-epub_page_size/set", "true");
+    log("Set ePUB page size width to " + QString::number(arg1), className);
+}
 
+void settings::on_pageSizeHeightSpinBox_valueChanged(int arg1)
+{
+    std::string value = std::to_string(arg1);
+    string_writeconfig(".config/13-epub_page_size/height", value);
+    string_writeconfig(".config/13-epub_page_size/set", "true");
+    log("Set ePUB page size height to " + QString::number(arg1), className);
+}
+*/
 void settings::on_okBtn_clicked() {
+    // Save things
+    string_writeconfig(".config/07-words_number/config", QString::number(wordNumberSaved).toStdString());
+    log("Set text files words number to " + QString::number(wordNumberSaved), className);
+
+    string_writeconfig(".config/13-epub_page_size/width", QString::number(pageSizeWidthSaved).toStdString());
+    string_writeconfig(".config/13-epub_page_size/set", "true");
+
+    string_writeconfig(".config/13-epub_page_size/height", QString::number(pageSizeHeightSaved).toStdString());
+    string_writeconfig(".config/13-epub_page_size/set", "true");
+
     // Prevent potential unknown damage launching via shell script this could do
     if(launch_sh == true) {
         if(ui_enable_changed == true) {
@@ -795,22 +834,6 @@ void settings::on_showSystemInfoBtn_clicked()
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
 }
 
-void settings::on_pageSizeWidthSpinBox_valueChanged(int arg1)
-{
-    std::string value = std::to_string(arg1);
-    string_writeconfig(".config/13-epub_page_size/width", value);
-    string_writeconfig(".config/13-epub_page_size/set", "true");
-    log("Set ePUB page size width to " + QString::number(arg1), className);
-}
-
-void settings::on_pageSizeHeightSpinBox_valueChanged(int arg1)
-{
-    std::string value = std::to_string(arg1);
-    string_writeconfig(".config/13-epub_page_size/height", value);
-    string_writeconfig(".config/13-epub_page_size/set", "true");
-    log("Set ePUB page size height to " + QString::number(arg1), className);
-}
-
 void settings::on_readerScrollBarCheckBox_toggled(bool checked)
 {
     QString settingString = "scrollbar display if necessary";
@@ -1035,4 +1058,47 @@ void settings::on_exportHighlightsBtn_clicked()
     QJsonObject jsonObject = readHighlightsDatabase();
     writeFile("/mnt/onboard/onboard/highlights-" + QDateTime::currentDateTime().toString("dd-MM-yy_hh.mm.ss") + ".json", QJsonDocument(jsonObject).toJson());
     showToast("Highlights exported successfully");
+}
+
+void settings::on_wordNumberAddBtn_clicked()
+{
+    wordNumberSaved = wordNumberSaved + 5;
+    ui->wordNumberShowLabel->setText(QString::number(wordNumberSaved));
+
+}
+
+void settings::on_wordNumberDelBtn_clicked()
+{
+    if(wordNumberSaved > 10) {
+        wordNumberSaved = wordNumberSaved - 5;
+        ui->wordNumberShowLabel->setText(QString::number(wordNumberSaved));
+    }
+}
+
+void settings::on_pageSizeHeightDelBtn_clicked()
+{
+    if(pageSizeHeightSaved > 100) {
+        pageSizeHeightSaved = pageSizeHeightSaved - 5;
+        ui->pageSizeHeightLabel->setText(QString::number(pageSizeHeightSaved));
+    }
+}
+
+void settings::on_pageSizeHeightAddBtn_clicked()
+{
+    pageSizeHeightSaved = pageSizeHeightSaved + 5;
+    ui->pageSizeHeightLabel->setText(QString::number(pageSizeHeightSaved));
+}
+
+void settings::on_pageSizeWidthDelBtn_clicked()
+{
+    if(pageSizeWidthSaved > 100) {
+        pageSizeWidthSaved = pageSizeWidthSaved - 5;
+        ui->pageSizeWidthLabel->setText(QString::number(pageSizeWidthSaved));
+    }
+}
+
+void settings::on_pageSizeWidthAddBtn_clicked()
+{
+    pageSizeWidthSaved = pageSizeWidthSaved + 5;
+    ui->pageSizeWidthLabel->setText(QString::number(pageSizeWidthSaved));
 }

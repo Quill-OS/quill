@@ -22,6 +22,15 @@
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="1" column="0">
     <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
+      <number>0</number>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -30,8 +39,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>460</width>
-        <height>210</height>
+        <width>458</width>
+        <height>226</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout">
@@ -53,7 +62,7 @@
           <number>0</number>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>3</number>
          </property>
          <widget class="QWidget" name="page_0">
           <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -389,6 +398,15 @@
            </property>
            <item row="0" column="0">
             <widget class="QTextBrowser" name="fancyLogsText">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="lineWidth">
+              <number>0</number>
+             </property>
              <property name="textInteractionFlags">
               <set>Qt::NoTextInteraction</set>
              </property>
@@ -412,6 +430,15 @@
            </property>
            <item row="0" column="0">
             <widget class="QTextBrowser" name="allLogsText">
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="lineWidth">
+              <number>0</number>
+             </property>
              <property name="textInteractionFlags">
               <set>Qt::NoTextInteraction</set>
              </property>
