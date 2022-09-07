@@ -44,6 +44,12 @@ namespace global {
         inline bool globalReadingSettings;
         inline int pdfOrientation;
         inline bool highlightAlreadyDone;
+        inline int textAlignment;
+        inline int lineSpacing;
+        inline QString font;
+        static inline int initialFontSize = 6;
+        inline int fontSize;
+        inline int margins;
     }
     namespace kobox {
         inline bool showKoboxSplash;
