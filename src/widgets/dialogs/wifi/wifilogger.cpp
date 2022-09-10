@@ -16,12 +16,12 @@ wifilogger::wifilogger(QWidget *parent) :
     ui->label_8->setFont(QFont("Inter"));
     ui->returnBtn->setFont(QFont("Inter"));
     ui->nameLabel->setFont(QFont("Inter"));
-    ui->allLogsText->setFont(QFont("Noto Mono"));
-    ui->fancyLogsText->setFont(QFont("Noto Mono"));
+    ui->allLogsText->setFont(QFont("Roboto Mono"));
+    ui->fancyLogsText->setFont(QFont("Roboto Mono"));
     ui->nameLabel->setStyleSheet("font-weight: bold");
     ui->returnBtn->setStyleSheet("font-weight: bold");
-    ui->allLogsText->setStyleSheet("font-size: 7pt");
-    ui->fancyLogsText->setStyleSheet("font-size: 7pt");
+    ui->allLogsText->setStyleSheet("font-size: 7.5pt");
+    ui->fancyLogsText->setStyleSheet("font-size: 7.5pt");
 
     // Stylesheet, style & misc.
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");

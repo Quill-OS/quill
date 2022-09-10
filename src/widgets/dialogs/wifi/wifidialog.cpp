@@ -405,7 +405,7 @@ void wifiDialog::watcher() {
         forceRefresh = true;
         QFile recName = QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid");
         if(recName.exists() == true) {
-             setStatusText("Reconnecting after suspending to " + readFile(recName.fileName()).replace("\n", ""));
+             setStatusText("Reconnecting to '" + readFile(recName.fileName()).replace("\n", "") + "'");
         }
         else {
             // Shouldn't be possible

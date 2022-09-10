@@ -39,12 +39,21 @@ reader::reader(QWidget *parent) :
     textDialogLock = false;
     goToSavedPageDone = false;
     initialPdfRotationDone = false;
+    global::reader::textAlignment = 0;
+    global::reader::lineSpacing = 0;
+    global::reader::font = "Source Serif Pro";
+    global::reader::fontSize = 10;
+    global::reader::margins = 1;
 
     ui->setupUi(this);
     ui->brightnessStatus->setFont(QFont("u001"));
     ui->fontLabel->setFont(QFont("u001"));
     ui->sizeLabel->setFont(QFont("u001"));
     ui->sizeValueLabel->setFont(QFont("Inter"));
+    ui->lineSpacingLabel->setFont(QFont("u001"));
+    ui->lineSpacingValueLabel->setFont(QFont("Inter"));
+    ui->marginsLabel->setFont(QFont("u001"));
+    ui->marginsValueLabel->setFont(QFont("Inter"));
     ui->alignmentLabel->setFont(QFont("u001"));
     ui->fontChooser->setFont(QFont("u001"));
     ui->definitionStatusLabel->setFont(QFont("u001"));
@@ -248,30 +257,12 @@ reader::reader(QWidget *parent) :
         }
     }
     // Font
-    string_checkconfig(".config/04-book/font");
-    if(checkconfig_str_val == "") {
-        ui->fontChooser->setCurrentText("Source Serif Pro");
-        ui->text->setFont(QFont("Source Serif Pro"));
+    global::reader::font = readFile(".config/04-book/font");
+    if(global::reader::font == "u001") {
+        ui->fontChooser->setCurrentText("Univers (u001)");
     }
     else {
-        if(checkconfig_str_val == "Crimson Pro") {
-            setCrimsonProFont();
-        }
-        else if(checkconfig_str_val == "Bitter") {
-            setBitterFont();
-        }
-        else if(checkconfig_str_val == "Ibarra Real Nova") {
-            setIbarraFont();
-        }
-        else if(checkconfig_str_val == "u001") {
-            ui->text->setFont(QFont("u001"));
-            ui->fontChooser->setCurrentText("Univers (u001)");
-        }
-        else {
-            QFont config_font(checkconfig_str_val);
-            ui->text->setFont(config_font);
-            ui->fontChooser->setCurrentText(checkconfig_str_val);
-        }
+        ui->fontChooser->setCurrentText(global::reader::font);
     }
     // Night mode
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
@@ -314,6 +305,8 @@ reader::reader(QWidget *parent) :
         ui->optionsBtn->setStyleSheet("padding: 10px");
     }
     ui->sizeValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
+    ui->lineSpacingValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
+    ui->marginsValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->aboutBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->fontChooser->setStyleSheet("font-size: 9pt");
@@ -477,44 +470,6 @@ reader::reader(QWidget *parent) :
     }
 
     // Display text
-    // Checking saved font size if any
-    string_checkconfig(".config/04-book/size");
-    if(checkconfig_str_val == "0") {
-        checkconfig_str_val = "6";
-        ui->sizeSlider->setValue(0);
-        ui->sizeValueLabel->setText("1");
-    }
-    if(checkconfig_str_val == "1") {
-        checkconfig_str_val = "10";
-        ui->sizeSlider->setValue(1);
-        ui->sizeValueLabel->setText("2");
-    }
-    if(checkconfig_str_val == "2") {
-        checkconfig_str_val = "14";
-        ui->sizeSlider->setValue(2);
-        ui->sizeValueLabel->setText("3");
-    }
-    if(checkconfig_str_val == "3") {
-        checkconfig_str_val = "18";
-        ui->sizeSlider->setValue(3);
-        ui->sizeValueLabel->setText("4");
-    }
-    if(checkconfig_str_val == "4") {
-        checkconfig_str_val = "22";
-        ui->sizeSlider->setValue(4);
-        ui->sizeValueLabel->setText("5");
-    }
-    if(checkconfig_str_val == "") {
-        checkconfig_str_val = "10";
-        ui->sizeSlider->setValue(1);
-        ui->sizeValueLabel->setText("2");
-    }
-    QString font_size = "font-size: ";
-    font_size = font_size.append(checkconfig_str_val);
-    font_size = font_size.append("pt");
-    log("Setting font size to " + checkconfig_str_val + " points", className);
-    ui->text->setStyleSheet(font_size);
-
     // If needed, show scroll bar when rendering engine isn't doing its job properly
     if(checkconfig(".config/14-reader_scrollbar/config") == true) {
         ui->text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -524,6 +479,39 @@ reader::reader(QWidget *parent) :
         ui->text->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         ui->text->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     }
+
+    // Line spacing, margins and text alignment
+    QString lineSpacingString = readFile(".config/04-book/line_spacing");
+    if(!lineSpacingString.isEmpty()) {
+        global::reader::lineSpacing = lineSpacingString.toInt();
+    }
+
+    QString marginsString = readFile(".config/04-book/margins");
+    if(!marginsString.isEmpty()) {
+        global::reader::margins = marginsString.toInt();
+    }
+
+    QString alignment = readFile(".config/04-book/alignment");
+    if(alignment == "Left") {
+        global::reader::textAlignment = 0;
+    }
+    else if(alignment == "Center") {
+        global::reader::textAlignment = 1;
+    }
+    else if(alignment == "Right") {
+        global::reader::textAlignment = 2;
+    }
+    else if(alignment == "Justify") {
+        global::reader::textAlignment = 3;
+    }
+    else {
+        alignment = "Left";
+        global::reader::textAlignment = 0;
+    }
+    log("Setting text alignment to '" + alignment + "'", className);
+
+    // Don't ask me why it doesn't work without that QTimer
+    QTimer::singleShot(0, this, SLOT(setInitialTextProperties()));
 
     // Wheeee!
     if(is_epub == true) {
@@ -553,31 +541,6 @@ reader::reader(QWidget *parent) :
         ui->graphicsView->hide();
         ui->graphicsView->deleteLater();
         ui->text->setText(ittext);
-    }
-
-    // Alignment
-    string_checkconfig(".config/04-book/alignment");
-    if (checkconfig_str_val == "") {
-        ;
-    }
-    else {
-        if(checkconfig_str_val == "Left") {
-                textAlignment = 0;
-                alignAndHighlightText(0);
-        }
-        if(checkconfig_str_val == "Center") {
-                textAlignment = 1;
-                alignAndHighlightText(1);
-        }
-        if(checkconfig_str_val == "Right") {
-                textAlignment = 2;
-                alignAndHighlightText(2);
-        }
-        if(checkconfig_str_val == "Justify") {
-                textAlignment = 3;
-                alignAndHighlightText(3);
-        }
-        log("Setting text alignment to '" + checkconfig_str_val + "'", className);
     }
 
     // Topbar info widget
@@ -917,9 +880,9 @@ int reader::setup_book(QString book, int i, bool run_parser) {
         ;
     }
     else {
-        QString parse_prog ("python3");
+        QString parse_prog ("/mnt/onboard/.adds/inkbox/system/bin/split-txt");
         QStringList parse_args;
-        parse_args << "split-txt.py" << checkconfig_str_val;
+        parse_args << checkconfig_str_val;
         QProcess * parse_proc = new QProcess();
         parse_proc->start(parse_prog, parse_args);
         parse_proc->waitForFinished();
@@ -936,10 +899,15 @@ int reader::setup_book(QString book, int i, bool run_parser) {
                   content << f.readAll();
                   f.close();
             }
+            // These characters are replaced for consistency with ePUB text handling, highlighting and text alignment.
+            content[i].replace("\n", "<br>");
+            content[i].replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
             ittext = content[i];
             return content.size();
         }
         else {
+            content[i].replace("\n", "<br>");
+            content[i].replace("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
             ittext = content[i];
         }
     }
@@ -1049,7 +1017,7 @@ void reader::on_nextBtn_clicked()
 
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
-            alignAndHighlightText(textAlignment);
+            setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
         }
     }
     else if(is_epub == true) {
@@ -1065,7 +1033,7 @@ void reader::on_nextBtn_clicked()
 
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
-            alignAndHighlightText(textAlignment);
+            setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
         }
     }
     else if(is_pdf == true) {
@@ -1109,7 +1077,7 @@ void reader::on_previousBtn_clicked()
             // We always increment pagesTurned regardless whether we press the Previous or Next button or not
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
-            alignAndHighlightText(textAlignment);
+            setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
         }
     }
     else if (is_pdf == true) {
@@ -1141,10 +1109,10 @@ void reader::on_previousBtn_clicked()
             ui->text->setText("");
             ui->text->setText(epubPageContent);
 
-            // We always increment pagesTurned regardless whether we press the Previous or Next button not
+            // We always increment pagesTurned regardless whether we press the Previous or Next button or not
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
-            alignAndHighlightText(textAlignment);
+            setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
         }
     }
     setupPageWidget();
@@ -1285,105 +1253,43 @@ void reader::on_homeBtn_clicked()
 void reader::on_fontChooser_currentIndexChanged(const QString &arg1)
 {
     log("Setting font to '" + arg1 + "'", className);
-    if(arg1 == "Roboto") {
-        QFont roboto("Roboto");
-        ui->text->setFont(roboto);
-        string_writeconfig(".config/04-book/font", "Roboto");
-    }
-    if(arg1 == "Inter") {
-        QFont inter("Inter");
-        ui->text->setFont(inter);
-        string_writeconfig(".config/04-book/font", "Inter");
-    }
-    if(arg1 == "Source Serif Pro") {
-        QFont sourceserif("Source Serif Pro");
-        ui->text->setFont(sourceserif);
-        string_writeconfig(".config/04-book/font", "Source Serif Pro");
-    }
-    if(arg1 == "Libre Baskerville") {
-        QFont librebaskerville("Libre Baskerville");
-        ui->text->setFont(librebaskerville);
-        string_writeconfig(".config/04-book/font", "Libre Baskerville");
-    }
-    if(arg1 == "Noto Mono") {
-        QFont notomono("Noto Mono");
-        ui->text->setFont(notomono);
-        string_writeconfig(".config/04-book/font", "Noto Mono");
-    }
-    if(arg1 == "Libertinus Serif") {
-        QFont libertinus("Libertinus Serif");
-        ui->text->setFont(libertinus);
-        string_writeconfig(".config/04-book/font", "Libertinus Serif");
-    }
-    if(arg1 == "Crimson Pro") {
-        // As adding Crimson Pro to the default fonts bundled along with the Qt libs breaks the general u001/Inter homogeneity, it is incorporated on-demand here.
-        setCrimsonProFont();
-        string_writeconfig(".config/04-book/font", "Crimson Pro");
-    }
-    if(arg1 == "Bitter") {
-        setBitterFont();
-        string_writeconfig(".config/04-book/font", "Bitter");
-    }
-    if(arg1 == "Ibarra Real Nova") {
-        setIbarraFont();
-        string_writeconfig(".config/04-book/font", "Ibarra Real Nova");
-    }
-    if(arg1 == "Univers (u001)") {
-        ui->text->setFont(QFont("u001"));
-        string_writeconfig(".config/04-book/font", "u001");
-    }
-    alignAndHighlightText(textAlignment);
+    global::reader::font = arg1;
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
 }
 
 void reader::on_alignLeftBtn_clicked()
 {
     log("Setting text alignment to 'Left'", className);
-    if(is_epub != true) {
-        ui->text->setAlignment(Qt::AlignLeft);
-    }
-    else {
-        alignAndHighlightText(0);
-    }
+    global::reader::textAlignment = 0;
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
     string_writeconfig(".config/04-book/alignment", "Left");
 }
 
 void reader::on_alignCenterBtn_clicked()
 {
     log("Setting text alignment to 'Center'", className);
-    if(is_epub != true) {
-        ui->text->setAlignment(Qt::AlignHCenter);
-    }
-    else {
-        alignAndHighlightText(1);
-    }
+    global::reader::textAlignment = 1;
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
     string_writeconfig(".config/04-book/alignment", "Center");
 }
 
 void reader::on_alignRightBtn_clicked()
 {
     log("Setting text alignment to 'Right'", className);
-    if(is_epub != true) {
-        ui->text->setAlignment(Qt::AlignRight);
-    }
-    else {
-        alignAndHighlightText(2);
-    }
+    global::reader::textAlignment = 2;
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
     string_writeconfig(".config/04-book/alignment", "Right");
 }
 
 void reader::on_alignJustifyBtn_clicked()
 {
     log("Setting text alignment to 'Justify'", className);
-    if(is_epub != true) {
-        ui->text->setAlignment(Qt::AlignJustify);
-    }
-    else {
-        alignAndHighlightText(3);
-    }
+    global::reader::textAlignment = 3;
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
     string_writeconfig(".config/04-book/alignment", "Justify");
 }
 
-void reader::alignAndHighlightText(int alignment) {
+void reader::setTextProperties(int alignment, int lineSpacing, int margins, QString font, int fontSize) {
     // Alignment
     /*
      * 0 - Left
@@ -1391,50 +1297,118 @@ void reader::alignAndHighlightText(int alignment) {
      * 2 - Right
      * 3 - Justify
     */
-    textAlignment = alignment;
-    QString modifiedPageContent;
 
-    if(is_epub == true) {
-        modifiedPageContent = epubPageContent;
-        if(alignment == 0) {
-            modifiedPageContent.prepend("<div align='left'>");
-            modifiedPageContent.append("</div>");
+    // Don't try to improve this
+    // I have spent more time on it than I would care to admit
+
+    setLineSpacing(lineSpacing, false);
+    ui->lineSpacingSlider->setValue(lineSpacing);
+    setMargins(margins, false);
+    ui->marginsSlider->setValue(margins);
+
+    QTextCursor cursor = ui->text->textCursor();
+    textDialogLock = true;
+    // Kudos to Qt for not implementing the opposite of the following function /)_-)
+    ui->text->selectAll();
+    if(alignment == 0) {
+        ui->text->setAlignment(Qt::AlignLeft);
+    }
+    else if(alignment == 1) {
+        ui->text->setAlignment(Qt::AlignHCenter);
+    }
+    else if(alignment == 2) {
+        ui->text->setAlignment(Qt::AlignRight);
+    }
+    else if(alignment == 3) {
+        ui->text->setAlignment(Qt::AlignJustify);
+    }
+    // Font
+    {
+        if(font == "Crimson Pro") {
+            // As adding Crimson Pro to the default fonts bundled along with the Qt libs breaks the general u001/Inter homogeneity, it is incorporated on-demand here.
+            {
+                QString family;
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Bold.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-BoldItalic.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                ui->text->setFont(QFont(family));
+            }
+            writeFile(".config/04-book/font", "Crimson Pro");
         }
-        if(alignment == 1) {
-            modifiedPageContent.prepend("<div align='center'>");
-            modifiedPageContent.append("</div>");
+        else if(font == "Bitter") {
+            {
+                QString family;
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Medium.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-MediumItalic.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Bold.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-BoldItalic.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                ui->text->setFont(QFont(family));
+            }
+            writeFile(".config/04-book/font", "Bitter");
         }
-        if(alignment == 2) {
-            modifiedPageContent.prepend("<div align='right'>");
-            modifiedPageContent.append("</div>");
+        else if(font == "Ibarra Real Nova") {
+            {
+                QString family;
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-Medium.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-MediumItalic.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-Bold.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                {
+                    int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-BoldItalic.ttf");
+                    family = QFontDatabase::applicationFontFamilies(id).at(0);
+                }
+                ui->text->setFont(QFont(family));
+            }
+            writeFile(".config/04-book/font", "Ibarra Real Nova");
         }
-        if(alignment == 3) {
-            modifiedPageContent.prepend("<div align='justify'>");
-            modifiedPageContent.append("</div>");
+        else if(font == "Univers (u001)" or font == "u001") {
+            ui->text->setFont(QFont("u001"));
+            writeFile(".config/04-book/font", "Univers (u001)");
+        }
+        else {
+            ui->text->setFont(QFont(font));
+            writeFile(".config/04-book/font", font);
         }
     }
-    else {
-        modifiedPageContent = ittext;
-        if(alignment == 0) {
-            modifiedPageContent.prepend("<div align='left'>");
-            modifiedPageContent.append("</div>");
-        }
-        if(alignment == 1) {
-            modifiedPageContent.prepend("<div align='center'>");
-            modifiedPageContent.append("</div>");
-        }
-        if(alignment == 2) {
-            modifiedPageContent.prepend("<div align='right'>");
-            modifiedPageContent.append("</div>");
-        }
-        if(alignment == 3) {
-            modifiedPageContent.prepend("<div align='justify'>");
-            modifiedPageContent.append("</div>");
-        }
-    }
-    ui->text->setText(modifiedPageContent);
+    // Font size
+    ui->text->setFontPointSize(fontSize);
+    ui->text->setTextCursor(cursor);
+    textDialogLock = false;
 
-    // Highlight
+    // Highlighting
     QString htmlText = ui->text->toHtml();
     QJsonObject jsonObject = getHighlightsForBook(book_file);
     int keyCount = 1;
@@ -1453,7 +1427,8 @@ void reader::alignAndHighlightText(int alignment) {
         }
         keyCount++;
     }
-    ui->text->setText(htmlText);
+    htmlText.replace(QRegExp("font-family:'.*';"), "");
+    ui->text->setHtml(htmlText);
 }
 
 void reader::menubar_show() {
@@ -1627,76 +1602,13 @@ void reader::on_saveWordBtn_clicked()
 void reader::on_sizeSlider_valueChanged(int value)
 {
     // Font size
-    string value_str = to_string(value);
-    string_writeconfig(".config/04-book/size", value_str);
+    log("Setting font size to " + QString::number(value + global::reader::initialFontSize + 1) + " points", className);
+    ui->sizeValueLabel->setText(QString::number(value + 1));
 
-    if(global::deviceID == "n705\n") {
-        if(value == 0) {
-            ui->text->setStyleSheet("font-size: 6pt");
-            ui->sizeValueLabel->setText("1");
-        }
-        if(value == 1) {
-            ui->text->setStyleSheet("font-size: 10pt");
-            ui->sizeValueLabel->setText("2");
-        }
-        if(value == 2) {
-            ui->text->setStyleSheet("font-size: 14pt");
-            ui->sizeValueLabel->setText("3");
-        }
-        if(value == 3) {
-            ui->text->setStyleSheet("font-size: 18pt");
-            ui->sizeValueLabel->setText("4");
-        }
-        if(value == 4) {
-            ui->text->setStyleSheet("font-size: 22pt");
-            ui->sizeValueLabel->setText("5");
-        }
-    }
-    if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        if(value == 0) {
-            ui->text->setStyleSheet("font-size: 6pt");
-            ui->sizeValueLabel->setText("1");
-        }
-        if(value == 1) {
-            ui->text->setStyleSheet("font-size: 10pt");
-            ui->sizeValueLabel->setText("2");
-        }
-        if(value == 2) {
-            ui->text->setStyleSheet("font-size: 14pt");
-            ui->sizeValueLabel->setText("3");
-        }
-        if(value == 3) {
-            ui->text->setStyleSheet("font-size: 18pt");
-            ui->sizeValueLabel->setText("4");
-        }
-        if(value == 4) {
-            ui->text->setStyleSheet("font-size: 22pt");
-            ui->sizeValueLabel->setText("5");
-        }
-    }
-    else {
-        if(value == 0) {
-            ui->text->setStyleSheet("font-size: 6pt");
-            ui->sizeValueLabel->setText("1");
-        }
-        if(value == 1) {
-            ui->text->setStyleSheet("font-size: 10pt");
-            ui->sizeValueLabel->setText("2");
-        }
-        if(value == 2) {
-            ui->text->setStyleSheet("font-size: 14pt");
-            ui->sizeValueLabel->setText("3");
-        }
-        if(value == 3) {
-            ui->text->setStyleSheet("font-size: 18pt");
-            ui->sizeValueLabel->setText("4");
-        }
-        if(value == 4) {
-            ui->text->setStyleSheet("font-size: 22pt");
-            ui->sizeValueLabel->setText("5");
-        }
-    }
-    alignAndHighlightText(textAlignment);
+    global::reader::fontSize = global::reader::initialFontSize + value + 1;
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
+
+    writeFile(".config/04-book/size", QString::number(value));
 }
 
 void reader::writeconfig_pagenumber(bool persistent) {
@@ -1910,7 +1822,8 @@ void reader::on_text_selectionChanged() {
                 global::reader::highlightAlreadyDone = false;
                 QJsonObject jsonObject = getHighlightsForBook(book_file);
                 QString htmlText = ui->text->toHtml();
-                if(htmlText.contains("<span style=\" background-color:#bbbbbb;\">" + selected_text + "</span>")) {
+                qDebug() << htmlText << QString::number(global::reader::initialFontSize + global::reader::fontSize);
+                if(htmlText.contains("<span style=\" font-size:" + QString::number(global::reader::fontSize) + "pt; background-color:#bbbbbb;\">" + selected_text + "</span>") or htmlText.contains("<span style=\" background-color:#bbbbbb;\">" + selected_text + "</span>")) {
                     log("Highlight already done", className);
                     global::reader::highlightAlreadyDone = true;
                 }
@@ -2044,7 +1957,7 @@ void reader::gotoPage(int pageNumber) {
 
             pagesTurned = 0;
             writeconfig_pagenumber(false);
-            alignAndHighlightText(textAlignment);
+            setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
         }
     }
     else if(is_pdf == true) {
@@ -2073,7 +1986,7 @@ void reader::gotoPage(int pageNumber) {
 
             pagesTurned = 0;
             writeconfig_pagenumber(false);
-            alignAndHighlightText(textAlignment);
+            setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
         }
     }
     setupPageWidget();
@@ -2104,75 +2017,6 @@ void reader::setupSearchDialog() {
     else {
         ;
     }
-}
-
-void reader::setBitterFont() {
-    QString family;
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Medium.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-MediumItalic.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-Bold.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/Bitter-BoldItalic.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    QFont bitter(family);
-    ui->text->setFont(bitter);
-    ui->fontChooser->setCurrentText("Bitter");
-}
-
-void reader::setCrimsonProFont() {
-    QString family;
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Bold.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-BoldItalic.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    QFont crimson(family);
-    ui->text->setFont(crimson);
-    ui->fontChooser->setCurrentText("Crimson Pro");
-}
-
-void reader::setIbarraFont() {
-    QString family;
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-Medium.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-MediumItalic.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-Bold.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    {
-        int id = QFontDatabase::addApplicationFont(":/resources/fonts/IbarraRealNova-BoldItalic.ttf");
-        family = QFontDatabase::applicationFontFamilies(id).at(0);
-    }
-    QFont ibarra(family);
-    ui->text->setFont(ibarra);
-    ui->fontChooser->setCurrentText("Ibarra Real Nova");
 }
 
 void reader::searchRefreshScreen() {
@@ -2400,13 +2244,13 @@ void reader::unsetTextDialogLock() {
 void reader::highlightText() {
     log("Highlighting text '" + selected_text + "'", className);
     highlightBookText(selected_text, book_file, false);
-    alignAndHighlightText(textAlignment);
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
 }
 
 void reader::unhighlightText() {
     log("Removing highlighted text '" + selected_text + "'", className);
     highlightBookText(selected_text, book_file, true);
-    alignAndHighlightText(textAlignment);
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
 }
 
 void reader::on_viewHighlightsBtn_clicked()
@@ -2420,12 +2264,84 @@ void reader::on_viewHighlightsBtn_clicked()
     else {
         global::highlightsListDialog::bookPath = book_file;
         highlightsListDialog * highlightsListDialogWindow = new highlightsListDialog(this);
-        QObject::connect(highlightsListDialogWindow, &highlightsListDialog::destroyed, this, &reader::alignAndHighlightTextSlot);
+        QObject::connect(highlightsListDialogWindow, &highlightsListDialog::destroyed, this, &reader::setTextPropertiesSlot);
         QObject::connect(highlightsListDialogWindow, &highlightsListDialog::showToast, this, &reader::showToast);
         highlightsListDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     }
 }
 
-void reader::alignAndHighlightTextSlot() {
-    alignAndHighlightText(textAlignment);
+void reader::setTextPropertiesSlot() {
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
+}
+
+void reader::setInitialTextProperties() {
+    // Checking saved font size if any, and if there is, set it
+    QString fontSizeString = readFile(".config/04-book/size");
+    if(!fontSizeString.isEmpty()) {
+        global::reader::fontSize = fontSizeString.toInt();
+        ui->sizeSlider->setValue(global::reader::fontSize);
+    }
+    else {
+        global::reader::fontSize = 4;
+    }
+}
+
+void reader::setLineSpacing(int spacing, bool write) {
+    global::reader::lineSpacing = spacing;
+    if(write == true and readFile(".config/04-book/line_spacing") != QString::number(global::reader::lineSpacing)) {
+        writeFile(".config/04-book/line_spacing", QString::number(global::reader::lineSpacing));
+    }
+
+    if(write == false) {
+        log("Setting line spacing to " + QString::number(global::reader::lineSpacing + 1), className);
+        QTextCursor textCursor = ui->text->textCursor();
+
+        QTextBlockFormat * newFormat = new QTextBlockFormat();
+        textCursor.clearSelection();
+        textCursor.select(QTextCursor::Document);
+        newFormat->setLineHeight((global::reader::lineSpacing * 10 + 100), QTextBlockFormat::ProportionalHeight);
+        newFormat->setLeftMargin(global::reader::margins * 10);
+        newFormat->setRightMargin(global::reader::margins * 10);
+        textCursor.setBlockFormat(*newFormat);
+    }
+}
+
+void reader::setMargins(int margins, bool write) {
+    global::reader::margins = margins;
+    if(write == true and readFile(".config/04-book/margins") != QString::number(global::reader::margins)) {
+        writeFile(".config/04-book/margins", QString::number(global::reader::margins));
+    }
+
+    if(write == false) {
+        log("Setting margins to " + QString::number(global::reader::margins), className);
+        QTextCursor textCursor = ui->text->textCursor();
+
+        QTextBlockFormat * newFormat = new QTextBlockFormat();
+        textCursor.clearSelection();
+        textCursor.select(QTextCursor::Document);
+        newFormat->setLineHeight((global::reader::lineSpacing * 10 + 100), QTextBlockFormat::ProportionalHeight);
+        newFormat->setLeftMargin(global::reader::margins * 10);
+        newFormat->setRightMargin(global::reader::margins * 10);
+        textCursor.setBlockFormat(*newFormat);
+    }
+}
+
+void reader::on_lineSpacingSlider_valueChanged(int value)
+{
+    global::reader::lineSpacing = value;
+    // Write setting once
+    setLineSpacing(global::reader::lineSpacing, true);
+    // Be consistent with other settings
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
+    ui->lineSpacingValueLabel->setText(QString::number(value + 1));
+}
+
+void reader::on_marginsSlider_valueChanged(int value)
+{
+    global::reader::margins = value;
+    // Write setting once
+    setMargins(global::reader::margins, true);
+    // Be consistent with other settings
+    setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
+    ui->marginsValueLabel->setText(QString::number(value + 1));
 }

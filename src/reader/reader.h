@@ -57,7 +57,6 @@ public:
     int page_number;
     int dictionary_position = 1;
     int pagesTurned = 0;
-    int textAlignment;
 
     // -1 : Never refresh | 0 : Refresh every page | 1 : Refresh every 1 page. And so on...
     // Refresh every 3 pages is the default
@@ -113,16 +112,13 @@ public:
     void convertMuPdfVars(int fileType, bool convertAll);
     void refreshScreen();
     void setPageStyle(int fileType);
-    void alignAndHighlightText(int alignment);
+    void setTextProperties(int alignment, int lineSpacing, int margins, QString font, int fontSize);
     void delay(int seconds);
     void openUsbmsDialog();
     QString setPageNumberLabelContent();
     void setupPageWidget();
     void getTotalEpubPagesNumber();
     void getTotalPdfPagesNumber();
-    void setBitterFont();
-    void setCrimsonProFont();
-    void setIbarraFont();
     bool pdf_file_match(QString file);
     bool image_file_match(QString file);
 
@@ -168,7 +164,12 @@ private slots:
     void highlightText();
     void unhighlightText();
     void on_viewHighlightsBtn_clicked();
-    void alignAndHighlightTextSlot();
+    void setTextPropertiesSlot();
+    void setInitialTextProperties();
+    void setLineSpacing(int spacing, bool write = true);
+    void setMargins(int margins, bool write = true);
+    void on_lineSpacingSlider_valueChanged(int value);
+    void on_marginsSlider_valueChanged(int value);
 
 signals:
     void openBookFile(QString book, bool relativePath);
