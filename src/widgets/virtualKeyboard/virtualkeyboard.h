@@ -16,8 +16,14 @@ public:
     QString className = this->metaObject()->className();
     explicit virtualkeyboard(QWidget *parent = nullptr);
     ~virtualkeyboard();
-    bool shift;
-    void reverseKeys();
+    bool shift = false;
+    bool specialCharacters = false;
+    enum class keyboardMode {
+        lowerCase,
+        upperCase,
+        specialCharacters,
+    };
+    void reverseKeys(keyboardMode keyboardMode);
     void clearLineEdit();
 
 private slots:
@@ -66,6 +72,7 @@ private slots:
 
 private:
     Ui::virtualkeyboard *ui;
+    keyboardMode currentMode = keyboardMode::lowerCase;
 
 signals:
     void adjust_size();

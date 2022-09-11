@@ -9,7 +9,6 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
     ui(new Ui::virtualkeyboard)
 {   
     ui->setupUi(this);
-    shift = false;
 
     ui->n1->setProperty("type", "borderless");
     ui->n2->setProperty("type", "borderless");
@@ -223,446 +222,308 @@ void virtualkeyboard::on_eraseBtn_clicked()
 
 void virtualkeyboard::on_spt_clicked()
 {
-    ui->lineEdit->insert(".");
+    ui->lineEdit->insert(ui->spt->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_sat_clicked()
 {
-    ui->lineEdit->insert("@");
-    QString text = ui->lineEdit->text();
-    global::keyboard::keyboardText = text;
+    if(specialCharacters == true) {
+        specialCharacters = false;
+        reverseKeys(keyboardMode::lowerCase);
+    }
+    else {
+        reverseKeys(keyboardMode::specialCharacters);
+        specialCharacters = true;
+    }
 }
 
 void virtualkeyboard::on_n1_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("!");
-    }
-    else {
-        ui->lineEdit->insert("1");
-    }
+    ui->lineEdit->insert(ui->n1->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_n2_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("/");
-    }
-    else {
-        ui->lineEdit->insert("2");
-    }
+    ui->lineEdit->insert(ui->n2->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_n3_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("#");
-    }
-    else {
-        ui->lineEdit->insert("3");
-    }
+    ui->lineEdit->insert(ui->n3->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_n4_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("$");
-    }
-    else {
-        ui->lineEdit->insert("4");
-    }
+    ui->lineEdit->insert(ui->n4->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_n5_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("%");
-    }
-    else {
-        ui->lineEdit->insert("5");
-    }
+    ui->lineEdit->insert(ui->n5->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_n6_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("^");
-    }
-    else {
-        ui->lineEdit->insert("6");
-    }
+    ui->lineEdit->insert(ui->n6->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_n7_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("&");
-    }
-    else {
-        ui->lineEdit->insert("7");
-    }
+    ui->lineEdit->insert(ui->n7->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_n8_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("*");
-    }
-    else {
-        ui->lineEdit->insert("8");
-    }
+    ui->lineEdit->insert(ui->n8->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_n9_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("(");
-    }
-    else {
-        ui->lineEdit->insert("9");
-    }
+    ui->lineEdit->insert(ui->n9->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_n0_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert(")");
-    }
-    else {
-        ui->lineEdit->insert("0");
-    }
+    ui->lineEdit->insert(ui->n0->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lq_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("Q");
-    }
-    else {
-        ui->lineEdit->insert("q");
-    }
+    ui->lineEdit->insert(ui->lq->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lw_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("W");
-    }
-    else {
-        ui->lineEdit->insert("w");
-    }
+    ui->lineEdit->insert(ui->lw->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_le_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("E");
-    }
-    else {
-        ui->lineEdit->insert("e");
-    }
+    ui->lineEdit->insert(ui->le->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lr_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("R");
-    }
-    else {
-        ui->lineEdit->insert("r");
-    }
+    ui->lineEdit->insert(ui->lr->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lt_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("T");
-    }
-    else {
-        ui->lineEdit->insert("t");
-    }
+    ui->lineEdit->insert(QString(ui->lt->text().back()));
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_ly_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("Y");
-    }
-    else {
-        ui->lineEdit->insert("y");
-    }
+    ui->lineEdit->insert(ui->ly->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lu_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("U");
-    }
-    else {
-        ui->lineEdit->insert("u");
-    }
+    ui->lineEdit->insert(ui->lu->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_li_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("I");
-    }
-    else {
-        ui->lineEdit->insert("i");
-    }
+    ui->lineEdit->insert(ui->li->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lo_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("O");
-    }
-    else {
-        ui->lineEdit->insert("o");
-    }
+    ui->lineEdit->insert(ui->lo->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lp_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("P");
-    }
-    else {
-        ui->lineEdit->insert("p");
-    }
+    ui->lineEdit->insert(ui->lp->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_la_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("A");
-    }
-    else {
-        ui->lineEdit->insert("a");
-    }
+    ui->lineEdit->insert(ui->la->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_ls_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("S");
-    }
-    else {
-        ui->lineEdit->insert("s");
-    }
+    ui->lineEdit->insert(QString(ui->la->text().back()));
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_ld_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("D");
-    }
-    else {
-        ui->lineEdit->insert("d");
-    }
+    ui->lineEdit->insert(ui->ld->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lf_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("F");
-    }
-    else {
-        ui->lineEdit->insert("f");
-    }
+    ui->lineEdit->insert(ui->lf->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lg_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("G");
-    }
-    else {
-        ui->lineEdit->insert("g");
-    }
+    ui->lineEdit->insert(ui->lg->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lh_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("H");
-    }
-    else {
-        ui->lineEdit->insert("h");
-    }
+    ui->lineEdit->insert(ui->lh->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lj_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("J");
-    }
-    else {
-        ui->lineEdit->insert("j");
-    }
+    ui->lineEdit->insert(ui->lj->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lk_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("K");
-    }
-    else {
-        ui->lineEdit->insert("k");
-    }
+    ui->lineEdit->insert(ui->lk->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_ll_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("L");
-    }
-    else {
-        ui->lineEdit->insert("l");
-    }
+    ui->lineEdit->insert(ui->ll->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lz_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("Z");
-    }
-    else {
-        ui->lineEdit->insert("z");
-    }
+    ui->lineEdit->insert(ui->lz->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lx_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("X");
-    }
-    else {
-        ui->lineEdit->insert("x");
-    }
+    ui->lineEdit->insert(ui->lx->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lc_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("C");
-    }
-    else {
-        ui->lineEdit->insert("c");
-    }
+    ui->lineEdit->insert(ui->lc->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lv_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("V");
-    }
-    else {
-        ui->lineEdit->insert("v");
-    }
+    ui->lineEdit->insert(ui->lv->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lb_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("B");
-    }
-    else {
-        ui->lineEdit->insert("b");
-    }
+    ui->lineEdit->insert(ui->lb->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_ln_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("N");
-    }
-    else {
-        ui->lineEdit->insert("n");
-    }
+    ui->lineEdit->insert(ui->ln->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
 
 void virtualkeyboard::on_lm_clicked()
 {
-    if(shift == true) {
-        ui->lineEdit->insert("M");
-    }
-    else {
-        ui->lineEdit->insert("m");
-    }
+    ui->lineEdit->insert(ui->lm->text());
+
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
 }
@@ -671,27 +532,29 @@ void virtualkeyboard::on_shiftBtn_clicked()
 {
     if(shift == true) {
         shift = false;
+        reverseKeys(keyboardMode::lowerCase);
     }
     else {
+        reverseKeys(keyboardMode::upperCase);
         shift = true;
     }
-    reverseKeys();
+
 }
 
-void virtualkeyboard::reverseKeys() {
-    if(shift == true) {
+void virtualkeyboard::reverseKeys(keyboardMode keyboardMode) {
+    currentMode = keyboardMode;
+    if(keyboardMode == keyboardMode::upperCase) {
         ui->shiftBtn->setText("⇪");
-
-        ui->n1->setText("!");
-        ui->n2->setText("/");
-        ui->n3->setText("#");
-        ui->n4->setText("$");
-        ui->n5->setText("%");
-        ui->n6->setText("^");
-        ui->n7->setText("&&");
-        ui->n8->setText("*");
-        ui->n9->setText("(");
-        ui->n0->setText(")");
+        ui->n1->setText("1");
+        ui->n2->setText("2");
+        ui->n3->setText("3");
+        ui->n4->setText("4");
+        ui->n5->setText("5");
+        ui->n6->setText("6");
+        ui->n7->setText("7");
+        ui->n8->setText("8");
+        ui->n9->setText("9");
+        ui->n0->setText("0");
 
         ui->la->setText("A");
         ui->lb->setText("B");
@@ -720,7 +583,7 @@ void virtualkeyboard::reverseKeys() {
         ui->ly->setText("Y");
         ui->lz->setText("Z");
     }
-    else {
+    else if(keyboardMode == keyboardMode::lowerCase) {
         ui->shiftBtn->setText("⇧");
 
         ui->n1->setText("1");
@@ -760,6 +623,50 @@ void virtualkeyboard::reverseKeys() {
         ui->lx->setText("x");
         ui->ly->setText("y");
         ui->lz->setText("z");
+    }
+    else if(keyboardMode == keyboardMode::specialCharacters) {
+        ui->shiftBtn->setText("⇧");
+
+        ui->n1->setText("1");
+        ui->n2->setText("2");
+        ui->n3->setText("3");
+        ui->n4->setText("4");
+        ui->n5->setText("5");
+        ui->n6->setText("6");
+        ui->n7->setText("7");
+        ui->n8->setText("8");
+        ui->n9->setText("9");
+        ui->n0->setText("0");
+
+        ui->lq->setText("@");
+        ui->lw->setText("#");
+        ui->le->setText("€");
+        ui->lr->setText("%");
+        // Important
+        ui->lt->setText("&&");
+        ui->ly->setText("-");
+        ui->lu->setText("+");
+        ui->li->setText("(");
+        ui->lo->setText(")");
+        ui->lp->setText("*");
+        // Important
+        ui->la->setText("\"");
+        ui->ls->setText("'");
+        ui->ld->setText(":");
+        ui->lf->setText(";");
+        ui->lg->setText("!");
+        ui->lh->setText("?");
+        ui->lj->setText(",");
+        ui->lk->setText("_");
+        ui->ll->setText("/");
+        ui->lz->setText("~");
+
+        ui->lx->setText("{");
+        ui->lc->setText("}");
+        ui->lv->setText("[");
+        ui->lb->setText("]");
+        ui->ln->setText("<");
+        ui->lm->setText(">");
     }
     QTimer::singleShot(1000, this, SLOT(adjust_size_function()));
 }
