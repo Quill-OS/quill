@@ -18,6 +18,7 @@ public:
     ~virtualkeyboard();
     bool shift = false;
     bool specialCharacters = false;
+    bool embed;
     enum class keyboardMode {
         lowerCase,
         upperCase,
@@ -69,6 +70,7 @@ private slots:
     void on_lm_clicked();
     void on_shiftBtn_clicked();
     void adjust_size_function();
+    void on_enterBtn_clicked();
 
 private:
     Ui::virtualkeyboard *ui;
@@ -76,6 +78,7 @@ private:
 
 signals:
     void adjust_size();
+    void enterBtnPressed(QString string);
 };
 
 #endif // VIRTUALKEYBOARD_H

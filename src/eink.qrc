@@ -97,6 +97,7 @@
         <file>resources/wifi-50.png</file>
         <file>resources/wifi-75.png</file>
         <file>resources/wifi-100.png</file>
-	<file>resources/log.png</file>
+        <file>resources/log.png</file>
+        <file>resources/new.png</file>
     </qresource>
 </RCC>

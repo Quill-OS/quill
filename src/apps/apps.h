@@ -2,10 +2,11 @@
 #define APPS_H
 
 #include <QWidget>
-#include <savedwords.h>
-#include <calendarapp.h>
-#include <koboxappsdialog.h>
-#include <generaldialog.h>
+#include "savedwords.h"
+#include "calendarapp.h"
+#include "koboxappsdialog.h"
+#include "generaldialog.h"
+#include "todo.h"
 
 #include <QJsonDocument>
 
@@ -40,13 +41,15 @@ private slots:
     void showUserApps(bool showDisabledJson);
     void updateJsonFileSlot(QJsonDocument jsonDocument);
     void showFailedToParseMainUserAppsJsonFile();
+    void on_todoLaunchBtn_clicked();
 
 private:
-    Ui::apps *ui;
-    savedwords *savedWordsWindow;
-    calendarApp *calendarWindow;
-    koboxAppsDialog *koboxAppsDialogWindow;
-    generalDialog *generalDialogWindow;
+    Ui::apps * ui;
+    savedwords * savedWordsWindow;
+    calendarApp * calendarWindow;
+    koboxAppsDialog * koboxAppsDialogWindow;
+    generalDialog * generalDialogWindow;
+    todo * todoWindow;
 
     QFile jsonFile;
     QJsonDocument jsonDocument;

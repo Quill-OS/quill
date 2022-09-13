@@ -24,6 +24,7 @@ wi
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/apps/todo.cpp \
     src/splash/alert.cpp \
     src/apps/apps.cpp \
     src/widgets/dialogs/library/bookinfodialog.cpp \
@@ -67,6 +68,7 @@ SOURCES += \
     src/settings/powerdaemonsettings.cpp
 
 HEADERS += \
+    src/apps/todo.h \
     src/splash/alert.h \
     src/apps/apps.h \
     src/widgets/dialogs/library/bookinfodialog.h \
@@ -110,6 +112,7 @@ HEADERS += \
     src/settings/powerdaemonsettings.h
 
 FORMS += \
+    src/apps/todo.ui \
     src/splash/alert.ui \
     src/apps/apps.ui \
     src/widgets/dialogs/library/bookinfodialog.ui \

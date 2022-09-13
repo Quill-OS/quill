@@ -2,6 +2,7 @@
 #include "ui_virtualkeyboard.h"
 
 #include <QTimer>
+#include <QScreen>
 #include <QDebug>
 
 virtualkeyboard::virtualkeyboard(QWidget *parent) :
@@ -9,6 +10,33 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
     ui(new Ui::virtualkeyboard)
 {   
     ui->setupUi(this);
+    this->setStyleSheet(readFile("/mnt/onboard/.adds/inkbox/eink.qss"));
+
+    if(global::keyboard::embed == false) {
+        global::keyboard::embed = true;
+        embed = false;
+        ui->leftSpacerWidget->hide();
+        ui->rightSpacerWidget->hide();
+        ui->leftSpacerWidget->deleteLater();
+        ui->rightSpacerWidget->deleteLater();
+        ui->enterBtn->setProperty("type", "borderless");
+        {
+            int padding = 13;
+            if(global::deviceID == "n873\n") {
+                padding = 27;
+            }
+            else if(global::deviceID == "n437\n") {
+                padding = 20;
+            }
+            ui->enterBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: " + QString::number(padding) + "px");
+            ui->enterBtn->setIcon(QIcon(":/resources/arrow-right.png"));
+        }
+    }
+    else {
+        embed = true;
+        ui->enterBtn->hide();
+        ui->enterBtn->deleteLater();
+    }
 
     ui->n1->setProperty("type", "borderless");
     ui->n2->setProperty("type", "borderless");
@@ -193,11 +221,12 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
     if(global::keyboard::vncDialog == true or global::keyboard::wifiPassphraseDialog == true or global::keyboard::encfsDialog == true) {
         ui->lineEdit->setFont(QFont("Roboto Mono"));
     }
-    else if(global::keyboard::searchDialog == true){
+    else {
         ui->lineEdit->setFont(QFont("u001"));
     }
-    else {
-        ui->lineEdit->setFont(QFont("Roboto"));
+
+    if(embed == false) {
+        adjust_size_function();
     }
 }
 
@@ -672,11 +701,24 @@ void virtualkeyboard::reverseKeys(keyboardMode keyboardMode) {
 }
 
 void virtualkeyboard::adjust_size_function() {
-    emit adjust_size();
+    if(embed == true) {
+        emit adjust_size();
+    }
+    else {
+        this->setFixedHeight(QGuiApplication::screens()[0]->size().height() * 45 / 100);
+        this->setFixedWidth(QGuiApplication::screens()[0]->size().width());
+        this->move(0, (QGuiApplication::screens()[0]->size().height() - this->height()));
+    }
 }
 
 void virtualkeyboard::clearLineEdit() {
     ui->lineEdit->clear();
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
+}
+
+void virtualkeyboard::on_enterBtn_clicked()
+{
+    emit enterBtnPressed(ui->lineEdit->text());
+    this->close();
 }

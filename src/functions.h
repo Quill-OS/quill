@@ -95,6 +95,7 @@ namespace global {
         inline bool wifiPassphraseDialog;
         inline QString keyboardText;
         inline QString keypadText;
+        inline bool embed = true;
     }
     namespace toast {
         inline QString message;
@@ -139,6 +140,7 @@ namespace global {
         static inline QString recentBooksDatabasePath = databaseDirectoryPath + "RecentBooks.db";
         static inline QString pinnedBooksDatabasePath = databaseDirectoryPath + "PinnedBooks.db";
         static inline QString highlightsDatabasePath = databaseDirectoryPath + "Highlights.db";
+        static inline QString todoDatabasePath = databaseDirectoryPath + "ToDo.db";
         inline bool headless;
         namespace bookOptionsDialog {
             inline int bookID;
@@ -977,6 +979,25 @@ namespace {
     void writeHighlightsDatabase(QJsonObject jsonObject) {
         QFile::remove(global::localLibrary::highlightsDatabasePath);
         writeFile(global::localLibrary::highlightsDatabasePath, qCompress(QJsonDocument(jsonObject).toJson()).toBase64());
+    }
+    QJsonDocument readTodoDatabase() {
+        // Read To-Do database from file
+        QFile database(global::localLibrary::todoDatabasePath);
+        QByteArray data;
+        if(database.open(QIODevice::ReadOnly)) {
+            data = database.readAll();
+            database.close();
+        }
+        else {
+            QString function = __func__; log(function + ": Failed to open To-Do database file for reading at '" + database.fileName() + "'", "functions");
+        }
+
+        // Parse JSON data
+        return QJsonDocument::fromJson(data);
+    }
+    void writeTodoDatabase(QJsonDocument jsonDocument) {
+        QFile::remove(global::localLibrary::todoDatabasePath);
+        writeFile(global::localLibrary::todoDatabasePath, jsonDocument.toJson());
     }
     void highlightBookText(QString text, QString bookPath, bool remove) {
         if(remove == false) {

@@ -9,6 +9,7 @@
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QJsonArray>
+#include <QScreen>
 
 apps::apps(QWidget *parent) :
     QWidget(parent),
@@ -24,6 +25,7 @@ apps::apps(QWidget *parent) :
     ui->vncLaunchBtn->setProperty("type", "borderless");
     ui->reversiLaunchBtn->setProperty("type", "borderless");
     ui->g2048LaunchBtn->setProperty("type", "borderless");
+    ui->todoLaunchBtn->setProperty("type", "borderless");
 
     ui->label->setStyleSheet("padding-top: 2px; padding-bottom: 5px");
     ui->koboxAppsOpenButton->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
@@ -35,6 +37,7 @@ apps::apps(QWidget *parent) :
     ui->vncLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->reversiLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->g2048LaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
+    ui->todoLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     ui->noUserAppsAvailableLabel->hide();
 
@@ -390,4 +393,12 @@ void apps::updateJsonFileSlot(QJsonDocument jsonDocumentFunc)
 
 void apps::showFailedToParseMainUserAppsJsonFile() {
      emit showToast("Failed to parse 'apps.json'");
+}
+
+void apps::on_todoLaunchBtn_clicked()
+{
+    todo * todoWindow = new todo();
+    todoWindow->setAttribute(Qt::WA_DeleteOnClose);
+    todoWindow->setGeometry(QRect(QPoint(0,0), qApp->primaryScreen()->geometry().size()));
+    todoWindow->show();
 }
