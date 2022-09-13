@@ -1309,6 +1309,9 @@ void reader::setTextProperties(int alignment, int lineSpacing, int margins, QStr
     QTextCursor cursor = ui->text->textCursor();
     textDialogLock = true;
     // Kudos to Qt for not implementing the opposite of the following function /)_-)
+
+    ui->text->setStyleSheet("QTextEdit { selection-background-color: white }");
+
     ui->text->selectAll();
     if(alignment == 0) {
         ui->text->setAlignment(Qt::AlignLeft);
@@ -1428,6 +1431,7 @@ void reader::setTextProperties(int alignment, int lineSpacing, int margins, QStr
         keyCount++;
     }
     htmlText.replace(QRegExp("font-family:'.*';"), "");
+    ui->text->setStyleSheet("QTextEdit { selection-background-color: black }");
     ui->text->setHtml(htmlText);
 }
 
