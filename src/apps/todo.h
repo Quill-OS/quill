@@ -2,6 +2,7 @@
 #define TODO_H
 
 #include <QWidget>
+#include <QListWidgetItem>
 
 #include "virtualkeyboard.h"
 
@@ -23,6 +24,9 @@ private slots:
     void on_newListBtn_clicked();
     void createNewList(QString listName);
     void refreshList();
+    void setupList(QString listName);
+    void on_setupBtn_clicked();
+    void on_listWidget_itemClicked(QListWidgetItem *item);
 
 private:
     Ui::todo *ui;
