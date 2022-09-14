@@ -78,7 +78,7 @@
         </spacer>
        </item>
        <item row="0" column="2">
-        <widget class="QPushButton" name="newListBtn">
+        <widget class="QPushButton" name="newBtn">
          <property name="text">
           <string/>
          </property>
@@ -133,72 +133,54 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QScrollArea" name="scrollArea">
-           <property name="widgetResizable">
-            <bool>true</bool>
+          <widget class="QListWidget" name="listWidget"/>
+         </item>
+         <item>
+          <widget class="Line" name="line_4">
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
            </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>0</y>
-              <width>382</width>
-              <height>229</height>
-             </rect>
-            </property>
-            <layout class="QVBoxLayout" name="verticalLayout_3">
-             <property name="leftMargin">
-              <number>0</number>
-             </property>
-             <property name="topMargin">
-              <number>0</number>
-             </property>
-             <property name="rightMargin">
-              <number>0</number>
-             </property>
-             <property name="bottomMargin">
-              <number>0</number>
-             </property>
-             <item>
-              <widget class="QListWidget" name="listWidget"/>
-             </item>
-             <item>
-              <layout class="QHBoxLayout" name="horizontalLayout">
-               <property name="topMargin">
-                <number>0</number>
-               </property>
-               <property name="rightMargin">
-                <number>0</number>
-               </property>
-               <item>
-                <widget class="QPushButton" name="deleteBtn">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="Line" name="line_3">
-                 <property name="frameShadow">
-                  <enum>QFrame::Plain</enum>
-                 </property>
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="setupBtn">
-                 <property name="text">
-                  <string/>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
+           <property name="lineWidth">
+            <number>4</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
           </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="deleteBtn">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_3">
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="setupBtn">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -217,7 +199,11 @@
           <number>0</number>
          </property>
          <item>
-          <layout class="QVBoxLayout" name="verticalLayout_5"/>
+          <layout class="QVBoxLayout" name="listVerticalLayout">
+           <item>
+            <widget class="QListWidget" name="itemsListWidget"/>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>

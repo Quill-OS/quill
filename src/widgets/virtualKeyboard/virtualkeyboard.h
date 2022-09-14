@@ -72,6 +72,8 @@ private slots:
     void adjust_size_function();
     void on_enterBtn_clicked();
 
+    void on_closeBtn_clicked();
+
 private:
     Ui::virtualkeyboard *ui;
     keyboardMode currentMode = keyboardMode::lowerCase;

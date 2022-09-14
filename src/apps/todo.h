@@ -18,15 +18,24 @@ public:
     QString className = this->metaObject()->className();
     explicit todo(QWidget *parent = nullptr);
     ~todo();
+    enum class currentView {
+        home,
+        list
+    };
+    currentView currentView = currentView::home;
+    int listIndex;
 
 private slots:
     void on_closeBtn_clicked();
-    void on_newListBtn_clicked();
+    void on_newBtn_clicked();
     void createNewList(QString listName);
+    void addItem(QString itemName);
     void refreshList();
+    void saveCurrentList();
     void setupList(QString listName);
     void on_setupBtn_clicked();
     void on_listWidget_itemClicked(QListWidgetItem *item);
+    void on_deleteBtn_clicked();
 
 private:
     Ui::todo *ui;

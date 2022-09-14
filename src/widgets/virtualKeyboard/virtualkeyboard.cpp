@@ -19,6 +19,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->rightSpacerWidget->hide();
         ui->leftSpacerWidget->deleteLater();
         ui->rightSpacerWidget->deleteLater();
+        ui->closeBtn->setProperty("type", "borderless");
         ui->enterBtn->setProperty("type", "borderless");
         {
             int padding = 13;
@@ -28,12 +29,18 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
             else if(global::deviceID == "n437\n") {
                 padding = 20;
             }
+            ui->closeBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: " + QString::number(padding) + "px");
+            ui->closeBtn->setIcon(QIcon(":/resources/close.png"));
             ui->enterBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: " + QString::number(padding) + "px");
             ui->enterBtn->setIcon(QIcon(":/resources/arrow-right.png"));
         }
     }
     else {
         embed = true;
+        ui->line->hide();
+        ui->line->deleteLater();
+        ui->closeBtn->hide();
+        ui->closeBtn->deleteLater();
         ui->enterBtn->hide();
         ui->enterBtn->deleteLater();
     }
@@ -705,7 +712,7 @@ void virtualkeyboard::adjust_size_function() {
         emit adjust_size();
     }
     else {
-        this->setFixedHeight(QGuiApplication::screens()[0]->size().height() * 45 / 100);
+        this->setFixedHeight(QGuiApplication::screens()[0]->size().height() * 50 / 100);
         this->setFixedWidth(QGuiApplication::screens()[0]->size().width());
         this->move(0, (QGuiApplication::screens()[0]->size().height() - this->height()));
     }
@@ -719,6 +726,13 @@ void virtualkeyboard::clearLineEdit() {
 
 void virtualkeyboard::on_enterBtn_clicked()
 {
-    emit enterBtnPressed(ui->lineEdit->text());
+    global::keyboard::keyboardText = ui->lineEdit->text();
+    emit enterBtnPressed(global::keyboard::keyboardText);
+    this->close();
+}
+
+void virtualkeyboard::on_closeBtn_clicked()
+{
+    global::keyboard::keyboardText = "";
     this->close();
 }
