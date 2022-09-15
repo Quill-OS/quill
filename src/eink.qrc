@@ -99,5 +99,7 @@
         <file>resources/wifi-100.png</file>
         <file>resources/log.png</file>
         <file>resources/new.png</file>
+        <file>resources/checkbox-unchecked-small.png</file>
+        <file>resources/checkbox-checked-small.png</file>
     </qresource>
 </RCC>

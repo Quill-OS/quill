@@ -81,6 +81,7 @@ private:
 signals:
     void adjust_size();
     void enterBtnPressed(QString string);
+    void closeBtnPressed();
 };
 
 #endif // VIRTUALKEYBOARD_H

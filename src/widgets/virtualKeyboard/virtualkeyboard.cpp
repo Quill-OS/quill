@@ -130,7 +130,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->eraseBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
         ui->shiftBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
         ui->spt->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
-        ui->sat->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
+        ui->sat->setStyleSheet("font-weight: bold; font-size: 7pt; padding: 27px");
         ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 15px; border: 1px solid black");
     }
     else if(global::deviceID == "n437\n") {
@@ -175,7 +175,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->eraseBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
         ui->shiftBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
         ui->spt->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
-        ui->sat->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
+        ui->sat->setStyleSheet("font-weight: bold; font-size: 7pt; padding: 20px");
         ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 15px; border: 1px solid black");
     }
     else {
@@ -220,7 +220,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->eraseBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 13px");
         ui->shiftBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 13px");
         ui->spt->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 13px");
-        ui->sat->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 13px");
+        ui->sat->setStyleSheet("font-weight: bold; font-size: 7pt; padding: 13px");
         ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 10px; border: 1px solid black");
     }
 
@@ -446,7 +446,7 @@ void virtualkeyboard::on_la_clicked()
 
 void virtualkeyboard::on_ls_clicked()
 {
-    ui->lineEdit->insert(QString(ui->la->text().back()));
+    ui->lineEdit->insert(ui->ls->text());
 
     QString text = ui->lineEdit->text();
     global::keyboard::keyboardText = text;
@@ -734,5 +734,6 @@ void virtualkeyboard::on_enterBtn_clicked()
 void virtualkeyboard::on_closeBtn_clicked()
 {
     global::keyboard::keyboardText = "";
+    emit closeBtnPressed();
     this->close();
 }

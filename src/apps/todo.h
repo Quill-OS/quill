@@ -22,6 +22,7 @@ public:
         home,
         list
     };
+    bool selectItemsMode = false;
     currentView currentView = currentView::home;
     int listIndex;
 
@@ -33,9 +34,17 @@ private slots:
     void refreshList();
     void saveCurrentList();
     void setupList(QString listName);
+    void switchViewHome();
+    void switchItemsSelectionMode(bool selectionMode);
+    void setDefaultHomePageStatusText();
+    void setDefaultListPageStatusText();
     void on_setupBtn_clicked();
     void on_listWidget_itemClicked(QListWidgetItem *item);
     void on_deleteBtn_clicked();
+    void on_newItemBtn_clicked();
+    void on_selectItemsModeBtn_clicked();
+    void on_deleteItemBtn_clicked();
+    void on_selectAllItemsBtn_clicked();
 
 private:
     Ui::todo *ui;
