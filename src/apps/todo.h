@@ -45,6 +45,11 @@ private slots:
     void on_selectItemsModeBtn_clicked();
     void on_deleteItemBtn_clicked();
     void on_selectAllItemsBtn_clicked();
+    void on_deselectAllItemsBtn_clicked();
+    void on_saveCurrentListViewBtn_clicked();
+
+signals:
+    void showToast(QString messageToDisplay);
 
 private:
     Ui::todo *ui;

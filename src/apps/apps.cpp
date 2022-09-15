@@ -398,6 +398,7 @@ void apps::showFailedToParseMainUserAppsJsonFile() {
 void apps::on_todoLaunchBtn_clicked()
 {
     todo * todoWindow = new todo();
+    QObject::connect(todoWindow, &todo::showToast, this, &apps::showToast);
     todoWindow->setAttribute(Qt::WA_DeleteOnClose);
     todoWindow->setGeometry(QRect(QPoint(0,0), qApp->primaryScreen()->geometry().size()));
     todoWindow->show();

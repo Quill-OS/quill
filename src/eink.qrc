@@ -101,5 +101,7 @@
         <file>resources/new.png</file>
         <file>resources/checkbox-unchecked-small.png</file>
         <file>resources/checkbox-checked-small.png</file>
+        <file>resources/checkbox-x-small.png</file>
+        <file>resources/checkbox-x.png</file>
     </qresource>
 </RCC>

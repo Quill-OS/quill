@@ -24,12 +24,16 @@ todo::todo(QWidget *parent) :
     ui->deleteItemBtn->setProperty("type", "borderless");
     ui->selectAllItemsBtn->setProperty("type", "borderless");
     ui->selectItemsModeBtn->setProperty("type", "borderless");
+    ui->deselectAllItemsBtn->setProperty("type", "borderless");
+    ui->saveCurrentListViewBtn->setProperty("type", "borderless");
     ui->deleteBtn->setStyleSheet("padding: 10px");
     ui->setupBtn->setStyleSheet("padding: 10px");
     ui->newItemBtn->setStyleSheet("padding: 10px");
     ui->deleteItemBtn->setStyleSheet("padding: 10px");
     ui->selectAllItemsBtn->setStyleSheet("padding: 10px");
     ui->selectItemsModeBtn->setStyleSheet("padding: 10px");
+    ui->deselectAllItemsBtn->setStyleSheet("padding: 10px");
+    ui->saveCurrentListViewBtn->setStyleSheet("padding: 10px");
     ui->closeBtn->setIcon(QIcon(":/resources/close.png"));
     ui->newBtn->setIcon(QIcon(":/resources/new.png"));
     ui->newItemBtn->setIcon(QIcon(":/resources/plus.png"));
@@ -38,6 +42,8 @@ todo::todo(QWidget *parent) :
     ui->deleteItemBtn->setIcon(QIcon(":/resources/x-circle.png"));
     ui->selectAllItemsBtn->setIcon(QIcon(":/resources/checkbox-checked-small.png"));
     ui->selectItemsModeBtn->setIcon(QIcon(":/resources/checkbox-unchecked-small.png"));
+    ui->deselectAllItemsBtn->setIcon(QIcon(":/resources/checkbox-x-small.png"));
+    ui->saveCurrentListViewBtn->setIcon(QIcon(":/resources/save.png"));
     ui->listWidget->setStyleSheet("font-size: 10pt");
     ui->listWidget->setWordWrap(true);
     ui->itemsListWidget->setStyleSheet("font-size: 10pt");
@@ -290,27 +296,44 @@ void todo::switchItemsSelectionMode(bool selectionMode) {
 
 void todo::on_deleteItemBtn_clicked()
 {
-    log("Deleting list item(s)", className);
-    QJsonDocument document = readTodoDatabase();
-    QJsonObject object = document.object();
-    QJsonArray mainArray = object["List"].toArray();
-    QJsonArray listArray = mainArray.at(listIndex).toArray();
-    int itemsRemoved = 0;
+    QList<int> itemsToDelete;
     for(int i = 1; i < ui->itemsListWidget->count() + 1; i++) {
         if(ui->itemsListWidget->item(i - 1)->checkState() == Qt::Checked) {
-            listArray.removeAt(i - itemsRemoved);
-            itemsRemoved++;
+            itemsToDelete.append(i);
         }
     }
 
-    // Adding item array to list array
-    mainArray.replace(listIndex, listArray);
-    object["List"] = mainArray;
+    if(!itemsToDelete.isEmpty()) {
+        QString itemsToDeleteString;
+        for(int i = 0; i < itemsToDelete.count(); i++) {
+            itemsToDeleteString.append(QString::number(itemsToDelete[i]));
+            if(i < itemsToDelete.count() - 1) {
+                itemsToDeleteString.append(", ");
+            }
+        }
+        log("Deleting list item(s) " + itemsToDeleteString, className);
+        QJsonDocument document = readTodoDatabase();
+        QJsonObject object = document.object();
+        QJsonArray mainArray = object["List"].toArray();
+        QJsonArray listArray = mainArray.at(listIndex).toArray();
+        int itemsRemoved = 0;
+        for(int i = 0; i < itemsToDelete.count(); i++) {
+            listArray.removeAt(itemsToDelete.at(i) - itemsRemoved);
+            itemsRemoved++;
+        }
 
-    document.setObject(object);
-    writeTodoDatabase(document);
+        // Adding item array to list array
+        mainArray.replace(listIndex, listArray);
+        object["List"] = mainArray;
 
-    setupList(listArray.at(0).toString());
+        document.setObject(object);
+        writeTodoDatabase(document);
+
+        setupList(listArray.at(0).toString());
+    }
+    else {
+        emit showToast("No item(s) selected");
+    }
 }
 
 void todo::on_selectAllItemsBtn_clicked()
@@ -327,4 +350,18 @@ void todo::setDefaultHomePageStatusText() {
 
 void todo::setDefaultListPageStatusText() {
     ui->statusLabel->setText("Select or create a new item");
+}
+
+void todo::on_deselectAllItemsBtn_clicked()
+{
+    int range = ui->itemsListWidget->count();
+    for(int i = 0; i < range; i++) {
+        ui->itemsListWidget->item(i)->setCheckState(Qt::Unchecked);
+    }
+}
+
+void todo::on_saveCurrentListViewBtn_clicked()
+{
+    saveCurrentList();
+    switchItemsSelectionMode(false);
 }
