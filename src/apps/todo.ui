@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>483</width>
+    <width>451</width>
     <height>300</height>
    </rect>
   </property>
@@ -286,7 +286,7 @@
                     </widget>
                    </item>
                    <item>
-                    <widget class="QPushButton" name="deleteItemBtn">
+                    <widget class="QPushButton" name="editItemBtn">
                      <property name="text">
                       <string/>
                      </property>
@@ -294,6 +294,23 @@
                    </item>
                    <item>
                     <widget class="Line" name="line_6">
+                     <property name="frameShadow">
+                      <enum>QFrame::Plain</enum>
+                     </property>
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="deleteItemBtn">
+                     <property name="text">
+                      <string/>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="Line" name="line_11">
                      <property name="frameShadow">
                       <enum>QFrame::Plain</enum>
                      </property>

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QListWidgetItem>
+#include <QScreen>
 
 #include "virtualkeyboard.h"
 
@@ -25,12 +26,17 @@ public:
     bool selectItemsMode = false;
     currentView currentView = currentView::home;
     int listIndex;
+    int currentEditItemIndex;
+    int buttonPadding;
+    QString buttonPaddingString;
 
 private slots:
     void on_closeBtn_clicked();
     void on_newBtn_clicked();
     void createNewList(QString listName);
     void addItem(QString itemName);
+    void editItem(int itemIndex, QString replacement);
+    void editItemWrapper(QString replacement);
     void refreshList();
     void saveCurrentList();
     void setupList(QString listName);
@@ -38,6 +44,7 @@ private slots:
     void switchItemsSelectionMode(bool selectionMode);
     void setDefaultHomePageStatusText();
     void setDefaultListPageStatusText();
+    void resize();
     void on_setupBtn_clicked();
     void on_listWidget_itemClicked(QListWidgetItem *item);
     void on_deleteBtn_clicked();
@@ -47,6 +54,7 @@ private slots:
     void on_selectAllItemsBtn_clicked();
     void on_deselectAllItemsBtn_clicked();
     void on_saveCurrentListViewBtn_clicked();
+    void on_editItemBtn_clicked();
 
 signals:
     void showToast(QString messageToDisplay);

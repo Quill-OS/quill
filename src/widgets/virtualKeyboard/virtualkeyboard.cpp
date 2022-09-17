@@ -44,6 +44,9 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->enterBtn->hide();
         ui->enterBtn->deleteLater();
     }
+    if(!global::keyboard::keyboardText.isEmpty()) {
+        ui->lineEdit->setText(global::keyboard::keyboardText);
+    }
 
     ui->n1->setProperty("type", "borderless");
     ui->n2->setProperty("type", "borderless");

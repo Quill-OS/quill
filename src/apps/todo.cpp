@@ -16,6 +16,15 @@ todo::todo(QWidget *parent) :
     ui->deleteBtn->setEnabled(false);
     ui->setupBtn->setEnabled(false);
 
+    buttonPadding;
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        buttonPadding = 5;
+    }
+    else {
+        buttonPadding = 10;
+    }
+    buttonPaddingString = QString::number(buttonPadding);
+
     ui->closeBtn->setProperty("type", "borderless");
     ui->newBtn->setProperty("type", "borderless");
     ui->deleteBtn->setProperty("type", "borderless");
@@ -26,14 +35,16 @@ todo::todo(QWidget *parent) :
     ui->selectItemsModeBtn->setProperty("type", "borderless");
     ui->deselectAllItemsBtn->setProperty("type", "borderless");
     ui->saveCurrentListViewBtn->setProperty("type", "borderless");
-    ui->deleteBtn->setStyleSheet("padding: 10px");
-    ui->setupBtn->setStyleSheet("padding: 10px");
-    ui->newItemBtn->setStyleSheet("padding: 10px");
-    ui->deleteItemBtn->setStyleSheet("padding: 10px");
-    ui->selectAllItemsBtn->setStyleSheet("padding: 10px");
-    ui->selectItemsModeBtn->setStyleSheet("padding: 10px");
-    ui->deselectAllItemsBtn->setStyleSheet("padding: 10px");
-    ui->saveCurrentListViewBtn->setStyleSheet("padding: 10px");
+    ui->editItemBtn->setProperty("type", "borderless");
+    ui->deleteBtn->setStyleSheet("padding: " + buttonPaddingString + "px;");
+    ui->setupBtn->setStyleSheet("padding: " + buttonPaddingString + "px;");
+    ui->newItemBtn->setStyleSheet("padding: " + buttonPaddingString + "px;");
+    ui->deleteItemBtn->setStyleSheet("padding: " + buttonPaddingString + "px;");
+    ui->selectAllItemsBtn->setStyleSheet("padding: " + buttonPaddingString + "px;");
+    ui->selectItemsModeBtn->setStyleSheet("padding: " + buttonPaddingString + "px;");
+    ui->deselectAllItemsBtn->setStyleSheet("padding: " + buttonPaddingString + "px;");
+    ui->saveCurrentListViewBtn->setStyleSheet("padding: " + buttonPaddingString + "px;");
+    ui->editItemBtn->setStyleSheet("padding: " + buttonPaddingString + "px;");
     ui->closeBtn->setIcon(QIcon(":/resources/close.png"));
     ui->newBtn->setIcon(QIcon(":/resources/new.png"));
     ui->newItemBtn->setIcon(QIcon(":/resources/plus.png"));
@@ -43,6 +54,7 @@ todo::todo(QWidget *parent) :
     ui->selectAllItemsBtn->setIcon(QIcon(":/resources/checkbox-checked-small.png"));
     ui->selectItemsModeBtn->setIcon(QIcon(":/resources/checkbox-unchecked-small.png"));
     ui->deselectAllItemsBtn->setIcon(QIcon(":/resources/checkbox-x-small.png"));
+    ui->editItemBtn->setIcon(QIcon(":/resources/edit.png"));
     ui->saveCurrentListViewBtn->setIcon(QIcon(":/resources/save.png"));
     ui->listWidget->setStyleSheet("font-size: 10pt");
     ui->listWidget->setWordWrap(true);
@@ -277,7 +289,7 @@ void todo::switchItemsSelectionMode(bool selectionMode) {
         log("Entering selection mode", className);
         saveCurrentList();
         ui->newItemBtn->setEnabled(false);
-        ui->selectItemsModeBtn->setStyleSheet("padding: 10px; background-color: lightGray;");
+        ui->selectItemsModeBtn->setStyleSheet("padding: " + buttonPaddingString + "px; background-color: lightGray;");
         ui->editToolbarWidget->show();
         ui->statusLabel->setText("Selection mode");
         selectItemsMode = true;
@@ -285,13 +297,13 @@ void todo::switchItemsSelectionMode(bool selectionMode) {
     else {
         log("Exiting selection mode", className);
         setupList(readTodoDatabase().object()["List"].toArray().at(listIndex).toArray().at(0).toString());
-        ui->selectItemsModeBtn->setStyleSheet("padding: 10px; background-color: white;");
+        ui->selectItemsModeBtn->setStyleSheet("padding: " + buttonPaddingString + "px; background-color: white;");
         ui->editToolbarWidget->hide();
         ui->newItemBtn->setEnabled(true);
         ui->statusLabel->setText("Select or create a new item");
         selectItemsMode = false;
     }
-    QTimer::singleShot(500, this, SLOT(repaint()));
+    QTimer::singleShot(500, this, SLOT(resize()));
 }
 
 void todo::on_deleteItemBtn_clicked()
@@ -364,4 +376,64 @@ void todo::on_saveCurrentListViewBtn_clicked()
 {
     saveCurrentList();
     switchItemsSelectionMode(false);
+}
+
+void todo::on_editItemBtn_clicked()
+{
+    QList<int> selectedItems;
+    for(int i = 1; i < ui->itemsListWidget->count() + 1; i++) {
+        if(ui->itemsListWidget->item(i - 1)->checkState() == Qt::Checked) {
+            selectedItems.append(i);
+        }
+    }
+    int count = selectedItems.count();
+    if(count == 1) {
+        currentEditItemIndex = selectedItems.at(0);
+        global::keyboard::embed = false;
+        global::keyboard::keyboardText = ui->itemsListWidget->item(currentEditItemIndex - 1)->text();
+        virtualkeyboard * virtualKeyboardWidget = new virtualkeyboard(this);
+        virtualKeyboardWidget->setAttribute(Qt::WA_DeleteOnClose);
+        QObject::connect(virtualKeyboardWidget, &virtualkeyboard::enterBtnPressed, this, &todo::editItemWrapper);
+        QObject::connect(virtualKeyboardWidget, &virtualkeyboard::closeBtnPressed, this, &todo::setDefaultListPageStatusText);
+        ui->statusLabel->setText("Enter the edited item's name");
+        virtualKeyboardWidget->show();
+    }
+    else if(count < 1) {
+        global::toast::delay = 3000;
+        emit showToast("Please select an item");
+    }
+    else {
+        global::toast::delay = 3000;
+        emit showToast("Please select only one item");
+    }
+}
+
+void todo::editItem(int index, QString replacement) {
+    QJsonDocument document = readTodoDatabase();
+    QJsonObject object = document.object();
+    QJsonArray mainArray = object["List"].toArray();
+    QJsonArray listArray = mainArray.at(listIndex).toArray();
+    QJsonArray itemArray = listArray.at(index).toArray();
+    // Replacing item string with provided replacement string
+    itemArray.replace(0, replacement);
+    listArray.replace(index, itemArray);
+
+    // Adding item array to list array
+    mainArray.replace(listIndex, listArray);
+    object["List"] = mainArray;
+
+    document.setObject(object);
+    writeTodoDatabase(document);
+
+    setupList(listArray.at(0).toString());
+}
+
+void todo::editItemWrapper(QString replacement) {
+    editItem(currentEditItemIndex, replacement);
+    currentEditItemIndex = NULL;
+}
+
+void todo::resize() {
+    this->setGeometry(QRect(QPoint(0,0), qApp->primaryScreen()->geometry().size()));
+    this->repaint();
 }
