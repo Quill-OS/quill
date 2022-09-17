@@ -41,7 +41,6 @@ private slots:
     void on_usbmsBtn_clicked();
     void on_previousBtn_clicked();
     void on_nextBtn_clicked();
-    void on_wordsNumber_valueChanged(int arg1);
     void on_updateBtn_clicked();
     void on_darkModeCheckBox_toggled(bool checked);
     void on_uiScalingSlider_valueChanged(int value);
@@ -82,11 +81,11 @@ signals:
     void closeIndefiniteToast();
 
 private:
-    Ui::settings *ui;
-    usbmsSplash *usbmsWindow;
-    generalDialog *generalDialogWindow;
-    otaManager *otaManagerWindow;
-    toast *toastWindow;
+    Ui::settings * ui;
+    usbmsSplash * usbmsWindow;
+    generalDialog * generalDialogWindow;
+    otaManager * otaManagerWindow;
+    toast * toastWindow;
 
     int pageSizeHeightSaved;
     int pageSizeWidthSaved;

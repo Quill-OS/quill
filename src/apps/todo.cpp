@@ -437,3 +437,13 @@ void todo::resize() {
     this->setGeometry(QRect(QPoint(0,0), qApp->primaryScreen()->geometry().size()));
     this->repaint();
 }
+
+void todo::on_itemsListWidget_itemClicked(QListWidgetItem *item)
+{
+    if(item->checkState() == Qt::Unchecked) {
+        item->setCheckState(Qt::Checked);
+    }
+    else {
+        item->setCheckState(Qt::Unchecked);
+    }
+}

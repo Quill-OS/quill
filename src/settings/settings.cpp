@@ -60,14 +60,19 @@ settings::settings(QWidget *parent) :
     ui->repackBtn->setStyleSheet("font-size: 9pt");
     ui->exportHighlightsBtn->setStyleSheet("font-size: 9pt");
     ui->uiScaleNumberLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        ui->previousBtn->setStyleSheet("padding: 7.5px;");
+        ui->nextBtn->setStyleSheet("padding: 7.5px;");
+    }
+    else {
+        ui->previousBtn->setStyleSheet("padding: 10px;");
+        ui->nextBtn->setStyleSheet("padding: 10px");
+    }
 
     ui->previousBtn->setText("");
     ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
     ui->nextBtn->setText("");
     ui->nextBtn->setIcon(QIcon(":/resources/chevron-right.png"));
-
-    ui->nextBtn->setFixedWidth(100);
-    ui->previousBtn->setFixedWidth(100);
 
     ui->requestLeaseBtn->hide();
     ui->usbmsBtn->hide();
@@ -571,14 +576,6 @@ void settings::on_nextBtn_clicked()
     if(settings_page >= 3) {
         settings_page = settings_page - 1;
     }
-}
-
-void settings::on_wordsNumber_valueChanged(int arg1)
-{
-    QString number = QString::number(arg1);
-    string number_str = number.toStdString();
-    string_writeconfig(".config/07-words_number/config", number_str);
-    log("Set text files words number to " + number, className);
 }
 
 void settings::on_updateBtn_clicked()

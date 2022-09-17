@@ -111,3 +111,13 @@ void highlightsListDialog::on_selectAllBtn_clicked()
         ui->listWidget->item(i)->setCheckState(Qt::Checked);
     }
 }
+
+void highlightsListDialog::on_listWidget_itemClicked(QListWidgetItem *item)
+{
+    if(item->checkState() == Qt::Unchecked) {
+        item->setCheckState(Qt::Checked);
+    }
+    else {
+        item->setCheckState(Qt::Unchecked);
+    }
+}

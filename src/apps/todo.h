@@ -55,6 +55,7 @@ private slots:
     void on_deselectAllItemsBtn_clicked();
     void on_saveCurrentListViewBtn_clicked();
     void on_editItemBtn_clicked();
+    void on_itemsListWidget_itemClicked(QListWidgetItem *item);
 
 signals:
     void showToast(QString messageToDisplay);
