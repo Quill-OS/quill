@@ -474,7 +474,7 @@ void localLibraryWidget::setupBooksListToggle(int pageNumber) {
 }
 
 void localLibraryWidget::setupBooksListFolders(int pageNumber) {
-    log("Showing local library with folders", className);
+    log("Showing folders", className);
     QStringList dirList = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
     log("Full directory list: "+ dirList.join(","), className);
 
@@ -590,7 +590,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
 
     if(in <= buttonsNumber) {
         for(int i = in; i <= buttonsNumber; i++) {
-            log("Hiding items in LocalLibrary", className);
+            log("Hiding items", className);
             bookIconArray[i]->hide();
             bookBtnArray[i]->hide();
             if(i - 1 < buttonsNumber) {

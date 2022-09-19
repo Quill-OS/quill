@@ -1101,12 +1101,12 @@ void settings::on_localLibraryShowFoldersCheckBox_toggled(bool checked)
     if(checked == true) {
         logEnabled(settingString, className);
         checked_box = true;
-        writeconfig(".config/21-local_library/folders", "Folders");
+        writeconfig(".config/21-local_library/folders", "Folders=");
     }
     else {
         logDisabled(settingString, className);
         checked_box = false;
-        writeconfig(".config/21-local_library/folders", "Folders");
+        writeconfig(".config/21-local_library/folders", "Folders=");
     }
 }
 
