@@ -15,6 +15,8 @@
         <file>resources/close.png</file>
         <file>resources/chevron-left.png</file>
         <file>resources/chevron-right.png</file>
+        <file>resources/chevron-down.png</file>
+        <file>resources/chevron-up.png</file>
         <file>resources/christie.png</file>
         <file>resources/exit.png</file>
         <file>resources/usbms.png</file>
@@ -103,5 +105,7 @@
         <file>resources/checkbox-checked-small.png</file>
         <file>resources/checkbox-x-small.png</file>
         <file>resources/checkbox-x.png</file>
+        <file>resources/folder.png</file>
+        <file>resources/question-mark.png</file>
     </qresource>
 </RCC>

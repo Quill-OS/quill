@@ -141,12 +141,16 @@ namespace global {
         static inline QString pinnedBooksDatabasePath = databaseDirectoryPath + "PinnedBooks.db";
         static inline QString highlightsDatabasePath = databaseDirectoryPath + "Highlights.db";
         static inline QString todoDatabasePath = databaseDirectoryPath + "ToDo.db";
+        // Maximum signed integer value for 32-bit systems
+        static inline int folderID = 2147483647;
         inline bool headless;
         namespace bookOptionsDialog {
             inline int bookID;
             inline bool deleteOption = true;
             inline bool bookDeleted;
             inline bool bookPinAction;
+            inline QString folderPath;
+            inline bool isFolder = false;
         }
     }
     namespace localStorage {

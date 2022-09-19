@@ -83,26 +83,31 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
         log("Setting up book info dialog, ID: " + QString::number(global::library::bookId) + ", title: " + global::library::bookTitle, className);
     }
     else {
-        QJsonObject bookJsonObject = getBookMetadata(global::localLibrary::bookOptionsDialog::bookID);
-        QString bookInfo;
-        QString title = bookJsonObject["Title"].toString();
-        QString author = bookJsonObject["Author"].toString();
-        QString publicationDate = bookJsonObject["PublicationDate"].toString();
-        QString path = bookJsonObject["BookPath"].toString();
-        if(!title.isEmpty()) {
-            bookInfo.append("<b>Title:</b> " + title + "<br>");
+        if(global::localLibrary::bookOptionsDialog::bookID != global::localLibrary::folderID) {
+            QJsonObject bookJsonObject = getBookMetadata(global::localLibrary::bookOptionsDialog::bookID);
+            QString bookInfo;
+            QString title = bookJsonObject["Title"].toString();
+            QString author = bookJsonObject["Author"].toString();
+            QString publicationDate = bookJsonObject["PublicationDate"].toString();
+            QString path = bookJsonObject["BookPath"].toString();
+            if(!title.isEmpty()) {
+                bookInfo.append("<b>Title:</b> " + title + "<br>");
+            }
+            if(!author.isEmpty()) {
+                bookInfo.append("<b>Author:</b> " + author + "<br>");
+            }
+            if(!publicationDate.isEmpty()) {
+                bookInfo.append("<b>Publication date:</b> " + publicationDate + "<br>");
+            }
+            if(!path.isEmpty()) {
+                bookInfo.append("<b>Path:</b> " + path + "<br>");
+            }
+            global::text::textBrowserContents = bookInfo;
         }
-        if(!author.isEmpty()) {
-            bookInfo.append("<b>Author:</b> " + author + "<br>");
+        else {
+            QString bookInfo = "<b>Path:</b> " + global::localLibrary::bookOptionsDialog::folderPath;
+            global::text::textBrowserContents = bookInfo;
         }
-        if(!publicationDate.isEmpty()) {
-            bookInfo.append("<b>Publication date:</b> " + publicationDate + "<br>");
-        }
-        if(!path.isEmpty()) {
-            bookInfo.append("<b>Path:</b> " + path + "<br>");
-        }
-
-        global::text::textBrowserContents = bookInfo;
         textwidget * textwidgetWindow = new textwidget(this);
         ui->stackedWidget->insertWidget(1, textwidgetWindow);
         ui->stackedWidget->setCurrentIndex(1);

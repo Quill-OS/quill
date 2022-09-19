@@ -22,23 +22,40 @@ bookOptionsDialog::bookOptionsDialog(QWidget *parent) :
     ui->wipeLocalReadingSettingsBtn->setProperty("type", "borderless");
     ui->infoBtn->setProperty("type", "borderless");
 
-    global::localLibrary::bookOptionsDialog::bookPinAction = false;
-
-    bookPath = getBookMetadata(global::localLibrary::bookOptionsDialog::bookID)["BookPath"].toString();
-    if(isBookPinned(global::localLibrary::bookOptionsDialog::bookID)) {
-        bookPinned = true;
-        ui->pinBtn->setText("Unpin");
+    if(global::localLibrary::bookOptionsDialog::isFolder == true) {
+        global::localLibrary::bookOptionsDialog::isFolder = false;
+        isFolder = true;
+        log("Detected a folder", className);
+        ui->pinBtn->hide();
+        ui->pinBtn->deleteLater();
+        ui->line->hide();
+        ui->line->deleteLater();
+        ui->wipeLocalReadingSettingsBtn->hide();
+        ui->wipeLocalReadingSettingsBtn->deleteLater();
+        ui->line_2->hide();
+        ui->line_2->deleteLater();
     }
     else {
-        bookPinned = false;
+        isFolder = false;
+        global::localLibrary::bookOptionsDialog::bookPinAction = false;
+
+        bookPath = getBookMetadata(global::localLibrary::bookOptionsDialog::bookID)["BookPath"].toString();
+        if(isBookPinned(global::localLibrary::bookOptionsDialog::bookID)) {
+            bookPinned = true;
+            ui->pinBtn->setText("Unpin");
+        }
+        else {
+            bookPinned = false;
+        }
+
+        bookChecksum = fileChecksum(bookPath, QCryptographicHash::Sha256);
+        QDir localReadingSettingsPath("/mnt/onboard/onboard/." + bookChecksum);
+        if(!localReadingSettingsPath.exists()) {
+            ui->wipeLocalReadingSettingsBtn->setEnabled(false);
+            ui->wipeLocalReadingSettingsBtn->setStyleSheet(ui->wipeLocalReadingSettingsBtn->styleSheet() + "color: gray");
+        }
     }
 
-    bookChecksum = fileChecksum(bookPath, QCryptographicHash::Sha256);
-    QDir localReadingSettingsPath("/mnt/onboard/onboard/." + bookChecksum);
-    if(!localReadingSettingsPath.exists()) {
-        ui->wipeLocalReadingSettingsBtn->setEnabled(false);
-        ui->wipeLocalReadingSettingsBtn->setStyleSheet(ui->wipeLocalReadingSettingsBtn->styleSheet() + "color: gray");
-    }
     this->adjustSize();
 }
 
@@ -59,6 +76,15 @@ void bookOptionsDialog::on_pinBtn_clicked()
 
 void bookOptionsDialog::on_deleteBtn_clicked()
 {
+    if(isFolder == true) {
+        deleteFolder();
+    }
+    else {
+        deleteBook();
+    }
+}
+
+void bookOptionsDialog::deleteBook() {
     log("Deleting book '" + bookPath + "'", className);
     global::toast::delay = 3000;
     if(QFile::remove(bookPath)) {
@@ -70,6 +96,20 @@ void bookOptionsDialog::on_deleteBtn_clicked()
         emit showToast("Failed to delete book");
     }
 }
+
+void bookOptionsDialog::deleteFolder() {
+    log("Removing empty directory '" + global::localLibrary::bookOptionsDialog::folderPath + "'", className);
+    if(QDir(global::localLibrary::bookOptionsDialog::folderPath).isEmpty() == true) {
+        global::toast::delay = 3000;
+        QDir(global::localLibrary::bookOptionsDialog::folderPath).removeRecursively();
+        emit showToast("Directory removed successfully");
+        emit removedFolder();
+    }
+    else {
+        emit showToast("Directory is not empty");
+    }
+}
+
 
 void bookOptionsDialog::on_infoBtn_clicked()
 {

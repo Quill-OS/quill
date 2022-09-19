@@ -41,6 +41,19 @@ public:
     int bookTitleTruncateThreshold;
     QVector<int> idList;
     bool noBooksInDatabase = true;
+    // For folder feature
+    QString pathForFolders = "/mnt/onboard/onboard/";
+    bool folderFeatureEnabled = false;
+    int firstPageForBooks;
+    int lastPageFolderCount;
+    int bookIndexVector = 0;
+    int goBackInIndex = 0;
+    QPixmap pixmapForFolder = QPixmap(":/resources/folder.png");
+    QVector<int> booksListForPathIndex;
+    int fileListCount;
+    int directoryListCount;
+    int completeItemsList;
+
 
 private slots:
     void setupDatabase();
@@ -57,6 +70,16 @@ private slots:
     void openBookOptionsDialog(int pseudoBookID);
     void handlePossibleBookDeletion();
     void openLocalBookInfoDialog();
+    // For folder feature
+    void setupBooksListFolders(int pageNumber);
+    void setupBooksListToggle(int pageNumber);
+    void calculateMaximumPagesNumberForFolders();
+    void calculateIndexForPage(int pageNumber);
+    // Dir without "/" at the end and begining
+    void changePathAndRefresh(QString directory);
+    void refreshFolders();
+    void on_goUpBtn_clicked();
+    void on_pathBtn_clicked();
 
 private:
     Ui::localLibraryWidget * ui;

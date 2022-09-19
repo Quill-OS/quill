@@ -19,6 +19,7 @@ public:
     QString bookPath;
     QString bookChecksum;
     bool bookPinned;
+    bool isFolder;
 
 private slots:
     void on_pinBtn_clicked();
@@ -27,11 +28,14 @@ private slots:
     void on_wipeLocalReadingSettingsBtn_clicked();
     void pinBook(int bookID);
     void unpinBook(int bookID);
+    void deleteBook();
+    void deleteFolder();
     bool isBookPinned(int bookID);
 
 signals:
     void openLocalBookInfoDialog();
     void showToast(QString messageToDisplay);
+    void removedFolder();
 
 private:
     Ui::bookOptionsDialog *ui;

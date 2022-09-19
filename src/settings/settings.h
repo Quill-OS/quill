@@ -76,6 +76,8 @@ private slots:
     void on_pageSizeWidthDecBtn_clicked();
     void on_pageSizeWidthIncBtn_clicked();
 
+    void on_localLibraryShowFoldersCheckBox_toggled(bool checked);
+
 signals:
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();

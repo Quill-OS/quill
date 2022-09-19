@@ -338,6 +338,11 @@ settings::settings(QWidget *parent) :
         ui->tzComboBox->setCurrentText(readFile(".config/19-timezone/config-name"));
     }
 
+    // Local library folders support
+    if(checkconfig(".config/21-local_library/folders") == true) {
+        ui->localLibraryShowFoldersCheckBox->click();
+    }
+
     if(checkconfig("/opt/inkbox_genuine") == true) {
         // Enforcing security policy if the user has not rooted the device
         if(checkconfig("/external_root/opt/root/rooted") == true) {
@@ -1089,3 +1094,19 @@ void settings::on_pageSizeWidthIncBtn_clicked()
     pageSizeWidthSaved = pageSizeWidthSaved + 5;
     ui->pageSizeWidthLabel->setText(QString::number(pageSizeWidthSaved));
 }
+
+void settings::on_localLibraryShowFoldersCheckBox_toggled(bool checked)
+{
+    QString settingString = "local library folders support";
+    if(checked == true) {
+        logEnabled(settingString, className);
+        checked_box = true;
+        writeconfig(".config/21-local_library/folders", "Folders");
+    }
+    else {
+        logDisabled(settingString, className);
+        checked_box = false;
+        writeconfig(".config/21-local_library/folders", "Folders");
+    }
+}
+
