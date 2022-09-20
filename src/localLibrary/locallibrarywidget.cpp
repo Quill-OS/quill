@@ -124,14 +124,14 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     QTimer::singleShot(100, this, SLOT(setupDisplay()));
 
     if(checkconfig("/mnt/onboard/.adds/inkbox/.config/21-local_library/folders") == false) {
-        folderFeatureEnabled = true;
+        folderFeatureEnabled = false;
         ui->goUpBtn->hide();
         ui->pathBtn->hide();
         ui->goUpBtn->deleteLater();
         ui->pathBtn->deleteLater();
     }
     else {
-        folderFeatureEnabled = false;
+        folderFeatureEnabled = true;
     }
 }
 
@@ -165,6 +165,9 @@ void localLibraryWidget::setupDatabase() {
         proc->start(prog, args);
         proc->waitForFinished(-1);
         QJsonDocument jsonDocument = QJsonDocument::fromJson(readFile(global::localLibrary::rawDatabasePath).toUtf8());
+
+        log("Database: \n" + jsonDocument.toJson(), className);
+
         QFile::remove(global::localLibrary::rawDatabasePath);
         proc->deleteLater();
 
@@ -346,7 +349,9 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
             log("A folder was selected", className);
             QString directory = bookBtnArray[buttonNumber]->text();
             log("Chosen directory is '" + directory + "'", className);
-            ui->goUpBtn->setEnabled(true);
+            // https://stackoverflow.com/questions/2799379/is-there-an-easy-way-to-strip-html-from-a-qstring-in-qt
+            // This can cause problems if someone names its directory as html tags, my solution: Stop. Anki which is a big project also doesnt cares about this
+            directory.remove(QRegExp("<[^>]*>"));
             changePathAndRefresh(directory);
         }
     }
@@ -388,11 +393,15 @@ void localLibraryWidget::setupDisplay() {
     setupDatabase();
     if(noBooksInDatabase == false) {
         // Prevent segmentation fault if a book was the last of its page
+        int pageToGo = currentPageNumber;
         if(currentPageNumber > pagesNumber) {
-            setupBooksListToggle(currentPageNumber - 1);
+            pageToGo = pageToGo - 1;
+        }
+        if(global::localLibrary::bookOptionsDialog::bookDeleted == true and folderFeatureEnabled == true) {
+            goToPage(pageToGo);
         }
         else {
-            setupBooksListToggle(currentPageNumber);
+            setupBooksListToggle(pageToGo);
         }
     }
     else {
@@ -401,6 +410,7 @@ void localLibraryWidget::setupDisplay() {
         ui->pageNumberLabel->setText("1 <i>of</i> 1");
         ui->stackedWidget->setCurrentIndex(1);
     }
+    global::localLibrary::bookOptionsDialog::bookDeleted = false;
 }
 
 void localLibraryWidget::showToast(QString messageToDisplay) {
@@ -434,7 +444,8 @@ void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
     }
 
     log("Opening book options dialog for book with pseudo-ID " + QString::number(pseudoBookID) + ", ID " + QString::number(bookID), className);
-    global::localLibrary::bookOptionsDialog::bookID = bookID;
+    // here should go id because of idList.at(pseudoBookID - 1);
+    global::localLibrary::bookOptionsDialog::bookID = id;
     bookOptionsDialog * bookOptionsDialogWindow = new bookOptionsDialog(this);
     QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::openLocalBookInfoDialog, this, &localLibraryWidget::openLocalBookInfoDialog);
     QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::showToast, this, &localLibraryWidget::showToast);
@@ -448,7 +459,6 @@ void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
 void localLibraryWidget::handlePossibleBookDeletion() {
     if(global::localLibrary::bookOptionsDialog::bookDeleted == true) {
         QTimer::singleShot(3100, this, [&]() {
-            global::localLibrary::bookOptionsDialog::bookDeleted = false;
             global::toast::modalToast = true;
             global::toast::indefiniteToast = true;
             showToast("Generating database");
@@ -465,7 +475,7 @@ void localLibraryWidget::openLocalBookInfoDialog() {
 }
 
 void localLibraryWidget::setupBooksListToggle(int pageNumber) {
-    if(checkconfig("/mnt/onboard/.adds/inkbox/.config/21-local_library/folders") == true) {
+    if(folderFeatureEnabled == true) {
         setupBooksListFolders(pageNumber);
     }
     else {
@@ -474,7 +484,7 @@ void localLibraryWidget::setupBooksListToggle(int pageNumber) {
 }
 
 void localLibraryWidget::setupBooksListFolders(int pageNumber) {
-    log("Showing folders", className);
+    log("Showing folders for page: " + QString::number(pageNumber), className);
     QStringList dirList = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
     log("Full directory list: "+ dirList.join(","), className);
 
@@ -653,6 +663,7 @@ void localLibraryWidget::calculateMaximumPagesNumberForFolders() {
     foreach (int number, booksListForPathIndex) {
         list.append(QString::number(number));
     }
+    log("bookListForPathIndex is: " + list.join(","), className);
 
     directoryListCount = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name).count();
     log("Directories count in directory: " + QString::number(directoryListCount), className);
@@ -718,6 +729,7 @@ void localLibraryWidget::changePathAndRefresh(QString directory) {
         pathForFolders = temporaryPathForFolders;
         calculateMaximumPagesNumberForFolders();
         bookIndexVector = 0;
+        ui->goUpBtn->setEnabled(true);
         goToPage(1);
     }
     else {
