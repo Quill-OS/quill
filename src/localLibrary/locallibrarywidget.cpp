@@ -165,9 +165,6 @@ void localLibraryWidget::setupDatabase() {
         proc->start(prog, args);
         proc->waitForFinished(-1);
         QJsonDocument jsonDocument = QJsonDocument::fromJson(readFile(global::localLibrary::rawDatabasePath).toUtf8());
-
-        log("Database: \n" + jsonDocument.toJson(), className);
-
         QFile::remove(global::localLibrary::rawDatabasePath);
         proc->deleteLater();
 
@@ -348,9 +345,8 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
         if(folderFeatureEnabled == true) {
             log("A folder was selected", className);
             QString directory = bookBtnArray[buttonNumber]->text();
-            log("Chosen directory is '" + directory + "'", className);
             // https://stackoverflow.com/questions/2799379/is-there-an-easy-way-to-strip-html-from-a-qstring-in-qt
-            // This can cause problems if someone names its directory as html tags, my solution: Stop. Anki which is a big project also doesnt cares about this
+            // This can cause problems if someone names its directory with HTML tags, so stop here. Anki, which is a big project, also doesn't care about this
             directory.remove(QRegExp("<[^>]*>"));
             changePathAndRefresh(directory);
         }
@@ -444,7 +440,7 @@ void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
     }
 
     log("Opening book options dialog for book with pseudo-ID " + QString::number(pseudoBookID) + ", ID " + QString::number(bookID), className);
-    // here should go id because of idList.at(pseudoBookID - 1);
+    // Here, ID should go because of idList.at(pseudoBookID - 1);
     global::localLibrary::bookOptionsDialog::bookID = id;
     bookOptionsDialog * bookOptionsDialogWindow = new bookOptionsDialog(this);
     QObject::connect(bookOptionsDialogWindow, &bookOptionsDialog::openLocalBookInfoDialog, this, &localLibraryWidget::openLocalBookInfoDialog);
