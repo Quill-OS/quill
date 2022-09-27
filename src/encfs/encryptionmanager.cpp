@@ -261,7 +261,7 @@ void encryptionManager::unlockEncryptedStorage() {
                                 std::string unlockTime_str = to_string(currentEpoch);
                                 global::encfs::unlockTime = QDateTime::fromTime_t(currentEpoch).toString();
                                 global::encfs::lockdownMessage = "FATAL: 4 invalid passphrase tries, locking down device until " + global::encfs::unlockTime;
-                                string_writeconfig("/external_root/boot/flags/ENCRYPT_LOCK", unlockTime_str);
+                                writeFile("/external_root/boot/flags/ENCRYPT_LOCK", unlockTime_str + "\n");
                                 global::encfs::lockdown = true;
                                 setupMessageBoxRan = true;
 

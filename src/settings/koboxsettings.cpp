@@ -81,7 +81,7 @@ void koboxSettings::on_checkBox_toggled(bool checked)
     if(checked == true) {
         if(not_user_change != true) {
             log("Enabling KoBox subsystem", className);
-            string_writeconfig("/external_root/boot/flags/X11_START", "true");
+            writeFile("/external_root/boot/flags/X11_START", "true\n");
             openSettingsRebootDialog();
         }
         else {
@@ -90,7 +90,7 @@ void koboxSettings::on_checkBox_toggled(bool checked)
     }
     else {
         log("Disabling KoBox subsystem", className);
-        string_writeconfig("/external_root/boot/flags/X11_START", "false");
+        writeFile("/external_root/boot/flags/X11_START", "false\n");
         openSettingsRebootDialog();
     }
 }

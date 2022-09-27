@@ -586,9 +586,9 @@ void settings::on_nextBtn_clicked()
 void settings::on_updateBtn_clicked()
 {
     log("'Update' button clicked", className);
-    string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "true");
-    string_writeconfig("/external_root/opt/update/will_update", "true");
-    string_writeconfig("/external_root/boot/flags/WILL_UPDATE", "true");
+    writeFile("/mnt/onboard/onboard/.inkbox/can_really_update", "true\n");
+    writeFile("/external_root/opt/update/will_update", "true\n");
+    writeFile("/external_root/boot/flags/WILL_UPDATE", "true\n");
     QString prog ("/sbin/reboot");
     QStringList args;
     QProcess *proc = new QProcess();

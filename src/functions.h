@@ -826,9 +826,9 @@ namespace {
     }
     void installUpdate() {
         log("Installing update package", "functions");
-        string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "true");
-        string_writeconfig("/external_root/opt/update/will_update", "true");
-        string_writeconfig("/external_root/boot/flags/WILL_UPDATE", "true");
+        writeFile("/mnt/onboard/onboard/.inkbox/can_really_update", "true\n");
+        writeFile("/external_root/opt/update/will_update", "true\n");
+	writeFile("/external_root/boot/flags/WILL_UPDATE", "true\n");
         reboot(true);
     }
     bool getEncFSStatus() {

@@ -113,8 +113,8 @@ alert::~alert()
 void alert::on_continueBtn_clicked()
 {
     // We continue anyway and re-set the ALERT flag
-    string_writeconfig("/external_root/boot/flags/ALERT", "false");
-    string_writeconfig("/external_root/boot/flags/ALERT_SIGN", "false");
+    writeFile("/external_root/boot/flags/ALERT", "false\n");
+    writeFile("/external_root/boot/flags/ALERT_SIGN", "false\n");
     updateReset();
     QProcess process;
     process.startDetached("inkbox", QStringList());
@@ -123,10 +123,10 @@ void alert::on_continueBtn_clicked()
 
 void alert::on_resetBtn_clicked()
 {
-    // We set the DO_FACTORY_RESET flag and we restart the Kobo
+    // We set the DO_FACTORY_RESET flag and we restart the device
     log("Factory reset requested; setting required flags", className);
-    string_writeconfig("/external_root/boot/flags/DO_FACTORY_RESET", "true");
-    string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
+    writeFile("/external_root/boot/flags/DO_FACTORY_RESET", "true\n");
+    writeFile("/external_root/boot/flags/DIAGS_BOOT", "true\n");
     QString reboot_prog ("/sbin/reboot");
     QStringList reboot_args;
     reboot_args << "no_splash";
@@ -139,18 +139,18 @@ void alert::on_resetBtn_clicked()
 void alert::on_continue2Btn_clicked()
 {
     // We continue anyway and re-set the ALERT flag
-    string_writeconfig("/external_root/boot/flags/ALERT", "false");
+    writeFile("/external_root/boot/flags/ALERT", "false\n");
     updateReset();
 
     log("Restarting InkBox", className);
     if(signatureError == true) {
-        string_writeconfig("/external_root/boot/flags/ALERT_SIGN", "false");
+        writeFile("/external_root/boot/flags/ALERT_SIGN", "false\n");
         QProcess process;
         process.startDetached("inkbox", QStringList());
         qApp->quit();
     }
     if(downgradeError == true) {
-        string_writeconfig("/external_root/boot/flags/ALERT_DOWNGRADE", "false");
+        writeFile("/external_root/boot/flags/ALERT_DOWNGRADE", "false\n");
         QProcess process;
         process.startDetached("inkbox", QStringList());
         qApp->quit();
@@ -158,8 +158,8 @@ void alert::on_continue2Btn_clicked()
 }
 
 void alert::updateReset() {
-    string_writeconfig("/mnt/onboard/onboard/.inkbox/can_really_update", "false");
-    string_writeconfig("/mnt/onboard/onboard/.inkbox/can_update", "false");
+    writeFile("/mnt/onboard/onboard/.inkbox/can_really_update", "false\n");
+    writeFile("/mnt/onboard/onboard/.inkbox/can_update", "false\n");
 }
 
 void alert::quit() {

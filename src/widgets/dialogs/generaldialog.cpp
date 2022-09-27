@@ -292,8 +292,8 @@ void generalDialog::on_okBtn_clicked()
             // Soft-reset the device
             // We set a custom boot flag and reboot silently in Diagnostics
             log("Setting up the device for soft-reset", className);
-            string_writeconfig("/external_root/boot/flags/DIAGS_BOOT", "true");
-            string_writeconfig("/external_root/boot/flags/DO_SOFT_RESET", "true");
+            writeFile("/external_root/boot/flags/DIAGS_BOOT", "true\n");
+            writeFile("/external_root/boot/flags/DO_SOFT_RESET", "true\n");
             reboot(false);
             qApp->quit();
         }
