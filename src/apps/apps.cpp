@@ -131,9 +131,9 @@ void apps::on_calendarLaunchBtn_clicked()
 
 void apps::on_calculatorLaunchBtn_clicked()
 {
-    log("Launching external Calculator app", className);
+    log("Launching external Qalculate! app", className);
     QProcess process;
-    process.startDetached("calculator", QStringList());
+    process.startDetached("qalculate", QStringList());
     qApp->quit();
 }
 
