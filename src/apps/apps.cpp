@@ -18,7 +18,6 @@ apps::apps(QWidget *parent) :
     ui->setupUi(this);
     ui->koboxAppsOpenButton->setProperty("type", "borderless");
     ui->scribbleLaunchBtn->setProperty("type", "borderless");
-    ui->lightmapsLaunchBtn->setProperty("type", "borderless");
     ui->calendarLaunchBtn->setProperty("type", "borderless");
     ui->savedWordsLaunchBtn->setProperty("type", "borderless");
     ui->calculatorLaunchBtn->setProperty("type", "borderless");
@@ -30,7 +29,6 @@ apps::apps(QWidget *parent) :
     ui->label->setStyleSheet("padding-top: 2px; padding-bottom: 5px");
     ui->koboxAppsOpenButton->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->scribbleLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
-    ui->lightmapsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->calendarLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->savedWordsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->calculatorLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
@@ -65,13 +63,6 @@ apps::apps(QWidget *parent) :
             ui->vncLaunchBtn->deleteLater();
         }
     }
-    // Hiding Light Maps if device doesn't have a working Wi-Fi adapter
-    if(global::device::isWifiAble == false and global::deviceID != "emu\n") {
-        ui->label_2->hide();
-        ui->lightmapsLaunchBtn->hide();
-        ui->label_2->deleteLater();
-        ui->lightmapsLaunchBtn->deleteLater();
-    }
 
     ui->editUserAppsBtn->setProperty("type", "borderless");
     ui->editUserAppsBtn->setIcon(QIcon(":/resources/edit.png"));
@@ -102,14 +93,6 @@ void apps::on_scribbleLaunchBtn_clicked()
     log("Launching external Scribble app", className);
     QProcess process;
     process.startDetached("scribble", QStringList());
-    qApp->quit();
-}
-
-void apps::on_lightmapsLaunchBtn_clicked()
-{
-    log("Launching external LightMaps app", className);
-    QProcess process;
-    process.startDetached("lightmaps", QStringList());
     qApp->quit();
 }
 
