@@ -18,7 +18,7 @@ PRE_TARGETDEPS += $$PRE_BUILD_TARGET
 QMAKE_EXTRA_TARGETS += updatemakefiles
 DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
 DEFINES += GIT_COMMIT=\\\"$$GIT_COMMIT\\\"
-wi
+
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
