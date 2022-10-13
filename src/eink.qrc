@@ -108,5 +108,6 @@
         <file>resources/folder.png</file>
         <file>resources/question-mark.png</file>
         <file>resources/refresh-small.png</file>
+        <file>resources/checkbox-indeterminate.png</file>
     </qresource>
 </RCC>
