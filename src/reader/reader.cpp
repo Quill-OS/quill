@@ -44,6 +44,7 @@ reader::reader(QWidget *parent) :
     global::reader::font = "Source Serif Pro";
     global::reader::fontSize = 10;
     global::reader::margins = 1;
+    global::reader::currentViewportText = "";
 
     ui->setupUi(this);
     ui->brightnessStatus->setFont(QFont("u001"));
@@ -518,6 +519,7 @@ reader::reader(QWidget *parent) :
         ui->graphicsView->hide();
         ui->graphicsView->deleteLater();
         ui->text->setText(epubPageContent);
+        global::reader::currentViewportText = ui->text->toHtml();
     }
     else if(is_pdf == true) {
         ui->text->hide();
@@ -540,6 +542,7 @@ reader::reader(QWidget *parent) :
     else {
         ui->graphicsView->hide();
         ui->graphicsView->deleteLater();
+        global::reader::currentViewportText = ui->text->toHtml();
         ui->text->setText(ittext);
     }
 
@@ -1014,6 +1017,7 @@ void reader::on_nextBtn_clicked()
             setup_book(book_file, split_total, false);
             ui->text->setText("");
             ui->text->setText(ittext);
+            global::reader::currentViewportText = ui->text->toHtml();
 
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
@@ -1030,6 +1034,7 @@ void reader::on_nextBtn_clicked()
             setup_book(book_file, mupdf::epub::epubPageNumber, true);
             ui->text->setText("");
             ui->text->setText(epubPageContent);
+            global::reader::currentViewportText = ui->text->toHtml();
 
             pagesTurned = pagesTurned + 1;
             writeconfig_pagenumber(false);
@@ -1073,6 +1078,7 @@ void reader::on_previousBtn_clicked()
             setup_book(book_file, split_total, false);
             ui->text->setText("");
             ui->text->setText(ittext);
+            global::reader::currentViewportText = ui->text->toHtml();
 
             // We always increment pagesTurned regardless whether we press the Previous or Next button or not
             pagesTurned = pagesTurned + 1;
@@ -1108,6 +1114,7 @@ void reader::on_previousBtn_clicked()
             setup_book(book_file, mupdf::epub::epubPageNumber, true);
             ui->text->setText("");
             ui->text->setText(epubPageContent);
+            global::reader::currentViewportText = ui->text->toHtml();
 
             // We always increment pagesTurned regardless whether we press the Previous or Next button or not
             pagesTurned = pagesTurned + 1;
@@ -1308,10 +1315,8 @@ void reader::setTextProperties(int alignment, int lineSpacing, int margins, QStr
 
     QTextCursor cursor = ui->text->textCursor();
     textDialogLock = true;
-    // Kudos to Qt for not implementing the opposite of the following function /)_-)
-
     ui->text->setStyleSheet("QTextEdit { selection-background-color: white }");
-
+    // Kudos to Qt for not implementing the opposite of the following function /)_-)
     ui->text->selectAll();
     if(alignment == 0) {
         ui->text->setAlignment(Qt::AlignLeft);
@@ -1412,7 +1417,7 @@ void reader::setTextProperties(int alignment, int lineSpacing, int margins, QStr
     textDialogLock = false;
 
     // Highlighting
-    QString htmlText = ui->text->toHtml();
+    QString htmlText = global::reader::currentViewportText;
     QJsonObject jsonObject = getHighlightsForBook(book_file);
     int keyCount = 1;
     foreach(const QString& key, jsonObject.keys()) {
@@ -1826,7 +1831,6 @@ void reader::on_text_selectionChanged() {
                 global::reader::highlightAlreadyDone = false;
                 QJsonObject jsonObject = getHighlightsForBook(book_file);
                 QString htmlText = ui->text->toHtml();
-                qDebug() << htmlText << QString::number(global::reader::initialFontSize + global::reader::fontSize);
                 if(htmlText.contains("<span style=\" font-size:" + QString::number(global::reader::fontSize) + "pt; background-color:#bbbbbb;\">" + selected_text + "</span>") or htmlText.contains("<span style=\" background-color:#bbbbbb;\">" + selected_text + "</span>")) {
                     log("Highlight already done", className);
                     global::reader::highlightAlreadyDone = true;

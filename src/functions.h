@@ -50,6 +50,7 @@ namespace global {
         static inline int initialFontSize = 6;
         inline int fontSize;
         inline int margins;
+        inline QString currentViewportText;
     }
     namespace kobox {
         inline bool showKoboxSplash;
