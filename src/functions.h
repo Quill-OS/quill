@@ -1165,6 +1165,11 @@ namespace {
         }
         return false;
     }
+    QString purgeHtml(QString text) {
+        // https://stackoverflow.com/questions/2799379/is-there-an-easy-way-to-strip-html-from-a-qstring-in-qt
+        // This can cause problems if someone names its directory with HTML tags, so stop here. Anki, which is a big project, also doesn't care about this
+        return text.remove(QRegExp("<[^>]*>"));
+    }
 }
 
 #endif // FUNCTIONS_H

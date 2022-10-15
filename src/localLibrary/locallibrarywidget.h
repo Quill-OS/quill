@@ -53,6 +53,8 @@ public:
     int fileListCount;
     int directoryListCount;
     int completeItemsList;
+    // if the path is set to /mnt/onboard/onboard/, and its empty, this will be true
+    bool mainPathAndItsEmpty = false;
 
 
 private slots:
@@ -70,11 +72,15 @@ private slots:
     void openBookOptionsDialog(int pseudoBookID);
     void handlePossibleBookDeletion();
     void openLocalBookInfoDialog();
+    void setupButtonsLook();
+    void cleanButtons();
     // For folder feature
     void setupBooksListFolders(int pageNumber);
     void setupBooksListToggle(int pageNumber);
     void calculateMaximumPagesNumberForFolders();
     void calculateIndexForPage(int pageNumber);
+    void goUpFunction();
+    void checkIfMainPathEmpty();
     // Dir without "/" at the end and begining
     void changePathAndRefresh(QString directory);
     void refreshFolders();

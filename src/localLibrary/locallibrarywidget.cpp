@@ -85,36 +85,7 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         stdIconHeight = sH / stdIconHeightDivider;
     }
 
-    for(int i = 1; i <= buttonsNumber; i++) {
-        // Horizontal layout that will contain the book button and its icon
-        horizontalLayoutArray[i] = new QHBoxLayout(this);
-
-        // Book icon label
-        bookIconArray[i] = new QLabel(this);
-        bookIconArray[i]->setStyleSheet("padding: 10px");
-
-        // Book button
-        bookBtnArray[i] = new QClickableLabel(this);
-        bookBtnArray[i]->setObjectName(QString::number(i));
-        QObject::connect(bookBtnArray[i], &QClickableLabel::bookID, this, &localLibraryWidget::btnOpenBook);
-        QObject::connect(bookBtnArray[i], &QClickableLabel::longPressInt, this, &localLibraryWidget::openBookOptionsDialog);
-        bookBtnArray[i]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
-        bookBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
-        bookBtnArray[i]->setFont(QFont("u001"));
-
-        horizontalLayoutArray[i]->addWidget(bookIconArray[i]);
-        horizontalLayoutArray[i]->addWidget(bookBtnArray[i]);
-        ui->booksVerticalLayout->addLayout(horizontalLayoutArray[i]);
-
-        // Line
-        if(i < buttonsNumber) {
-            lineArray[i] = new QFrame(this);
-            lineArray[i]->setFrameShape(QFrame::HLine);
-            lineArray[i]->setFrameShadow(QFrame::Plain);
-            lineArray[i]->setLineWidth(1);
-            ui->booksVerticalLayout->addWidget(lineArray[i]);
-        }
-    }
+    setupButtonsLook();
 
     if(!QFile::exists(global::localLibrary::databasePath)) {
         global::toast::modalToast = true;
@@ -340,14 +311,15 @@ void localLibraryWidget::openBook(int bookID) {
 
 void localLibraryWidget::btnOpenBook(int buttonNumber) {
     log("Book/directory button clicked, buttonNumber is " + QString::number(buttonNumber), className);
+    if(mainPathAndItsEmpty == true) {
+        return void();
+    }
+
     int id = idList.at(buttonNumber - 1);
     if(id == global::localLibrary::folderID) {
         if(folderFeatureEnabled == true) {
             log("A folder was selected", className);
-            QString directory = bookBtnArray[buttonNumber]->text();
-            // https://stackoverflow.com/questions/2799379/is-there-an-easy-way-to-strip-html-from-a-qstring-in-qt
-            // This can cause problems if someone names its directory with HTML tags, so stop here. Anki, which is a big project, also doesn't care about this
-            directory.remove(QRegExp("<[^>]*>"));
+            QString directory = purgeHtml(bookBtnArray[buttonNumber]->text());
             changePathAndRefresh(directory);
         }
     }
@@ -359,6 +331,10 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
 }
 
 void localLibraryWidget::openGoToPageDialog() {
+    if(mainPathAndItsEmpty == true) {
+        return void();
+    }
+
     log("Showing 'Go to page' dialog", className);
     global::keyboard::keypadDialog = true;
     generalDialogWindow = new generalDialog();
@@ -367,6 +343,11 @@ void localLibraryWidget::openGoToPageDialog() {
 }
 
 void localLibraryWidget::goToPage(int page) {
+    checkIfMainPathEmpty();
+    if(mainPathAndItsEmpty == true) {
+        return void();
+    }
+
     if(page > pagesNumber or page <= 0) {
         log("Page number specified (" + QString::number(page) + ") is out of range", className);
         showToast("Request is beyond page range");
@@ -417,6 +398,10 @@ void localLibraryWidget::showToast(QString messageToDisplay) {
 }
 
 void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
+    if(mainPathAndItsEmpty == true) {
+        return void();
+    }
+
     // Determine book ID from the book's button number
     // pseudoBookID represents the button's number
     int bookID = ((currentPageNumber * buttonsNumber) - (buttonsNumber - 1)) + (pseudoBookID - 1);
@@ -428,7 +413,7 @@ void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
         if(folderFeatureEnabled == true) {
             bookID = id;
             log("Opening options dialog for directory", className);
-            QString directoryPath = bookBtnArray[pseudoBookID]->text();
+            QString directoryPath = purgeHtml(bookBtnArray[pseudoBookID]->text());
             log("Directory path is '" + directoryPath + "'", className);
             global::localLibrary::bookOptionsDialog::isFolder = true;
             global::localLibrary::bookOptionsDialog::folderPath = pathForFolders + directoryPath;
@@ -483,6 +468,14 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
     log("Showing folders for page: " + QString::number(pageNumber), className);
     QStringList dirList = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
     log("Full directory list: "+ dirList.join(","), className);
+
+    // Main path is set and its empty
+    if(mainPathAndItsEmpty == true) {
+        ui->pageNumberLabel->setText("0 <i>of</i> 0");
+        ui->previousPageBtn->setEnabled(false);
+        ui->nextPageBtn->setEnabled(false);
+        return void();
+    }
 
     // This part is calculating which folders to show per page
     QStringList directoryListFront = dirList;
@@ -634,6 +627,11 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
 void localLibraryWidget::calculateMaximumPagesNumberForFolders() {
     log("Main path is '" + pathForFolders + "'", className);
 
+    checkIfMainPathEmpty();
+    if(mainPathAndItsEmpty == true) {
+        return void();
+    }
+
     // Look for books in this path
     booksListForPathIndex.clear();
     int count = 0;
@@ -664,7 +662,18 @@ void localLibraryWidget::calculateMaximumPagesNumberForFolders() {
     directoryListCount = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name).count();
     log("Directories count in directory: " + QString::number(directoryListCount), className);
     completeItemsList = booksListForPathIndex.count() + directoryListCount;
+
     log("All items: " + QString::number(completeItemsList), className);
+
+    // Fix for bug:
+    /*
+     put files in a folder, then delete all files in that folder from the GUI.
+     Then the bug happens: "page request is out of range" or something like that
+    */
+    if(completeItemsList == 0) {
+        log("No items in this folder because they were deleted. Going up", className);
+        goUpFunction();
+    }
 
     pagesNumber = std::ceil((double)completeItemsList / buttonsNumber);
 
@@ -735,6 +744,10 @@ void localLibraryWidget::changePathAndRefresh(QString directory) {
 
 void localLibraryWidget::on_goUpBtn_clicked()
 {
+    goUpFunction();
+}
+
+void localLibraryWidget::goUpFunction() {
     if(pathForFolders != "/mnt/onboard/onboard/") {
         log("Changing path; going back", className);
         // This can't be a one-liner
@@ -766,4 +779,83 @@ void localLibraryWidget::refreshFolders() {
     calculateMaximumPagesNumberForFolders();
     bookIndexVector = 0;
     goToPage(1);
+}
+
+void localLibraryWidget::checkIfMainPathEmpty() {
+    if(folderFeatureEnabled == true) {
+        // If the main path is empty, prevent it from well, freezing and using the cpu for 100% because of a while loop
+        if(pathForFolders == "/mnt/onboard/onboard/") {
+            bool isDirEmpty = QDir(pathForFolders).entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot).isEmpty();
+            log("Main path is empty: " + QVariant(isDirEmpty).toString(), className);
+            if(isDirEmpty == true) {
+                // To clean things out after a deletion
+                cleanButtons();
+                booksListForPathIndex.clear();
+                directoryListCount = 0;
+                completeItemsList = 0;
+                pagesNumber = 0;
+                firstPageForBooks = 0;
+                lastPageFolderCount = 0;
+                mainPathAndItsEmpty = true;
+                showToast("The library is empty");
+                return void();
+            }
+            else {
+                mainPathAndItsEmpty = false;
+            }
+        }
+    }
+}
+
+void localLibraryWidget::setupButtonsLook() {
+    for(int i = 1; i <= buttonsNumber; i++) {
+        // Horizontal layout that will contain the book button and its icon
+        horizontalLayoutArray[i] = new QHBoxLayout(this);
+
+        // Book icon label
+        bookIconArray[i] = new QLabel(this);
+        bookIconArray[i]->setStyleSheet("padding: 10px");
+
+        // Book button
+        bookBtnArray[i] = new QClickableLabel(this);
+        bookBtnArray[i]->setObjectName(QString::number(i));
+        QObject::connect(bookBtnArray[i], &QClickableLabel::bookID, this, &localLibraryWidget::btnOpenBook);
+        QObject::connect(bookBtnArray[i], &QClickableLabel::longPressInt, this, &localLibraryWidget::openBookOptionsDialog);
+        bookBtnArray[i]->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+        bookBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
+        bookBtnArray[i]->setFont(QFont("u001"));
+
+        horizontalLayoutArray[i]->addWidget(bookIconArray[i]);
+        horizontalLayoutArray[i]->addWidget(bookBtnArray[i]);
+        ui->booksVerticalLayout->addLayout(horizontalLayoutArray[i]);
+
+        // Line
+        if(i < buttonsNumber) {
+            lineArray[i] = new QFrame(this);
+            lineArray[i]->setFrameShape(QFrame::HLine);
+            lineArray[i]->setFrameShadow(QFrame::Plain);
+            lineArray[i]->setLineWidth(1);
+            ui->booksVerticalLayout->addWidget(lineArray[i]);
+        }
+    }
+}
+
+void localLibraryWidget::cleanButtons() {
+    log("Hiding items", className);
+    for(int i = 1; i <= buttonsNumber; i++) {
+        if(bookIconArray[i]->isHidden() == false) {
+            bookIconArray[i]->hide();
+        }
+        if(bookBtnArray[i]->isHidden() == false) {
+            bookBtnArray[i]->hide();
+        }
+        // I like it with those empty lines, like empty book shelves
+        /*
+        if(i < buttonsNumber) {
+            if(lineArray[i]->isHidden() == false) {
+                lineArray[i]->hide();
+            }
+        }
+        */
+    }
 }
