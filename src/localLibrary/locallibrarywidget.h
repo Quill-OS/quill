@@ -53,9 +53,8 @@ public:
     int fileListCount;
     int directoryListCount;
     int completeItemsList;
-    // if the path is set to /mnt/onboard/onboard/, and its empty, this will be true
-    bool mainPathAndItsEmpty = false;
-
+    // If the path is set to '/mnt/onboard/onboard/', and it's empty, this will be true
+    bool mainPathIsEmpty = false;
 
 private slots:
     void setupDatabase();
@@ -80,7 +79,7 @@ private slots:
     void calculateMaximumPagesNumberForFolders();
     void calculateIndexForPage(int pageNumber);
     void goUpFunction();
-    void checkIfMainPathEmpty();
+    void checkIfMainPathIsEmpty();
     // Dir without "/" at the end and begining
     void changePathAndRefresh(QString directory);
     void refreshFolders();

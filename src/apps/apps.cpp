@@ -166,7 +166,7 @@ void apps::showToastNative(QString messageToDisplay) {
 }
 
 /*
- * This function opens and reads the main GUI user applications' JSON file, parses and verifies its content to avoid issues in the future.
+ * This function opens and reads the main GUI user applications' JSON file, parses and verifies its contents to avoid issues in the future.
 */
 bool apps::parseJson() {
     // If the path changes, it is also used statically in showUserApps()
