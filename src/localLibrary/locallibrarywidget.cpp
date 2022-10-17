@@ -467,7 +467,7 @@ void localLibraryWidget::setupBooksListToggle(int pageNumber) {
 void localLibraryWidget::setupBooksListFolders(int pageNumber) {
     log("Showing folders for page: " + QString::number(pageNumber), className);
     QStringList directoryList = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
-    log("Full directory list: "+ directoryList.join(","), className);
+    log("Full directory list is '"+ directoryList.join(", ") + "'", className);
 
     if(mainPathIsEmpty == true) {
         // Main path is set and is empty
@@ -489,7 +489,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
         }
         pageNumberAbove = pageNumberAbove - 1;
     }
-    log("Front directory list: " + directoryListFront.join(","), className);
+    log("Front directory list is '" + directoryListFront.join(", ") + "'", className);
 
     int aboveRemove = pageNumber * buttonsNumber;
     if(directoryListBack.count() > aboveRemove) {
@@ -499,7 +499,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             }
         }
     }
-    log("Back directory list: " + directoryListBack.join(","), className);
+    log("Back directory list is '" + directoryListBack.join(", ") + "'", className);
 
     QStringList directoryListPure;
     for(QString directory: directoryListFront) {
@@ -507,7 +507,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             directoryListPure.append(directory);
         }
     }
-    log("Final directory list: " + directoryListPure.join(","), className);
+    log("Final directory list is '" + directoryListPure.join(", ") + "'", className);
 
     idList.clear();
     int in = 1;
@@ -657,7 +657,7 @@ void localLibraryWidget::calculateMaximumPagesNumberForFolders() {
     foreach (int number, booksListForPathIndex) {
         list.append(QString::number(number));
     }
-    log("bookListForPathIndex is: " + list.join(","), className);
+    log("bookListForPathIndex is '" + list.join(", ") + "'", className);
 
     directoryListCount = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name).count();
     log("Directories count in directory: " + QString::number(directoryListCount), className);
