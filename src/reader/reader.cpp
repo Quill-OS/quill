@@ -1297,6 +1297,9 @@ void reader::on_alignJustifyBtn_clicked()
 }
 
 void reader::setTextProperties(int alignment, int lineSpacing, int margins, QString font, int fontSize) {
+    // Don't try to improve this
+    // I have spent more time on it than I would care to admit
+
     // Alignment
     /*
      * 0 - Left
@@ -1305,31 +1308,8 @@ void reader::setTextProperties(int alignment, int lineSpacing, int margins, QStr
      * 3 - Justify
     */
 
-    // Don't try to improve this
-    // I have spent more time on it than I would care to admit
-
-    setLineSpacing(lineSpacing, false);
-    ui->lineSpacingSlider->setValue(lineSpacing);
-    setMargins(margins, false);
-    ui->marginsSlider->setValue(margins);
-
-    QTextCursor cursor = ui->text->textCursor();
-    textDialogLock = true;
-    ui->text->setStyleSheet("QTextEdit { selection-background-color: white }");
-    // Kudos to Qt for not implementing the opposite of the following function /)_-)
-    ui->text->selectAll();
-    if(alignment == 0) {
-        ui->text->setAlignment(Qt::AlignLeft);
-    }
-    else if(alignment == 1) {
-        ui->text->setAlignment(Qt::AlignHCenter);
-    }
-    else if(alignment == 2) {
-        ui->text->setAlignment(Qt::AlignRight);
-    }
-    else if(alignment == 3) {
-        ui->text->setAlignment(Qt::AlignJustify);
-    }
+    // Selection color
+    ui->text->setStyleSheet("QTextEdit { selection-background-color: white; color: white; }");
     // Font
     {
         if(font == "Crimson Pro") {
@@ -1411,10 +1391,6 @@ void reader::setTextProperties(int alignment, int lineSpacing, int margins, QStr
             writeFile(".config/04-book/font", font);
         }
     }
-    // Font size
-    ui->text->setFontPointSize(fontSize);
-    ui->text->setTextCursor(cursor);
-    textDialogLock = false;
 
     // Highlighting
     QString htmlText = global::reader::currentViewportText;
@@ -1427,17 +1403,44 @@ void reader::setTextProperties(int alignment, int lineSpacing, int margins, QStr
         }
         else {
             QString highlight = jsonObject.value(key).toString();
-            textDialogLock = true;
             if(htmlText.contains(highlight)) {
                 htmlText.replace(highlight, "<span style=\" background-color:#bbbbbb;\">" + highlight + "</span>");
             }
-            textDialogLock = false;
         }
         keyCount++;
     }
     htmlText.replace(QRegExp("font-family:'.*';"), "");
-    ui->text->setStyleSheet("QTextEdit { selection-background-color: black }");
     ui->text->setHtml(htmlText);
+
+    // Line spacing, margins
+    setLineSpacing(lineSpacing, false);
+    ui->lineSpacingSlider->setValue(lineSpacing);
+    setMargins(margins, false);
+    ui->marginsSlider->setValue(margins);
+
+    textDialogLock = true;
+    QTextCursor cursor = ui->text->textCursor();
+    // Kudos to Qt for not implementing the opposite of the following function /)_-)
+    ui->text->selectAll();
+    // Text alignment
+    if(alignment == 0) {
+        ui->text->setAlignment(Qt::AlignLeft);
+    }
+    else if(alignment == 1) {
+        ui->text->setAlignment(Qt::AlignHCenter);
+    }
+    else if(alignment == 2) {
+        ui->text->setAlignment(Qt::AlignRight);
+    }
+    else if(alignment == 3) {
+        ui->text->setAlignment(Qt::AlignJustify);
+    }
+    // Font size
+    ui->text->setFontPointSize(fontSize);
+    ui->text->setTextCursor(cursor);
+    // Selection color
+    ui->text->setStyleSheet("QTextEdit { selection-background-color: black; color: black; }");
+    textDialogLock = false;
 }
 
 void reader::menubar_show() {
