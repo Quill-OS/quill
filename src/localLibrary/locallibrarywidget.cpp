@@ -132,10 +132,18 @@ void localLibraryWidget::setupDatabase() {
         QString prog("busybox-initrd");
         QStringList args;
         args << "env" << "icon_width_divider=" + QString::number(stdIconWidthDivider - 1.5) << "icon_height_divider=" + QString::number(stdIconHeightDivider - 1.5) << "./explore_local_library.sh" << booksList;
+
+        // Logs / steps needed to debug the database creation
+        //for(int i = 0; i < args.count(); i++) {
+        //    log("arg for database: " + args[i], className);
+        //}
+
         QProcess *proc = new QProcess();
         proc->start(prog, args);
         proc->waitForFinished(-1);
         QJsonDocument jsonDocument = QJsonDocument::fromJson(readFile(global::localLibrary::rawDatabasePath).toUtf8());
+        //log("All output of proc: " + proc->readAllStandardOutput(), className);
+        //log("All err of proc: " + proc->readAllStandardError(), className);
         QFile::remove(global::localLibrary::rawDatabasePath);
         proc->deleteLater();
 
@@ -311,7 +319,7 @@ void localLibraryWidget::openBook(int bookID) {
 
 void localLibraryWidget::btnOpenBook(int buttonNumber) {
     log("Book/directory button clicked, buttonNumber is " + QString::number(buttonNumber), className);
-    if(mainPathIsEmpty == true) {
+    if(mainPathAndItsEmpty == true) {
         return void();
     }
 
@@ -331,7 +339,7 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
 }
 
 void localLibraryWidget::openGoToPageDialog() {
-    if(mainPathIsEmpty == true) {
+    if(mainPathAndItsEmpty == true) {
         return void();
     }
 
@@ -343,8 +351,8 @@ void localLibraryWidget::openGoToPageDialog() {
 }
 
 void localLibraryWidget::goToPage(int page) {
-    checkIfMainPathIsEmpty();
-    if(mainPathIsEmpty == true) {
+    checkIfMainPathEmpty();
+    if(mainPathAndItsEmpty == true) {
         return void();
     }
 
@@ -398,7 +406,7 @@ void localLibraryWidget::showToast(QString messageToDisplay) {
 }
 
 void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
-    if(mainPathIsEmpty == true) {
+    if(mainPathAndItsEmpty == true) {
         return void();
     }
 
@@ -466,11 +474,11 @@ void localLibraryWidget::setupBooksListToggle(int pageNumber) {
 
 void localLibraryWidget::setupBooksListFolders(int pageNumber) {
     log("Showing folders for page: " + QString::number(pageNumber), className);
-    QStringList directoryList = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
-    log("Full directory list is '"+ directoryList.join(", ") + "'", className);
+    QStringList dirList = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+    log("Full directory list: "+ dirList.join(","), className);
 
-    if(mainPathIsEmpty == true) {
-        // Main path is set and is empty
+    // Main path is set and its empty
+    if(mainPathAndItsEmpty == true) {
         ui->pageNumberLabel->setText("0 <i>of</i> 0");
         ui->previousPageBtn->setEnabled(false);
         ui->nextPageBtn->setEnabled(false);
@@ -478,8 +486,8 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
     }
 
     // This part is calculating which folders to show per page
-    QStringList directoryListFront = directoryList;
-    QStringList directoryListBack = directoryList;
+    QStringList directoryListFront = dirList;
+    QStringList directoryListBack = dirList;
     int pageNumberAbove = pageNumber;
     while(pageNumberAbove != 1) {
         for (int i = 0; i < buttonsNumber; ++i) {
@@ -489,7 +497,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
         }
         pageNumberAbove = pageNumberAbove - 1;
     }
-    log("Front directory list is '" + directoryListFront.join(", ") + "'", className);
+    log("Front directory list: " + directoryListFront.join(","), className);
 
     int aboveRemove = pageNumber * buttonsNumber;
     if(directoryListBack.count() > aboveRemove) {
@@ -499,7 +507,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             }
         }
     }
-    log("Back directory list is '" + directoryListBack.join(", ") + "'", className);
+    log("Back directory list: " + directoryListBack.join(","), className);
 
     QStringList directoryListPure;
     for(QString directory: directoryListFront) {
@@ -507,7 +515,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             directoryListPure.append(directory);
         }
     }
-    log("Final directory list is '" + directoryListPure.join(", ") + "'", className);
+    log("Final directory list: " + directoryListPure.join(","), className);
 
     idList.clear();
     int in = 1;
@@ -555,7 +563,8 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             QString coverPath = jsonObject["CoverPath"].toString();
             QString bookID = jsonObject["BookID"].toString();
 
-            if(!coverPath.isEmpty()) {
+            // To be 100% sure, use QFile
+            if(QFile(coverPath).exists()) {
                 // Display book cover if found
                 QPixmap pixmap(coverPath);
                 bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
@@ -627,8 +636,8 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
 void localLibraryWidget::calculateMaximumPagesNumberForFolders() {
     log("Main path is '" + pathForFolders + "'", className);
 
-    checkIfMainPathIsEmpty();
-    if(mainPathIsEmpty == true) {
+    checkIfMainPathEmpty();
+    if(mainPathAndItsEmpty == true) {
         return void();
     }
 
@@ -657,7 +666,7 @@ void localLibraryWidget::calculateMaximumPagesNumberForFolders() {
     foreach (int number, booksListForPathIndex) {
         list.append(QString::number(number));
     }
-    log("bookListForPathIndex is '" + list.join(", ") + "'", className);
+    log("bookListForPathIndex is: " + list.join(","), className);
 
     directoryListCount = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name).count();
     log("Directories count in directory: " + QString::number(directoryListCount), className);
@@ -781,14 +790,14 @@ void localLibraryWidget::refreshFolders() {
     goToPage(1);
 }
 
-void localLibraryWidget::checkIfMainPathIsEmpty() {
+void localLibraryWidget::checkIfMainPathEmpty() {
     if(folderFeatureEnabled == true) {
-        // If the main path is empty, prevent it from freezing and using the CPU at 100% because of a while loop
+        // If the main path is empty, prevent it from well, freezing and using the cpu for 100% because of a while loop
         if(pathForFolders == "/mnt/onboard/onboard/") {
-            bool isDirectoryEmpty = QDir(pathForFolders).entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot).isEmpty();
-            if(isDirectoryEmpty == true) {
+            bool isDirEmpty = QDir(pathForFolders).entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot).isEmpty();
+            log("Main path is empty: " + QVariant(isDirEmpty).toString(), className);
+            if(isDirEmpty == true) {
                 // To clean things out after a deletion
-                log("Main path is empty", className);
                 cleanButtons();
                 booksListForPathIndex.clear();
                 directoryListCount = 0;
@@ -796,12 +805,12 @@ void localLibraryWidget::checkIfMainPathIsEmpty() {
                 pagesNumber = 0;
                 firstPageForBooks = 0;
                 lastPageFolderCount = 0;
-                mainPathIsEmpty = true;
-                showToast("Library is empty");
+                mainPathAndItsEmpty = true;
+                showToast("The library is empty");
                 return void();
             }
             else {
-                mainPathIsEmpty = false;
+                mainPathAndItsEmpty = false;
             }
         }
     }
@@ -849,11 +858,13 @@ void localLibraryWidget::cleanButtons() {
         if(bookBtnArray[i]->isHidden() == false) {
             bookBtnArray[i]->hide();
         }
-
+        // I like it with those empty lines, like empty book shelves
+        /*
         if(i < buttonsNumber) {
             if(lineArray[i]->isHidden() == false) {
                 lineArray[i]->hide();
             }
         }
+        */
     }
 }
