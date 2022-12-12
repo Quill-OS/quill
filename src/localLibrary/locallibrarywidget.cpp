@@ -319,7 +319,7 @@ void localLibraryWidget::openBook(int bookID) {
 
 void localLibraryWidget::btnOpenBook(int buttonNumber) {
     log("Book/directory button clicked, buttonNumber is " + QString::number(buttonNumber), className);
-    if(mainPathAndItsEmpty == true) {
+    if(mainPathIsEmpty == true) {
         return void();
     }
 
@@ -339,7 +339,7 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
 }
 
 void localLibraryWidget::openGoToPageDialog() {
-    if(mainPathAndItsEmpty == true) {
+    if(mainPathIsEmpty == true) {
         return void();
     }
 
@@ -351,8 +351,8 @@ void localLibraryWidget::openGoToPageDialog() {
 }
 
 void localLibraryWidget::goToPage(int page) {
-    checkIfMainPathEmpty();
-    if(mainPathAndItsEmpty == true) {
+    checkIfMainPathIsEmpty();
+    if(mainPathIsEmpty == true) {
         return void();
     }
 
@@ -406,7 +406,7 @@ void localLibraryWidget::showToast(QString messageToDisplay) {
 }
 
 void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
-    if(mainPathAndItsEmpty == true) {
+    if(mainPathIsEmpty == true) {
         return void();
     }
 
@@ -474,11 +474,11 @@ void localLibraryWidget::setupBooksListToggle(int pageNumber) {
 
 void localLibraryWidget::setupBooksListFolders(int pageNumber) {
     log("Showing folders for page: " + QString::number(pageNumber), className);
-    QStringList dirList = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
-    log("Full directory list: "+ dirList.join(","), className);
+    QStringList directoryList = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+    log("Full directory list is "+ directoryList.join(", ") + "'", className);
 
     // Main path is set and its empty
-    if(mainPathAndItsEmpty == true) {
+    if(mainPathIsEmpty == true) {
         ui->pageNumberLabel->setText("0 <i>of</i> 0");
         ui->previousPageBtn->setEnabled(false);
         ui->nextPageBtn->setEnabled(false);
@@ -486,8 +486,8 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
     }
 
     // This part is calculating which folders to show per page
-    QStringList directoryListFront = dirList;
-    QStringList directoryListBack = dirList;
+    QStringList directoryListFront = directoryList;
+    QStringList directoryListBack = directoryList;
     int pageNumberAbove = pageNumber;
     while(pageNumberAbove != 1) {
         for (int i = 0; i < buttonsNumber; ++i) {
@@ -497,7 +497,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
         }
         pageNumberAbove = pageNumberAbove - 1;
     }
-    log("Front directory list: " + directoryListFront.join(","), className);
+    log("Front directory is '" + directoryListFront.join(", ") + "'", className);
 
     int aboveRemove = pageNumber * buttonsNumber;
     if(directoryListBack.count() > aboveRemove) {
@@ -507,7 +507,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             }
         }
     }
-    log("Back directory list: " + directoryListBack.join(","), className);
+    log("Back directory list '" + directoryListBack.join(", ") + "'", className);
 
     QStringList directoryListPure;
     for(QString directory: directoryListFront) {
@@ -515,7 +515,7 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             directoryListPure.append(directory);
         }
     }
-    log("Final directory list: " + directoryListPure.join(","), className);
+    log("Final directory list '" + directoryListPure.join(", ") +"'", className);
 
     idList.clear();
     int in = 1;
@@ -636,8 +636,8 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
 void localLibraryWidget::calculateMaximumPagesNumberForFolders() {
     log("Main path is '" + pathForFolders + "'", className);
 
-    checkIfMainPathEmpty();
-    if(mainPathAndItsEmpty == true) {
+    checkIfMainPathIsEmpty();
+    if(mainPathIsEmpty == true) {
         return void();
     }
 
@@ -666,7 +666,7 @@ void localLibraryWidget::calculateMaximumPagesNumberForFolders() {
     foreach (int number, booksListForPathIndex) {
         list.append(QString::number(number));
     }
-    log("bookListForPathIndex is: " + list.join(","), className);
+    log("bookListForPathIndex is '" + list.join(", ") + "'", className);
 
     directoryListCount = QDir(pathForFolders).entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name).count();
     log("Directories count in directory: " + QString::number(directoryListCount), className);
@@ -790,9 +790,9 @@ void localLibraryWidget::refreshFolders() {
     goToPage(1);
 }
 
-void localLibraryWidget::checkIfMainPathEmpty() {
+void localLibraryWidget::checkIfMainPathIsEmpty() {
     if(folderFeatureEnabled == true) {
-        // If the main path is empty, prevent it from well, freezing and using the cpu for 100% because of a while loop
+        // If the main path is empty, prevent it from freezing and using the CPU at 100% because of a while loop
         if(pathForFolders == "/mnt/onboard/onboard/") {
             bool isDirEmpty = QDir(pathForFolders).entryList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot).isEmpty();
             log("Main path is empty: " + QVariant(isDirEmpty).toString(), className);
@@ -805,12 +805,12 @@ void localLibraryWidget::checkIfMainPathEmpty() {
                 pagesNumber = 0;
                 firstPageForBooks = 0;
                 lastPageFolderCount = 0;
-                mainPathAndItsEmpty = true;
-                showToast("The library is empty");
+                mainPathIsEmpty = true;
+                showToast("Library is empty");
                 return void();
             }
             else {
-                mainPathAndItsEmpty = false;
+                mainPathIsEmpty = false;
             }
         }
     }
