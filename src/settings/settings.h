@@ -78,6 +78,10 @@ private slots:
 
     void on_localLibraryShowFoldersCheckBox_toggled(bool checked);
 
+    void on_usbMsDialogBox_clicked(bool checked);
+
+    void on_autoCheckUpdatesBox_clicked(bool checked);
+
 signals:
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();

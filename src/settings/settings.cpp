@@ -60,6 +60,9 @@ settings::settings(QWidget *parent) :
     ui->repackBtn->setStyleSheet("font-size: 9pt");
     ui->exportHighlightsBtn->setStyleSheet("font-size: 9pt");
     ui->uiScaleNumberLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
+    ui->autoCheckUpdatesBox->setStyleSheet("font-size: 9pt");
+    ui->usbMsDialogBox->setStyleSheet("font-size: 9pt");
+
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         ui->previousBtn->setStyleSheet("padding: 7.5px;");
         ui->nextBtn->setStyleSheet("padding: 7.5px;");
@@ -341,6 +344,16 @@ settings::settings(QWidget *parent) :
     // Local library folders support
     if(checkconfig(".config/21-local_library/folders") == true) {
         ui->localLibraryShowFoldersCheckBox->click();
+    }
+
+    // USB show dialog
+    if(checkconfig(".config/22-usb/show-dialog") == true) {
+        ui->usbMsDialogBox->click();
+    }
+
+    // Automatic updates
+    if(checkconfig(".config/23-updates/check-updates") == true) {
+        ui->autoCheckUpdatesBox->click();
     }
 
     if(checkconfig("/opt/inkbox_genuine") == true) {
@@ -1110,3 +1123,29 @@ void settings::on_localLibraryShowFoldersCheckBox_toggled(bool checked)
     }
 }
 
+
+void settings::on_usbMsDialogBox_clicked(bool checked)
+{
+    QString settingString = "Show USB Mass storage dialog";
+    if(checked == true) {
+        logEnabled(settingString, className);
+        string_writeconfig(".config/22-usb/show-dialog", "true");
+    }
+    else {
+        logDisabled(settingString, className);
+        string_writeconfig(".config/22-usb/show-dialog", "false");
+    }
+}
+
+void settings::on_autoCheckUpdatesBox_clicked(bool checked)
+{
+    QString settingString = "Automatically check updates";
+    if(checked == true) {
+        logEnabled(settingString, className);
+        string_writeconfig(".config/23-updates/check-updates", "true");
+    }
+    else {
+        logDisabled(settingString, className);
+        string_writeconfig(".config/23-updates/check-updates", "false");
+    }
+}
