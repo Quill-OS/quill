@@ -20,6 +20,7 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QCryptographicHash>
+#include <QMutex>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -193,6 +194,33 @@ namespace global {
             bool encryption;
             int signal;
         };
+    }
+    namespace audio {
+        inline bool enabled = false;
+        struct musicFile {
+            QString path;
+            QString name; // Cutted path for easier use in names
+            int lengths;
+            QString length; // In minutes:seconds
+        };
+        enum class Action { // Function will be called with this enum
+            Play,
+            Next,
+            Previous,
+            Pause,
+            Continue,
+            RequestProgressUpdate,
+            None,
+        };
+        inline Action currentAction = Action::None;
+        inline bool actionDone = false; // bool to await for answer
+        inline QVector<musicFile> queue;
+        inline QVector<musicFile> fileList;
+        inline int itemCurrentlyPLaying = 0;
+        inline QMutex audioMutex; // These variables will be shared between threads, so here its to protect it
+        inline int progressSeconds = 0;
+        inline bool paused = false;
+        inline bool firstScan = true;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;

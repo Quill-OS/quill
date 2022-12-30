@@ -99,6 +99,8 @@ private slots:
     void setupLocalLibraryWidget();
     void setupHomePageWidget();
 
+    void on_audioBtn_clicked();
+
 private:
     Ui::MainWindow * ui;
     settingsChooser * settingsChooserWindow;

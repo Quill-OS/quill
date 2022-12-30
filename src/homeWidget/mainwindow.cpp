@@ -5,6 +5,8 @@
 #include "apps.h"
 #include "ui_apps.h"
 #include "functions.h"
+#include "audiodialog.h"
+
 #include <QTime>
 #include <QDateTime>
 #include <QTimer>
@@ -28,6 +30,13 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    // Needed, the screen is shifted?
+    // ~Szybet
+    if(global::deviceID == "n306\n") {
+        ui->centralwidget->layout()->setContentsMargins(4, 2, 8, 2);
+    }
+
     ui->inkboxLabel->setFont(QFont("u001"));
 
     ui->settingsBtn->setProperty("type", "borderless");
@@ -39,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setProperty("type", "borderless");
     ui->homeBtn->setProperty("type", "borderless");
     ui->wifiBtn->setProperty("type", "borderless");
+    ui->audioBtn->setProperty("type", "borderless");
 
     ui->settingsBtn->setText("");
     ui->appsBtn->setText("");
@@ -50,12 +60,18 @@ MainWindow::MainWindow(QWidget *parent)
     ui->homeBtn->setText("");
     ui->quoteLabel->setText("");
     ui->wifiBtn->setText("");
+    ui->audioBtn->setText("");
 
     ui->quotePictureLabel->setText("");
 
     ui->quoteHeadingLabel->setStyleSheet("padding: 30px");
     ui->inkboxLabel->setStyleSheet("font-size: 10.5pt");
     ui->homeBtn->setStyleSheet("padding: 5px");
+
+    if(global::audio::enabled == false) {
+        ui->audioBtn->hide();
+        ui->audioLine->hide();
+    }
 
     // Initializing some variables
     global::battery::showLowBatteryDialog = true;
@@ -131,6 +147,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
+
+    ui->audioBtn->setIcon(QIcon(":/resources/music-note.png"));
+    ui->audioBtn->setIconSize(QSize(stdIconWidth, stdIconHeight));
 
     updateWifiAble();
     if(global::device::isWifiAble == true) {
@@ -1021,4 +1040,10 @@ void MainWindow::setupHomePageWidget() {
     ui->homeStackedWidget->insertWidget(2, homePageWidgetWindow);
     ui->homeStackedWidget->setCurrentIndex(2);
     global::mainwindow::tabSwitcher::homePageWidgetCreated = true;
+}
+
+void MainWindow::on_audioBtn_clicked()
+{
+    QDialog* newAudioDialog = new audioDialog(this);
+    newAudioDialog->exec();
 }

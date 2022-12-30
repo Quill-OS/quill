@@ -109,5 +109,12 @@
         <file>resources/question-mark.png</file>
         <file>resources/refresh-small.png</file>
         <file>resources/checkbox-indeterminate.png</file>
+        <file>resources/music-note.png</file>
+        <file>resources/music-library.png</file>
+        <file>resources/next.png</file>
+        <file>resources/queue.png</file>
+        <file>resources/play.png</file>
+        <file>resources/previous.png</file>
+        <file>resources/pause.png</file>
     </qresource>
 </RCC>
