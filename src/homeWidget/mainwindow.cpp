@@ -340,40 +340,53 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
-    // Check for an update and ask if the user wants to install it
-    checkForUpdate();
-    // Check for an OTA update
-    QTimer::singleShot(1000, this, SLOT(checkForOtaUpdate()));
+    // OTA update
+    if(!QFile(updatesCheckConfigPath).exists()) {
+        writeFile(updatesCheckConfigPath, "true");
+    }
+
+    if(checkconfig(updatesCheckConfigPath) == true) {
+        // Check for an update and ask if the user wants to install it
+        checkForUpdate();
+        // Check for an OTA update
+        QTimer::singleShot(1000, this, SLOT(checkForOtaUpdate()));
+    }
 
     // USB mass storage prompt
-    QTimer *usbmsPrompt = new QTimer(this);
-    usbmsPrompt->setInterval(500);
-    connect(usbmsPrompt, &QTimer::timeout, [&]() {
-        if(checkconfig("/opt/inkbox_genuine") == true) {
-            if(global::usbms::showUsbmsDialog != true) {
-                if(isUsbPluggedIn() != usbmsStatus) {
-                    global::usbms::showUsbmsDialog = true;
+    if(!QFile(usbConfigPath).exists()) {
+        writeFile(usbConfigPath, "true");
+    }
+
+    if(checkconfig(usbConfigPath) == true) {
+        QTimer *usbmsPrompt = new QTimer(this);
+        usbmsPrompt->setInterval(500);
+        connect(usbmsPrompt, &QTimer::timeout, [&]() {
+            if(checkconfig("/opt/inkbox_genuine") == true) {
+                if(global::usbms::showUsbmsDialog != true) {
+                    if(isUsbPluggedIn() != usbmsStatus) {
+                        global::usbms::showUsbmsDialog = true;
+                    }
+                }
+                else {
+                    usbmsStatus = isUsbPluggedIn();
+                    if(usbmsStatus == false) {
+                        // Loop again...
+                        ;
+                    }
+                    else {
+                        // An USB cable is connected!
+                        setBatteryIcon();
+                        openUsbmsDialog();
+                    }
                 }
             }
             else {
-                usbmsStatus = isUsbPluggedIn();
-                if(usbmsStatus == false) {
-                    // Loop again...
-                    ;
-                }
-                else {
-                    // An USB cable is connected!
-                    setBatteryIcon();
-                    openUsbmsDialog();
-                }
+                // Do nothing, we're running along with Nickel & friends...
+                ;
             }
-        }
-        else {
-            // Do nothing, we're running along with Nickel & friends...
-            ;
-        }
-    } );
-    usbmsPrompt->start();
+        } );
+        usbmsPrompt->start();
+    }
 
     // If the DEVKEY file is present, install a developer key
     if(QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY") == true && QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst") == true) {
