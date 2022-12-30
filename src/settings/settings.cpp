@@ -765,12 +765,14 @@ void settings::on_enableLockscreenCheckBox_toggled(bool checked)
     QString settingString = "lockscreen";
     if(checked == true) {
         logEnabled(settingString, className);
-        string_writeconfig(".config/12-lockscreen/config", "true");
+        writeFile(".config/12-lockscreen/config", "true");
     }
     else {
         logDisabled(settingString, className);
-        string_writeconfig(".config/12-lockscreen/config", "false");
+        writeFile(".config/12-lockscreen/config", "false");
     }
+    // Notify power daemon of configuration update
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/updateConfig", "true");
 }
 
 void settings::on_enableUiScalingCheckBox_toggled(bool checked)
