@@ -340,13 +340,12 @@ MainWindow::MainWindow(QWidget *parent)
         }
     }
 
-    // OTA updates
-    QString checkConfigPath = ".config/23-updates/check-updates";
-    if(QFile(checkConfigPath).exists() == false) {
-        string_writeconfig(checkConfigPath.toStdString(), "true");
+    // OTA update
+    if(!QFile(updatesCheckConfigPath).exists()) {
+        writeFile(updatesCheckConfigPath, "true");
     }
 
-    if(checkconfig(checkConfigPath) == true) {
+    if(checkconfig(updatesCheckConfigPath) == true) {
         // Check for an update and ask if the user wants to install it
         checkForUpdate();
         // Check for an OTA update
@@ -354,9 +353,8 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // USB mass storage prompt
-    QString usbConfigPath = ".config/22-usb/show-dialog";
-    if(QFile(usbConfigPath).exists() == false) {
-        string_writeconfig(usbConfigPath.toStdString(), "true");
+    if(!QFile(usbConfigPath).exists()) {
+        writeFile(usbConfigPath, "true");
     }
 
     if(checkconfig(usbConfigPath) == true) {
