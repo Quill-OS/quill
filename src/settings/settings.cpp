@@ -1167,7 +1167,7 @@ void settings::on_lockscreenBackgroundComboBox_currentTextChanged(const QString 
         writeFile(".config/12-lockscreen/background", "blank");
         log("Set lockscreen background to 'blank'", className);
     }
-    else if(arg1 == "Screensaver picture (if provided)") {
+    else if(arg1 == "Screensaver picture") {
         writeFile(".config/12-lockscreen/background", "screenSaver");
         log("Set lockscreen background to 'screenSaver'", className);
     }

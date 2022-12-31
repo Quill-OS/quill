@@ -1204,7 +1204,7 @@
                    </item>
                    <item>
                     <property name="text">
-                     <string>Screensaver picture (if provided)</string>
+                     <string>Screensaver picture</string>
                     </property>
                    </item>
                    <item>
