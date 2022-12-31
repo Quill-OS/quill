@@ -60,8 +60,6 @@ settings::settings(QWidget *parent) :
     ui->repackBtn->setStyleSheet("font-size: 9pt");
     ui->exportHighlightsBtn->setStyleSheet("font-size: 9pt");
     ui->uiScaleNumberLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
-    ui->autoCheckUpdatesBox->setStyleSheet("font-size: 9pt");
-    ui->usbMsDialogBox->setStyleSheet("font-size: 9pt");
 
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         ui->previousBtn->setStyleSheet("padding: 7.5px;");
@@ -348,7 +346,7 @@ settings::settings(QWidget *parent) :
 
     // USB show dialog
     if(checkconfig(".config/22-usb/show-dialog") == true) {
-        ui->usbMsDialogBox->click();
+        ui->usbmsDialogBox->click();
     }
 
     // Automatic updates
@@ -1124,9 +1122,9 @@ void settings::on_localLibraryShowFoldersCheckBox_toggled(bool checked)
 }
 
 
-void settings::on_usbMsDialogBox_clicked(bool checked)
+void settings::on_usbmsDialogBox_clicked(bool checked)
 {
-    QString settingString = "Show USB Mass storage dialog";
+    QString settingString = "USB Mass Storage dialog display";
     if(checked == true) {
         logEnabled(settingString, className);
         string_writeconfig(".config/22-usb/show-dialog", "true");
@@ -1139,7 +1137,7 @@ void settings::on_usbMsDialogBox_clicked(bool checked)
 
 void settings::on_autoCheckUpdatesBox_clicked(bool checked)
 {
-    QString settingString = "Automatically check updates";
+    QString settingString = "automatic updates checking";
     if(checked == true) {
         logEnabled(settingString, className);
         string_writeconfig(".config/23-updates/check-updates", "true");

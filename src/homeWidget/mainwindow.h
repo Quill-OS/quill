@@ -66,6 +66,9 @@ public:
     void resetIcons();
     void setBatteryIcon();
 
+    QString updatesCheckConfigPath = ".config/23-updates/check-updates";
+    QString usbConfigPath = ".config/22-usb/show-dialog";
+
 public slots:
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();

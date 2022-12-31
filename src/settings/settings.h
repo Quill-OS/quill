@@ -75,11 +75,8 @@ private slots:
     void on_pageSizeHeightIncBtn_clicked();
     void on_pageSizeWidthDecBtn_clicked();
     void on_pageSizeWidthIncBtn_clicked();
-
     void on_localLibraryShowFoldersCheckBox_toggled(bool checked);
-
-    void on_usbMsDialogBox_clicked(bool checked);
-
+    void on_usbmsDialogBox_clicked(bool checked);
     void on_autoCheckUpdatesBox_clicked(bool checked);
 
 signals:
