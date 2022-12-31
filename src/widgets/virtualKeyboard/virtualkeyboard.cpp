@@ -181,6 +181,51 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->sat->setStyleSheet("font-weight: bold; font-size: 7pt; padding: 20px");
         ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 15px; border: 1px solid black");
     }
+    else if(global::deviceID == "n705\n") {
+        ui->n1->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->n2->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->n3->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->n4->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->n5->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->n6->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->n7->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->n8->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->n9->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->n0->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+
+        ui->la->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lb->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lc->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->ld->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->le->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lf->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lg->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lh->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->li->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lj->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lk->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->ll->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lm->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->ln->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lo->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lp->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lq->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lr->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->ls->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lt->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lu->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lv->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lw->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lx->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->ly->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->lz->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+
+        ui->eraseBtn->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->shiftBtn->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->spt->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
+        ui->sat->setStyleSheet("font-weight: bold; font-size: 7pt; padding: 11.45px");
+        ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 10px; border: 1px solid black");
+    }
     else {
         ui->n1->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 13px");
         ui->n2->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 13px");
