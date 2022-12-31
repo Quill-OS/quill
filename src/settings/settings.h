@@ -78,6 +78,7 @@ private slots:
     void on_localLibraryShowFoldersCheckBox_toggled(bool checked);
     void on_usbmsDialogBox_clicked(bool checked);
     void on_autoCheckUpdatesBox_clicked(bool checked);
+    void on_lockscreenBackgroundComboBox_currentTextChanged(const QString &arg1);
 
 signals:
     void showToast(QString messageToDisplay);

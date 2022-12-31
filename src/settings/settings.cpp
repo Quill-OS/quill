@@ -354,6 +354,16 @@ settings::settings(QWidget *parent) :
         ui->autoCheckUpdatesBox->click();
     }
 
+    if(readFile(".config/12-lockscreen/background") == "blank") {
+        ui->lockscreenBackgroundComboBox->setCurrentIndex(0);
+    }
+    else if(readFile(".config/12-lockscreen/background") == "screenSaver") {
+        ui->lockscreenBackgroundComboBox->setCurrentIndex(1);
+    }
+    else if(readFile(".config/12-lockscreen/background") == "background") {
+        ui->lockscreenBackgroundComboBox->setCurrentIndex(2);
+    }
+
     if(checkconfig("/opt/inkbox_genuine") == true) {
         // Enforcing security policy if the user has not rooted the device
         if(checkconfig("/external_root/opt/root/rooted") == true) {
@@ -412,6 +422,9 @@ void settings::on_okBtn_clicked() {
 
     writeFile(".config/13-epub_page_size/height", QString::number(pageSizeHeightSaved));
     writeFile(".config/13-epub_page_size/set", "true");
+
+    // Notify power daemon of a potential configuration update
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/updateConfig", "true");
 
     // Prevent potential unknown damage launching via shell script this could do
     if(launch_sh == true) {
@@ -771,8 +784,6 @@ void settings::on_enableLockscreenCheckBox_toggled(bool checked)
         logDisabled(settingString, className);
         writeFile(".config/12-lockscreen/config", "false");
     }
-    // Notify power daemon of configuration update
-    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/updateConfig", "true");
 }
 
 void settings::on_enableUiScalingCheckBox_toggled(bool checked)
@@ -1147,5 +1158,21 @@ void settings::on_autoCheckUpdatesBox_clicked(bool checked)
     else {
         logDisabled(settingString, className);
         string_writeconfig(".config/23-updates/check-updates", "false");
+    }
+}
+
+void settings::on_lockscreenBackgroundComboBox_currentTextChanged(const QString &arg1)
+{
+    if(arg1 == "Blank") {
+        writeFile(".config/12-lockscreen/background", "blank");
+        log("Set lockscreen background to 'blank'", className);
+    }
+    else if(arg1 == "Screensaver picture (if provided)") {
+        writeFile(".config/12-lockscreen/background", "screenSaver");
+        log("Set lockscreen background to 'screenSaver'", className);
+    }
+    else if(arg1 == "Device's screen") {
+        writeFile(".config/12-lockscreen/background", "background");
+        log("Set lockscreen background to 'background'", className);
     }
 }
