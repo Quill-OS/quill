@@ -2,6 +2,7 @@
 #include "ui_audiodialog.h"
 #include "functions.h"
 #include "audiofile.h"
+#include "audiofilequeue.h"
 
 #include <sndfile.h>
 #include <unistd.h>
@@ -56,7 +57,9 @@ audioDialog::audioDialog(QWidget *parent) :
     ui->libraryBtn->setIconSize(QSize{menuButtonsSize,menuButtonsSize});
     ui->queueBtn->setIconSize(QSize{menuButtonsSize,menuButtonsSize});
 
+    // Default "page"
     ui->libraryBtn->setStyleSheet("background: grey;");
+    ui->refreshBtn->setIcon(QIcon(":/resources/refresh-small.png"));
 
     if(global::audio::firstScan == true) {
         global::audio::firstScan = false;
@@ -64,6 +67,10 @@ audioDialog::audioDialog(QWidget *parent) :
     }
 
     refreshAudioFileWidgets();
+
+    progressFuncManage();
+
+    ui->progressSlider->setDisabled(true);
 }
 
 audioDialog::~audioDialog()
@@ -74,11 +81,13 @@ audioDialog::~audioDialog()
 void audioDialog::changeMenu() {
     if(currentMenu == true) {
         currentMenu = false;
+        ui->refreshBtn->setIcon(QIcon(":/resources/clean.png"));
         ui->libraryBtn->setStyleSheet("background: white;");
         ui->queueBtn->setStyleSheet("background: grey;");
     }
     else {
         currentMenu = true;
+        ui->refreshBtn->setIcon(QIcon(":/resources/refresh-small.png"));
         ui->libraryBtn->setStyleSheet("background: grey;");
         ui->queueBtn->setStyleSheet("background: white;");
     }
@@ -89,7 +98,7 @@ void audioDialog::on_libraryBtn_clicked()
     if(currentMenu == false) {
         changeMenu();
     }
-
+    refreshAudioFileWidgets();
 }
 
 void audioDialog::on_queueBtn_clicked()
@@ -97,7 +106,7 @@ void audioDialog::on_queueBtn_clicked()
     if(currentMenu == true) {
         changeMenu();
     }
-
+    refreshAudioFileWidgetsQueue();
 }
 
 void audioDialog::refreshFileList() {
@@ -121,10 +130,8 @@ void audioDialog::refreshFileList() {
         newMusicFile.name = tempName;
         log("File name length: " + QString::number(fileList[i].length()), className);
         log("File name: " + tempName, className);
-        // Limit for chars, this one for Nia
-        if(newMusicFile.name.length() > 30) {
-            newMusicFile.name.chop(newMusicFile.name.length() - 30);
-        }
+        // Limiting file name length is managed in audiofile and audiofilequeue independently
+
         // http://libsndfile.github.io/libsndfile/api#open_fd
         /*
         sf_count_t  frames ;
@@ -163,7 +170,20 @@ void audioDialog::refreshAudioFileWidgets() {
         audiofile* newAudioFile = new audiofile;
         newAudioFile->provideData(global::audio::fileList[i]);
         QObject::connect(this, &audioDialog::deleteItself, newAudioFile, &audiofile::die);
+        QObject::connect(newAudioFile, &audiofile::playFileChild, this, &audioDialog::playFile);
         ui->filesLayout->addWidget(newAudioFile, Qt::AlignTop);
+    }
+}
+
+void audioDialog::refreshAudioFileWidgetsQueue() {
+    emit deleteItself();
+    for(int i = 0; i < global::audio::queue.size(); i++) {
+        log("Adding new item: " + QString::number(i), className);
+        audiofilequeue* newAudioFileQueue = new audiofilequeue;
+        newAudioFileQueue->provideData(global::audio::queue[i]);
+        QObject::connect(this, &audioDialog::deleteItself, newAudioFileQueue, &audiofilequeue::die);
+        QObject::connect(newAudioFileQueue, &audiofilequeue::playFileChild, this, &audioDialog::playFile);
+        ui->filesLayout->addWidget(newAudioFileQueue, Qt::AlignTop);
     }
 }
 
@@ -171,4 +191,40 @@ void audioDialog::on_refreshBtn_clicked()
 {
     refreshFileList();
     refreshAudioFileWidgets();
+}
+
+void  audioDialog::playFile(int itemInQueue) {
+    log("Called playFile", className);
+
+    log("Calling stop to current actions to play a new file", className);
+    AudioThreadAction(global::audio::Action::Stop);
+
+    global::audio::audioMutex.lock();
+    global::audio::itemCurrentlyPLaying = itemInQueue;
+    global::audio::audioMutex.unlock();
+
+    AudioThreadAction(global::audio::Action::Play);
+
+    progress.stop();
+    progressFuncManage();
+}
+
+void audioDialog::progressFuncManage() {
+    if(global::audio::isSomethingCurrentlyPlaying == true and global::audio::paused == false) {
+        if(ui->progressSlider->maximum() != global::audio::queue[global::audio::itemCurrentlyPLaying].lengths) {
+            ui->progressSlider->setMaximum(global::audio::queue[global::audio::itemCurrentlyPLaying].lengths);
+        }
+            log("Changing slider position: " + QString::number(global::audio::progressSeconds), className);
+            ui->progressSlider->setSliderPosition(global::audio::progressSeconds);
+            progress.singleShot(500, this, SLOT(progressFuncManage())); // For better accuracy, set 50
+    } else {
+        if(global::audio::isSomethingCurrentlyPlaying == false and global::audio::paused == false) {
+            ui->progressSlider->setSliderPosition(0);
+        }
+    }
+}
+
+void audioDialog::on_progressSlider_sliderPressed()
+{
+    ui->progressSlider->releaseMouse();
 }

@@ -1,37 +1,34 @@
-#ifndef AUDIOFILE_H
-#define AUDIOFILE_H
-
-#include "functions.h"
+#ifndef AUDIOFILEQUEUE_H
+#define AUDIOFILEQUEUE_H
 
 #include <QWidget>
+#include "functions.h"
 
 namespace Ui {
-class audiofile;
+class audiofilequeue;
 }
 
-class audiofile : public QWidget
+class audiofilequeue : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit audiofile(QWidget *parent = nullptr);
-    ~audiofile();
+    explicit audiofilequeue(QWidget *parent = nullptr);
+    ~audiofilequeue();
     QString className = this->metaObject()->className();
+
     void provideData(global::audio::musicFile fileProvided);
     global::audio::musicFile file;
 
 public slots:
     void die();
 
-private slots:
-
-    void on_addBtn_clicked();
+private:
+    Ui::audiofilequeue *ui;
 
 signals:
     void playFileChild(int itemInQueue);
 
-private:
-    Ui::audiofile *ui;
 };
 
-#endif // AUDIOFILE_H
+#endif // AUDIOFILEQUEUE_H

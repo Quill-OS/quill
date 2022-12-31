@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>audiofile</class>
- <widget class="QWidget" name="audiofile">
+ <class>audiofilequeue</class>
+ <widget class="QWidget" name="audiofilequeue">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -48,7 +48,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QPushButton" name="addBtn">
+    <widget class="QPushButton" name="deleteBtn">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -60,7 +60,24 @@
      </property>
      <property name="icon">
       <iconset resource="../../../eink.qrc">
-       <normaloff>:/resources/plus.png</normaloff>:/resources/plus.png</iconset>
+       <normaloff>:/resources/close.png</normaloff>:/resources/close.png</iconset>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="playButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset resource="../../../eink.qrc">
+       <normaloff>:/resources/chevron-right.png</normaloff>:/resources/chevron-right.png</iconset>
      </property>
     </widget>
    </item>

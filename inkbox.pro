@@ -30,6 +30,7 @@ SOURCES += \
     src/apps/apps.cpp \
     src/widgets/dialogs/audio/audiodialog.cpp \
     src/widgets/dialogs/audio/audiofile.cpp \
+    src/widgets/dialogs/audio/audiofilequeue.cpp \
     src/widgets/dialogs/library/bookinfodialog.cpp \
     src/widgets/dialogs/library/bookoptionsdialog.cpp \
     src/widgets/dialogs/brightnessdialog.cpp \
@@ -77,6 +78,7 @@ HEADERS += \
     src/apps/apps.h \
     src/widgets/dialogs/audio/audiodialog.h \
     src/widgets/dialogs/audio/audiofile.h \
+    src/widgets/dialogs/audio/audiofilequeue.h \
     src/widgets/dialogs/library/bookinfodialog.h \
     src/widgets/dialogs/library/bookoptionsdialog.h \
     src/widgets/dialogs/brightnessdialog.h \
@@ -123,6 +125,7 @@ FORMS += \
     src/apps/apps.ui \
     src/widgets/dialogs/audio/audiodialog.ui \
     src/widgets/dialogs/audio/audiofile.ui \
+    src/widgets/dialogs/audio/audiofilequeue.ui \
     src/widgets/dialogs/library/bookinfodialog.ui \
     src/widgets/dialogs/library/bookoptionsdialog.ui \
     src/widgets/dialogs/brightnessdialog.ui \

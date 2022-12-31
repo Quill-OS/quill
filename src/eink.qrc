@@ -116,5 +116,6 @@
         <file>resources/play.png</file>
         <file>resources/previous.png</file>
         <file>resources/pause.png</file>
+        <file>resources/clean.png</file>
     </qresource>
 </RCC>

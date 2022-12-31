@@ -210,16 +210,18 @@ namespace global {
             Pause,
             Continue,
             RequestProgressUpdate,
+            Stop, // Sets paused to false, isSomethingCurrentlyPlaying to false, and itemCurrentlyPLaying to -1, also stops playing
             None,
         };
         inline Action currentAction = Action::None;
         inline bool actionDone = false; // bool to await for answer
         inline QVector<musicFile> queue;
         inline QVector<musicFile> fileList;
-        inline int itemCurrentlyPLaying = 0;
+        inline int itemCurrentlyPLaying = 0; // Also indicates in the queue menu which a grey color which is playing
         inline QMutex audioMutex; // These variables will be shared between threads, so here its to protect it
         inline int progressSeconds = 0;
         inline bool paused = false;
+        inline bool isSomethingCurrentlyPlaying = false;
         inline bool firstScan = true;
     }
     inline QString systemInfoText;
@@ -1197,6 +1199,25 @@ namespace {
         // https://stackoverflow.com/questions/2799379/is-there-an-easy-way-to-strip-html-from-a-qstring-in-qt
         // This can cause problems if someone names their directory with HTML tags, so stop here. Anki, which is a big project, also doesn't care about this
         return text.remove(QRegExp("<[^>]*>"));
+    }
+    // Some audio wrappers
+    void waitForAudioThread() {
+        bool tempBool = false;
+        while(tempBool == false) {
+          QThread::msleep(100);
+          global::audio::audioMutex.lock();
+          if(global::audio::actionDone == true) {
+              global::audio::actionDone = false;
+              tempBool = true;
+          }
+          global::audio::audioMutex.unlock();
+        }
+    }
+    void AudioThreadAction(global::audio::Action actionToPerform) {
+        global::audio::audioMutex.lock();
+        global::audio::currentAction = actionToPerform;
+        global::audio::audioMutex.unlock();
+        waitForAudioThread();
     }
 }
 
