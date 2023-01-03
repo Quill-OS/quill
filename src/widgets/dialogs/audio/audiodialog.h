@@ -23,6 +23,7 @@ public:
     void refreshAudioFileWidgets();
     void refreshAudioFileWidgetsQueue();
     QTimer progress; // Needs to be stoped at exit
+    void setSongName();
 
 public slots:
     void playFile(int itemInQueue); // can be called from childs
@@ -36,6 +37,12 @@ private slots:
     void on_refreshBtn_clicked();
 
     void on_progressSlider_sliderPressed();
+
+    void on_soundLevelSlider_valueChanged(int value);
+
+    void on_plusBtn_clicked();
+
+    void on_minusBtn_clicked();
 
 signals:
     void deleteItself();

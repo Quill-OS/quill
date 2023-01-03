@@ -71,6 +71,17 @@ audioDialog::audioDialog(QWidget *parent) :
     progressFuncManage();
 
     ui->progressSlider->setDisabled(true);
+
+    int autoRepeatDelay = 800;
+    int autoRepeatInterval = 20;
+
+    ui->plusBtn->setAutoRepeat(true);
+    ui->plusBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->plusBtn->setAutoRepeatInterval(autoRepeatInterval);
+
+    ui->minusBtn->setAutoRepeat(true);
+    ui->minusBtn->setAutoRepeatDelay(autoRepeatDelay);
+    ui->minusBtn->setAutoRepeatInterval(autoRepeatInterval);
 }
 
 audioDialog::~audioDialog()
@@ -120,6 +131,7 @@ void audioDialog::refreshFileList() {
 
     QStringList fileList = dir.entryList();
     log("File count: " + QString::number(fileList.count()), className);
+    global::audio::audioMutex.lock();
     for (int i=0; i<fileList.count(); i++)
     {
         log("Audio file: " + fileList[i], className);
@@ -161,9 +173,11 @@ void audioDialog::refreshFileList() {
         log("File length: " + newMusicFile.length, className);
         global::audio::fileList.append(newMusicFile);
     }
+    global::audio::audioMutex.unlock();
 }
 
 void audioDialog::refreshAudioFileWidgets() {
+    global::audio::audioMutex.lock();
     emit deleteItself();
     for(int i = 0; i < global::audio::fileList.size(); i++) {
         log("Adding new item: " + QString::number(i));
@@ -173,9 +187,11 @@ void audioDialog::refreshAudioFileWidgets() {
         QObject::connect(newAudioFile, &audiofile::playFileChild, this, &audioDialog::playFile);
         ui->filesLayout->addWidget(newAudioFile, Qt::AlignTop);
     }
+    global::audio::audioMutex.unlock();
 }
 
 void audioDialog::refreshAudioFileWidgetsQueue() {
+    global::audio::audioMutex.lock();
     emit deleteItself();
     for(int i = 0; i < global::audio::queue.size(); i++) {
         log("Adding new item: " + QString::number(i), className);
@@ -185,6 +201,7 @@ void audioDialog::refreshAudioFileWidgetsQueue() {
         QObject::connect(newAudioFileQueue, &audiofilequeue::playFileChild, this, &audioDialog::playFile);
         ui->filesLayout->addWidget(newAudioFileQueue, Qt::AlignTop);
     }
+    global::audio::audioMutex.unlock();
 }
 
 void audioDialog::on_refreshBtn_clicked()
@@ -205,16 +222,19 @@ void  audioDialog::playFile(int itemInQueue) {
 
     AudioThreadAction(global::audio::Action::Play);
 
+    setSongName();
+
     progress.stop();
     progressFuncManage();
 }
 
 void audioDialog::progressFuncManage() {
+    global::audio::audioMutex.lock();
     if(global::audio::isSomethingCurrentlyPlaying == true and global::audio::paused == false) {
         if(ui->progressSlider->maximum() != global::audio::queue[global::audio::itemCurrentlyPLaying].lengths) {
             ui->progressSlider->setMaximum(global::audio::queue[global::audio::itemCurrentlyPLaying].lengths);
         }
-            log("Changing slider position: " + QString::number(global::audio::progressSeconds), className);
+            //log("Changing slider position: " + QString::number(global::audio::progressSeconds), className);
             ui->progressSlider->setSliderPosition(global::audio::progressSeconds);
             progress.singleShot(500, this, SLOT(progressFuncManage())); // For better accuracy, set 50
     } else {
@@ -222,9 +242,36 @@ void audioDialog::progressFuncManage() {
             ui->progressSlider->setSliderPosition(0);
         }
     }
+    global::audio::audioMutex.unlock();
 }
 
 void audioDialog::on_progressSlider_sliderPressed()
 {
     ui->progressSlider->releaseMouse();
+}
+
+void audioDialog::setSongName() {
+    global::audio::audioMutex.lock();
+    ui->fileNameLabel->setText(global::audio::queue[global::audio::itemCurrentlyPLaying].name);
+    global::audio::audioMutex.unlock();
+}
+
+void audioDialog::on_soundLevelSlider_valueChanged(int value)
+{
+    log("Setting volume level: " + QString::number(value), className);
+    global::audio::audioMutex.lock();
+    global::audio::volumeLevel = value;
+    global::audio::audioMutex.unlock();
+
+    AudioThreadAction(global::audio::Action::SetVolume);
+}
+
+void audioDialog::on_plusBtn_clicked()
+{
+    ui->soundLevelSlider->setValue(ui->soundLevelSlider->value() + 1);
+}
+
+void audioDialog::on_minusBtn_clicked()
+{
+    ui->soundLevelSlider->setValue(ui->soundLevelSlider->value() - 1);
 }

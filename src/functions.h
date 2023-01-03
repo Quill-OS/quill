@@ -209,9 +209,9 @@ namespace global {
             Previous,
             Pause,
             Continue,
-            RequestProgressUpdate,
             Stop, // Sets paused to false, isSomethingCurrentlyPlaying to false, and itemCurrentlyPLaying to -1, also stops playing
             None,
+            SetVolume,
         };
         inline Action currentAction = Action::None;
         inline bool actionDone = false; // bool to await for answer
@@ -223,6 +223,7 @@ namespace global {
         inline bool paused = false;
         inline bool isSomethingCurrentlyPlaying = false;
         inline bool firstScan = true;
+        inline int volumeLevel = 100;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -1204,7 +1205,7 @@ namespace {
     void waitForAudioThread() {
         bool tempBool = false;
         while(tempBool == false) {
-          QThread::msleep(100);
+          QThread::msleep(50);
           global::audio::audioMutex.lock();
           if(global::audio::actionDone == true) {
               global::audio::actionDone = false;

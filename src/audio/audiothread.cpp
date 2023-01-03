@@ -35,17 +35,28 @@ void audiothread::start() {
             }
         }
         if(global::audio::currentAction == global::audio::Action::Play) {
-            log("play action received", className);
+            log("Play action received", className);
             global::audio::audioMutex.lock();
             QString message = "play:\"";
             QString betterPath = global::audio::queue[global::audio::itemCurrentlyPLaying].path.remove(0, 21); // remove /mnt/onboard/onboard/
             message.append(betterPath);
-            message.append("\"");
+            message.append('"');
             sendInfo(message);
             global::audio::paused = false;
             global::audio::isSomethingCurrentlyPlaying = true;
             global::audio::progressSeconds = 0;
             monitorProgress = true;
+
+            global::audio::currentAction = global::audio::Action::None;
+            global::audio::actionDone = true;
+            global::audio::audioMutex.unlock();
+        }
+        if(global::audio::currentAction == global::audio::Action::SetVolume) {
+            log("Set volume action received", className);
+            global::audio::audioMutex.lock();
+
+            QString message = "set_volume:" + QString::number(global::audio::volumeLevel);
+            sendInfo(message);
 
             global::audio::currentAction = global::audio::Action::None;
             global::audio::actionDone = true;
@@ -66,6 +77,7 @@ void audiothread::start() {
 // while (recv(client_sockfd, buffer_tmp, 1, 0) > 0) {
 // This line in audio inkbox freezes, but logs inside while doesn't so idk what is going on
 void audiothread::sendInfo(QString message) {
+    log("Sending message: *" + message + "*", className);
     // Send
     sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (sockfd < 0) {
@@ -91,7 +103,7 @@ void audiothread::sendInfo(QString message) {
 
 void audiothread::audioProgress() {
     global::audio::progressSeconds = global::audio::progressSeconds + 1;
-    log("Progress, +1 sec: " + QString::number(global::audio::progressSeconds), className);
+    //log("Progress, +1 sec: " + QString::number(global::audio::progressSeconds), className);
     if(global::audio::progressSeconds == global::audio::queue[global::audio::itemCurrentlyPLaying].lengths) {
         monitorProgress = false;
     }

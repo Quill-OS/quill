@@ -37,9 +37,12 @@
       </widget>
      </item>
      <item>
-      <widget class="QScrollBar" name="horizontalScrollBar">
+      <widget class="QScrollBar" name="soundLevelSlider">
        <property name="maximum">
         <number>100</number>
+       </property>
+       <property name="pageStep">
+        <number>10</number>
        </property>
        <property name="sliderPosition">
         <number>100</number>
