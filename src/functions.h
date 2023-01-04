@@ -87,6 +87,7 @@ namespace global {
     namespace text {
         inline bool textBrowserDialog;
         inline QString textBrowserContents;
+        inline QString textBrowserTitle = ""; // At default empty, so "Information" is displayed
     }
     namespace keyboard {
         inline bool keyboardDialog;

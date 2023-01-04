@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Needed, the screen is shifted?
     // ~Szybet
     if(global::deviceID == "n306\n") {
-        ui->centralwidget->layout()->setContentsMargins(4, 2, 8, 2);
+        ui->centralwidget->layout()->setContentsMargins(4, 2, 8, 8);
     }
 
     ui->inkboxLabel->setFont(QFont("u001"));

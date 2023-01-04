@@ -113,6 +113,8 @@ localLibraryWidget::~localLibraryWidget()
 
 void localLibraryWidget::setupDatabase() {
     setDefaultWorkDir();
+    bool stopError = false;
+    QString stopErrorLogs;
     if(!QFile::exists(global::localLibrary::databasePath)) {
         log("Generating database", className);
         QStringList booksList;
@@ -136,7 +138,7 @@ void localLibraryWidget::setupDatabase() {
          /* Logs/steps needed to debug the database creation
          * for(int i = 0; i < args.count(); i++) {
          *     log("Arguments for database creation: '" + args[i] + "'", className);
-	 * }
+         * }
          */
 
         QProcess *proc = new QProcess();
@@ -145,12 +147,33 @@ void localLibraryWidget::setupDatabase() {
         QJsonDocument jsonDocument = QJsonDocument::fromJson(readFile(global::localLibrary::rawDatabasePath).toUtf8());
         // log("stdout of process: " + proc->readAllStandardOutput(), className);
         // log("stderr of process: " + proc->readAllStandardError(), className);
+
+        // Error handling ( from epubtool, for now )
+        QString stderrStr = proc->readAllStandardError();
+        if(stderrStr.contains("Critical Error: ") == true) {
+            stopError = true;
+            stopErrorLogs = stderrStr.replace("Critical Error: ", "");
+            log("Errors while generating database: " + stopErrorLogs, className);
+        }
         QFile::remove(global::localLibrary::rawDatabasePath);
         proc->deleteLater();
 
         // Write database in compressed form, encoded in Base64 format
         writeFile(global::localLibrary::databasePath, qCompress(jsonDocument.toJson()).toBase64());
         toastWindow->close();
+    }
+
+    if(stopError == true) {
+        global::text::textBrowserDialog = true;
+        global::text::textBrowserTitle = "Error while generating database.\n It will work incorrectly.\n Please remove corrupted files";
+        global::text::textBrowserContents = stopErrorLogs;
+
+        // Show a system info dialog
+        log("Showing system info dialog", className);
+        generalDialogWindow = new generalDialog();
+        generalDialogWindow->yIncrease = determineYIncrease();
+        generalDialogWindow->increaseSize();
+        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     }
 
     // Read library database from file
@@ -167,6 +190,12 @@ void localLibraryWidget::setupDatabase() {
 
     // Uncompress data from Base64 encoding
     databaseJsonDocument = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(data)));
+
+    // Full database dump
+    // Don't remove this, I Already used this 4 times and needed to write it 4 times. Don't. ~Szybet
+    // QString databaseStr = databaseJsonDocument.toJson(QJsonDocument::Compact).toStdString().c_str();
+    // log("Database: " + databaseStr, className);
+
     // Parse JSON data
     databaseJsonObject = databaseJsonDocument.object();
     databaseJsonArrayList = databaseJsonObject["database"].toArray();
@@ -312,6 +341,13 @@ void localLibraryWidget::on_nextPageBtn_clicked()
 }
 
 void localLibraryWidget::openBook(int bookID) {
+    log("test");
+    QJsonObject jsonObject1 = databaseJsonArrayList.at(bookID).toObject();
+    QString bookPath1 = jsonObject1["BookPath"].toString();
+    log("Opening book with ID " + QString::number(bookID) + ", path '" + bookPath1 + "'", className);
+
+
+
     QJsonObject jsonObject = databaseJsonArrayList.at(bookID - 1).toObject();
     QString bookPath = jsonObject["BookPath"].toString();
     log("Opening book with ID " + QString::number(bookID) + ", path '" + bookPath + "'", className);
