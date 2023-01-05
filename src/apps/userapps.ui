@@ -101,7 +101,7 @@
           <string/>
          </property>
          <property name="icon">
-          <iconset resource="eink.qrc">
+          <iconset resource="../eink.qrc">
            <normaloff>:/resources/info.png</normaloff>:/resources/info.png</iconset>
          </property>
          <property name="iconSize">
@@ -209,7 +209,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="eink.qrc"/>
+  <include location="../eink.qrc"/>
  </resources>
  <connections/>
 </ui>

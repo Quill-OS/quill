@@ -77,6 +77,11 @@ public:
     bool textDialogLock;
     bool isNightModeActive;
     bool goToSavedPageDone;
+    bool wordLookupEnabled = true; // .config/04-book/word-lookup-enabled
+    bool highlightEnabled = true; // .config/04-book/highlighting-enabled
+    QString highlightEnablePath = ".config/04-book/highlighting-enabled";
+    QString wordLookupEnablePath = ".config/04-book/word-lookup-enabled";
+
     QString ittext;
     QString book_file;
     bool batt_status;
@@ -170,6 +175,8 @@ private slots:
     void setMargins(int margins, bool write = true);
     void on_lineSpacingSlider_valueChanged(int value);
     void on_marginsSlider_valueChanged(int value);
+    void on_wordSearchBox_clicked(bool checked);
+    void on_highlightingBox_clicked(bool checked);
 
 signals:
     void openBookFile(QString book, bool relativePath);

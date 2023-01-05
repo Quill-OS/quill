@@ -44,6 +44,8 @@ settings::settings(QWidget *parent) :
     ui->nextBtn->setProperty("type", "borderless");
     ui->repackBtn->setProperty("type", "borderless");
     ui->exportHighlightsBtn->setProperty("type", "borderless");
+    ui->readerInfoButton->setProperty("type", "borderless");
+    ui->readerInfoButton->setStyleSheet("QPushButton[type='borderless']:pressed { background: white; color: white; border: none; }");
     ui->label->setStyleSheet("font-size: 10.5pt; font-weight: bold");
     ui->okBtn->setStyleSheet("font-weight: bold");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
@@ -1146,4 +1148,10 @@ void settings::on_autoCheckUpdatesBox_clicked(bool checked)
         logDisabled(settingString, className);
         string_writeconfig(".config/23-updates/check-updates", "false");
     }
+}
+
+void settings::on_readerInfoButton_clicked()
+{
+    // Maybe implementing an algorithm that will put \n automatically would be needed?
+    emit showToast("Changing settings in reading section\ncan disrupt your current\nbooks settings, shift pages.");
 }

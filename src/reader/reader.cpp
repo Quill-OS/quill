@@ -17,6 +17,7 @@
 #include <QTextCursor>
 #include <QGraphicsScene>
 #include <QJsonDocument>
+#include <QLayout>
 
 using namespace std;
 
@@ -24,6 +25,19 @@ reader::reader(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::reader)
 {
+    // In conclusion
+    // this->layout()->setContentsMargins(0,0,0,0);
+    // Causes a segault
+    // this->setContentsMargins(0,0,0,0);
+    // No effect
+    // So i set it in the ui file, in "reader QWidget". Please don't change this, if it looks horrible on your device, contact me, then we need to figure something other out
+    // Yes, i prefet the scroll bar to be on the edge...
+    // ~Szybet
+    // horizontalLayout is for line margins
+    // To avoid uggly text cutting, also restored on option button click
+    // ui->gridLayout->setVerticalSpacing(0);
+    // this can't be launched here... so it will be launched at the end
+
     // Elements
     graphicsScene = new QGraphicsScene(this);
 
@@ -137,8 +151,33 @@ reader::reader(QWidget *parent) :
     // Style misc.
     ui->bookInfoLabel->setStyleSheet("font-style: italic");
 
+    // Manage
+    // .config/04-book/word-lookup-enabled
+    // .config/04-book/highlighting-enabled
+
+    if(!QFile(wordLookupEnablePath).exists()) {
+        log("File " + wordLookupEnablePath + " doesn't exist, creating it", className);
+        writeFile(wordLookupEnablePath, "true");
+    }
+    wordLookupEnabled = checkconfig(wordLookupEnablePath);
+    ui->wordSearchBox->setChecked(wordLookupEnabled);
+    log("Variable wordLookupEnabled is: " + QString::number(wordLookupEnabled), className);
+
+    if(!QFile(highlightEnablePath).exists()) {
+        log("File " + highlightEnablePath + " doesn't exist, creating it", className);
+        writeFile(highlightEnablePath, "true");
+    }
+    highlightEnabled = checkconfig(highlightEnablePath);
+    ui->highlightingBox->setChecked(highlightEnabled);
+    log("Variable highlightEnabled is: " + QString::number(highlightEnabled), className);
+
     // Making text selectable
-    ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    if(highlightEnabled == true or wordLookupEnabled == true) {
+        ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    }
+    else {
+        ui->text->setTextInteractionFlags(Qt::NoTextInteraction);
+    }
 
     // Font misc.
     int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
@@ -229,6 +268,7 @@ reader::reader(QWidget *parent) :
     std::string book_file_str = book_file.toStdString();
     string_writeconfig("/tmp/inkboxBookPath", book_file_str);
 
+    // ITS LITTERALLY MOUNT --BIND THE SHA DIR ~Szybet, note for future
     // Calling InkBox daemon (ibxd) via FIFO interface to run bookconfig_mount
     if(!book_file.isEmpty()) {
         if(checkconfig(".config/16-global_reading_settings/config") == false) {
@@ -745,6 +785,9 @@ reader::reader(QWidget *parent) :
         connect(saveSettingsTimer, SIGNAL(timeout()), this, SLOT(saveReadingSettings()));
         saveSettingsTimer->start();
     }
+
+    // Needed
+    ui->gridLayout->setVerticalSpacing(0);
 }
 
 reader::~reader()
@@ -1146,6 +1189,8 @@ void reader::on_optionsBtn_clicked()
 {
     log("'Options' button clicked", className);
     if(menubar_shown == true) {
+        // Avoid cutting off text in ugly way
+        ui->gridLayout->setVerticalSpacing(0);
         menubar_hide();
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 13.5px");
@@ -1164,6 +1209,8 @@ void reader::on_optionsBtn_clicked()
         menubar_shown = false;
     }
     else {
+        // Make the gui good looking
+        ui->gridLayout->setVerticalSpacing(6);
         menubar_show();
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 13.5px");
@@ -1804,49 +1851,60 @@ void reader::on_text_selectionChanged() {
             log("Text selection changed; selected text: '" + selected_text + "'", className);
             if(!selected_text.contains(" ")) {
                 // Word selection
-                QString dictionary_position_str = QString::number(dictionary_position);
-                ui->definitionStatusLabel->setText(dictionary_position_str);
-
-                selected_text = selected_text.toLower();
-                QStringList parts = selected_text.split(' ', QString::SkipEmptyParts);
-                for (int i = 0; i < parts.size(); ++i)
-                    parts[i].replace(0, 1, parts[i][0].toUpper());
-                word = parts.join(" ");
-                letter = word.left(1);
-                selected_text_str = word.toStdString();
-                dictionary_lookup(selected_text_str, letter, dictionary_position);
-                ui->wordLabel->setText(word);
-                ui->definitionLabel->setText(definition);
-                if(checkconfig_match(".config/06-words/config", selected_text_str) == true) {
-                    ui->saveWordBtn->setText("");
-                    ui->saveWordBtn->setIcon(QIcon(":/resources/starred_star.png"));
+                if(wordLookupEnabled == true) {
+                    QString dictionary_position_str = QString::number(dictionary_position);
+                    ui->definitionStatusLabel->setText(dictionary_position_str);
+                    selected_text = selected_text.toLower();
+                    QStringList parts = selected_text.split(' ', QString::SkipEmptyParts);
+                    for (int i = 0; i < parts.size(); ++i)
+                        parts[i].replace(0, 1, parts[i][0].toUpper());
+                    word = parts.join(" ");
+                    letter = word.left(1);
+                    selected_text_str = word.toStdString();
+                    dictionary_lookup(selected_text_str, letter, dictionary_position);
+                    ui->wordLabel->setText(word);
+                    ui->definitionLabel->setText(definition);
+                    if(checkconfig_match(".config/06-words/config", selected_text_str) == true) {
+                        ui->saveWordBtn->setText("");
+                        ui->saveWordBtn->setIcon(QIcon(":/resources/starred_star.png"));
+                    }
+                    else {
+                        ui->saveWordBtn->setText("");
+                        ui->saveWordBtn->setIcon(QIcon(":/resources/star.png"));
+                    }
+                    wordwidgetLock = true;
+                    wordwidget_show();
                 }
                 else {
-                    ui->saveWordBtn->setText("");
-                    ui->saveWordBtn->setIcon(QIcon(":/resources/star.png"));
+                    cursor.clearSelection();
+                    ui->text->setTextCursor(cursor);
                 }
-                wordwidgetLock = true;
-                wordwidget_show();
             }
             else {
                 // Highlight
-                textDialogLock = true;
-                global::reader::highlightAlreadyDone = false;
-                QJsonObject jsonObject = getHighlightsForBook(book_file);
-                QString htmlText = ui->text->toHtml();
-                if(htmlText.contains("<span style=\" font-size:" + QString::number(global::reader::fontSize) + "pt; background-color:#bbbbbb;\">" + selected_text + "</span>") or htmlText.contains("<span style=\" background-color:#bbbbbb;\">" + selected_text + "</span>")) {
-                    log("Highlight already done", className);
-                    global::reader::highlightAlreadyDone = true;
-                }
+                if(highlightEnabled == true) {
+                    textDialogLock = true;
+                    global::reader::highlightAlreadyDone = false;
+                    QJsonObject jsonObject = getHighlightsForBook(book_file);
+                    QString htmlText = ui->text->toHtml();
+                    if(htmlText.contains("<span style=\" font-size:" + QString::number(global::reader::fontSize) + "pt; background-color:#bbbbbb;\">" + selected_text + "</span>") or htmlText.contains("<span style=\" background-color:#bbbbbb;\">" + selected_text + "</span>")) {
+                        log("Highlight already done", className);
+                        global::reader::highlightAlreadyDone = true;
+                    }
 
-                textDialog * textDialogWindow = new textDialog(this);
-                QObject::connect(textDialogWindow, &textDialog::destroyed, this, &reader::unsetTextDialogLock);
-                QObject::connect(textDialogWindow, &textDialog::highlightText, this, &reader::highlightText);
-                QObject::connect(textDialogWindow, &textDialog::unhighlightText, this, &reader::unhighlightText);
-                textDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-                textDialogWindow->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
-                textDialogWindow->move(mapFromGlobal(QCursor::pos()));
-                textDialogWindow->show();
+                    textDialog * textDialogWindow = new textDialog(this);
+                    QObject::connect(textDialogWindow, &textDialog::destroyed, this, &reader::unsetTextDialogLock);
+                    QObject::connect(textDialogWindow, &textDialog::highlightText, this, &reader::highlightText);
+                    QObject::connect(textDialogWindow, &textDialog::unhighlightText, this, &reader::unhighlightText);
+                    textDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+                    textDialogWindow->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
+                    textDialogWindow->move(mapFromGlobal(QCursor::pos()));
+                    textDialogWindow->show();
+                }
+                else {
+                    cursor.clearSelection();
+                    ui->text->setTextCursor(cursor);
+                }
             }
         }
         else {
@@ -2355,4 +2413,30 @@ void reader::on_marginsSlider_valueChanged(int value)
     // Be consistent with other settings
     setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
     ui->marginsValueLabel->setText(QString::number(value + 1));
+}
+
+void reader::on_wordSearchBox_clicked(bool checked)
+{
+    bool_writeconfig(wordLookupEnablePath, checked);
+    wordLookupEnabled = checked;
+
+    if(highlightEnabled == true or wordLookupEnabled == true) {
+        ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    }
+    else {
+        ui->text->setTextInteractionFlags(Qt::NoTextInteraction);
+    }
+}
+
+void reader::on_highlightingBox_clicked(bool checked)
+{
+    bool_writeconfig(highlightEnablePath, checked);
+    highlightEnabled = checked;
+
+    if(highlightEnabled == true or wordLookupEnabled == true) {
+        ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
+    }
+    else {
+        ui->text->setTextInteractionFlags(Qt::NoTextInteraction);
+    }
 }

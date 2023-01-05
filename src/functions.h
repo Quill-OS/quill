@@ -285,25 +285,28 @@ namespace {
     void logDisabled(QString configOption, QString className) {
         log("Disabling " + configOption + " setting", className);
     }
+    // Rewrited this function
+    // 1 if it returns it doesnt closes the file
+    // 2 just use qt functions
+    // ~Szybet
     bool checkconfig(QString file) {
         if(QFile::exists(file)) {
             QFile config(file);
             config.open(QIODevice::ReadOnly);
             QTextStream in (&config);
-            const QString content = in.readAll();
-            std::string contentstr = content.toStdString();
-            if(contentstr.find("true") != std::string::npos) {
+            QString content = in.readAll();
+            config.close();
+            if(content.contains("true") == true) {
                 return true;
             }
             else {
                 return false;
             }
-            config.close();
         }
         else {
+            log("WARNING: File " + file + " doesn't exist, returning false", "functions");
             return false;
         }
-        return 0;
     };
     bool checkconfig_rw(QString file) {
         if(QFile::exists(file)) {
@@ -1220,6 +1223,20 @@ namespace {
         global::audio::currentAction = actionToPerform;
         global::audio::audioMutex.unlock();
         waitForAudioThread();
+    }
+    // I'm sick of poor code
+    void bool_writeconfig(QString file, bool option) {
+        QString str;
+        if(option == true) {
+            str = "true";
+        }
+        else {
+            str = "false";
+        }
+        std::ofstream fhandler;
+        fhandler.open(file.toStdString());
+        fhandler << str.toStdString();
+        fhandler.close();
     }
 }
 

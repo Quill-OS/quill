@@ -34,7 +34,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Needed, the screen is shifted?
     // ~Szybet
     if(global::deviceID == "n306\n") {
-        ui->centralwidget->layout()->setContentsMargins(4, 2, 8, 8);
+        ui->centralwidget->layout()->setContentsMargins(4, 5, 8, 8);
     }
 
     ui->inkboxLabel->setFont(QFont("u001"));
@@ -148,8 +148,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
 
+    // Audio
     ui->audioBtn->setIcon(QIcon(":/resources/music-note.png"));
-    ui->audioBtn->setIconSize(QSize(stdIconWidth, stdIconHeight));
+    // Let's just use wifi icon size
+    ui->audioBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
 
     updateWifiAble();
     if(global::device::isWifiAble == true) {

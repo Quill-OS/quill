@@ -79,6 +79,8 @@ private slots:
     void on_usbmsDialogBox_clicked(bool checked);
     void on_autoCheckUpdatesBox_clicked(bool checked);
 
+    void on_readerInfoButton_clicked();
+
 signals:
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();
