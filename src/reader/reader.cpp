@@ -276,6 +276,8 @@ reader::reader(QWidget *parent) :
             string_writeconfig("/opt/ibxd", "bookconfig_mount\n");
             // Callback handler to wait until bookconfig_mount has finished execution
             while(true) {
+                // Fun fact, this while loop caused 100% cpu usage without the delay ~Szybet
+                QThread::msleep(50);
                 if(QFile::exists("/inkbox/bookConfigSetUp")) {
                     QFile::remove("/inkbox/bookConfigSetUp");
                     setupLocalSettingsEnvironment();
@@ -1171,17 +1173,11 @@ void reader::on_previousBtn_clicked()
 }
 
 void reader::refreshScreen() {
-    if(neverRefresh == true) {
-        // Do nothing; "Never refresh" was set
-        ;
-    }
-    else {
-        if(pagesTurned >= pageRefreshSetting) {
-            // Refreshing the screen
-            this->repaint();
-            // Reset count
-            pagesTurned = 0;
-        }
+    if(pagesTurned >= pageRefreshSetting and neverRefresh == false) {
+        // Refreshing the screen
+        this->repaint();
+        // Reset count
+        pagesTurned = 0;
     }
 }
 
@@ -1468,6 +1464,12 @@ void reader::setTextProperties(int alignment, int lineSpacing, int margins, QStr
     textDialogLock = true;
     QTextCursor cursor = ui->text->textCursor();
     // Kudos to Qt for not implementing the opposite of the following function /)_-)
+    /*
+    actually just cursor->clearSelection();
+    and then setTextCursor
+    ~Szybet
+    */
+
     ui->text->selectAll();
     // Text alignment
     if(alignment == 0) {
@@ -1987,6 +1989,7 @@ void reader::setupPageWidget() {
     ui->pageProgressBar->setValue(pageNumberInt);
 }
 
+// This function generated ( converts ) the epub to xhtml
 void reader::getTotalEpubPagesNumber() {
     QString epubProg ("sh");
     QStringList epubArgs;
