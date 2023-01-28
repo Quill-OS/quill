@@ -49,7 +49,6 @@ private slots:
     void on_resetBtn_clicked();
     void on_setPasscodeBtn_clicked();
     void on_enableLockscreenCheckBox_toggled(bool checked);
-    void on_enableUiScalingCheckBox_toggled(bool checked);
     void on_showSystemInfoBtn_clicked();
     void on_readerScrollBarCheckBox_toggled(bool checked);
     void brightnessDown();

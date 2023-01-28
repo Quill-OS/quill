@@ -90,9 +90,6 @@ settings::settings(QWidget *parent) :
     ui->setPasscodeLabel->hide();
     ui->securityLabel->hide();
     ui->line_2->hide();
-    ui->uiScaleNumberLabel->hide();
-    ui->uiScalingSlider->hide();
-    ui->uiScalingLabel->hide();
 
     // Variables
     defineDefaultPageSize(0);
@@ -184,7 +181,25 @@ settings::settings(QWidget *parent) :
     // Scaling
     string_checkconfig(".config/09-dpi/config");
     if(checkconfig_str_val == "") {
-        ;
+        // Writing default value depending on the device
+        if(global::deviceID == "n705\n") {
+            string_writeconfig(".config/09-dpi/config", "187");
+        }
+        else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+            string_writeconfig(".config/09-dpi/config", "160");
+        }
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+            string_writeconfig(".config/09-dpi/config", "195");
+        }
+        else if(global::deviceID == "n437\n") {
+            string_writeconfig(".config/09-dpi/config", "275");
+        }
+        else if(global::deviceID == "n873\n") {
+            string_writeconfig(".config/09-dpi/config", "285");
+        }
+        else {
+            string_writeconfig(".config/09-dpi/config", "187");
+        }
     }
     else {
         int dpi_number = checkconfig_str_val.toInt();
@@ -313,20 +328,6 @@ settings::settings(QWidget *parent) :
     if(getEncFSStatus() == false) {
         ui->repackLabel->hide();
         ui->repackBtn->hide();
-    }
-
-    // DPI checkbox
-    string_checkconfig(".config/09-dpi/config");
-    // Check if the string is a number; else, we don't check the check box
-    if(checkconfig_str_val == "false") {
-        string_writeconfig(".config/09-dpi/config-enabled", "false");
-    }
-    else {
-        string_writeconfig(".config/09-dpi/config-enabled", "true");
-    }
-    if(checkconfig(".config/09-dpi/config-enabled") == true) {
-        ui_not_user_change = true;
-        ui->enableUiScalingCheckBox->click();
     }
 
     // Timezone
@@ -783,54 +784,6 @@ void settings::on_enableLockscreenCheckBox_toggled(bool checked)
     else {
         logDisabled(settingString, className);
         writeFile(".config/12-lockscreen/config", "false");
-    }
-}
-
-void settings::on_enableUiScalingCheckBox_toggled(bool checked)
-{
-    QString settingString = "UI scaling";
-    if(checked == true) {
-        logEnabled(settingString, className);
-        // Writing default value depending on the device
-        if(global::deviceID == "n705\n") {
-            string_writeconfig(".config/09-dpi/config", "187");
-        }
-        else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-            string_writeconfig(".config/09-dpi/config", "160");
-        }
-        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
-            string_writeconfig(".config/09-dpi/config", "195");
-        }
-        else if(global::deviceID == "n437\n") {
-            string_writeconfig(".config/09-dpi/config", "275");
-        }
-        else if(global::deviceID == "n873\n") {
-            string_writeconfig(".config/09-dpi/config", "285");
-        }
-        else {
-            string_writeconfig(".config/09-dpi/config", "187");
-        }
-        string_writeconfig(".config/09-dpi/config-enabled", "true");
-        ui->uiScaleNumberLabel->show();
-        ui->uiScalingSlider->show();
-        ui->uiScalingLabel->show();
-        launch_sh = true;
-        if(ui_not_user_change == true) {
-            ui_enable_changed = false;
-        }
-        else {
-            ui_enable_changed = true;
-        }
-    }
-    else {
-        logDisabled(settingString, className);
-        string_writeconfig(".config/09-dpi/config", "false");
-        string_writeconfig(".config/09-dpi/config-enabled", "false");
-        ui->uiScaleNumberLabel->hide();
-        ui->uiScalingSlider->hide();
-        ui->uiScalingLabel->hide();
-        launch_sh = true;
-        ui_enable_changed = true;
     }
 }
 
