@@ -226,7 +226,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
             if(dpi_number == 195) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -235,6 +235,17 @@ settings::settings(QWidget *parent) :
             }
             if(dpi_number == 225) {
                 ui->uiScalingSlider->setValue(2);
+            }
+        }
+        else if(global::deviceID == "n306\n") {
+            if(dpi_number == 212) {
+                ui->uiScalingSlider->setValue(0);
+            }
+            if(dpi_number == 227) {
+                ui->uiScalingSlider->setValue(1);
+            }
+            if(dpi_number == 242) {
+                ui->uiScalingSlider->setValue(3);
             }
         }
         else if(global::deviceID == "n437\n") {
@@ -647,8 +658,11 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "160");
         }
-        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
             string_writeconfig(".config/09-dpi/config", "195");
+        }
+        if(global::deviceID == "n306\n") {
+            string_writeconfig(".config/09-dpi/config", "212");
         }
         if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "275");
@@ -664,8 +678,11 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
-        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
             string_writeconfig(".config/09-dpi/config", "210");
+        }
+        if(global::deviceID == "n306\n") {
+            string_writeconfig(".config/09-dpi/config", "227");
         }
         if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "290");
@@ -681,8 +698,11 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "200");
         }
-        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
             string_writeconfig(".config/09-dpi/config", "225");
+        }
+        if(global::deviceID == "n306\n") {
+            string_writeconfig(".config/09-dpi/config", "242");
         }
         if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "305");
