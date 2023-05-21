@@ -950,6 +950,7 @@ void MainWindow::on_libraryButton_clicked()
     log("Launching Online Library", className);
     if(testPing() == 0 or global::deviceID == "emu\n") {
         // 'Do you want to sync?' dialog
+        log("Showing 'Sync required' dialog", className);
         bool willSync = false;
         QString syncEpochQStr = readFile("/external_root/opt/storage/gutenberg/last_sync");
         if(!syncEpochQStr.isEmpty()) {
