@@ -17,7 +17,6 @@ apps::apps(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->koboxAppsOpenButton->setProperty("type", "borderless");
-    ui->scribbleLaunchBtn->setProperty("type", "borderless");
     ui->calendarLaunchBtn->setProperty("type", "borderless");
     ui->savedWordsLaunchBtn->setProperty("type", "borderless");
     ui->calculatorLaunchBtn->setProperty("type", "borderless");
@@ -28,7 +27,6 @@ apps::apps(QWidget *parent) :
 
     ui->label->setStyleSheet("padding-top: 2px; padding-bottom: 5px");
     ui->koboxAppsOpenButton->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
-    ui->scribbleLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->calendarLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->savedWordsLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->calculatorLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
@@ -86,14 +84,6 @@ apps::~apps()
 
 void apps::exitSlot() {
     apps::close();
-}
-
-void apps::on_scribbleLaunchBtn_clicked()
-{
-    log("Launching external Scribble app", className);
-    QProcess process;
-    process.startDetached("scribble", QStringList());
-    qApp->quit();
 }
 
 void apps::on_savedWordsLaunchBtn_clicked()
