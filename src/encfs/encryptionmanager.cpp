@@ -236,8 +236,10 @@ void encryptionManager::unlockEncryptedStorage() {
         t->setInterval(1000);
         connect(t, &QTimer::timeout, [&]() {
             if(QFile::exists("/external_root/run/encfs_mounted")) {
-                exitStatus = checkconfig("/external_root/run/encfs_mounted");
-                if(exitStatus == false) {
+                exitStatus = true;
+                if(readFile("/external_root/run/encfs_mounted") != "true\n") {
+                    exitStatus = false;
+                    QFile::remove("/external_root/run/encfs_mounted");
                     QString function = __func__; log(function + ": Invalid passphrase", className);
                     if(setupMessageBoxRan == false) {
                         int delay = 0;
@@ -331,7 +333,6 @@ void encryptionManager::setupFailedAuthenticationMessageBox() {
     log("Showing 'Authentication failed' message box", className);
     ui->activityWidget->hide();
     QMessageBox::critical(this, tr("Invalid argument"), tr("<font face='u001'>Invalid passphrase. Please try again.</font>"));
-    QFile::remove("/external_root/run/encfs_mounted");
     quit_restart();
 }
 
