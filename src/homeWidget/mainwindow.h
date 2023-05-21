@@ -101,6 +101,7 @@ private slots:
     void resetFullWindow();
     void setupLocalLibraryWidget();
     void setupHomePageWidget();
+    void launchOnlineLibrary();
 
 private:
     Ui::MainWindow * ui;

@@ -62,6 +62,14 @@ libraryWidget::libraryWidget(QWidget *parent) :
     ui->book6Btn->setText("");
     ui->book7Btn->setText("");
     ui->book8Btn->setText("");
+    ui->book1Btn->setProperty("type", "borderless");
+    ui->book2Btn->setProperty("type", "borderless");
+    ui->book3Btn->setProperty("type", "borderless");
+    ui->book4Btn->setProperty("type", "borderless");
+    ui->book5Btn->setProperty("type", "borderless");
+    ui->book6Btn->setProperty("type", "borderless");
+    ui->book7Btn->setProperty("type", "borderless");
+    ui->book8Btn->setProperty("type", "borderless");
     if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
         ui->book9Btn->setText("");
         ui->book10Btn->setText("");
@@ -71,6 +79,14 @@ libraryWidget::libraryWidget(QWidget *parent) :
         ui->book14Btn->setText("");
         ui->book15Btn->setText("");
         ui->book16Btn->setText("");
+        ui->book9Btn->setProperty("type", "borderless");
+        ui->book10Btn->setProperty("type", "borderless");
+        ui->book11Btn->setProperty("type", "borderless");
+        ui->book12Btn->setProperty("type", "borderless");
+        ui->book13Btn->setProperty("type", "borderless");
+        ui->book14Btn->setProperty("type", "borderless");
+        ui->book15Btn->setProperty("type", "borderless");
+        ui->book16Btn->setProperty("type", "borderless");
     }
     else {
         ui->book9Btn->hide();

@@ -949,29 +949,58 @@ void MainWindow::on_libraryButton_clicked()
 {
     log("Launching Online Library", className);
     if(testPing() == 0 or global::deviceID == "emu\n") {
-        resetFullWindowException = true;
-        resetWindow(false);
-        if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
-            ui->libraryButton->setStyleSheet("background: black; color: white");
-            ui->libraryButton->setIcon(QIcon(":/resources/online-library-inverted.png"));
+        // 'Do you want to sync?' dialog
+        bool willSync = false;
+        QString syncEpochQStr = readFile("/external_root/opt/storage/gutenberg/last_sync");
+        if(!syncEpochQStr.isEmpty()) {
+            unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
+            unsigned long syncEpoch = syncEpochQStr.toULong();
+            unsigned long allowSyncEpoch = syncEpoch + 86400;
+            if(currentEpoch > allowSyncEpoch) {
+                willSync = true;
+            }
+        }
+        else if(syncEpochQStr.isEmpty()) {
+            willSync = true;
+        }
 
-            // Create widget
-            libraryWidgetWindow = new libraryWidget();
-            connect(libraryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(resetFullWindow()));
-            libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
-            ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
-            global::mainwindow::tabSwitcher::libraryWidgetCreated = true;
-
-            // Switch tab
-            ui->stackedWidget->setCurrentIndex(3);
-            global::mainwindow::tabSwitcher::libraryWidgetSelected = true;
-
-            // Repaint
-            this->repaint();
+        if(willSync == true) {
+            global::library::librarySyncDialog = true;
+            generalDialogWindow = new generalDialog(this);
+            QObject::connect(generalDialogWindow, &generalDialog::syncOnlineLibrary, this, &MainWindow::launchOnlineLibrary);
+            QObject::connect(generalDialogWindow, &generalDialog::noSyncOnlineLibrary, this, &MainWindow::on_homeBtn_clicked);
+            generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+            generalDialogWindow->show();
+        }
+        else {
+            launchOnlineLibrary();
         }
     }
     else {
         showToast("Wi-Fi connection error");
+    }
+}
+
+void MainWindow::launchOnlineLibrary() {
+    resetFullWindowException = true;
+    resetWindow(false);
+    if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
+        ui->libraryButton->setStyleSheet("background: black; color: white");
+        ui->libraryButton->setIcon(QIcon(":/resources/online-library-inverted.png"));
+
+        // Create widget
+        libraryWidgetWindow = new libraryWidget();
+        connect(libraryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(resetFullWindow()));
+        libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+        ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
+        global::mainwindow::tabSwitcher::libraryWidgetCreated = true;
+
+        // Switch tab
+        ui->stackedWidget->setCurrentIndex(3);
+        global::mainwindow::tabSwitcher::libraryWidgetSelected = true;
+
+        // Repaint
+        this->repaint();
     }
 }
 

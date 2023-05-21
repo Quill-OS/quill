@@ -130,6 +130,7 @@ namespace global {
         inline QString bookTitle;
         inline bool librarySearchDialog;
         inline bool libraryResults;
+        inline bool librarySyncDialog;
     }
     namespace bookInfoDialog {
         inline bool localInfoDialog;

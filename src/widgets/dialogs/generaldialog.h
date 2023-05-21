@@ -37,6 +37,7 @@ public:
     bool resetKoboxDialog = false;
     bool keyboardDialog = false;
     bool keypadDialog = false;
+    bool librarySyncDialog = false;
     bool dictionaryResults = false;
     bool vncServerSet = false;
     bool vncPasswordSet = false;
@@ -90,6 +91,8 @@ signals:
     void openBookFile(QString book, bool relativePath);
     void cancelDisableStorageEncryption();
     void disableStorageEncryption();
+    void syncOnlineLibrary();
+    void noSyncOnlineLibrary();
 };
 
 #endif // GENERALDIALOG_H
