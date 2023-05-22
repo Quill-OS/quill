@@ -20,6 +20,7 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QCryptographicHash>
+#include <QNetworkInterface>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -1101,35 +1102,22 @@ namespace {
         }
     }
     global::wifi::wifiState checkWifiState() {
-        QProcess *wifiStateProcess = new QProcess();
-        QString path = "/external_root/usr/local/bin/wifi/wifi_status.sh";
-        QStringList args;
-        wifiStateProcess->start(path, args);
-        wifiStateProcess->waitForFinished();
-        wifiStateProcess->deleteLater();
-
-        QString currentWifiState;
-        if(QFile("/run/wifi_status").exists() == true) {
-            currentWifiState = readFile("/run/wifi_status");
-        } else {
-            log("/run/wifi_status doesn't exist", "functions");
+        foreach(QNetworkInterface interface, QNetworkInterface::allInterfaces()) {
+            // If something is wrong, debug with this:
+            // qDebug() << interface;
+            if(interface.flags().testFlag(QNetworkInterface::IsLoopBack) == false) {
+                if(interface.flags().testFlag(QNetworkInterface::IsUp) == true) {
+                    if(interface.flags().testFlag(QNetworkInterface::IsRunning) == true) {
+                        global::wifi::isConnected = true;
+                        return global::wifi::wifiState::configured;
+                    }
+                    global::wifi::isConnected = false;
+                    return global::wifi::wifiState::enabled;
+                }
+            }
         }
-        if (currentWifiState.contains("configured") == true) {
-            global::wifi::isConnected = true;
-            return global::wifi::wifiState::configured;
-        }
-        else if (currentWifiState.contains("enabled") == true) {
-            global::wifi::isConnected = false;
-            return global::wifi::wifiState::enabled;
-        }
-        else if (currentWifiState.contains("disabled") == true) {
-            global::wifi::isConnected = false;
-            return global::wifi::wifiState::disabled;
-        } else {
-            global::wifi::isConnected = false;
-            QString function = __func__; log(function + ": Critical error", "functions");
-            return global::wifi::wifiState::unknown;
-        }
+        global::wifi::isConnected = false;
+        return global::wifi::wifiState::disabled;
     }
     int testPing() {
         // For some reason, implementing a non-blocking version of this functions triggers a "terminate called without an active exception" error with a platform plugin compiled with a newer GCC 11 toolchain. The problem has been solved by transplanting this function into the related area which uses it.
