@@ -370,8 +370,8 @@ void connectiondialog::finalConnectWait() {
     else {
         string_writeconfig("/opt/ibxd", "connect_to_wifi_network\n");
 
-        // This will be deleted later in MainWindow's icon updater if it failed. It is also deleted in the Wi-Fi stop script
-        log("Writing to config directory with connection information data", className);
+        // This will be deleted later in MainWindow's icon updater if it failed. It is also deleted in the Wi-Fi stop script.
+        log("Writing to configuration directory with connection information data", className);
         string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid", connectedNetworkData.name.toStdString());
         string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/passphrase", passphraseForReconnecting.toStdString());
 
