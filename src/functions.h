@@ -1102,30 +1102,33 @@ namespace {
         }
     }
     global::wifi::wifiState checkWifiState() {
-        QString interfaceStateFileHead = "/sys/class/net/";
-        QString interfaceStateFileTail = "/operstate";
         QString interfaceName;
-        QString interfaceStateFile;
         if(global::deviceID == "n437\n" or global::deviceID == "kt\n") {
             interfaceName = "wlan0";
         }
         else {
             interfaceName = "eth0";
         }
-        interfaceStateFile = interfaceStateFileHead + interfaceName + interfaceStateFileTail;
 
-        QString state = readFile(interfaceStateFile);
-        if(state == "up\n") {
+        // Check if network interface has an IP address
+        QNetworkInterface iface = QNetworkInterface::interfaceFromName(interfaceName);
+        QList<QNetworkAddressEntry> entries = iface.addressEntries();
+        if(!entries.isEmpty()) {
+            // Interface is up and has an IP address
             global::wifi::isConnected = true;
             return global::wifi::wifiState::configured;
         }
-        else if(state == "unknown\n") {
-            global::wifi::isConnected = false;
-            return global::wifi::wifiState::enabled;
-        }
         else {
-            global::wifi::isConnected = false;
-            return global::wifi::wifiState::disabled;
+            if(QFile::exists("/sys/class/net/" + interfaceName + "/operstate")) {
+                // Interface is up but doesn't have an IP address
+                global::wifi::isConnected = false;
+                return global::wifi::wifiState::enabled;
+            }
+            else {
+                // Interface is not up
+                global::wifi::isConnected = false;
+                return global::wifi::wifiState::disabled;
+            }
         }
     }
     int testPing() {
