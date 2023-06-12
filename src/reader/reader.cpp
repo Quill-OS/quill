@@ -127,6 +127,11 @@ reader::reader(QWidget *parent) :
         ui->line_19->deleteLater();
     }
 
+    if(!(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n")) {
+        ui->brightnessBtn->setVisible(true);
+        ui->line_15->setVisible(true);
+    }
+
     // Style misc.
     ui->bookInfoLabel->setStyleSheet("font-style: italic");
 
@@ -308,9 +313,10 @@ reader::reader(QWidget *parent) :
     ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
     ui->viewHighlightsBtn->setStyleSheet("padding: 9px");
 
-    // Hiding the menubar + definition widget + brightness widget + buttons bar widget
+    // Hiding the menubar + definition widget + brightness button + buttons bar widget
     ui->menuWidget->setVisible(false);
     ui->brightnessBtn->setVisible(false);
+    ui->line_15->setVisible(false);
     ui->menuBarWidget->setVisible(false);
     ui->buttonsBarWidget->setVisible(false);
     ui->pdfScaleWidget->setVisible(false);
@@ -1398,25 +1404,11 @@ void reader::menubar_show() {
         ui->pageWidget->setVisible(true);
     }
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        ;
-    }
-    else {
-        ui->brightnessBtn->setVisible(true);
-    }
-
     menubar_shown = true;
 }
 
 void reader::menubar_hide() {
     log("Hiding menu bar", className);
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        ui->brightnessBtn->setVisible(true);
-    }
-    else {
-        // Safety measure
-        ui->brightnessBtn->setVisible(false);
-    }
 
     if(is_pdf == false && is_image == false) {
         ui->menuBarWidget->setVisible(false);

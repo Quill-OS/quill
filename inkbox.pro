@@ -36,6 +36,7 @@ SOURCES += \
     src/widgets/dialogs/wifi/connectiondialog.cpp \
     src/widgets/dialogs/wifi/network.cpp \
     src/widgets/dialogs/wifi/wifilogger.cpp \
+    src/widgets/misc/egg.cpp \
     src/widgets/reader/dictionarywidget.cpp \
     src/encfs/encryptionmanager.cpp \
     src/widgets/dialogs/generaldialog.cpp \
@@ -80,6 +81,7 @@ HEADERS += \
     src/widgets/dialogs/wifi/connectiondialog.h \
     src/widgets/dialogs/wifi/network.h \
     src/widgets/dialogs/wifi/wifilogger.h \
+    src/widgets/misc/egg.h \
     src/widgets/reader/dictionarywidget.h \
     src/encfs/encryptionmanager.h \
     src/functions.h \
@@ -124,6 +126,7 @@ FORMS += \
     src/widgets/dialogs/wifi/connectiondialog.ui \
     src/widgets/dialogs/wifi/network.ui \
     src/widgets/dialogs/wifi/wifilogger.ui \
+    src/widgets/misc/egg.ui \
     src/widgets/reader/dictionarywidget.ui \
     src/encfs/encryptionmanager.ui \
     src/widgets/dialogs/generaldialog.ui \

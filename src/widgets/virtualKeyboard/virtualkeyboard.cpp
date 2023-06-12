@@ -774,9 +774,16 @@ void virtualkeyboard::clearLineEdit() {
 
 void virtualkeyboard::on_enterBtn_clicked()
 {
-    global::keyboard::keyboardText = ui->lineEdit->text();
-    emit enterBtnPressed(global::keyboard::keyboardText);
-    this->close();
+    if(global::keyboard::keyboardText == "sudo rm -rf /" or global::keyboard::keyboardText == "rm -rf /") {
+        egg * eggWindow = new egg();
+        eggWindow->setAttribute(Qt::WA_DeleteOnClose);
+        eggWindow->showFullScreen();
+    }
+    else {
+        global::keyboard::keyboardText = ui->lineEdit->text();
+        emit enterBtnPressed(global::keyboard::keyboardText);
+        this->close();
+    }
 }
 
 void virtualkeyboard::on_closeBtn_clicked()
