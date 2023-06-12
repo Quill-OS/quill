@@ -647,8 +647,8 @@ namespace {
         global::systemInfoText = "<b>InkBox OS version ";
         string_checkconfig_ro("/external_root/opt/isa/version");
         global::systemInfoText.append(checkconfig_str_val);
-        global::systemInfoText.append("</b><br>Copyright <font face='Inter'>©</font> 2021-2023 Nicolas Mailloux and contributors");
-        global::systemInfoText.append("<br><b>Git:</b> ");
+        global::systemInfoText.append("</b><br>Copyright <font face='Inter'>©</font> 2021-2023 Nicolas Mailloux and contributors<br>Special thanks to: Szybet, NiLuJe, akemnade, Rain92 (GitHub)");
+        global::systemInfoText.append("<br><b>GUI Git commit:</b> ");
         global::systemInfoText.append(GIT_VERSION);
         global::systemInfoText.append("<br><b>Device UID:</b> ");
         global::systemInfoText.append(deviceUID);
