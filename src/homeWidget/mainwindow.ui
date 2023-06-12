@@ -36,7 +36,6 @@
          <font>
           <family>Inter</family>
           <pointsize>11</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -96,7 +95,6 @@
          <font>
           <family>Inter</family>
           <pointsize>11</pointsize>
-          <weight>50</weight>
           <italic>false</italic>
           <bold>false</bold>
          </font>
@@ -129,7 +127,6 @@
          <font>
           <family>Inter</family>
           <pointsize>11</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -232,7 +229,6 @@
                    <font>
                     <family>Inter</family>
                     <pointsize>11</pointsize>
-                    <weight>75</weight>
                     <italic>false</italic>
                     <bold>true</bold>
                    </font>
@@ -310,7 +306,6 @@
                        <font>
                         <family>Chivo</family>
                         <pointsize>11</pointsize>
-                        <weight>50</weight>
                         <italic>true</italic>
                         <bold>false</bold>
                        </font>
@@ -467,7 +462,6 @@
          <font>
           <family>Inter</family>
           <pointsize>11</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -485,7 +479,6 @@ Library
          <font>
           <family>Inter</family>
           <pointsize>11</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -536,7 +529,6 @@ Reader
          <font>
           <family>Inter</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -570,7 +562,6 @@ Search
          <font>
           <family>Inter</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -604,7 +595,6 @@ Settings
          <font>
           <family>Inter</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>
@@ -644,7 +634,6 @@ Apps
          <font>
           <family>Inter</family>
           <pointsize>10</pointsize>
-          <weight>75</weight>
           <italic>false</italic>
           <bold>true</bold>
          </font>

@@ -274,7 +274,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Global reading settings
     string_checkconfig(".config/16-global_reading_settings/config");
     if(checkconfig_str_val == "") {
-        checked_box = true;
+        checked_box = false;
         writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
     }
 
@@ -579,8 +579,15 @@ void MainWindow::on_homeBtn_clicked()
 
 void MainWindow::resetWindow(bool resetStackedWidget) {
     // Reset layout
+    bool authorQuote = false;
     if(resetStackedWidget == true) {
-        ui->homeStackedWidget->setCurrentIndex(2);
+        if(checkconfig(".config/05-quote/config") == false) {
+            authorQuote = true;
+            ui->homeStackedWidget->setCurrentIndex(0);
+        }
+        else {
+            ui->homeStackedWidget->setCurrentIndex(2);
+        }
         ui->stackedWidget->setCurrentIndex(0);
     }
 
@@ -616,7 +623,7 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
     if(global::mainwindow::tabSwitcher::repaint == true) {
         this->repaint();
     }
-    if(resetStackedWidget == true) {
+    if(resetStackedWidget == true && authorQuote == false) {
         setupHomePageWidget();
     }
 }
@@ -950,7 +957,6 @@ void MainWindow::on_libraryButton_clicked()
     log("Launching Online Library", className);
     if(testPing() == 0 or global::deviceID == "emu\n") {
         // 'Do you want to sync?' dialog
-        log("Showing 'Sync required' dialog", className);
         bool willSync = false;
         QString syncEpochQStr = readFile("/external_root/opt/storage/gutenberg/last_sync");
         if(!syncEpochQStr.isEmpty()) {
@@ -966,6 +972,7 @@ void MainWindow::on_libraryButton_clicked()
         }
 
         if(willSync == true) {
+            log("Showing 'Sync required' dialog", className);
             global::library::librarySyncDialog = true;
             generalDialogWindow = new generalDialog(this);
             QObject::connect(generalDialogWindow, &generalDialog::syncOnlineLibrary, this, &MainWindow::launchOnlineLibrary);

@@ -366,6 +366,11 @@ settings::settings(QWidget *parent) :
         ui->autoCheckUpdatesBox->click();
     }
 
+    // 'Export highlights' button
+    if(!QFile::exists(global::localLibrary::highlightsDatabasePath) or readFile(global::localLibrary::highlightsDatabasePath).isEmpty()) {
+        ui->exportHighlightsBtn->setEnabled(false);
+    }
+
     if(readFile(".config/12-lockscreen/background") == "blank") {
         ui->lockscreenBackgroundComboBox->setCurrentIndex(0);
     }

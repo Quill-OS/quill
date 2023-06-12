@@ -47,7 +47,6 @@ reader::reader(QWidget *parent) :
     global::reader::currentViewportText = "";
 
     ui->setupUi(this);
-    ui->brightnessStatus->setFont(QFont("u001"));
     ui->fontLabel->setFont(QFont("u001"));
     ui->sizeLabel->setFont(QFont("u001"));
     ui->sizeValueLabel->setFont(QFont("Inter"));
@@ -63,10 +62,8 @@ reader::reader(QWidget *parent) :
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->optionsBtn->setProperty("type", "borderless");
-    ui->brightnessDecBtn->setProperty("type", "borderless");
-    ui->brightnessIncBtn->setProperty("type", "borderless");
     ui->homeBtn->setProperty("type", "borderless");
-    ui->aboutBtn->setProperty("type", "borderless");
+    ui->brightnessBtn->setProperty("type", "borderless");
     ui->alignLeftBtn->setProperty("type", "borderless");
     ui->alignRightBtn->setProperty("type", "borderless");
     ui->alignCenterBtn->setProperty("type", "borderless");
@@ -101,14 +98,10 @@ reader::reader(QWidget *parent) :
     ui->previousDefinitionBtn->setIcon(QIcon(":/resources/chevron-left.png"));
     ui->nextDefinitionBtn->setText("");
     ui->nextDefinitionBtn->setIcon(QIcon(":/resources/chevron-right.png"));
-    ui->brightnessDecBtn->setText("");
-    ui->brightnessDecBtn->setIcon(QIcon(":/resources/minus.png"));
-    ui->brightnessIncBtn->setText("");
-    ui->brightnessIncBtn->setIcon(QIcon(":/resources/plus.png"));
     ui->homeBtn->setText("");
     ui->homeBtn->setIcon(QIcon(":/resources/home.png"));
-    ui->aboutBtn->setText("");
-    ui->aboutBtn->setIcon(QIcon(":/resources/info.png"));
+    ui->brightnessBtn->setText("");
+    ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->searchBtn->setText("");
     ui->searchBtn->setIcon(QIcon(":/resources/search.png"));
     ui->increaseScaleBtn->setText("");
@@ -309,7 +302,7 @@ reader::reader(QWidget *parent) :
     ui->lineSpacingValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
     ui->marginsValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
-    ui->aboutBtn->setStyleSheet("font-size: 9pt; padding: 5px");
+    ui->brightnessBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->fontChooser->setStyleSheet("font-size: 9pt");
     ui->gotoBtn->setStyleSheet("font-size: 9pt; padding: 9px; font-weight: bold; background: lightGrey");
     ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
@@ -317,7 +310,7 @@ reader::reader(QWidget *parent) :
 
     // Hiding the menubar + definition widget + brightness widget + buttons bar widget
     ui->menuWidget->setVisible(false);
-    ui->brightnessWidget->setVisible(false);
+    ui->brightnessBtn->setVisible(false);
     ui->menuBarWidget->setVisible(false);
     ui->buttonsBarWidget->setVisible(false);
     ui->pdfScaleWidget->setVisible(false);
@@ -339,20 +332,6 @@ reader::reader(QWidget *parent) :
     ui->topbarStackedWidget->setVisible(true);
     showTopbarWidget = true;
     ui->bookInfoLabel->setFont(crimson);
-
-    // Getting brightness level
-    int brightness_value;
-    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
-        brightness_value = get_brightness();
-    }
-    else if(global::isN613 == true) {
-        setDefaultWorkDir();
-        brightness_value = brightness_checkconfig(".config/03-brightness/config");
-    }
-    else {
-        brightness_value = get_brightness();
-    }
-    ui->brightnessStatus->setValue(brightness_value);
 
     // Defining pixmaps
     // Getting the screen's size
@@ -1180,69 +1159,6 @@ void reader::on_optionsBtn_clicked()
     }
 }
 
-void reader::on_brightnessDecBtn_clicked()
-{
-    int bval;
-    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
-        bval = get_brightness();
-    }
-    else if(global::isN613 == true) {
-        setDefaultWorkDir();
-        bval = brightness_checkconfig(".config/03-brightness/config");
-    }
-    else {
-        bval = get_brightness();
-    }
-    int set_bval = bval - 1;
-    if(set_bval < 0) {
-        set_bval = 0;
-    }
-    pre_set_brightness(set_bval);
-    brightness_writeconfig(set_bval);
-
-    ui->brightnessStatus->setValue(set_bval);
-}
-
-void reader::on_brightnessIncBtn_clicked()
-{
-    int bval;
-    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
-        bval = get_brightness();
-    }
-    else if(global::isN613 == true) {
-        setDefaultWorkDir();
-        bval = brightness_checkconfig(".config/03-brightness/config");
-    }
-    else {
-        bval = get_brightness();
-    }
-    int set_bval = bval + 1;
-    if(set_bval > 100) {
-        set_bval = 100;
-    }
-    pre_set_brightness(set_bval);
-    brightness_writeconfig(set_bval);
-
-    ui->brightnessStatus->setValue(set_bval);
-}
-
-void reader::on_aboutBtn_clicked()
-{
-    log("Showing About message box", className);
-    if(checkconfig("/opt/inkbox_genuine") == true) {
-        QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
-        aboutmsg.prepend("<font face='u001'>");
-        string_checkconfig_ro("/external_root/opt/isa/version");
-        aboutmsg.append("<br><br>InkBox ");
-        aboutmsg.append(checkconfig_str_val);
-        aboutmsg.append("</font>");
-        QMessageBox::information(this, tr("Information"), aboutmsg);
-    }
-    else {
-        QMessageBox::information(this, tr("About"), tr("InkBox is an open-source Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive."));
-    }
-}
-
 void reader::on_homeBtn_clicked()
 {
     log("Returning to Home screen", className);
@@ -1486,7 +1402,7 @@ void reader::menubar_show() {
         ;
     }
     else {
-        ui->brightnessWidget->setVisible(true);
+        ui->brightnessBtn->setVisible(true);
     }
 
     menubar_shown = true;
@@ -1495,11 +1411,11 @@ void reader::menubar_show() {
 void reader::menubar_hide() {
     log("Hiding menu bar", className);
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        ui->brightnessWidget->setVisible(false);
+        ui->brightnessBtn->setVisible(true);
     }
     else {
         // Safety measure
-        ui->brightnessWidget->setVisible(false);
+        ui->brightnessBtn->setVisible(false);
     }
 
     if(is_pdf == false && is_image == false) {
@@ -2355,4 +2271,12 @@ void reader::on_marginsSlider_valueChanged(int value)
     // Be consistent with other settings
     setTextProperties(global::reader::textAlignment, global::reader::lineSpacing, global::reader::margins, global::reader::font, global::reader::fontSize);
     ui->marginsValueLabel->setText(QString::number(value + 1));
+}
+
+void reader::on_brightnessBtn_clicked()
+{
+    log("Showing Brightness Dialog", className);
+    brightnessDialogWindow = new brightnessDialog();
+    brightnessDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    brightnessDialogWindow->show();
 }
