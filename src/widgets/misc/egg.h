@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QMessageBox>
 #include <QGraphicsScene>
+#include <QTimer>
 
 #include "functions.h"
 
@@ -21,11 +22,12 @@ public:
     int index = 0;
     const int maximumIndex = 3;
     bool firstRun = true;
+    void changeIndex(int index);
 
 private slots:
     void on_previousBtn_clicked();
     void on_nextBtn_clicked();
-    void changeIndex(int index);
+    void changeIndexSlot();
     void on_quitBtn_clicked();
 
 private:

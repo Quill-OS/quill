@@ -17,7 +17,7 @@ egg::egg(QWidget *parent) :
     ui->contributorName->setFont(QFont("Inter"));
 
     graphicsScene = new QGraphicsScene(this);
-    changeIndex(index);
+    QTimer::singleShot(500, this, SLOT(changeIndexSlot()));
 }
 
 egg::~egg()
@@ -35,20 +35,16 @@ void egg::changeIndex(int index) {
             tux-linux (3)
     */
 
-    if(firstRun == true) {
-        firstRun = false;
-    }
-    else {
-        graphicsScene->clear();
-        ui->graphicsView->items().clear();
-    }
+    ui->graphicsView->items().clear();
+    graphicsScene->clear();
 
     QPixmap pixmap(":/resources/egg/" + QString::number(index) + ".jpg");
     graphicsScene->addPixmap(pixmap);
+    ui->graphicsView->setScene(graphicsScene);
     // Shrinking scene if item is smaller than previous one
     QRectF rect = graphicsScene->itemsBoundingRect();
     graphicsScene->setSceneRect(rect);
-    ui->graphicsView->setScene(graphicsScene);
+    ui->graphicsView->fitInView(graphicsScene->sceneRect(), Qt::KeepAspectRatio);
 
     // Contributor name
     QString name = "<div align='center'><b>";
@@ -66,6 +62,10 @@ void egg::changeIndex(int index) {
     }
     name.append("</b></div>");
     ui->contributorName->setText(name);
+}
+
+void egg::changeIndexSlot() {
+    changeIndex(index);
 }
 
 void egg::on_previousBtn_clicked()
@@ -94,4 +94,3 @@ void egg::on_quitBtn_clicked()
 {
     this->close();
 }
-
