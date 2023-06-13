@@ -29,6 +29,7 @@ private slots:
     void on_nextBtn_clicked();
     void changeIndexSlot();
     void on_quitBtn_clicked();
+    void on_infoBtn_clicked();
 
 private:
     Ui::egg *ui;

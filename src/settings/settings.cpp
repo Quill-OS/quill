@@ -805,6 +805,10 @@ void settings::on_enableLockscreenCheckBox_toggled(bool checked)
     if(checked == true) {
         logEnabled(settingString, className);
         writeFile(".config/12-lockscreen/config", "true");
+        // Launching passcode setup wizard if none seems to be set at the moment
+        if(!(QFile::exists(".config/12-lockscreen/passcode") && QFile::exists(".config/12-lockscreen/salt"))) {
+            ui->setPasscodeBtn->click();
+        }
     }
     else {
         logDisabled(settingString, className);
