@@ -264,14 +264,15 @@ void libraryWidget::closeIndefiniteToast() {
 void libraryWidget::syncCatalog() {
     global::toast::modalToast = true;
     global::toast::indefiniteToast = true;
-    bool syncDone = false;
     log("Gutenberg sync in progress", className);
     showToast("Sync in progress");
+    QTimer::singleShot(500, this, SLOT(syncCatalogSlot()));
+}
 
+void libraryWidget::syncCatalogSlot() {
+    bool syncDone = false;
     string_writeconfig("/opt/ibxd", "gutenberg_sync\n");
-    QTimer * syncCheckTimer = new QTimer(this);
-    syncCheckTimer->setInterval(500);
-    connect(syncCheckTimer, &QTimer::timeout, [&]() {
+    while(true) {
         if(syncDone == false) {
             if(QFile::exists("/inkbox/gutenbergSyncDone") == true) {
                 if(checkconfig("/inkbox/gutenbergSyncDone") == true) {
@@ -286,10 +287,11 @@ void libraryWidget::syncCatalog() {
                 }
                 QFile::remove("/inkbox/gutenbergSyncDone");
                 syncDone = true;
+                break;
             }
         }
-    } );
-    syncCheckTimer->start();
+        QThread::msleep(500);
+    }
 }
 
 void libraryWidget::on_previousBtn_clicked()

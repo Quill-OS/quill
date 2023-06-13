@@ -262,13 +262,13 @@ namespace {
             QTextStream in (&config);
             const QString content = in.readAll();
             std::string contentstr = content.toStdString();
+            config.close();
             if(contentstr.find("true") != std::string::npos) {
                 return true;
             }
             else {
                 return false;
             }
-            config.close();
         }
         else {
             return false;
@@ -282,13 +282,13 @@ namespace {
             QTextStream in (&config);
             const QString content = in.readAll();
             std::string contentstr = content.toStdString();
+            config.close();
             if(contentstr.find("true") != std::string::npos) {
                 return true;
             }
             else {
                 return false;
             }
-            config.close();
         }
         else {
             return false;
@@ -485,6 +485,7 @@ namespace {
         QTextStream in (&config);
         const QString content = in.readAll();
         std::string contentstr = content.toStdString();
+        config.close();
 
         // Thanks to https://stackoverflow.com/questions/22516463/how-do-i-find-a-complete-word-not-part-of-it-in-a-string-in-c
         std::regex r("\\b" + pattern + "\\b");
@@ -496,7 +497,6 @@ namespace {
         else {
             return false;
         }
-        config.close();
         return 0;
     };
     bool isBatteryLow() {
