@@ -110,6 +110,6 @@
         <file>resources/refresh-small.png</file>
         <file>resources/checkbox-indeterminate.png</file>
         <file>resources/egg/0.jpg</file>
-        <file>resources/egg/3.jpg</file>
+        <file>resources/egg/1.jpg</file>
     </qresource>
 </RCC>

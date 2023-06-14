@@ -61,12 +61,6 @@ void egg::changeIndex(int index) {
         name.append("Szybet<br>(Contributor)");
     }
     else if(index == 1) {
-        name.append("NiLuJe<br>(Contributor)");
-    }
-    else if(index == 2) {
-        name.append("akemnade<br>(Contributor)");
-    }
-    else if(index == 3) {
         name.append("tux-linux<br>(Maintainer)");
     }
     name.append("</b></div>");

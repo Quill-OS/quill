@@ -20,7 +20,7 @@ public:
     explicit egg(QWidget *parent = nullptr);
     ~egg();
     int index = 0;
-    const int maximumIndex = 3;
+    const int maximumIndex = 1;
     bool firstRun = true;
     void changeIndex(int index);
 

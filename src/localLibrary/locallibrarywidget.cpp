@@ -133,11 +133,12 @@ void localLibraryWidget::setupDatabase() {
         QStringList args;
         args << "env" << "icon_width_divider=" + QString::number(stdIconWidthDivider - 1.5) << "icon_height_divider=" + QString::number(stdIconHeightDivider - 1.5) << "./explore_local_library.sh" << booksList;
 
-         /* Logs/steps needed to debug the database creation
-         * for(int i = 0; i < args.count(); i++) {
-         *     log("Arguments for database creation: '" + args[i] + "'", className);
-	 * }
-         */
+        /*
+        *   Logs/steps needed to debug the database creation
+        *   for(int i = 0; i < args.count(); i++) {
+        *       log("Arguments for database creation: '" + args[i] + "'", className);
+	    *   }
+        */
 
         QProcess *proc = new QProcess();
         proc->start(prog, args);
