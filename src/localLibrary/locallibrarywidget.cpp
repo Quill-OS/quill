@@ -137,7 +137,7 @@ void localLibraryWidget::setupDatabase() {
         *   Logs/steps needed to debug the database creation
         *   for(int i = 0; i < args.count(); i++) {
         *       log("Arguments for database creation: '" + args[i] + "'", className);
-	    *   }
+        *   }
         */
 
         QProcess *proc = new QProcess();
