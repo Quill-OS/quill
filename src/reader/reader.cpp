@@ -127,11 +127,6 @@ reader::reader(QWidget *parent) :
         ui->line_19->deleteLater();
     }
 
-    if(!(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n")) {
-        ui->brightnessBtn->setVisible(true);
-        ui->line_15->setVisible(true);
-    }
-
     // Style misc.
     ui->bookInfoLabel->setStyleSheet("font-style: italic");
 
@@ -315,8 +310,10 @@ reader::reader(QWidget *parent) :
 
     // Hiding the menubar + definition widget + brightness button + buttons bar widget
     ui->menuWidget->setVisible(false);
-    ui->brightnessBtn->setVisible(false);
-    ui->line_15->setVisible(false);
+    if(!(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n")) {
+        ui->brightnessBtn->setVisible(true);
+        ui->line_15->setVisible(true);
+    }
     ui->menuBarWidget->setVisible(false);
     ui->buttonsBarWidget->setVisible(false);
     ui->pdfScaleWidget->setVisible(false);
@@ -1753,7 +1750,7 @@ void reader::on_text_selectionChanged() {
                 QObject::connect(textDialogWindow, &textDialog::unhighlightText, this, &reader::unhighlightText);
                 textDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
                 textDialogWindow->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
-                textDialogWindow->move(mapFromGlobal(QCursor::pos()));
+                textDialogWindow->move(mapFromGlobal(ui->text->cursorRect().bottomRight()));
                 textDialogWindow->show();
             }
         }
