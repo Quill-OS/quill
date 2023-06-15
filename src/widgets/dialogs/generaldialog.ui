@@ -198,6 +198,11 @@
                <property name="text">
                 <string>Where:</string>
                </property>
+               <property name="font">
+                <font>
+                 <family>u001</family>
+                </font>
+               </property>
               </widget>
              </item>
              <item row="0" column="0">

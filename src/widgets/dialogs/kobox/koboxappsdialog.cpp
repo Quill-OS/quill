@@ -15,6 +15,7 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     ui(new Ui::koboxAppsDialog)
 {
     ui->setupUi(this);
+    ui->definitionLabel->setFont(QFont("u001"));
     ui->appsList->setFont(QFont("u001"));
 
     // Preventing outside interaction
@@ -26,23 +27,15 @@ koboxAppsDialog::koboxAppsDialog(QWidget *parent) :
     this->setStyleSheet(stylesheetFile.readAll());
     stylesheetFile.close();
 
-    if(global::deviceID == "n705\n") {
-        // If we don't do this, the text will clip out of the display.
-        ui->definitionLabel->setText("Please select an application.\nClick on 'Launch' to start it.");
-    }
+    ui->definitionLabel->setText("Please select an application.\nClick on 'Launch' to start it.");
 
     ui->launchBtn->setProperty("type", "borderless");
     ui->cancelBtn->setProperty("type", "borderless");
     ui->launchBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->cancelBtn->setStyleSheet("font-size: 9pt; padding: 10px; font-weight: bold; background: lightGrey");
     ui->appsList->setStyleSheet("font-size: 9pt");
+    ui->definitionLabel->setStyleSheet("font-size: 9.5pt");
     ui->headerLabel->setStyleSheet("font-weight: bold");
-
-    // UI fonts
-    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Regular.ttf");
-    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
-    QFont crimson(family);
-    ui->definitionLabel->setFont(QFont(crimson));
 
     this->adjustSize();
 
