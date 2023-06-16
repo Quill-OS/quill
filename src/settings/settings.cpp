@@ -430,18 +430,7 @@ settings::~settings()
 }
 
 void settings::on_okBtn_clicked() {
-    // Save things
-    writeFile(".config/07-words_number/config", QString::number(wordsNumberSaved));
-    log("Set text files words number to " + QString::number(wordsNumberSaved), className);
-
-    writeFile(".config/13-epub_page_size/width", QString::number(pageSizeWidthSaved));
-    writeFile(".config/13-epub_page_size/set", "true");
-
-    writeFile(".config/13-epub_page_size/height", QString::number(pageSizeHeightSaved));
-    writeFile(".config/13-epub_page_size/set", "true");
-
-    // Notify power daemon of a potential configuration update
-    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/updateConfig", "true");
+    saveDeferredSettings();
 
     // Prevent potential unknown damage launching via shell script this could do
     if(launch_sh == true) {
@@ -462,6 +451,21 @@ void settings::on_okBtn_clicked() {
         process.startDetached("inkbox", QStringList());
         qApp->quit();
     }
+}
+
+void settings::saveDeferredSettings() {
+    // Save things
+    writeFile(".config/07-words_number/config", QString::number(wordsNumberSaved));
+    log("Set text files words number to " + QString::number(wordsNumberSaved), className);
+
+    writeFile(".config/13-epub_page_size/width", QString::number(pageSizeWidthSaved));
+    writeFile(".config/13-epub_page_size/set", "true");
+
+    writeFile(".config/13-epub_page_size/height", QString::number(pageSizeHeightSaved));
+    writeFile(".config/13-epub_page_size/set", "true");
+
+    // Notify power daemon of a potential configuration update
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/updateConfig", "true");
 }
 
 void settings::on_aboutBtn_clicked()
@@ -793,6 +797,7 @@ void settings::on_setPasscodeBtn_clicked()
 {
     log("'Set passcode' button clicked", className);
     log("Launching lockscreen binary", className);
+    saveDeferredSettings();
     string_writeconfig("/tmp/setPasscode", "true");
     QProcess process;
     process.startDetached("lockscreen", QStringList());
