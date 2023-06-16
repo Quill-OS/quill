@@ -80,7 +80,7 @@ void usbmsSplash::usbmsLaunch()
     }
 
     string_writeconfig("/opt/ibxd", "onboard_unmount\n");
-    QThread::msleep(500);
+    QThread::msleep(1000);
 
     string_writeconfig("/opt/ibxd", "usbnet_stop\n");
     QThread::msleep(1000);
