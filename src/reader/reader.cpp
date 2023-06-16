@@ -314,6 +314,12 @@ reader::reader(QWidget *parent) :
         ui->brightnessBtn->setVisible(true);
         ui->line_15->setVisible(true);
     }
+    else {
+        ui->brightnessBtn->setVisible(false);
+        ui->brightnessBtn->deleteLater();
+        ui->line_15->setVisible(false);
+        ui->line_15->deleteLater();
+    }
     ui->menuBarWidget->setVisible(false);
     ui->buttonsBarWidget->setVisible(false);
     ui->pdfScaleWidget->setVisible(false);
