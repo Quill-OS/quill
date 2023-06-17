@@ -6,3 +6,4 @@ moc_*
 qrc_*
 .qmake.stash
 .vscode
+.qtc_clangd
