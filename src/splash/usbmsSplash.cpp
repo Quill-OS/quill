@@ -200,7 +200,7 @@ void usbmsSplash::restartServices() {
     // Checking for updates
     string_writeconfig("/opt/ibxd", "update_inkbox_restart\n");
     QThread::msleep(2500);
-    string_writeconfig("/tmp/in_usbms", "false");
+    QFile::remove("/tmp/in_usbms");
     // GUI apps: update main JSON file
     string_writeconfig("/opt/ibxd", "gui_apps_start\n");
     while(true) {
