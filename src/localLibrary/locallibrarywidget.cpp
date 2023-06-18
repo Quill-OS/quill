@@ -66,8 +66,8 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         stdIconHeightDivider = 8.7;
     }
     else if(global::deviceID == "n437\n") {
-        stdIconWidthDivider = 8;
-        stdIconHeightDivider = 8;
+        stdIconWidthDivider = 8.1;
+        stdIconHeightDivider = 8.1;
     }
     else if(global::deviceID == "n873\n") {
         stdIconWidthDivider = 9.7;

@@ -174,7 +174,6 @@ void wifilogger::getWifiInformation() {
     }
 }
 
-
 void wifilogger::on_returnBtn_clicked()
 {
     log("Exiting wifilogger", className);
