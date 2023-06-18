@@ -62,8 +62,8 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         stdIconHeightDivider = 9.5;
     }
     else if(global::deviceID == "n613\n" or global::deviceID == "emu\n") {
-        stdIconWidthDivider = 8.5;
-        stdIconHeightDivider = 8.5;
+        stdIconWidthDivider = 8.7;
+        stdIconHeightDivider = 8.7;
     }
     else if(global::deviceID == "n437\n") {
         stdIconWidthDivider = 8;
@@ -73,7 +73,7 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
         stdIconWidthDivider = 9.7;
         stdIconHeightDivider = 9.7;
     }
-    else if(global::deviceID == "n306\n" || global::deviceID == "n236\n") {
+    else if(global::deviceID == "n236\n" or global::deviceID == "n306\n") {
         stdIconWidthDivider = 9.1;
         stdIconHeightDivider = 9.1;
     }
