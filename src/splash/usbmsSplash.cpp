@@ -217,6 +217,16 @@ void usbmsSplash::restartServices() {
             }
         }
     }
+    // Remove macOS dotfiles
+    {
+        QString prog("busybox-initrd");
+        QStringList args;
+        args << "find" << "/mnt/onboard/onboard" << "-type" << "f" << "-name" << "._*" << "-delete";
+        QProcess * proc = new QProcess();
+        proc->start(prog, args);
+        proc->waitForFinished();
+        proc->deleteLater();
+    }
     // Re-generate local library on next launch
     QFile::remove(global::localLibrary::databasePath);
 
