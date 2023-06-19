@@ -162,8 +162,8 @@ settings::settings(QWidget *parent) :
         }
     }
     else {
-        ui->pageSizeWidthLabel->setText("Width: " + QString::number(defaultEpubPageWidth));
-        ui->pageSizeHeightLabel->setText("Height: " + QString::number(defaultEpubPageHeight));
+        ui->pageSizeWidthLabel->setText(QString::number(defaultEpubPageWidth));
+        ui->pageSizeHeightLabel->setText(QString::number(defaultEpubPageHeight));
         pageSizeHeightSaved = defaultEpubPageHeight;
         pageSizeWidthSaved = defaultEpubPageWidth;
     }
