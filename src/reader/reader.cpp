@@ -243,13 +243,7 @@ reader::reader(QWidget *parent) :
 
     // Custom settings
     // Brightness
-    if(global::reader::globalReadingSettings == false) {
-        if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
-            int brightness_value = brightness_checkconfig(".config/03-brightness/config");
-            log("Local Reading Settings: Setting brightness to " + QString::number(brightness_value), className);
-            cinematicBrightness(brightness_value, 2);
-        }
-    }
+    QTimer::singleShot(0, this, SLOT(setCinematicBrightnessWarmthSlot()));
     // Font
     global::reader::font = readFile(".config/04-book/font");
     if(global::reader::font == "u001") {
@@ -2274,4 +2268,19 @@ void reader::on_brightnessBtn_clicked()
     brightnessDialogWindow = new brightnessDialog();
     brightnessDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     brightnessDialogWindow->show();
+}
+
+void reader::setCinematicBrightnessWarmthSlot() {
+    if(global::reader::globalReadingSettings == false) {
+        if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
+            int brightness_value = brightness_checkconfig(".config/03-brightness/config");
+            log("Local Reading Settings: Setting brightness to " + QString::number(brightness_value), className);
+            cinematicBrightness(brightness_value, 2);
+        }
+        if(global::deviceID == "n873\n") {
+            int warmthValue = readFile(".config/03-brightness/config-warmth").toInt();
+            log("Local Reading Settings: Setting warmth to " + QString::number(warmthValue), className);
+            cinematicWarmth(warmthValue);
+        }
+    }
 }

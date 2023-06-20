@@ -827,6 +827,23 @@ namespace {
         }
         string_writeconfig(sysfsWarmthPath, warmthValueStr);
     }
+    void cinematicWarmth(int warmthValue) {
+        int currentWarmth = get_warmth();
+        if(warmthValue < currentWarmth) {
+            while(warmthValue < currentWarmth) {
+                currentWarmth--;
+                set_warmth(currentWarmth);
+                QThread::msleep(30);
+            }
+        }
+        else if(warmthValue > currentWarmth) {
+            while(warmthValue > currentWarmth) {
+                currentWarmth++;
+                set_warmth(currentWarmth);
+                QThread::msleep(30);
+            }
+        }
+    }
     void installUpdate() {
         log("Installing update package", "functions");
         writeFile("/mnt/onboard/onboard/.inkbox/can_really_update", "true\n");

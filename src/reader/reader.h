@@ -169,6 +169,7 @@ private slots:
     void on_lineSpacingSlider_valueChanged(int value);
     void on_marginsSlider_valueChanged(int value);
     void on_brightnessBtn_clicked();
+    void setCinematicBrightnessWarmthSlot();
 
 signals:
     void openBookFile(QString book, bool relativePath);

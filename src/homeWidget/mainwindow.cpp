@@ -721,7 +721,7 @@ void MainWindow::setInitialBrightness() {
         else {
             warmth = checkconfig_str_val.toInt();
         }
-        set_warmth(warmth);
+        cinematicWarmth(warmth);
     }
     int brightness_value = brightness_checkconfig(".config/03-brightness/config");
     if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
