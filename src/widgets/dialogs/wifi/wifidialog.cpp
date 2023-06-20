@@ -248,7 +248,6 @@ void wifiDialog::refreshNetworksList() {
         }
     }
 
-    log(QString::number(pureNetworkList.count()));
     if(pureNetworkList.count() >= 1) {
         // Sort based on signal strength
         QVector<global::wifi::wifiNetworkData> sortedPureNetworkList;
