@@ -191,8 +191,15 @@ libraryWidget::~libraryWidget()
 void libraryWidget::setupView() {
     ui->booksStackedWidget->show();
 
-    stdIconWidth = sW / 5.5;
-    stdIconHeight = sH / 5.5;
+    if(global::deviceID == "n705\n") {
+        stdIconWidth = sW / 7
+        ;
+        stdIconHeight = sH / 7;
+    }
+    else {
+        stdIconWidth = sW / 5.5;
+        stdIconHeight = sH / 5.5;
+    }
 
     ui->book1Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/1/title"));
     ui->book2Label->setText(readFile("/mnt/onboard/onboard/.inkbox/gutenberg-data/latest-books/2/title"));

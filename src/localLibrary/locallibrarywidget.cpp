@@ -36,7 +36,7 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     }
 
     if(global::deviceID == "n705\n") {
-        bookTitleTruncateThreshold = 30;
+        bookTitleTruncateThreshold = 27;
     }
     else if(global::deviceID == "n873\n") {
         bookTitleTruncateThreshold = 45;
@@ -57,7 +57,11 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     sW = QGuiApplication::screens()[0]->size().width();
     sH = QGuiApplication::screens()[0]->size().height();
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+    if(global::deviceID == "n705\n") {
+        stdIconWidthDivider = 7.2;
+        stdIconHeightDivider = 7.2;
+    }
+    else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         stdIconWidthDivider = 9.5;
         stdIconHeightDivider = 9.5;
     }
