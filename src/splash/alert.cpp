@@ -29,13 +29,13 @@ alert::alert(QWidget *parent) :
 
     // Default icon in case none of the conditions below are met
     QPixmap pixmap(":/resources/alert.png");
-    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     ui->alertIconLabel->setPixmap(scaledPixmap);
 
     // Checking if the update's signature is untrusted. The signature error will always take precedence over the downgrade one (c.f. update.sh script)
     if(checkconfig("/external_root/boot/flags/ALERT_SIGN") == true) {
         QPixmap pixmap(":/resources/alert.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->alertIconLabel->setPixmap(scaledPixmap);
 
         signatureError = true;
@@ -46,7 +46,7 @@ alert::alert(QWidget *parent) :
     }
     if(checkconfig("/external_root/boot/flags/ALERT_DOWNGRADE") == true) {
         QPixmap pixmap(":/resources/alert.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->alertIconLabel->setPixmap(scaledPixmap);
 
         log("Displaying downgrade error alert splash", className);
@@ -59,7 +59,7 @@ alert::alert(QWidget *parent) :
         ui->stackedWidget->setVisible(false);
         ui->stackedWidget->deleteLater();
         QPixmap pixmap(":/resources/alert.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->alertIconLabel->setPixmap(scaledPixmap);
 
         ui->warningLabel->setText("Fatal error");
@@ -76,7 +76,7 @@ alert::alert(QWidget *parent) :
         ui->stackedWidget->deleteLater();
 
         QPixmap pixmap(":/resources/battery_alert.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->alertIconLabel->setPixmap(scaledPixmap);
 
         log("Displaying critical battery alert splash", className);

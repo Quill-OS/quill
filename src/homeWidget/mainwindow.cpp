@@ -284,31 +284,31 @@ MainWindow::MainWindow(QWidget *parent)
         int quote_value = display_quote();
         if(quote_value == 1) {
             QPixmap pixmap(":/resources/chesterton.jpg");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“A good novel tells us the truth about its hero; but a bad novel tells us the truth about its author.”\n― G.K. Chesterton");
         }
         if(quote_value == 2) {
             QPixmap pixmap(":/resources/alcott.jpg");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“I've got the key to my castle in the air, but whether I can unlock the door remains to be seen.”\n― Louisa May Alcott");
         }
         if(quote_value == 3) {
             QPixmap pixmap(":/resources/king.jpg");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“Quiet people have the loudest minds”\n― Stephen King");
         }
         if(quote_value == 4) {
             QPixmap pixmap(":/resources/davies.jpg");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“Authors like cats because they are such quiet, lovable, wise creatures, and cats like authors for the same reasons.”\n― Robertson Davies");
         }
         if(quote_value == 5) {
             QPixmap pixmap(":/resources/christie.png");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“One of the saddest things in life, is the things one remembers.”\n― Agatha Christie");
         }

@@ -51,28 +51,28 @@ encryptionManager::encryptionManager(QWidget *parent) :
         stdIconWidth = sW / 1.50;
         stdIconHeight = sH / 1.50;
         QPixmap pixmap(":/resources/encryption.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->encryptionImageLabel->setPixmap(scaledPixmap);
     }
     {
         stdIconWidth = sW / 1.65;
         stdIconHeight = sH / 1.65;
         QPixmap pixmap(":/resources/check-display.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->checkImageLabel->setPixmap(scaledPixmap);
     }
     {
         stdIconWidth = sW / 1.65;
         stdIconHeight = sH / 1.65;
         QPixmap pixmap(":/resources/error.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->failureImageLabel->setPixmap(scaledPixmap);
     }
     {
         stdIconWidth = sW / 1.50;
         stdIconHeight = sH / 1.50;
         QPixmap pixmap(":/resources/alert-triangle.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->warningImageLabel->setPixmap(scaledPixmap);
     }
 

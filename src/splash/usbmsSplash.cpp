@@ -42,7 +42,7 @@ usbmsSplash::usbmsSplash(QWidget *parent) :
         }
 
         QPixmap pixmap(":/resources/kobox-icon.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->label_2->setPixmap(scaledPixmap);
     }
     else {
@@ -54,7 +54,7 @@ usbmsSplash::usbmsSplash(QWidget *parent) :
         ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 10pt }");
 
         QPixmap pixmap(":/resources/usbms.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->label_2->setPixmap(scaledPixmap);
     }
 
@@ -144,7 +144,7 @@ void usbmsSplash::usbmsLaunch()
                     float stdIconHeight = sH / 2;
 
                     QPixmap pixmap(":/resources/clock-inverted.png");
-                    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+                    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
                     ui->label_2->setPixmap(scaledPixmap);
 
                     this->repaint();
