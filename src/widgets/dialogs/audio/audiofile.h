@@ -22,6 +22,7 @@ public:
 
 public slots:
     void die();
+    void enableButton();
 
 private slots:
 

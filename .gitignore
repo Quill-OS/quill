@@ -6,3 +6,6 @@ moc_*
 qrc_*
 .qmake.stash
 .vscode
+exec
+deploy.sh
+.qtc_clangd

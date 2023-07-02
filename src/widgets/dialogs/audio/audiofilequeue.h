@@ -17,7 +17,7 @@ public:
     ~audiofilequeue();
     QString className = this->metaObject()->className();
 
-    void provideData(global::audio::musicFile fileProvided);
+    void provideData(global::audio::musicFile fileProvided, bool grey);
     global::audio::musicFile file;
 
 public slots:
@@ -29,6 +29,9 @@ private:
 signals:
     void playFileChild(int itemInQueue);
 
+private slots:
+    void on_deleteBtn_clicked();
+    void on_playButton_clicked();
 };
 
 #endif // AUDIOFILEQUEUE_H

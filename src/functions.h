@@ -203,7 +203,9 @@ namespace global {
             QString name; // Cutted path for easier use in names
             int lengths;
             QString length; // In minutes:seconds
+            int id;
         };
+        // None is when currentAction is empty
         enum class Action { // Function will be called with this enum
             Play,
             Next,
@@ -211,20 +213,19 @@ namespace global {
             Pause,
             Continue,
             Stop, // Sets paused to false, isSomethingCurrentlyPlaying to false, and itemCurrentlyPLaying to -1, also stops playing
-            None,
             SetVolume,
         };
-        inline Action currentAction = Action::None;
-        inline bool actionDone = false; // bool to await for answer
+        inline QVector<Action> currentAction;
         inline QVector<musicFile> queue;
         inline QVector<musicFile> fileList;
-        inline int itemCurrentlyPLaying = 0; // Also indicates in the queue menu which a grey color which is playing
+        inline int itemCurrentlyPLaying = -1; // Also indicates in the queue menu which a grey color which is playing
         inline QMutex audioMutex; // These variables will be shared between threads, so here its to protect it
         inline int progressSeconds = 0;
         inline bool paused = false;
-        inline bool isSomethingCurrentlyPlaying = false;
+        inline bool isSomethingCurrentlyPlaying = false; // Pause and continue dont change this
         inline bool firstScan = true;
-        inline int volumeLevel = 100;
+        inline int volumeLevel = 40; // Default save value
+        inline bool songChanged = false;
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -1205,26 +1206,6 @@ namespace {
         // This can cause problems if someone names their directory with HTML tags, so stop here. Anki, which is a big project, also doesn't care about this
         return text.remove(QRegExp("<[^>]*>"));
     }
-    // Some audio wrappers
-    void waitForAudioThread() {
-        bool tempBool = false;
-        while(tempBool == false) {
-          QThread::msleep(50);
-          global::audio::audioMutex.lock();
-          if(global::audio::actionDone == true) {
-              global::audio::actionDone = false;
-              tempBool = true;
-          }
-          global::audio::audioMutex.unlock();
-        }
-    }
-    void AudioThreadAction(global::audio::Action actionToPerform) {
-        global::audio::audioMutex.lock();
-        global::audio::currentAction = actionToPerform;
-        global::audio::audioMutex.unlock();
-        waitForAudioThread();
-    }
-    // I'm sick of poor code
     void bool_writeconfig(QString file, bool option) {
         QString str;
         if(option == true) {

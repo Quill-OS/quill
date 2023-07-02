@@ -17,13 +17,18 @@ public:
     ~audioDialog();
     QString className = this->metaObject()->className();
 
-    bool currentMenu = true; // true means Library is clicked so its grey, false means Queue
+    enum audioMenu {
+        Library,
+        Queue,
+    };
+
+    bool currentMenu = Library;
     void changeMenu();
     void refreshFileList();
     void refreshAudioFileWidgets();
     void refreshAudioFileWidgetsQueue();
-    QTimer progress; // Needs to be stoped at exit
-    void setSongName();
+    QTimer* progress; // Needs to be stoped at exit
+    bool finishedStartingUp = false;
 
 public slots:
     void playFile(int itemInQueue); // can be called from childs
@@ -43,6 +48,8 @@ private slots:
     void on_plusBtn_clicked();
 
     void on_minusBtn_clicked();
+
+    void on_playBtn_clicked();
 
 signals:
     void deleteItself();

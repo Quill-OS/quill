@@ -17,59 +17,65 @@ void audiothread::start() {
 
     // QTimer doesnt work in such loops... well anyways
     int count = 0;
-    int secondsToCount = 5;
+    int delayMs = 100;
+    int secondsToCount = 1000 / delayMs;
+    int previousVolume = -1;
     while(true) {
-        if(global::audio::currentAction != global::audio::Action::None) {
-            log("Action received", className);
-            if(global::audio::currentAction == global::audio::Action::Stop) {
-                log("Stop action received", className);
-                sendInfo("pause:"); // Yea, only that
-                global::audio::audioMutex.lock();
-                global::audio::paused = true;
-                global::audio::isSomethingCurrentlyPlaying = false;
-                monitorProgress = false;
-
-                global::audio::currentAction = global::audio::Action::None;
-                global::audio::actionDone = true;
-                global::audio::audioMutex.unlock();
-            }
-        }
-        if(global::audio::currentAction == global::audio::Action::Play) {
-            log("Play action received", className);
-            global::audio::audioMutex.lock();
-            QString message = "play:\"";
-            QString betterPath = global::audio::queue[global::audio::itemCurrentlyPLaying].path.remove(0, 21); // remove /mnt/onboard/onboard/
-            message.append(betterPath);
-            message.append('"');
-            sendInfo(message);
-            global::audio::paused = false;
-            global::audio::isSomethingCurrentlyPlaying = true;
-            global::audio::progressSeconds = 0;
-            monitorProgress = true;
-
-            global::audio::currentAction = global::audio::Action::None;
-            global::audio::actionDone = true;
-            global::audio::audioMutex.unlock();
-        }
-        if(global::audio::currentAction == global::audio::Action::SetVolume) {
-            log("Set volume action received", className);
-            global::audio::audioMutex.lock();
-
-            QString message = "set_volume:" + QString::number(global::audio::volumeLevel);
-            sendInfo(message);
-
-            global::audio::currentAction = global::audio::Action::None;
-            global::audio::actionDone = true;
-            global::audio::audioMutex.unlock();
-        }
-        count = count + 1;;
-        QThread::msleep(200);
+        global::audio::audioMutex.lock();
         if(count == secondsToCount) {
             count = 0;
             if(monitorProgress == true) {
                 audioProgress();
             }
         }
+        foreach(global::audio::Action action, global::audio::currentAction) {
+            // Order is important
+            if(action == global::audio::Action::Stop) {
+                // No need to call this before Play
+                log("Stop action received", className);
+                sendInfo("pause:"); // Yea, only that
+                global::audio::paused = true;
+                global::audio::isSomethingCurrentlyPlaying = false;
+                global::audio::progressSeconds = 0;
+                monitorProgress = false;
+            }
+            if(action == global::audio::Action::Play) {
+                log("Play action received", className);
+                QString message = "play:\"";
+                QString betterPath = global::audio::queue[global::audio::itemCurrentlyPLaying].path.remove(0, 21); // remove /mnt/onboard/onboard/
+                message.append(betterPath);
+                message.append('"');
+                sendInfo(message);
+                global::audio::paused = false;
+                global::audio::isSomethingCurrentlyPlaying = true;
+                global::audio::progressSeconds = 0;
+                monitorProgress = true;
+            }
+            if(action == global::audio::Action::Pause) {
+                log("Pause action received", className);
+                QString message = "pause:";
+                sendInfo(message);
+                global::audio::paused = true;
+                monitorProgress = false;
+            }
+            if(action == global::audio::Action::Continue) {
+                log("Continue action received", className);
+                QString message = "continue:";
+                sendInfo(message);
+                global::audio::paused = false;
+                monitorProgress = true;
+            }
+        }
+        global::audio::currentAction.clear();
+        if(global::audio::volumeLevel != previousVolume) {
+            previousVolume = global::audio::volumeLevel;
+            log("Set volume action detected", className);
+            QString message = "set_volume:" + QString::number(global::audio::volumeLevel);
+            sendInfo(message);
+        }
+        global::audio::audioMutex.unlock();
+        count = count + 1;
+        QThread::msleep(delayMs);
     }
 }
 
@@ -98,13 +104,29 @@ void audiothread::sendInfo(QString message) {
         log("Error sending to socket", className);
     }
 
+    log("Message send, exiting", className);
     close(sockfd);
 }
 
+// Mutex managed outside of the function
 void audiothread::audioProgress() {
     global::audio::progressSeconds = global::audio::progressSeconds + 1;
     //log("Progress, +1 sec: " + QString::number(global::audio::progressSeconds), className);
-    if(global::audio::progressSeconds == global::audio::queue[global::audio::itemCurrentlyPLaying].lengths) {
-        monitorProgress = false;
+    if(global::audio::progressSeconds >= global::audio::queue[global::audio::itemCurrentlyPLaying].lengths) {
+        if(global::audio::itemCurrentlyPLaying >= global::audio::queue.length()  - 1) {
+            // it's the last item
+            global::audio::isSomethingCurrentlyPlaying = false;
+            global::audio::paused = true;
+            monitorProgress = false;
+            global::audio::currentAction.append(global::audio::Action::Stop);
+        }
+        else {
+            // It's not the last item, contynuing
+            log("Song changed", className);
+            global::audio::itemCurrentlyPLaying += 1;
+            global::audio::currentAction.append(global::audio::Action::Play);
+            global::audio::songChanged = true;
+        }
+
     }
 }
