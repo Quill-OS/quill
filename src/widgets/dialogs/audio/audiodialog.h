@@ -51,6 +51,10 @@ private slots:
 
     void on_playBtn_clicked();
 
+    void on_previousBtn_clicked();
+
+    void on_nextBtn_clicked();
+
 signals:
     void deleteItself();
 

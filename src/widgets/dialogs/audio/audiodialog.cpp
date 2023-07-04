@@ -157,7 +157,7 @@ void audioDialog::refreshFileList() {
     QStringList fileList = dir.entryList();
     log("File count: " + QString::number(fileList.count()), className);
     global::audio::audioMutex.lock();
-    for (int i=0; i < fileList.count(); i++)
+    for (int i = 0; i < fileList.count(); i++)
     {
         log("Audio file: " + fileList[i], className);
         global::audio::musicFile newMusicFile;
@@ -225,11 +225,14 @@ void audioDialog::refreshAudioFileWidgetsQueue() {
     emit deleteItself();
     // Doesn't work, freezes tha app...
     //QCoreApplication::processEvents();
-    for(int i = global::audio::queue.size() - 1; i >= 0; i--) {
+    log("global::audio::itemCurrentlyPLaying: " + QString::number(global::audio::itemCurrentlyPLaying), className);
+    log("global::audio::isSomethingCurrentlyPlaying: " + QString::number(global::audio::isSomethingCurrentlyPlaying), className);
+
+    for(int i = 0; i < global::audio::queue.size(); i++) {
         log("Adding new item: " + QString::number(i), className);
         audiofilequeue* newAudioFileQueue = new audiofilequeue(this);
         bool grey = false;
-        if(global::audio::itemCurrentlyPLaying == i) {
+        if(global::audio::isSomethingCurrentlyPlaying == true && global::audio::itemCurrentlyPLaying == i) {
             grey = true;
         }
         newAudioFileQueue->provideData(global::audio::queue[i], grey);
@@ -250,7 +253,9 @@ void audioDialog::playFile(int itemInQueue) {
 
     log("Calling stop to current actions to play a new file", className);
     global::audio::audioMutex.lock();
+    // All those variables will be changed in audio thread too - but too late for progressFuncManage
     global::audio::itemCurrentlyPLaying = itemInQueue;
+    global::audio::paused = false;
     global::audio::songChanged = true;
     global::audio::currentAction.append(global::audio::Action::Play);
     global::audio::audioMutex.unlock();
@@ -267,32 +272,51 @@ void audioDialog::playFile(int itemInQueue) {
 
 void audioDialog::progressFuncManage() {
     global::audio::audioMutex.lock();
-    if(global::audio::isSomethingCurrentlyPlaying == true and global::audio::paused == false) {
+    // log("Called progress watcher", className);
+
+    bool requestWatcher = false;
+    bool requestQueueRefresh = false;
+
+    if(global::audio::isSomethingCurrentlyPlaying == true && global::audio::paused == false) {
         if(ui->progressSlider->maximum() != global::audio::queue[global::audio::itemCurrentlyPLaying].lengths) {
             ui->progressSlider->setMaximum(global::audio::queue[global::audio::itemCurrentlyPLaying].lengths);
         }
-        //log("Changing slider position: " + QString::number(global::audio::progressSeconds), className);
+        // log("Changing slider position: " + QString::number(global::audio::progressSeconds), className);
         ui->progressSlider->setSliderPosition(global::audio::progressSeconds);
         if(global::audio::songChanged == true || finishedStartingUp == false) {
+           log("global::audio::queue.size(): " + QString::number(global::audio::queue.size()), className);
+           log("global::audio::itemCurrentlyPLaying: " + QString::number(global::audio::itemCurrentlyPLaying), className);
+           log("Setting song name...", className);
+
            QString currentName = global::audio::queue[global::audio::itemCurrentlyPLaying].name;
-           if(currentName != ui->fileNameLabel->text()) {
-               ui->fileNameLabel->setText(currentName);
-               if(currentMenu == Queue) {
-                   refreshAudioFileWidgetsQueue();
-               }
-               global::audio::songChanged = false;
+           // log("New name: " + currentName, className);
+           ui->fileNameLabel->setText(currentName);
+           if(currentMenu == Queue) {
+               requestQueueRefresh = true;
            }
+           global::audio::songChanged = false;
         }
-        progress->singleShot(100, this, SLOT(progressFuncManage())); // For better accuracy, set 50
+        requestWatcher = true;
+
     } else {
-        if(global::audio::isSomethingCurrentlyPlaying == false and global::audio::paused == true) {
-           ui->progressSlider->setSliderPosition(0);
-           ui->playBtn->setIcon(QIcon("://resources/play.png"));
-           ui->fileNameLabel->setText("...");
-           log("Exiting progress watcher", className);
-        }
+       ui->progressSlider->setSliderPosition(0);
+       ui->playBtn->setIcon(QIcon("://resources/play.png"));
+       ui->fileNameLabel->setText("...");
+       if(currentMenu == Queue) {
+           requestQueueRefresh = true;
+       }
+       // log("Exiting progress watcher", className);
     }
     global::audio::audioMutex.unlock();
+
+    if(requestQueueRefresh == true) {
+       refreshAudioFileWidgetsQueue();
+    }
+
+    if(requestWatcher == true) {
+       // log("Launching another watcher...", className);
+       progress->singleShot(450, this, SLOT(progressFuncManage())); // For better accuracy, set 50
+    }
 }
 
 void audioDialog::on_progressSlider_sliderPressed()
@@ -335,7 +359,7 @@ void audioDialog::on_playBtn_clicked()
         }
     }
     else {
-        // Risk: mutex still not unclocked
+        // Risk: mutex still not unclocked - this happens in many places but the comment is only here
         if(global::audio::itemCurrentlyPLaying != -1) {
             int tmpInt = global::audio::itemCurrentlyPLaying;
             global::audio::audioMutex.unlock();
@@ -345,5 +369,41 @@ void audioDialog::on_playBtn_clicked()
     }
     global::audio::audioMutex.unlock();
 
+}
+
+
+void audioDialog::on_previousBtn_clicked()
+{
+    global::audio::audioMutex.lock();
+    int item = global::audio::itemCurrentlyPLaying;
+    item = item - 1;
+    if(item >= 0 && global::audio::queue.size() >= 1) {
+        global::audio::audioMutex.unlock();
+        playFile(item);
+        ui->previousBtn->setIcon(QIcon(":/resources/previous.png"));
+        ui->nextBtn->setIcon(QIcon(":/resources/next.png"));
+        return void();
+    } else {
+        ui->previousBtn->setIcon(QIcon(":/resources/stop.png"));
+    }
+    global::audio::audioMutex.unlock();
+}
+
+
+void audioDialog::on_nextBtn_clicked()
+{
+    global::audio::audioMutex.lock();
+    int item = global::audio::itemCurrentlyPLaying;
+    item = item + 1;
+    if(item >= 0 && item < global::audio::queue.size()) {
+        global::audio::audioMutex.unlock();
+        playFile(item);
+        ui->previousBtn->setIcon(QIcon(":/resources/previous.png"));
+        ui->nextBtn->setIcon(QIcon(":/resources/next.png"));
+        return void();
+    } else {
+        ui->nextBtn->setIcon(QIcon(":/resources/stop.png"));
+    }
+    global::audio::audioMutex.unlock();
 }
 

@@ -29,23 +29,27 @@ void audiofile::die() {
 void audiofile::on_addBtn_clicked()
 {
     ui->addBtn->setDisabled(true);
+    ui->addBtn->setStyleSheet("background: black;");
+
     log("Adding item (song) to queue", className);
     global::audio::audioMutex.lock();
     global::audio::queue.append(file);
-    QTimer::singleShot(550, this, SLOT(enableButton()));
     if(global::audio::isSomethingCurrentlyPlaying == false) {
         log("And also playing it because nothing else is playing", className);
         global::audio::isSomethingCurrentlyPlaying = true;
         int tmpInt = global::audio::queue.length() - 1;
         global::audio::audioMutex.unlock();
+        QTimer::singleShot(700, this, SLOT(enableButton()));
         emit playFileChild(tmpInt);
         return void();
     }
     global::audio::audioMutex.unlock();
+    QTimer::singleShot(700, this, SLOT(enableButton()));
 }
 
 void audiofile::enableButton() {
     log("Enabling back the button", className);
     ui->addBtn->setEnabled(true);
+    ui->addBtn->setStyleSheet("background: white;");
     ui->addBtn->repaint();
 }

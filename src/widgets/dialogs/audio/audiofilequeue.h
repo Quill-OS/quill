@@ -16,6 +16,7 @@ public:
     explicit audiofilequeue(QWidget *parent = nullptr);
     ~audiofilequeue();
     QString className = this->metaObject()->className();
+    bool isPlaying = false;
 
     void provideData(global::audio::musicFile fileProvided, bool grey);
     global::audio::musicFile file;

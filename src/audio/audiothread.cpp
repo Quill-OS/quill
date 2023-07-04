@@ -42,7 +42,10 @@ void audiothread::start() {
             if(action == global::audio::Action::Play) {
                 log("Play action received", className);
                 QString message = "play:\"";
+                // TODO: this doesn't work?
                 QString betterPath = global::audio::queue[global::audio::itemCurrentlyPLaying].path.remove(0, 21); // remove /mnt/onboard/onboard/
+                log("The name of the song is: " + global::audio::queue[global::audio::itemCurrentlyPLaying].name);
+
                 message.append(betterPath);
                 message.append('"');
                 sendInfo(message);
@@ -115,18 +118,19 @@ void audiothread::audioProgress() {
     if(global::audio::progressSeconds >= global::audio::queue[global::audio::itemCurrentlyPLaying].lengths) {
         if(global::audio::itemCurrentlyPLaying >= global::audio::queue.length()  - 1) {
             // it's the last item
+            log("Last item: stopping playing", className);
             global::audio::isSomethingCurrentlyPlaying = false;
             global::audio::paused = true;
             monitorProgress = false;
+            global::audio::progressSeconds = 0;
             global::audio::currentAction.append(global::audio::Action::Stop);
         }
         else {
             // It's not the last item, contynuing
             log("Song changed", className);
-            global::audio::itemCurrentlyPLaying += 1;
+            global::audio::itemCurrentlyPLaying = global::audio::itemCurrentlyPLaying + 1;
             global::audio::currentAction.append(global::audio::Action::Play);
             global::audio::songChanged = true;
         }
-
     }
 }
