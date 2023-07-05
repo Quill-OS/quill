@@ -42,9 +42,10 @@ void audiothread::start() {
             if(action == global::audio::Action::Play) {
                 log("Play action received", className);
                 QString message = "play:\"";
-                // TODO: this doesn't work?
-                QString betterPath = global::audio::queue[global::audio::itemCurrentlyPLaying].path.remove(0, 21); // remove /mnt/onboard/onboard/
-                log("The name of the song is: " + global::audio::queue[global::audio::itemCurrentlyPLaying].name);
+                QString betterPath = global::audio::queue[global::audio::itemCurrentlyPLaying].path;
+                betterPath.remove(0, 21); // remove /mnt/onboard/onboard/
+                log("The name of the song is: " + global::audio::queue[global::audio::itemCurrentlyPLaying].name, className);
+                log("The path to be send is: " + betterPath, className);
 
                 message.append(betterPath);
                 message.append('"');

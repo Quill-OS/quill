@@ -33,45 +33,29 @@ void audiofilequeue::die() {
 
 void audiofilequeue::on_deleteBtn_clicked()
 {
-    // TODO: Doesn't work
     int id = -1;
     log("global::audio::queue.size(): " + QString::number(global::audio::queue.size()), className);
     global::audio::audioMutex.lock();
-
     for(int i = 0; i < global::audio::queue.size(); i++) {
         if(file.id == global::audio::queue[i].id) {
             log("Found id!", className);
             id = i;
-            id = id + 1;
         }
     }
+
     log("File id is: " + QString::number(id), className);
-    if(id == global::audio::queue.size() - 1) {
-        global::audio::queue.removeAt(id);
-        log("After removing first if global::audio::queue.size(): " + QString::number(global::audio::queue.size()), className);
-        if(global::audio::queue.size() == 0) {
-            global::audio::currentAction.append(global::audio::Action::Stop);
-            global::audio::audioMutex.unlock();
-            return void();
-        }
+    global::audio::queue.remove(id);
+    log("After removing global::audio::queue.size(): " + QString::number(global::audio::queue.size()), className);
+    if(id - 2 >= 0) {
         global::audio::audioMutex.unlock();
         emit playFileChild(id - 2);
         return void();
-    }
-    else if(id + 1 != global::audio::queue.size()) {
-        global::audio::queue.removeAt(id);
-        log("After removing second if global::audio::queue.size(): " + QString::number(global::audio::queue.size()), className);
-        if(global::audio::queue.size() == 0) {
-            global::audio::currentAction.append(global::audio::Action::Stop);
-            global::audio::audioMutex.unlock();
-            return void();
-        }
+    } else if(id < global::audio::queue.size()) {
         global::audio::audioMutex.unlock();
-        emit playFileChild(id - 1);
+        emit playFileChild(id);
         return void();
     }
     else {
-        log("What happened?", className);
         global::audio::currentAction.append(global::audio::Action::Stop);
         global::audio::audioMutex.unlock();
         return void();
