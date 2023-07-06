@@ -42,7 +42,7 @@ usbmsSplash::usbmsSplash(QWidget *parent) :
         }
 
         QPixmap pixmap(":/resources/kobox-icon.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->label_2->setPixmap(scaledPixmap);
     }
     else {
@@ -54,7 +54,7 @@ usbmsSplash::usbmsSplash(QWidget *parent) :
         ui->label_3->setStyleSheet("QLabel { background-color : black; color : white; font-size: 10pt }");
 
         QPixmap pixmap(":/resources/usbms.png");
-        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->label_2->setPixmap(scaledPixmap);
     }
 
@@ -80,7 +80,7 @@ void usbmsSplash::usbmsLaunch()
     }
 
     string_writeconfig("/opt/ibxd", "onboard_unmount\n");
-    QThread::msleep(500);
+    QThread::msleep(1000);
 
     string_writeconfig("/opt/ibxd", "usbnet_stop\n");
     QThread::msleep(1000);
@@ -144,7 +144,7 @@ void usbmsSplash::usbmsLaunch()
                     float stdIconHeight = sH / 2;
 
                     QPixmap pixmap(":/resources/clock-inverted.png");
-                    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+                    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
                     ui->label_2->setPixmap(scaledPixmap);
 
                     this->repaint();
@@ -200,7 +200,7 @@ void usbmsSplash::restartServices() {
     // Checking for updates
     string_writeconfig("/opt/ibxd", "update_inkbox_restart\n");
     QThread::msleep(2500);
-    string_writeconfig("/tmp/in_usbms", "false");
+    QFile::remove("/tmp/in_usbms");
     // GUI apps: update main JSON file
     string_writeconfig("/opt/ibxd", "gui_apps_start\n");
     while(true) {
@@ -216,6 +216,16 @@ void usbmsSplash::restartServices() {
                 break;
             }
         }
+    }
+    // Remove macOS dotfiles
+    {
+        QString prog("busybox-initrd");
+        QStringList args;
+        args << "find" << "/mnt/onboard/onboard" << "-type" << "f" << "-name" << "._*" << "-delete";
+        QProcess * proc = new QProcess();
+        proc->start(prog, args);
+        proc->waitForFinished();
+        proc->deleteLater();
     }
     // Re-generate local library on next launch
     QFile::remove(global::localLibrary::databasePath);

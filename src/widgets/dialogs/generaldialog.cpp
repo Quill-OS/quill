@@ -219,6 +219,14 @@ generalDialog::generalDialog(QWidget *parent) :
         yIncrease = 1.8;
         QTimer::singleShot(50, this, SLOT(increaseSize()));
     }
+    else if(global::library::librarySyncDialog == true) {
+        librarySyncDialog = true;
+        ui->okBtn->setText("Continue");
+        ui->cancelBtn->setText("Not now");
+        ui->bodyLabel->setText("<font face='u001'>Online library requires syncing. Do you want to continue</font><font face='Inter'>?</font>");
+        ui->headerLabel->setText("Sync required");
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
+    }
     else {
         // We shouldn't be there ;)
         log("Launched without settings", className);
@@ -289,6 +297,10 @@ void generalDialog::on_cancelBtn_clicked()
             global::userApps::appCompatibilityLastContinueStatus = false;
             global::userApps::appCompatibilityText = "";
             global::userApps::appCompatibilityDialog = false;
+        }
+        else if(global::library::librarySyncDialog == true) {
+            emit noSyncOnlineLibrary();
+            global::library::librarySyncDialog = false;
         }
         generalDialog::close();
     }
@@ -550,9 +562,14 @@ void generalDialog::on_okBtn_clicked()
     else if(global::userApps::appCompatibilityDialog == true) {
        global::userApps::launchApp = true;
        global::userApps::appCompatibilityText = "";
-       global::userApps::appCompatibilityLastContinueStatus = true; // Not really necceserry, only if something fails horibly
+       global::userApps::appCompatibilityLastContinueStatus = true; // Not really necessary, only needed if something fails horribly
        global::userApps::appCompatibilityDialog = false;
        generalDialog::close();
+    }
+    else if(global::library::librarySyncDialog == true) {
+        emit syncOnlineLibrary();
+        global::library::librarySyncDialog = false;
+        generalDialog::close();
     }
 }
 void generalDialog::on_acceptBtn_clicked()

@@ -14,7 +14,6 @@ dictionaryWidget::dictionaryWidget(QWidget *parent) :
     ui(new Ui::dictionaryWidget)
 {
     ui->setupUi(this);
-    ui->wordLabel->setFont(QFont("u001"));
     ui->wordLabel->setStyleSheet("font-weight: bold");
     ui->definitionStatusLabel->setFont(QFont("u001"));
 

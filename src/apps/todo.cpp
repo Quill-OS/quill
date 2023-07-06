@@ -85,6 +85,7 @@ void todo::on_closeBtn_clicked()
 void todo::on_newBtn_clicked()
 {
     global::keyboard::embed = false;
+    global::keyboard::keyboardText = "";
     virtualkeyboard * virtualKeyboardWidget = new virtualkeyboard(this);
     virtualKeyboardWidget->setAttribute(Qt::WA_DeleteOnClose);
     QObject::connect(virtualKeyboardWidget, &virtualkeyboard::enterBtnPressed, this, &todo::createNewList);
@@ -253,6 +254,7 @@ void todo::on_deleteBtn_clicked()
 void todo::on_newItemBtn_clicked()
 {
     global::keyboard::embed = false;
+    global::keyboard::keyboardText = "";
     virtualkeyboard * virtualKeyboardWidget = new virtualkeyboard(this);
     virtualKeyboardWidget->setAttribute(Qt::WA_DeleteOnClose);
     QObject::connect(virtualKeyboardWidget, &virtualkeyboard::enterBtnPressed, this, &todo::addItem);

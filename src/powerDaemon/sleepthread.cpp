@@ -26,11 +26,11 @@ void sleepThread::start()
             ::close(fd);
 
             if(result == "start") {
-                log("Emiting signal to show sleepDialog", className);
+                log("Emitting signal to show sleepDialog", className);
                 emit startDialog();
             }
             else if (result == "stop0") {
-                log("Emiting signal to hide sleepDialog", className);
+                log("Emitting signal to hide sleepDialog", className);
                 emit stopDialog();
             }
             else {

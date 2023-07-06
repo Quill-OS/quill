@@ -47,7 +47,7 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
             global::library::bookId = readFile(idPath).toULong();
 
             QPixmap coverPixmap(coverPath);
-            QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
             global::library::isLatestBook = false;
 
@@ -64,7 +64,7 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
                 if(QFile::exists("/inkbox/gutenberg/getCoverDone")) {
                     if(checkconfig("/inkbox/gutenberg/getCoverDone") == true) {
                         QPixmap coverPixmap("/inkbox/gutenberg/book_cover.jpg");
-                        QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+                        QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
                         ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
                         QFile::remove("/inkbox/gutenberg/getCoverDone");
                         break;

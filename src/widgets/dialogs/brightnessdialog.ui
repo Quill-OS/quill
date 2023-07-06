@@ -145,8 +145,9 @@
         <widget class="QLabel" name="brightnessLabel">
          <property name="font">
           <font>
-           <family>Chivo</family>
-           <italic>true</italic>
+           <family>Inter</family>
+           <weight>75</weight>ı
+           <bold>true</bold>
           </font>
          </property>
          <property name="text">

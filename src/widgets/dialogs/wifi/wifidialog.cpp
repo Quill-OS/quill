@@ -248,46 +248,48 @@ void wifiDialog::refreshNetworksList() {
         }
     }
 
-    // Sort based on signal strength
-    QVector<global::wifi::wifiNetworkData> sortedPureNetworkList;
-    sortedPureNetworkList.append(pureNetworkList.first());
-    pureNetworkList.removeFirst();
-    // Possible fix for a segmentation fault
-    if(pureNetworkList.isEmpty() == false) {
-        for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
-            bool stopIterating = false;
-            int counter = 0;
-            for(global::wifi::wifiNetworkData wifiNetworkToSort: sortedPureNetworkList) {
-                if(stopIterating == false) {
-                    if(wifiNetwork.signal >= wifiNetworkToSort.signal) {
-                        sortedPureNetworkList.insert(counter, wifiNetwork);
-                        stopIterating = true;
+    if(pureNetworkList.count() >= 1) {
+        // Sort based on signal strength
+        QVector<global::wifi::wifiNetworkData> sortedPureNetworkList;
+        sortedPureNetworkList.append(pureNetworkList.first());
+        pureNetworkList.removeFirst();
+        // Possible fix for a segmentation fault
+        if(pureNetworkList.isEmpty() == false) {
+            for(global::wifi::wifiNetworkData wifiNetwork: pureNetworkList) {
+                bool stopIterating = false;
+                int counter = 0;
+                for(global::wifi::wifiNetworkData wifiNetworkToSort: sortedPureNetworkList) {
+                    if(stopIterating == false) {
+                        if(wifiNetwork.signal >= wifiNetworkToSort.signal) {
+                            sortedPureNetworkList.insert(counter, wifiNetwork);
+                            stopIterating = true;
+                        }
+                        counter = counter + 1;
                     }
-                    counter = counter + 1;
+                }
+                // This happens if it's the smallest value, so insert it at the end
+                if(stopIterating == false) {
+                    sortedPureNetworkList.append(wifiNetwork);
                 }
             }
-            // This happens if it's the smallest value, so insert it at the end
-            if(stopIterating == false) {
-                sortedPureNetworkList.append(wifiNetwork);
-            }
         }
-    }
-    log("There are " + QString::number(sortedPureNetworkList.count()) + " sorted networks", className);
+        log("There are " + QString::number(sortedPureNetworkList.count()) + " sorted networks", className);
 
-    for(global::wifi::wifiNetworkData wifiNetwork: sortedPureNetworkList) {
-        log("Signal strength with sorting: " + QString::number(wifiNetwork.signal), className);
-    }
+        for(global::wifi::wifiNetworkData wifiNetwork: sortedPureNetworkList) {
+            log("Signal strength with sorting: " + QString::number(wifiNetwork.signal), className);
+        }
 
-    // And now, handle the remainder of the networks
-    for(global::wifi::wifiNetworkData wifiNetwork: sortedPureNetworkList) {
-        network* connectedNetwork = new network;
-        connectedNetwork->mainData = wifiNetwork;
-        connectedNetwork->currentlyConnectedNetwork = currentNetwork;
-        connectedNetwork->applyVariables();
-        connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::closeWrapper);
-        connect(connectedNetwork, &network::showToastSignal, this, &wifiDialog::showToastSlot);
-        connect(connectedNetwork, &network::refreshScreenSignal, this, &wifiDialog::refreshScreenSlot);
-        ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
+        // And now, handle the remainder of the networks
+        for(global::wifi::wifiNetworkData wifiNetwork: sortedPureNetworkList) {
+            network* connectedNetwork = new network;
+            connectedNetwork->mainData = wifiNetwork;
+            connectedNetwork->currentlyConnectedNetwork = currentNetwork;
+            connectedNetwork->applyVariables();
+            connect(this, &wifiDialog::killNetworkWidgets, connectedNetwork, &network::closeWrapper);
+            connect(connectedNetwork, &network::showToastSignal, this, &wifiDialog::showToastSlot);
+            connect(connectedNetwork, &network::refreshScreenSignal, this, &wifiDialog::refreshScreenSlot);
+            ui->scrollBarLayout->addWidget(connectedNetwork, Qt::AlignTop);
+        }
     }
     scannedAtLeastOnce = true;
     ui->refreshBtn->setEnabled(true);
@@ -295,7 +297,6 @@ void wifiDialog::refreshNetworksList() {
     scanInProgress = false;
     secondScanTry = false;
 }
-
 
 void wifiDialog::on_wifiCheckBox_stateChanged(int arg1)
 {
@@ -319,7 +320,7 @@ void wifiDialog::on_wifiCheckBox_stateChanged(int arg1)
             }
             emit killNetworkWidgets();
         }
-        if(wifiButtonEnabled == false){
+        if(wifiButtonEnabled == false) {
             wifiButtonEnabled = true;
         }
     }
@@ -394,7 +395,12 @@ void wifiDialog::watcher() {
     }
 
     if(changing == true) {
-        setStatusText("Disconnecting from a network or cleaning up");
+        if(global::deviceID == "n705\n") {
+            setStatusText("Disconnecting or cleaning up");
+        }
+        else {
+            setStatusText("Disconnecting from a network or cleaning up");
+        }
         log("prepare_changing_wifi.sh is active", className);
         QTimer::singleShot(relaunchMs, this, SLOT(watcher()));
         return void();

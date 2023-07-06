@@ -36,10 +36,13 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     }
 
     if(global::deviceID == "n705\n") {
-        bookTitleTruncateThreshold = 30;
+        bookTitleTruncateThreshold = 27;
     }
     else if(global::deviceID == "n873\n") {
         bookTitleTruncateThreshold = 45;
+    }
+    else if(global::deviceID == "n306\n") {
+        bookTitleTruncateThreshold = 32;
     }
     else {
         bookTitleTruncateThreshold = 35;
@@ -54,36 +57,36 @@ localLibraryWidget::localLibraryWidget(QWidget *parent) :
     sW = QGuiApplication::screens()[0]->size().width();
     sH = QGuiApplication::screens()[0]->size().height();
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+    if(global::deviceID == "n705\n") {
+        stdIconWidthDivider = 7.2;
+        stdIconHeightDivider = 7.2;
+    }
+    else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         stdIconWidthDivider = 9.5;
         stdIconHeightDivider = 9.5;
-        stdIconWidth = sW / stdIconWidthDivider;
-        stdIconHeight = sH / stdIconHeightDivider;
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
-        stdIconWidthDivider = 8.5;
-        stdIconHeightDivider = 8.5;
-        stdIconWidth = sW / stdIconWidthDivider;
-        stdIconHeight = sH / stdIconHeightDivider;
+    else if(global::deviceID == "n613\n" or global::deviceID == "emu\n") {
+        stdIconWidthDivider = 8.7;
+        stdIconHeightDivider = 8.7;
     }
     else if(global::deviceID == "n437\n") {
-        stdIconWidthDivider = 8;
-        stdIconHeightDivider = 8;
-        stdIconWidth = sW / stdIconWidthDivider;
-        stdIconHeight = sH / stdIconHeightDivider;
+        stdIconWidthDivider = 8.1;
+        stdIconHeightDivider = 8.1;
     }
     else if(global::deviceID == "n873\n") {
         stdIconWidthDivider = 9.7;
         stdIconHeightDivider = 9.7;
-        stdIconWidth = sW / stdIconWidthDivider;
-        stdIconHeight = sH / stdIconHeightDivider;
+    }
+    else if(global::deviceID == "n236\n" or global::deviceID == "n306\n") {
+        stdIconWidthDivider = 9.1;
+        stdIconHeightDivider = 9.1;
     }
     else {
         stdIconWidthDivider = 9.5;
         stdIconHeightDivider = 9.5;
-        stdIconWidth = sW / stdIconWidthDivider;
-        stdIconHeight = sH / stdIconHeightDivider;
     }
+    stdIconWidth = sW / stdIconWidthDivider;
+    stdIconHeight = sH / stdIconHeightDivider;
 
     setupButtonsLook();
 
@@ -113,8 +116,6 @@ localLibraryWidget::~localLibraryWidget()
 
 void localLibraryWidget::setupDatabase() {
     setDefaultWorkDir();
-    bool stopError = false;
-    QString stopErrorLogs;
     if(!QFile::exists(global::localLibrary::databasePath)) {
         log("Generating database", className);
         QStringList booksList;
@@ -135,11 +136,12 @@ void localLibraryWidget::setupDatabase() {
         QStringList args;
         args << "env" << "icon_width_divider=" + QString::number(stdIconWidthDivider - 1.5) << "icon_height_divider=" + QString::number(stdIconHeightDivider - 1.5) << "./explore_local_library.sh" << booksList;
 
-         /* Logs/steps needed to debug the database creation
-         * for(int i = 0; i < args.count(); i++) {
-         *     log("Arguments for database creation: '" + args[i] + "'", className);
-         * }
-         */
+        /*
+        *   Logs/steps needed to debug the database creation
+        *   for(int i = 0; i < args.count(); i++) {
+        *       log("Arguments for database creation: '" + args[i] + "'", className);
+        *   }
+        */
 
         QProcess *proc = new QProcess();
         proc->start(prog, args);
@@ -147,33 +149,12 @@ void localLibraryWidget::setupDatabase() {
         QJsonDocument jsonDocument = QJsonDocument::fromJson(readFile(global::localLibrary::rawDatabasePath).toUtf8());
         // log("stdout of process: " + proc->readAllStandardOutput(), className);
         // log("stderr of process: " + proc->readAllStandardError(), className);
-
-        // Error handling ( from epubtool, for now )
-        QString stderrStr = proc->readAllStandardError();
-        if(stderrStr.contains("Critical Error: ") == true) {
-            stopError = true;
-            stopErrorLogs = stderrStr.replace("Critical Error: ", "");
-            log("Errors while generating database: " + stopErrorLogs, className);
-        }
         QFile::remove(global::localLibrary::rawDatabasePath);
         proc->deleteLater();
 
         // Write database in compressed form, encoded in Base64 format
         writeFile(global::localLibrary::databasePath, qCompress(jsonDocument.toJson()).toBase64());
         toastWindow->close();
-    }
-
-    if(stopError == true) {
-        global::text::textBrowserDialog = true;
-        global::text::textBrowserTitle = "Error while generating database.\n It will work incorrectly.\n Please remove corrupted files";
-        global::text::textBrowserContents = stopErrorLogs;
-
-        // Show a system info dialog
-        log("Showing system info dialog", className);
-        generalDialogWindow = new generalDialog();
-        generalDialogWindow->yIncrease = determineYIncrease();
-        generalDialogWindow->increaseSize();
-        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     }
 
     // Read library database from file
@@ -190,12 +171,6 @@ void localLibraryWidget::setupDatabase() {
 
     // Uncompress data from Base64 encoding
     databaseJsonDocument = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(data)));
-
-    // Full database dump
-    // Don't remove this, I Already used this 4 times and needed to write it 4 times. Don't. ~Szybet
-    // QString databaseStr = databaseJsonDocument.toJson(QJsonDocument::Compact).toStdString().c_str();
-    // log("Database: " + databaseStr, className);
-
     // Parse JSON data
     databaseJsonObject = databaseJsonDocument.object();
     databaseJsonArrayList = databaseJsonObject["database"].toArray();
@@ -244,11 +219,11 @@ void localLibraryWidget::setupBooksList(int pageNumber) {
         if(!coverPath.isEmpty()) {
             // Display book cover if found
             QPixmap pixmap(coverPath);
-            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::IgnoreAspectRatio));
         }
         else {
             QPixmap pixmap(":/resources/cover_unavailable.png");
-            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+            bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         }
 
         // Display book title
@@ -341,13 +316,6 @@ void localLibraryWidget::on_nextPageBtn_clicked()
 }
 
 void localLibraryWidget::openBook(int bookID) {
-    log("test");
-    QJsonObject jsonObject1 = databaseJsonArrayList.at(bookID).toObject();
-    QString bookPath1 = jsonObject1["BookPath"].toString();
-    log("Opening book with ID " + QString::number(bookID) + ", path '" + bookPath1 + "'", className);
-
-
-
     QJsonObject jsonObject = databaseJsonArrayList.at(bookID - 1).toObject();
     QString bookPath = jsonObject["BookPath"].toString();
     log("Opening book with ID " + QString::number(bookID) + ", path '" + bookPath + "'", className);
@@ -364,7 +332,7 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
     if(id == global::localLibrary::folderID) {
         if(folderFeatureEnabled == true) {
             log("A folder was selected", className);
-            QString directory = purgeHtml(bookBtnArray[buttonNumber]->text());
+            QString directory = bookBtnArray[buttonNumber]->statusTip();
             changePathAndRefresh(directory);
         }
     }
@@ -458,7 +426,7 @@ void localLibraryWidget::openBookOptionsDialog(int pseudoBookID) {
         if(folderFeatureEnabled == true) {
             bookID = id;
             log("Opening options dialog for directory", className);
-            QString directoryPath = purgeHtml(bookBtnArray[pseudoBookID]->text());
+            QString directoryPath = bookBtnArray[pseudoBookID]->statusTip();
             log("Directory path is '" + directoryPath + "'", className);
             global::localLibrary::bookOptionsDialog::isFolder = true;
             global::localLibrary::bookOptionsDialog::folderPath = pathForFolders + directoryPath;
@@ -570,7 +538,14 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
                 lineArray[in]->show();
             }
 
-            bookBtnArray[in]->setText("<font face='Inter'><b>" + directoryListPure.at(directoryCount) + "</b></font>");
+            QString directoryNameFull = directoryListPure.at(directoryCount);
+            bookBtnArray[in]->setStatusTip(directoryNameFull);
+            QString directoryNameNotFull = directoryNameFull;
+            if(directoryNameNotFull.length() > bookTitleTruncateThreshold) {
+                directoryNameNotFull.truncate(bookTitleTruncateThreshold);
+                directoryNameNotFull.append("...");
+            }
+            bookBtnArray[in]->setText("<font face='Inter'><b>" + directoryNameNotFull + "</b></font>");
             bookIconArray[in]->setPixmap(pixmapForFolder.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
 
             // ID for indicating that it's a folder in btnOpenBook
@@ -603,11 +578,11 @@ void localLibraryWidget::setupBooksListFolders(int pageNumber) {
             if(QFile(coverPath).exists()) {
                 // Display book cover if found
                 QPixmap pixmap(coverPath);
-                bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio));
+                bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::IgnoreAspectRatio));
             }
             else {
                 QPixmap pixmap(":/resources/cover_unavailable.png");
-                bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+                bookIconArray[in]->setPixmap(pixmap.scaled(stdIconWidth, stdIconHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             }
 
             // Display book title

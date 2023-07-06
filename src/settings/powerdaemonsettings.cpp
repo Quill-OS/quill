@@ -13,8 +13,8 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     ui->mainLabel->setFont(QFont("Inter"));
 
     // Avoid some display issues (label moving because width of text would change with a proportional font)
-    ui->CBSLabel->setFont(QFont("Noto Sans Mono"));
-    ui->idleSleepLabel->setFont(QFont("Noto Sans Mono"));
+    ui->CBSLabel->setFont(QFont("Roboto Mono"));
+    ui->idleSleepLabel->setFont(QFont("Roboto Mono"));
 
     // Font tweaks
     ui->label_2->setFont(QFont("Inter"));
@@ -67,10 +67,10 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
     // Padding
     ui->CBSDecreaseBtn->setStyleSheet("padding: 10px; font-size: 10pt");
     ui->CBSIncreaseBtn->setStyleSheet("padding: 10px; font-size: 10pt");
-    ui->idleSleepDecreaseBtn->setStyleSheet("padding: 10px; font-size: 10pt");
-    ui->idleSleepIncreaseBtn->setStyleSheet("padding: 10px; font-size: 10pt");
-    ui->idleSleepDecreaseMBtn->setStyleSheet("padding: 10px; font-size: 10pt");
-    ui->idleSleepIncreaseMBtn->setStyleSheet("padding: 10px; font-size: 10pt");
+    ui->idleSleepDecreaseBtn->setStyleSheet("font-family: 'Roboto Mono'; font-weight: bold; padding: 10px; font-size: 10pt");
+    ui->idleSleepIncreaseBtn->setStyleSheet("font-family: 'Roboto Mono'; font-weight: bold; padding: 10px; font-size: 10pt");
+    ui->idleSleepDecreaseMBtn->setStyleSheet("font-family: 'Roboto Mono'; font-weight: bold; padding: 10px; font-size: 10pt");
+    ui->idleSleepIncreaseMBtn->setStyleSheet("font-family: 'Roboto Mono'; font-weight: bold; padding: 10px; font-size: 10pt");
 
     // Stylesheet
     QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
@@ -403,7 +403,7 @@ void powerDaemonSettings::on_deepSleepBtn_clicked(bool checked)
 void powerDaemonSettings::convertCinematicInt() {
     QString text = QString::number(cinematicBrightnessInt);
     // To avoid moving other widgets when the value changes
-    text.append("ms");
+    text.append(" ms");
     ui->CBSLabel->setText(text);
 }
 

@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "functions.h"
+#include "egg.h"
 
 namespace Ui {
 class virtualkeyboard;
@@ -75,7 +76,8 @@ private slots:
     void on_closeBtn_clicked();
 
 private:
-    Ui::virtualkeyboard *ui;
+    Ui::virtualkeyboard * ui;
+    egg * eggWindow;
     keyboardMode currentMode = keyboardMode::lowerCase;
 
 signals:

@@ -295,7 +295,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Global reading settings
     string_checkconfig(".config/16-global_reading_settings/config");
     if(checkconfig_str_val == "") {
-        checked_box = true;
+        checked_box = false;
         writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
     }
 
@@ -305,31 +305,31 @@ MainWindow::MainWindow(QWidget *parent)
         int quote_value = display_quote();
         if(quote_value == 1) {
             QPixmap pixmap(":/resources/chesterton.jpg");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“A good novel tells us the truth about its hero; but a bad novel tells us the truth about its author.”\n― G.K. Chesterton");
         }
         if(quote_value == 2) {
             QPixmap pixmap(":/resources/alcott.jpg");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“I've got the key to my castle in the air, but whether I can unlock the door remains to be seen.”\n― Louisa May Alcott");
         }
         if(quote_value == 3) {
             QPixmap pixmap(":/resources/king.jpg");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“Quiet people have the loudest minds”\n― Stephen King");
         }
         if(quote_value == 4) {
             QPixmap pixmap(":/resources/davies.jpg");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“Authors like cats because they are such quiet, lovable, wise creatures, and cats like authors for the same reasons.”\n― Robertson Davies");
         }
         if(quote_value == 5) {
             QPixmap pixmap(":/resources/christie.png");
-            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+            QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
             ui->quotePictureLabel->setPixmap(scaledPixmap);
             ui->quoteLabel->setText("“One of the saddest things in life, is the things one remembers.”\n― Agatha Christie");
         }
@@ -600,8 +600,15 @@ void MainWindow::on_homeBtn_clicked()
 
 void MainWindow::resetWindow(bool resetStackedWidget) {
     // Reset layout
+    bool authorQuote = false;
     if(resetStackedWidget == true) {
-        ui->homeStackedWidget->setCurrentIndex(2);
+        if(checkconfig(".config/05-quote/config") == false) {
+            authorQuote = true;
+            ui->homeStackedWidget->setCurrentIndex(0);
+        }
+        else {
+            ui->homeStackedWidget->setCurrentIndex(2);
+        }
         ui->stackedWidget->setCurrentIndex(0);
     }
 
@@ -637,7 +644,7 @@ void MainWindow::resetWindow(bool resetStackedWidget) {
     if(global::mainwindow::tabSwitcher::repaint == true) {
         this->repaint();
     }
-    if(resetStackedWidget == true) {
+    if(resetStackedWidget == true && authorQuote == false) {
         setupHomePageWidget();
     }
 }
@@ -735,7 +742,7 @@ void MainWindow::setInitialBrightness() {
         else {
             warmth = checkconfig_str_val.toInt();
         }
-        set_warmth(warmth);
+        cinematicWarmth(warmth);
     }
     int brightness_value = brightness_checkconfig(".config/03-brightness/config");
     if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
@@ -970,29 +977,59 @@ void MainWindow::on_libraryButton_clicked()
 {
     log("Launching Online Library", className);
     if(testPing() == 0 or global::deviceID == "emu\n") {
-        resetFullWindowException = true;
-        resetWindow(false);
-        if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
-            ui->libraryButton->setStyleSheet("background: black; color: white");
-            ui->libraryButton->setIcon(QIcon(":/resources/online-library-inverted.png"));
+        // 'Do you want to sync?' dialog
+        bool willSync = false;
+        QString syncEpochQStr = readFile("/external_root/opt/storage/gutenberg/last_sync");
+        if(!syncEpochQStr.isEmpty()) {
+            unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
+            unsigned long syncEpoch = syncEpochQStr.toULong();
+            unsigned long allowSyncEpoch = syncEpoch + 86400;
+            if(currentEpoch > allowSyncEpoch) {
+                willSync = true;
+            }
+        }
+        else if(syncEpochQStr.isEmpty()) {
+            willSync = true;
+        }
 
-            // Create widget
-            libraryWidgetWindow = new libraryWidget();
-            connect(libraryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(resetFullWindow()));
-            libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
-            ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
-            global::mainwindow::tabSwitcher::libraryWidgetCreated = true;
-
-            // Switch tab
-            ui->stackedWidget->setCurrentIndex(3);
-            global::mainwindow::tabSwitcher::libraryWidgetSelected = true;
-
-            // Repaint
-            this->repaint();
+        if(willSync == true) {
+            log("Showing 'Sync required' dialog", className);
+            global::library::librarySyncDialog = true;
+            generalDialogWindow = new generalDialog(this);
+            QObject::connect(generalDialogWindow, &generalDialog::syncOnlineLibrary, this, &MainWindow::launchOnlineLibrary);
+            QObject::connect(generalDialogWindow, &generalDialog::noSyncOnlineLibrary, this, &MainWindow::on_homeBtn_clicked);
+            generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+            generalDialogWindow->show();
+        }
+        else {
+            launchOnlineLibrary();
         }
     }
     else {
         showToast("Wi-Fi connection error");
+    }
+}
+
+void MainWindow::launchOnlineLibrary() {
+    resetFullWindowException = true;
+    resetWindow(false);
+    if(global::mainwindow::tabSwitcher::libraryWidgetSelected != true) {
+        ui->libraryButton->setStyleSheet("background: black; color: white");
+        ui->libraryButton->setIcon(QIcon(":/resources/online-library-inverted.png"));
+
+        // Create widget
+        libraryWidgetWindow = new libraryWidget();
+        connect(libraryWidgetWindow, SIGNAL(destroyed(QObject*)), SLOT(resetFullWindow()));
+        libraryWidgetWindow->setAttribute(Qt::WA_DeleteOnClose);
+        ui->stackedWidget->insertWidget(3, libraryWidgetWindow);
+        global::mainwindow::tabSwitcher::libraryWidgetCreated = true;
+
+        // Switch tab
+        ui->stackedWidget->setCurrentIndex(3);
+        global::mainwindow::tabSwitcher::libraryWidgetSelected = true;
+
+        // Repaint
+        this->repaint();
     }
 }
 

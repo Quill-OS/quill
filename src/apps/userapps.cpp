@@ -185,7 +185,7 @@ bool userapps::manageRequiredFeatures()
         if(featureId == 0) {
             // Double 'if' conditions to avoid launching unnecesery testPing() in emu
             if(global::deviceID != "emu\n") {
-                if(testPing() != 0) {
+                if(checkWifiState() != global::wifi::wifiState::configured) {
                     global::userApps::appCompatibilityText = "<font face='u001'>This app needs a Wi-Fi connection, continue anyway</font><font face='Inter'>?</font>";
                     launchDialog = true;
                 }

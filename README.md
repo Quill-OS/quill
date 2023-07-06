@@ -17,7 +17,7 @@ InkBox features:
 - VNC viewer app
 - Search function
 - 10 built-in fonts
-- Auto-suspend
+- Enhanced power management
 - Lock screen/passcode option
 - User-friendly experience
 ## How do I install InkBox?

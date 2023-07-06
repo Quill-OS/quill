@@ -36,7 +36,7 @@ quit::quit(QWidget *parent) :
     float stdIconHeight = sH / 1.25;
 
     QPixmap pixmap(":/resources/exit.png");
-    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+    QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     ui->label->setPixmap(scaledPixmap);
 
     if(checkconfig("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/9-deepSleep") == true) {

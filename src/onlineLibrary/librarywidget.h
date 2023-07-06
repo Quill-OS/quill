@@ -29,6 +29,7 @@ private:
 
 private slots:
     void syncCatalog();
+    void syncCatalogSlot();
     void setupView();
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();

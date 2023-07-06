@@ -44,8 +44,6 @@ settings::settings(QWidget *parent) :
     ui->nextBtn->setProperty("type", "borderless");
     ui->repackBtn->setProperty("type", "borderless");
     ui->exportHighlightsBtn->setProperty("type", "borderless");
-    ui->readerInfoButton->setProperty("type", "borderless");
-    ui->readerInfoButton->setStyleSheet("QPushButton[type='borderless']:pressed { background: white; color: white; border: none; }");
     ui->label->setStyleSheet("font-size: 10.5pt; font-weight: bold");
     ui->okBtn->setStyleSheet("font-weight: bold");
     ui->aboutBtn->setStyleSheet("font-size: 9pt");
@@ -92,9 +90,6 @@ settings::settings(QWidget *parent) :
     ui->setPasscodeLabel->hide();
     ui->securityLabel->hide();
     ui->line_2->hide();
-    ui->uiScaleNumberLabel->hide();
-    ui->uiScalingSlider->hide();
-    ui->uiScalingLabel->hide();
 
     // Variables
     defineDefaultPageSize(0);
@@ -167,8 +162,8 @@ settings::settings(QWidget *parent) :
         }
     }
     else {
-        ui->pageSizeWidthLabel->setText("Width: " + QString::number(defaultEpubPageWidth));
-        ui->pageSizeHeightLabel->setText("Height: " + QString::number(defaultEpubPageHeight));
+        ui->pageSizeWidthLabel->setText(QString::number(defaultEpubPageWidth));
+        ui->pageSizeHeightLabel->setText(QString::number(defaultEpubPageHeight));
         pageSizeHeightSaved = defaultEpubPageHeight;
         pageSizeWidthSaved = defaultEpubPageWidth;
     }
@@ -186,7 +181,25 @@ settings::settings(QWidget *parent) :
     // Scaling
     string_checkconfig(".config/09-dpi/config");
     if(checkconfig_str_val == "") {
-        ;
+        // Writing default value depending on the device
+        if(global::deviceID == "n705\n") {
+            string_writeconfig(".config/09-dpi/config", "187");
+        }
+        else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+            string_writeconfig(".config/09-dpi/config", "160");
+        }
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+            string_writeconfig(".config/09-dpi/config", "195");
+        }
+        else if(global::deviceID == "n437\n") {
+            string_writeconfig(".config/09-dpi/config", "275");
+        }
+        else if(global::deviceID == "n873\n") {
+            string_writeconfig(".config/09-dpi/config", "285");
+        }
+        else {
+            string_writeconfig(".config/09-dpi/config", "187");
+        }
     }
     else {
         int dpi_number = checkconfig_str_val.toInt();
@@ -213,7 +226,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
             if(dpi_number == 195) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -222,6 +235,17 @@ settings::settings(QWidget *parent) :
             }
             if(dpi_number == 225) {
                 ui->uiScalingSlider->setValue(2);
+            }
+        }
+        else if(global::deviceID == "n306\n") {
+            if(dpi_number == 212) {
+                ui->uiScalingSlider->setValue(0);
+            }
+            if(dpi_number == 227) {
+                ui->uiScalingSlider->setValue(1);
+            }
+            if(dpi_number == 242) {
+                ui->uiScalingSlider->setValue(3);
             }
         }
         else if(global::deviceID == "n437\n") {
@@ -317,20 +341,6 @@ settings::settings(QWidget *parent) :
         ui->repackBtn->hide();
     }
 
-    // DPI checkbox
-    string_checkconfig(".config/09-dpi/config");
-    // Check if the string is a number; else, we don't check the check box
-    if(checkconfig_str_val == "false") {
-        string_writeconfig(".config/09-dpi/config-enabled", "false");
-    }
-    else {
-        string_writeconfig(".config/09-dpi/config-enabled", "true");
-    }
-    if(checkconfig(".config/09-dpi/config-enabled") == true) {
-        ui_not_user_change = true;
-        ui->enableUiScalingCheckBox->click();
-    }
-
     // Timezone
     ui->tzComboBox->addItems(QStringList(readFile(":/resources/tzlist").split("\n", Qt::SkipEmptyParts)));
     timezone_not_user_change = true;
@@ -354,6 +364,21 @@ settings::settings(QWidget *parent) :
     // Automatic updates
     if(checkconfig(".config/23-updates/check-updates") == true) {
         ui->autoCheckUpdatesBox->click();
+    }
+
+    // 'Export highlights' button
+    if(!QFile::exists(global::localLibrary::highlightsDatabasePath) or readFile(global::localLibrary::highlightsDatabasePath).isEmpty()) {
+        ui->exportHighlightsBtn->setEnabled(false);
+    }
+
+    if(readFile(".config/12-lockscreen/background") == "blank") {
+        ui->lockscreenBackgroundComboBox->setCurrentIndex(0);
+    }
+    else if(readFile(".config/12-lockscreen/background") == "screenSaver") {
+        ui->lockscreenBackgroundComboBox->setCurrentIndex(1);
+    }
+    else if(readFile(".config/12-lockscreen/background") == "background") {
+        ui->lockscreenBackgroundComboBox->setCurrentIndex(2);
     }
 
     if(checkconfig("/opt/inkbox_genuine") == true) {
@@ -405,15 +430,7 @@ settings::~settings()
 }
 
 void settings::on_okBtn_clicked() {
-    // Save things
-    writeFile(".config/07-words_number/config", QString::number(wordsNumberSaved));
-    log("Set text files words number to " + QString::number(wordsNumberSaved), className);
-
-    writeFile(".config/13-epub_page_size/width", QString::number(pageSizeWidthSaved));
-    writeFile(".config/13-epub_page_size/set", "true");
-
-    writeFile(".config/13-epub_page_size/height", QString::number(pageSizeHeightSaved));
-    writeFile(".config/13-epub_page_size/set", "true");
+    saveDeferredSettings();
 
     // Prevent potential unknown damage launching via shell script this could do
     if(launch_sh == true) {
@@ -434,6 +451,21 @@ void settings::on_okBtn_clicked() {
         process.startDetached("inkbox", QStringList());
         qApp->quit();
     }
+}
+
+void settings::saveDeferredSettings() {
+    // Save things
+    writeFile(".config/07-words_number/config", QString::number(wordsNumberSaved));
+    log("Set text files words number to " + QString::number(wordsNumberSaved), className);
+
+    writeFile(".config/13-epub_page_size/width", QString::number(pageSizeWidthSaved));
+    writeFile(".config/13-epub_page_size/set", "true");
+
+    writeFile(".config/13-epub_page_size/height", QString::number(pageSizeHeightSaved));
+    writeFile(".config/13-epub_page_size/set", "true");
+
+    // Notify power daemon of a potential configuration update
+    writeFile("/mnt/onboard/.adds/inkbox/.config/20-sleep_daemon/updateConfig", "true");
 }
 
 void settings::on_aboutBtn_clicked()
@@ -635,8 +667,11 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "160");
         }
-        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
             string_writeconfig(".config/09-dpi/config", "195");
+        }
+        if(global::deviceID == "n306\n") {
+            string_writeconfig(".config/09-dpi/config", "212");
         }
         if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "275");
@@ -652,8 +687,11 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "187");
         }
-        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
             string_writeconfig(".config/09-dpi/config", "210");
+        }
+        if(global::deviceID == "n306\n") {
+            string_writeconfig(".config/09-dpi/config", "227");
         }
         if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "290");
@@ -669,8 +707,11 @@ void settings::on_uiScalingSlider_valueChanged(int value)
         if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             string_writeconfig(".config/09-dpi/config", "200");
         }
-        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
             string_writeconfig(".config/09-dpi/config", "225");
+        }
+        if(global::deviceID == "n306\n") {
+            string_writeconfig(".config/09-dpi/config", "242");
         }
         if(global::deviceID == "n437\n") {
             string_writeconfig(".config/09-dpi/config", "305");
@@ -756,6 +797,7 @@ void settings::on_setPasscodeBtn_clicked()
 {
     log("'Set passcode' button clicked", className);
     log("Launching lockscreen binary", className);
+    saveDeferredSettings();
     string_writeconfig("/tmp/setPasscode", "true");
     QProcess process;
     process.startDetached("lockscreen", QStringList());
@@ -767,59 +809,15 @@ void settings::on_enableLockscreenCheckBox_toggled(bool checked)
     QString settingString = "lockscreen";
     if(checked == true) {
         logEnabled(settingString, className);
-        string_writeconfig(".config/12-lockscreen/config", "true");
-    }
-    else {
-        logDisabled(settingString, className);
-        string_writeconfig(".config/12-lockscreen/config", "false");
-    }
-}
-
-void settings::on_enableUiScalingCheckBox_toggled(bool checked)
-{
-    QString settingString = "UI scaling";
-    if(checked == true) {
-        logEnabled(settingString, className);
-        // Writing default value depending on the device
-        if(global::deviceID == "n705\n") {
-            string_writeconfig(".config/09-dpi/config", "187");
-        }
-        else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-            string_writeconfig(".config/09-dpi/config", "160");
-        }
-        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
-            string_writeconfig(".config/09-dpi/config", "195");
-        }
-        else if(global::deviceID == "n437\n") {
-            string_writeconfig(".config/09-dpi/config", "275");
-        }
-        else if(global::deviceID == "n873\n") {
-            string_writeconfig(".config/09-dpi/config", "285");
-        }
-        else {
-            string_writeconfig(".config/09-dpi/config", "187");
-        }
-        string_writeconfig(".config/09-dpi/config-enabled", "true");
-        ui->uiScaleNumberLabel->show();
-        ui->uiScalingSlider->show();
-        ui->uiScalingLabel->show();
-        launch_sh = true;
-        if(ui_not_user_change == true) {
-            ui_enable_changed = false;
-        }
-        else {
-            ui_enable_changed = true;
+        writeFile(".config/12-lockscreen/config", "true");
+        // Launching passcode setup wizard if none seems to be set at the moment
+        if(!(QFile::exists(".config/12-lockscreen/passcode") && QFile::exists(".config/12-lockscreen/salt"))) {
+            ui->setPasscodeBtn->click();
         }
     }
     else {
         logDisabled(settingString, className);
-        string_writeconfig(".config/09-dpi/config", "false");
-        string_writeconfig(".config/09-dpi/config-enabled", "false");
-        ui->uiScaleNumberLabel->hide();
-        ui->uiScalingSlider->hide();
-        ui->uiScalingLabel->hide();
-        launch_sh = true;
-        ui_enable_changed = true;
+        writeFile(".config/12-lockscreen/config", "false");
     }
 }
 
@@ -1150,8 +1148,18 @@ void settings::on_autoCheckUpdatesBox_clicked(bool checked)
     }
 }
 
-void settings::on_readerInfoButton_clicked()
+void settings::on_lockscreenBackgroundComboBox_currentTextChanged(const QString &arg1)
 {
-    // Maybe implementing an algorithm that will put \n automatically would be needed?
-    emit showToast("Changing settings in reading section\ncan disrupt your current\nbooks settings, shift pages.");
+    if(arg1 == "Blank") {
+        writeFile(".config/12-lockscreen/background", "blank");
+        log("Set lockscreen background to 'blank'", className);
+    }
+    else if(arg1 == "Screensaver picture") {
+        writeFile(".config/12-lockscreen/background", "screenSaver");
+        log("Set lockscreen background to 'screenSaver'", className);
+    }
+    else if(arg1 == "Device's screen") {
+        writeFile(".config/12-lockscreen/background", "background");
+        log("Set lockscreen background to 'background'", className);
+    }
 }

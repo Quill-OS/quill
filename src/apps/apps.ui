@@ -123,8 +123,44 @@
              <property name="verticalSpacing">
               <number>10</number>
              </property>
-             <item row="4" column="1">
-              <widget class="QPushButton" name="calendarLaunchBtn">
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>KoBox apps</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QPushButton" name="g2048LaunchBtn">
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Launch</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="reversiLabel">
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Reversi</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1">
+              <widget class="QPushButton" name="vncLaunchBtn">
                <property name="font">
                 <font>
                  <family>Inter</family>
@@ -136,7 +172,105 @@
                </property>
               </widget>
              </item>
-             <item row="6" column="1">
+             <item row="2" column="0">
+              <widget class="QLabel" name="g2048Label">
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>2048</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="calendarLabel">
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Calendar</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QPushButton" name="reversiLaunchBtn">
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Launch</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QPushButton" name="savedWordsLaunchBtn">
+               <property name="font">
+                <font>
+                 <family>Inter</family>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Launch</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="1">
+              <widget class="QPushButton" name="todoLaunchBtn">
+               <property name="font">
+                <font>
+                 <family>Inter</family>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Launch</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_3">
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Saved words</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="0">
+              <widget class="QLabel" name="todoLabel">
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>To-Do</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="vncViewerLabel">
+               <property name="font">
+                <font>
+                 <bold>true</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>VNC viewer</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="1">
               <widget class="QPushButton" name="calculatorLaunchBtn">
                <property name="font">
                 <font>
@@ -162,57 +296,7 @@
                </property>
               </widget>
              </item>
-             <item row="7" column="1">
-              <widget class="QPushButton" name="vncLaunchBtn">
-               <property name="font">
-                <font>
-                 <family>Inter</family>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Launch</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="reversiLabel">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Reversi</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QLabel" name="g2048Label">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>2048</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <widget class="QPushButton" name="savedWordsLaunchBtn">
-               <property name="font">
-                <font>
-                 <family>Inter</family>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Launch</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
+             <item row="5" column="0">
               <widget class="QLabel" name="label_4">
                <property name="font">
                 <font>
@@ -224,126 +308,16 @@
                </property>
               </widget>
              </item>
-             <item row="8" column="1">
-              <widget class="QPushButton" name="todoLaunchBtn">
-               <property name="font">
-                <font>
-                 <family>Inter</family>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Launch</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QLabel" name="calendarLabel">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Calendar</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="0">
-              <widget class="QLabel" name="label_5">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>KoBox apps</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <widget class="QPushButton" name="reversiLaunchBtn">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Launch</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="scribbleLabel">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Scribble</string>
-               </property>
-              </widget>
-             </item>
              <item row="3" column="1">
-              <widget class="QPushButton" name="g2048LaunchBtn">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Launch</string>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="0">
-              <widget class="QLabel" name="vncViewerLabel">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>VNC viewer</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0">
-              <widget class="QLabel" name="label_3">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>Saved words</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QPushButton" name="scribbleLaunchBtn">
+              <widget class="QPushButton" name="calendarLaunchBtn">
                <property name="font">
                 <font>
                  <family>Inter</family>
-                 <italic>false</italic>
                  <bold>true</bold>
                 </font>
                </property>
                <property name="text">
                 <string>Launch</string>
-               </property>
-              </widget>
-             </item>
-             <item row="8" column="0">
-              <widget class="QLabel" name="todoLabel">
-               <property name="font">
-                <font>
-                 <bold>true</bold>
-                </font>
-               </property>
-               <property name="text">
-                <string>To-Do</string>
                </property>
               </widget>
              </item>

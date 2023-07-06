@@ -17,7 +17,6 @@
 #include <QTextCursor>
 #include <QGraphicsScene>
 #include <QJsonDocument>
-#include <QLayout>
 
 using namespace std;
 
@@ -25,19 +24,6 @@ reader::reader(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::reader)
 {
-    // In conclusion
-    // this->layout()->setContentsMargins(0,0,0,0);
-    // Causes a segault
-    // this->setContentsMargins(0,0,0,0);
-    // No effect
-    // So i set it in the ui file, in "reader QWidget". Please don't change this, if it looks horrible on your device, contact me, then we need to figure something other out
-    // Yes, i prefet the scroll bar to be on the edge...
-    // ~Szybet
-    // horizontalLayout is for line margins
-    // To avoid uggly text cutting, also restored on option button click
-    // ui->gridLayout->setVerticalSpacing(0);
-    // this can't be launched here... so it will be launched at the end
-
     // Elements
     graphicsScene = new QGraphicsScene(this);
 
@@ -61,7 +47,6 @@ reader::reader(QWidget *parent) :
     global::reader::currentViewportText = "";
 
     ui->setupUi(this);
-    ui->brightnessStatus->setFont(QFont("u001"));
     ui->fontLabel->setFont(QFont("u001"));
     ui->sizeLabel->setFont(QFont("u001"));
     ui->sizeValueLabel->setFont(QFont("Inter"));
@@ -77,10 +62,8 @@ reader::reader(QWidget *parent) :
     ui->previousBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->optionsBtn->setProperty("type", "borderless");
-    ui->brightnessDecBtn->setProperty("type", "borderless");
-    ui->brightnessIncBtn->setProperty("type", "borderless");
     ui->homeBtn->setProperty("type", "borderless");
-    ui->aboutBtn->setProperty("type", "borderless");
+    ui->brightnessBtn->setProperty("type", "borderless");
     ui->alignLeftBtn->setProperty("type", "borderless");
     ui->alignRightBtn->setProperty("type", "borderless");
     ui->alignCenterBtn->setProperty("type", "borderless");
@@ -115,14 +98,10 @@ reader::reader(QWidget *parent) :
     ui->previousDefinitionBtn->setIcon(QIcon(":/resources/chevron-left.png"));
     ui->nextDefinitionBtn->setText("");
     ui->nextDefinitionBtn->setIcon(QIcon(":/resources/chevron-right.png"));
-    ui->brightnessDecBtn->setText("");
-    ui->brightnessDecBtn->setIcon(QIcon(":/resources/minus.png"));
-    ui->brightnessIncBtn->setText("");
-    ui->brightnessIncBtn->setIcon(QIcon(":/resources/plus.png"));
     ui->homeBtn->setText("");
     ui->homeBtn->setIcon(QIcon(":/resources/home.png"));
-    ui->aboutBtn->setText("");
-    ui->aboutBtn->setIcon(QIcon(":/resources/info.png"));
+    ui->brightnessBtn->setText("");
+    ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->searchBtn->setText("");
     ui->searchBtn->setIcon(QIcon(":/resources/search.png"));
     ui->increaseScaleBtn->setText("");
@@ -151,33 +130,8 @@ reader::reader(QWidget *parent) :
     // Style misc.
     ui->bookInfoLabel->setStyleSheet("font-style: italic");
 
-    // Manage
-    // .config/04-book/word-lookup-enabled
-    // .config/04-book/highlighting-enabled
-
-    if(!QFile(wordLookupEnablePath).exists()) {
-        log("File " + wordLookupEnablePath + " doesn't exist, creating it", className);
-        writeFile(wordLookupEnablePath, "true");
-    }
-    wordLookupEnabled = checkconfig(wordLookupEnablePath);
-    ui->wordSearchBox->setChecked(wordLookupEnabled);
-    log("Variable wordLookupEnabled is: " + QString::number(wordLookupEnabled), className);
-
-    if(!QFile(highlightEnablePath).exists()) {
-        log("File " + highlightEnablePath + " doesn't exist, creating it", className);
-        writeFile(highlightEnablePath, "true");
-    }
-    highlightEnabled = checkconfig(highlightEnablePath);
-    ui->highlightingBox->setChecked(highlightEnabled);
-    log("Variable highlightEnabled is: " + QString::number(highlightEnabled), className);
-
     // Making text selectable
-    if(highlightEnabled == true or wordLookupEnabled == true) {
-        ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    }
-    else {
-        ui->text->setTextInteractionFlags(Qt::NoTextInteraction);
-    }
+    ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
     // Font misc.
     int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Italic.ttf");
@@ -268,7 +222,6 @@ reader::reader(QWidget *parent) :
     std::string book_file_str = book_file.toStdString();
     string_writeconfig("/tmp/inkboxBookPath", book_file_str);
 
-    // ITS LITTERALLY MOUNT --BIND THE SHA DIR ~Szybet, note for future
     // Calling InkBox daemon (ibxd) via FIFO interface to run bookconfig_mount
     if(!book_file.isEmpty()) {
         if(checkconfig(".config/16-global_reading_settings/config") == false) {
@@ -276,8 +229,6 @@ reader::reader(QWidget *parent) :
             string_writeconfig("/opt/ibxd", "bookconfig_mount\n");
             // Callback handler to wait until bookconfig_mount has finished execution
             while(true) {
-                // Fun fact, this while loop caused 100% cpu usage without the delay ~Szybet
-                QThread::msleep(50);
                 if(QFile::exists("/inkbox/bookConfigSetUp")) {
                     QFile::remove("/inkbox/bookConfigSetUp");
                     setupLocalSettingsEnvironment();
@@ -292,13 +243,7 @@ reader::reader(QWidget *parent) :
 
     // Custom settings
     // Brightness
-    if(global::reader::globalReadingSettings == false) {
-        if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
-            int brightness_value = brightness_checkconfig(".config/03-brightness/config");
-            log("Local Reading Settings: Setting brightness to " + QString::number(brightness_value), className);
-            cinematicBrightness(brightness_value, 2);
-        }
-    }
+    QTimer::singleShot(0, this, SLOT(setCinematicBrightnessWarmthSlot()));
     // Font
     global::reader::font = readFile(".config/04-book/font");
     if(global::reader::font == "u001") {
@@ -351,15 +296,24 @@ reader::reader(QWidget *parent) :
     ui->lineSpacingValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
     ui->marginsValueLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
     ui->homeBtn->setStyleSheet("font-size: 9pt; padding: 5px");
-    ui->aboutBtn->setStyleSheet("font-size: 9pt; padding: 5px");
+    ui->brightnessBtn->setStyleSheet("font-size: 9pt; padding: 5px");
     ui->fontChooser->setStyleSheet("font-size: 9pt");
     ui->gotoBtn->setStyleSheet("font-size: 9pt; padding: 9px; font-weight: bold; background: lightGrey");
     ui->pageNumberLabel->setFont(QFont("Source Serif Pro"));
     ui->viewHighlightsBtn->setStyleSheet("padding: 9px");
 
-    // Hiding the menubar + definition widget + brightness widget + buttons bar widget
+    // Hiding the menubar + definition widget + brightness button + buttons bar widget
     ui->menuWidget->setVisible(false);
-    ui->brightnessWidget->setVisible(false);
+    if(!(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n")) {
+        ui->brightnessBtn->setVisible(true);
+        ui->line_15->setVisible(true);
+    }
+    else {
+        ui->brightnessBtn->setVisible(false);
+        ui->brightnessBtn->deleteLater();
+        ui->line_15->setVisible(false);
+        ui->line_15->deleteLater();
+    }
     ui->menuBarWidget->setVisible(false);
     ui->buttonsBarWidget->setVisible(false);
     ui->pdfScaleWidget->setVisible(false);
@@ -381,20 +335,6 @@ reader::reader(QWidget *parent) :
     ui->topbarStackedWidget->setVisible(true);
     showTopbarWidget = true;
     ui->bookInfoLabel->setFont(crimson);
-
-    // Getting brightness level
-    int brightness_value;
-    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
-        brightness_value = get_brightness();
-    }
-    else if(global::isN613 == true) {
-        setDefaultWorkDir();
-        brightness_value = brightness_checkconfig(".config/03-brightness/config");
-    }
-    else {
-        brightness_value = get_brightness();
-    }
-    ui->brightnessStatus->setValue(brightness_value);
 
     // Defining pixmaps
     // Getting the screen's size
@@ -425,13 +365,13 @@ reader::reader(QWidget *parent) :
         float stdIconWidth = sW / 19;
         float stdIconHeight = sH / 19;
         QPixmap chargingPixmap(":/resources/battery_charging.png");
-        scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        scaledChargingPixmap = chargingPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap fullPixmap(":/resources/battery_full.png");
-        scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        scaledFullPixmap = fullPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap halfPixmap(":/resources/battery_half.png");
-        scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        scaledHalfPixmap = halfPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         QPixmap emptyPixmap(":/resources/battery_empty.png");
-        scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio);
+        scaledEmptyPixmap = emptyPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
     }
 
     // Checking if there is a page refresh setting set
@@ -787,9 +727,6 @@ reader::reader(QWidget *parent) :
         connect(saveSettingsTimer, SIGNAL(timeout()), this, SLOT(saveReadingSettings()));
         saveSettingsTimer->start();
     }
-
-    // Needed
-    ui->gridLayout->setVerticalSpacing(0);
 }
 
 reader::~reader()
@@ -1173,11 +1110,17 @@ void reader::on_previousBtn_clicked()
 }
 
 void reader::refreshScreen() {
-    if(pagesTurned >= pageRefreshSetting and neverRefresh == false) {
-        // Refreshing the screen
-        this->repaint();
-        // Reset count
-        pagesTurned = 0;
+    if(neverRefresh == true) {
+        // Do nothing; "Never refresh" was set
+        ;
+    }
+    else {
+        if(pagesTurned >= pageRefreshSetting) {
+            // Refreshing the screen
+            this->repaint();
+            // Reset count
+            pagesTurned = 0;
+        }
     }
 }
 
@@ -1185,8 +1128,6 @@ void reader::on_optionsBtn_clicked()
 {
     log("'Options' button clicked", className);
     if(menubar_shown == true) {
-        // Avoid cutting off text in ugly way
-        ui->gridLayout->setVerticalSpacing(0);
         menubar_hide();
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 13.5px");
@@ -1205,8 +1146,6 @@ void reader::on_optionsBtn_clicked()
         menubar_shown = false;
     }
     else {
-        // Make the gui good looking
-        ui->gridLayout->setVerticalSpacing(6);
         menubar_show();
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 13.5px");
@@ -1220,69 +1159,6 @@ void reader::on_optionsBtn_clicked()
         ui->optionsBtn->setIcon(QIcon(":/resources/settings-inverted.png"));
         this->repaint();
         menubar_shown = true;
-    }
-}
-
-void reader::on_brightnessDecBtn_clicked()
-{
-    int bval;
-    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
-        bval = get_brightness();
-    }
-    else if(global::isN613 == true) {
-        setDefaultWorkDir();
-        bval = brightness_checkconfig(".config/03-brightness/config");
-    }
-    else {
-        bval = get_brightness();
-    }
-    int set_bval = bval - 1;
-    if(set_bval < 0) {
-        set_bval = 0;
-    }
-    pre_set_brightness(set_bval);
-    brightness_writeconfig(set_bval);
-
-    ui->brightnessStatus->setValue(set_bval);
-}
-
-void reader::on_brightnessIncBtn_clicked()
-{
-    int bval;
-    if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
-        bval = get_brightness();
-    }
-    else if(global::isN613 == true) {
-        setDefaultWorkDir();
-        bval = brightness_checkconfig(".config/03-brightness/config");
-    }
-    else {
-        bval = get_brightness();
-    }
-    int set_bval = bval + 1;
-    if(set_bval > 100) {
-        set_bval = 100;
-    }
-    pre_set_brightness(set_bval);
-    brightness_writeconfig(set_bval);
-
-    ui->brightnessStatus->setValue(set_bval);
-}
-
-void reader::on_aboutBtn_clicked()
-{
-    log("Showing About message box", className);
-    if(checkconfig("/opt/inkbox_genuine") == true) {
-        QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
-        aboutmsg.prepend("<font face='u001'>");
-        string_checkconfig_ro("/external_root/opt/isa/version");
-        aboutmsg.append("<br><br>InkBox ");
-        aboutmsg.append(checkconfig_str_val);
-        aboutmsg.append("</font>");
-        QMessageBox::information(this, tr("Information"), aboutmsg);
-    }
-    else {
-        QMessageBox::information(this, tr("About"), tr("InkBox is an open-source Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive."));
     }
 }
 
@@ -1464,12 +1340,6 @@ void reader::setTextProperties(int alignment, int lineSpacing, int margins, QStr
     textDialogLock = true;
     QTextCursor cursor = ui->text->textCursor();
     // Kudos to Qt for not implementing the opposite of the following function /)_-)
-    /*
-    actually just cursor->clearSelection();
-    and then setTextCursor
-    ~Szybet
-    */
-
     ui->text->selectAll();
     // Text alignment
     if(alignment == 0) {
@@ -1531,25 +1401,11 @@ void reader::menubar_show() {
         ui->pageWidget->setVisible(true);
     }
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        ;
-    }
-    else {
-        ui->brightnessWidget->setVisible(true);
-    }
-
     menubar_shown = true;
 }
 
 void reader::menubar_hide() {
     log("Hiding menu bar", className);
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        ui->brightnessWidget->setVisible(false);
-    }
-    else {
-        // Safety measure
-        ui->brightnessWidget->setVisible(false);
-    }
 
     if(is_pdf == false && is_image == false) {
         ui->menuBarWidget->setVisible(false);
@@ -1853,60 +1709,49 @@ void reader::on_text_selectionChanged() {
             log("Text selection changed; selected text: '" + selected_text + "'", className);
             if(!selected_text.contains(" ")) {
                 // Word selection
-                if(wordLookupEnabled == true) {
-                    QString dictionary_position_str = QString::number(dictionary_position);
-                    ui->definitionStatusLabel->setText(dictionary_position_str);
-                    selected_text = selected_text.toLower();
-                    QStringList parts = selected_text.split(' ', QString::SkipEmptyParts);
-                    for (int i = 0; i < parts.size(); ++i)
-                        parts[i].replace(0, 1, parts[i][0].toUpper());
-                    word = parts.join(" ");
-                    letter = word.left(1);
-                    selected_text_str = word.toStdString();
-                    dictionary_lookup(selected_text_str, letter, dictionary_position);
-                    ui->wordLabel->setText(word);
-                    ui->definitionLabel->setText(definition);
-                    if(checkconfig_match(".config/06-words/config", selected_text_str) == true) {
-                        ui->saveWordBtn->setText("");
-                        ui->saveWordBtn->setIcon(QIcon(":/resources/starred_star.png"));
-                    }
-                    else {
-                        ui->saveWordBtn->setText("");
-                        ui->saveWordBtn->setIcon(QIcon(":/resources/star.png"));
-                    }
-                    wordwidgetLock = true;
-                    wordwidget_show();
+                QString dictionary_position_str = QString::number(dictionary_position);
+                ui->definitionStatusLabel->setText(dictionary_position_str);
+
+                selected_text = selected_text.toLower();
+                QStringList parts = selected_text.split(' ', QString::SkipEmptyParts);
+                for (int i = 0; i < parts.size(); ++i)
+                    parts[i].replace(0, 1, parts[i][0].toUpper());
+                word = parts.join(" ");
+                letter = word.left(1);
+                selected_text_str = word.toStdString();
+                dictionary_lookup(selected_text_str, letter, dictionary_position);
+                ui->wordLabel->setText(word);
+                ui->definitionLabel->setText(definition);
+                if(checkconfig_match(".config/06-words/config", selected_text_str) == true) {
+                    ui->saveWordBtn->setText("");
+                    ui->saveWordBtn->setIcon(QIcon(":/resources/starred_star.png"));
                 }
                 else {
-                    cursor.clearSelection();
-                    ui->text->setTextCursor(cursor);
+                    ui->saveWordBtn->setText("");
+                    ui->saveWordBtn->setIcon(QIcon(":/resources/star.png"));
                 }
+                wordwidgetLock = true;
+                wordwidget_show();
             }
             else {
                 // Highlight
-                if(highlightEnabled == true) {
-                    textDialogLock = true;
-                    global::reader::highlightAlreadyDone = false;
-                    QJsonObject jsonObject = getHighlightsForBook(book_file);
-                    QString htmlText = ui->text->toHtml();
-                    if(htmlText.contains("<span style=\" font-size:" + QString::number(global::reader::fontSize) + "pt; background-color:#bbbbbb;\">" + selected_text + "</span>") or htmlText.contains("<span style=\" background-color:#bbbbbb;\">" + selected_text + "</span>")) {
-                        log("Highlight already done", className);
-                        global::reader::highlightAlreadyDone = true;
-                    }
+                textDialogLock = true;
+                global::reader::highlightAlreadyDone = false;
+                QJsonObject jsonObject = getHighlightsForBook(book_file);
+                QString htmlText = ui->text->toHtml();
+                if(htmlText.contains("<span style=\" font-size:" + QString::number(global::reader::fontSize) + "pt; background-color:#bbbbbb;\">" + selected_text + "</span>") or htmlText.contains("<span style=\" background-color:#bbbbbb;\">" + selected_text + "</span>")) {
+                    log("Highlight already done", className);
+                    global::reader::highlightAlreadyDone = true;
+                }
 
-                    textDialog * textDialogWindow = new textDialog(this);
-                    QObject::connect(textDialogWindow, &textDialog::destroyed, this, &reader::unsetTextDialogLock);
-                    QObject::connect(textDialogWindow, &textDialog::highlightText, this, &reader::highlightText);
-                    QObject::connect(textDialogWindow, &textDialog::unhighlightText, this, &reader::unhighlightText);
-                    textDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
-                    textDialogWindow->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
-                    textDialogWindow->move(mapFromGlobal(QCursor::pos()));
-                    textDialogWindow->show();
-                }
-                else {
-                    cursor.clearSelection();
-                    ui->text->setTextCursor(cursor);
-                }
+                textDialog * textDialogWindow = new textDialog(this);
+                QObject::connect(textDialogWindow, &textDialog::destroyed, this, &reader::unsetTextDialogLock);
+                QObject::connect(textDialogWindow, &textDialog::highlightText, this, &reader::highlightText);
+                QObject::connect(textDialogWindow, &textDialog::unhighlightText, this, &reader::unhighlightText);
+                textDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+                textDialogWindow->setWindowFlags(Qt::FramelessWindowHint | Qt::Popup);
+                textDialogWindow->move(mapFromGlobal(ui->text->cursorRect().bottomRight()));
+                textDialogWindow->show();
             }
         }
         else {
@@ -1989,7 +1834,6 @@ void reader::setupPageWidget() {
     ui->pageProgressBar->setValue(pageNumberInt);
 }
 
-// This function generated ( converts ) the epub to xhtml
 void reader::getTotalEpubPagesNumber() {
     QString epubProg ("sh");
     QStringList epubArgs;
@@ -2418,28 +2262,25 @@ void reader::on_marginsSlider_valueChanged(int value)
     ui->marginsValueLabel->setText(QString::number(value + 1));
 }
 
-void reader::on_wordSearchBox_clicked(bool checked)
+void reader::on_brightnessBtn_clicked()
 {
-    bool_writeconfig(wordLookupEnablePath, checked);
-    wordLookupEnabled = checked;
-
-    if(highlightEnabled == true or wordLookupEnabled == true) {
-        ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    }
-    else {
-        ui->text->setTextInteractionFlags(Qt::NoTextInteraction);
-    }
+    log("Showing Brightness Dialog", className);
+    brightnessDialogWindow = new brightnessDialog();
+    brightnessDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    brightnessDialogWindow->show();
 }
 
-void reader::on_highlightingBox_clicked(bool checked)
-{
-    bool_writeconfig(highlightEnablePath, checked);
-    highlightEnabled = checked;
-
-    if(highlightEnabled == true or wordLookupEnabled == true) {
-        ui->text->setTextInteractionFlags(Qt::TextSelectableByMouse);
-    }
-    else {
-        ui->text->setTextInteractionFlags(Qt::NoTextInteraction);
+void reader::setCinematicBrightnessWarmthSlot() {
+    if(global::reader::globalReadingSettings == false) {
+        if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
+            int brightness_value = brightness_checkconfig(".config/03-brightness/config");
+            log("Local Reading Settings: Setting brightness to " + QString::number(brightness_value), className);
+            cinematicBrightness(brightness_value, 2);
+        }
+        if(global::deviceID == "n873\n") {
+            int warmthValue = readFile(".config/03-brightness/config-warmth").toInt();
+            log("Local Reading Settings: Setting warmth to " + QString::number(warmthValue), className);
+            cinematicWarmth(warmthValue);
+        }
     }
 }
