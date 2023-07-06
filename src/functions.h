@@ -20,7 +20,6 @@
 #include <QJsonValue>
 #include <QJsonArray>
 #include <QCryptographicHash>
-#include <QNetworkInterface>
 #include <QMutex>
 
 #include <stdio.h>
@@ -288,6 +287,10 @@ namespace {
     void logDisabled(QString configOption, QString className) {
         log("Disabling " + configOption + " setting", className);
     }
+    // Rewrited this function
+    // 1 if it returns it doesnt closes the file
+    // 2 just use qt functions
+    // ~Szybet
     bool checkconfig(QString file) {
         if(QFile::exists(file)) {
             QFile config(file);
@@ -303,6 +306,7 @@ namespace {
             }
         }
         else {
+            log("WARNING: File " + file + " doesn't exist, returning false", "functions");
             return false;
         }
     };
@@ -313,13 +317,13 @@ namespace {
             QTextStream in (&config);
             const QString content = in.readAll();
             std::string contentstr = content.toStdString();
-            config.close();
             if(contentstr.find("true") != std::string::npos) {
                 return true;
             }
             else {
                 return false;
             }
+            config.close();
         }
         else {
             return false;
@@ -516,7 +520,6 @@ namespace {
         QTextStream in (&config);
         const QString content = in.readAll();
         std::string contentstr = content.toStdString();
-        config.close();
 
         // Thanks to https://stackoverflow.com/questions/22516463/how-do-i-find-a-complete-word-not-part-of-it-in-a-string-in-c
         std::regex r("\\b" + pattern + "\\b");
@@ -528,6 +531,8 @@ namespace {
         else {
             return false;
         }
+        config.close();
+        return 0;
     };
     bool isBatteryLow() {
         // Checks if battery level is under 15% of total capacity.
@@ -677,8 +682,8 @@ namespace {
         global::systemInfoText = "<b>InkBox OS version ";
         string_checkconfig_ro("/external_root/opt/isa/version");
         global::systemInfoText.append(checkconfig_str_val);
-        global::systemInfoText.append("</b><br>Copyright <font face='Inter'>©</font> 2021-2023 Nicolas Mailloux and contributors<br>Special thanks to: Szybet, NiLuJe, akemnade, Rain92 (GitHub)");
-        global::systemInfoText.append("<br><b>GUI Git commit:</b> ");
+        global::systemInfoText.append("</b><br>Copyright <font face='Inter'>©</font> 2021-2022 Nicolas Mailloux and contributors");
+        global::systemInfoText.append("<br><b>Git:</b> ");
         global::systemInfoText.append(GIT_VERSION);
         global::systemInfoText.append("<br><b>Device UID:</b> ");
         global::systemInfoText.append(deviceUID);
@@ -1149,33 +1154,34 @@ namespace {
         }
     }
     global::wifi::wifiState checkWifiState() {
-        QString interfaceName;
-        if(global::deviceID == "n437\n" or global::deviceID == "kt\n") {
-            interfaceName = "wlan0";
-        }
-        else {
-            interfaceName = "eth0";
-        }
+        QProcess *wifiStateProcess = new QProcess();
+        QString path = "/external_root/usr/local/bin/wifi/wifi_status.sh";
+        QStringList args;
+        wifiStateProcess->start(path, args);
+        wifiStateProcess->waitForFinished();
+        wifiStateProcess->deleteLater();
 
-        // Check if network interface has an IP address
-        QNetworkInterface iface = QNetworkInterface::interfaceFromName(interfaceName);
-        QList<QNetworkAddressEntry> entries = iface.addressEntries();
-        if(!entries.isEmpty()) {
-            // Interface is up and has an IP address
+        QString currentWifiState;
+        if(QFile("/run/wifi_status").exists() == true) {
+            currentWifiState = readFile("/run/wifi_status");
+        } else {
+            log("/run/wifi_status doesn't exist", "functions");
+        }
+        if (currentWifiState.contains("configured") == true) {
             global::wifi::isConnected = true;
             return global::wifi::wifiState::configured;
         }
-        else {
-            if(QFile::exists("/sys/class/net/" + interfaceName + "/operstate")) {
-                // Interface is up but doesn't have an IP address
-                global::wifi::isConnected = false;
-                return global::wifi::wifiState::enabled;
-            }
-            else {
-                // Interface is not up
-                global::wifi::isConnected = false;
-                return global::wifi::wifiState::disabled;
-            }
+        else if (currentWifiState.contains("enabled") == true) {
+            global::wifi::isConnected = false;
+            return global::wifi::wifiState::enabled;
+        }
+        else if (currentWifiState.contains("disabled") == true) {
+            global::wifi::isConnected = false;
+            return global::wifi::wifiState::disabled;
+        } else {
+            global::wifi::isConnected = false;
+            QString function = __func__; log(function + ": Critical error", "functions");
+            return global::wifi::wifiState::unknown;
         }
     }
     int testPing() {

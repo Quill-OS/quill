@@ -80,8 +80,6 @@ private slots:
     void on_lockscreenBackgroundComboBox_currentTextChanged(const QString &arg1);
     void saveDeferredSettings();
 
-    void on_readerInfoButton_clicked();
-
 signals:
     void showToast(QString messageToDisplay);
     void closeIndefiniteToast();

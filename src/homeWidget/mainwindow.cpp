@@ -68,11 +68,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->inkboxLabel->setStyleSheet("font-size: 10.5pt");
     ui->homeBtn->setStyleSheet("padding: 5px");
 
-    if(global::audio::enabled == false) {
-        ui->audioBtn->hide();
-        ui->audioLine->hide();
-    }
-
     // Initializing some variables
     global::battery::showLowBatteryDialog = true;
     global::battery::showCriticalBatteryAlert = true;
@@ -148,10 +143,19 @@ MainWindow::MainWindow(QWidget *parent)
     ui->brightnessBtn->setIcon(QIcon(":/resources/frontlight.png"));
     ui->brightnessBtn->setIconSize(QSize(brightnessIconWidth, brightnessIconHeight));
 
-    // Audio
-    ui->audioBtn->setIcon(QIcon(":/resources/music-note.png"));
-    // Let's just use wifi icon size
-    ui->audioBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+    // it's places here because it uses icon sizes
+    if(global::audio::enabled == false) {
+        ui->audioBtn->hide();
+        ui->audioLine->hide();
+    }
+    else {
+        // Audio
+        ui->audioBtn->setIcon(QIcon(":/resources/music-note.png"));
+        // Let's just use wifi icon size
+        ui->audioBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
+        ui->labelLine_1->hide();
+        ui->labelLine_2->hide();
+    }
 
     updateWifiAble();
     if(global::device::isWifiAble == true) {

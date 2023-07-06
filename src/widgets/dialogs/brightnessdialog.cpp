@@ -32,7 +32,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     ui->incBtn->setProperty("type", "borderless");
     ui->incBtn->setText("");
     ui->incBtn->setIcon(QIcon(":/resources/plus.png"));
-    ui->brightnessLabel->setStyleSheet("padding-left: 125px; padding-right: 125px; font:bold");
+    ui->brightnessLabel->setStyleSheet("font-size: 11pt; padding-left: 125px; padding-right: 125px; font:bold");
     ui->valueLabel->setStyleSheet("font-size: 9pt");
     ui->warmthValueLabel->setStyleSheet("font-size: 9pt");
 
@@ -100,6 +100,13 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
         QString warmthValueStr = QString::number(warmthValue);
         ui->warmthValueLabel->setText(warmthValueStr);
     }
+
+    // UI fonts
+    int id = QFontDatabase::addApplicationFont(":/resources/fonts/CrimsonPro-Bold.ttf");
+    QString family = QFontDatabase::applicationFontFamilies(id).at(0);
+    QFont crimson_bold(family);
+
+    ui->brightnessLabel->setFont(QFont(crimson_bold));
 
     // Saving current brightness value in case we want to go backwards
     if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
