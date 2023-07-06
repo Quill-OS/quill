@@ -54,7 +54,8 @@ void audiofilequeue::on_deleteBtn_clicked()
         global::audio::audioMutex.unlock();
         emit playFileChild(id - 2);
         return void();
-    } else if(id < global::audio::queue.size()) {
+    } 
+    else if(id < global::audio::queue.size()) {
         global::audio::audioMutex.unlock();
         emit playFileChild(id);
         return void();

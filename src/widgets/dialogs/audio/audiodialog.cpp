@@ -323,7 +323,8 @@ void audioDialog::progressFuncManage() {
         if(global::audio::paused == false) {
            requestWatcher = true;
         }
-    } else {
+    } 
+    else {
        ui->progressSlider->setSliderPosition(0);
        ui->playBtn->setIcon(QIcon("://resources/play.png"));
        ui->fileNameLabel->setText("...");
