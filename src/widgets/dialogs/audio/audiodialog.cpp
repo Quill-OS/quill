@@ -15,6 +15,7 @@ audioDialog::audioDialog(QWidget *parent) :
     ui(new Ui::audioDialog)
 {
     ui->setupUi(this);
+    audioDialog::setFont(QFont("u001"));
 
     progress = new QTimer(this);
 
@@ -154,6 +155,11 @@ void audioDialog::refreshFileList() {
     QString path = readFile(".config/e-2-audio/path").replace("\n", "");
     log("Path for audio files: " + path, className);
     QDir dir{path};
+    // Other file formats could be added, by building more libraries
+    // https://github.com/arnavyc/sndfile-alsa-example/blob/main/src/sndfile-alsa.c
+    // https://github.com/libsndfile/libsndfile
+    // Is it easy to do? yes. Does it take more space? yes. Do i care? no, i have this fancy command:
+    // for i in *; do ffmpeg -i "$i" "${i%.*}.wav"; done
     dir.setNameFilters(QStringList("*.wav"));
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
 
@@ -193,7 +199,15 @@ void audioDialog::refreshFileList() {
             countMin = countMin + 1;
             bareSeconds = bareSeconds - 60;
         }
-        newMusicFile.length = QString::number(countMin) + ":" + QString::number(bareSeconds);
+        QString min = QString::number(countMin);
+        if(min.length() < 2) {
+            min = '0' + min;
+        }
+        QString sec = QString::number(bareSeconds);
+        if(sec.length() < 2) {
+            sec = '0' + sec;
+        }
+        newMusicFile.length = min + ":" + sec;
         // To avoid shifting the line
         while(newMusicFile.length.length() < 4) {
             newMusicFile.length = newMusicFile.length + " ";
@@ -238,6 +252,7 @@ void audioDialog::refreshAudioFileWidgetsQueue() {
         if(global::audio::isSomethingCurrentlyPlaying == true && global::audio::itemCurrentlyPLaying == i) {
             grey = true;
         }
+        global::audio::queue[i].id = i; // Give them invidual ID once more, because files can repeat
         newAudioFileQueue->provideData(global::audio::queue[i], grey);
         QObject::connect(this, &audioDialog::deleteItself, newAudioFileQueue, &audiofilequeue::die);
         QObject::connect(newAudioFileQueue, &audiofilequeue::playFileChild, this, &audioDialog::playFile);
@@ -420,5 +435,19 @@ void audioDialog::on_nextBtn_clicked()
         ui->nextBtn->setIcon(QIcon(":/resources/stop.png"));
     }
     global::audio::audioMutex.unlock();
+}
+
+
+void audioDialog::on_exitBtn_clicked()
+{
+    progress->stop();
+    progress->deleteLater();
+
+    // Make sure the mutex is unlocked
+    global::audio::audioMutex.tryLock();
+    global::audio::audioMutex.unlock();
+
+    this->deleteLater();
+    this->close();
 }
 

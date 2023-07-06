@@ -55,6 +55,8 @@ private slots:
 
     void on_nextBtn_clicked();
 
+    void on_exitBtn_clicked();
+
 signals:
     void deleteItself();
 

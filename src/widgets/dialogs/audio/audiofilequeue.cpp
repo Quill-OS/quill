@@ -6,6 +6,8 @@ audiofilequeue::audiofilequeue(QWidget *parent) :
     ui(new Ui::audiofilequeue)
 {
     ui->setupUi(this);
+    audiofilequeue::setFont(QFont("u001"));
+
     ui->nameLabel->setWordWrap(true);
 }
 
@@ -45,6 +47,8 @@ void audiofilequeue::on_deleteBtn_clicked()
 
     log("File id is: " + QString::number(id), className);
     global::audio::queue.remove(id);
+    // TODO: Don't change song if the removed item is not playing
+    // I will do it the moment i get annoyed about it
     log("After removing global::audio::queue.size(): " + QString::number(global::audio::queue.size()), className);
     if(id - 2 >= 0) {
         global::audio::audioMutex.unlock();

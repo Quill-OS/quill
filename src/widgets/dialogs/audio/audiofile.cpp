@@ -7,6 +7,8 @@ audiofile::audiofile(QWidget *parent) :
     ui(new Ui::audiofile)
 {
     ui->setupUi(this);
+    audiofile::setFont(QFont("u001"));
+
     ui->nameLabel->setWordWrap(true);
 }
 

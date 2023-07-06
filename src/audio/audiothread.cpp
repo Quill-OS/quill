@@ -36,7 +36,7 @@ void audiothread::start() {
                 sendInfo("pause:"); // Yea, only that
                 global::audio::paused = true;
                 global::audio::isSomethingCurrentlyPlaying = false;
-                global::audio::progressSeconds = 0;
+                global::audio::progressSeconds = -5;
                 monitorProgress = false;
             }
             if(action == global::audio::Action::Play) {
@@ -52,7 +52,7 @@ void audiothread::start() {
                 sendInfo(message);
                 global::audio::paused = false;
                 global::audio::isSomethingCurrentlyPlaying = true;
-                global::audio::progressSeconds = 0;
+                global::audio::progressSeconds = -5;
                 monitorProgress = true;
             }
             if(action == global::audio::Action::Pause) {
@@ -123,7 +123,7 @@ void audiothread::audioProgress() {
             global::audio::isSomethingCurrentlyPlaying = false;
             global::audio::paused = true;
             monitorProgress = false;
-            global::audio::progressSeconds = 0;
+            global::audio::progressSeconds = -5;
             global::audio::currentAction.append(global::audio::Action::Stop);
         }
         else {
