@@ -117,8 +117,8 @@ settings::settings(QWidget *parent) :
     }
 
     // Words number
-    string_checkconfig(".config/07-words_number/config");
-    if(checkconfig_str_val == "") {
+    QString wordsNumberConfigStr = readFile(".config/07-words_number/config");
+    if(wordsNumberConfigStr.isEmpty()) {
         if(global::deviceID == "n705\n") {
             wordsNumberSaved = 120;
         }
@@ -130,17 +130,17 @@ settings::settings(QWidget *parent) :
         }
     }
     else {
-        QString words_number = checkconfig_str_val;
-        wordsNumberSaved = checkconfig_str_val.toInt();
+        QString words_number = wordsNumberConfigStr;
+        wordsNumberSaved = wordsNumberConfigStr.toInt();
     }
     ui->wordsNumberValueLabel->setText(QString::number(wordsNumberSaved));
 
 
     // ePUB page size
     if(checkconfig(".config/13-epub_page_size/set") == true) {
-        string_checkconfig_ro(".config/13-epub_page_size/width");
-        if(checkconfig_str_val != "") {
-            QString pageWidth = checkconfig_str_val;
+        QString epubPageWidthSettingStr = readFile(".config/13-epub_page_size/width");
+        if(!epubPageWidthSettingStr.isEmpty()) {
+            QString pageWidth = epubPageWidthSettingStr;
             ui->pageSizeWidthLabel->setText(pageWidth);
             pageSizeWidthSaved = pageWidth.toInt();
         }
@@ -149,9 +149,9 @@ settings::settings(QWidget *parent) :
             ui->pageSizeWidthLabel->setText(QString::number(defaultEpubPageWidth));
             pageSizeWidthSaved = defaultEpubPageWidth;
         }
-        string_checkconfig_ro(".config/13-epub_page_size/height");
-        if(checkconfig_str_val != "") {
-            QString pageHeight = checkconfig_str_val;
+        QString epubPageHeightSettingStr = readFile(".config/13-epub_page_size/height");
+        if(!epubPageHeightSettingStr.isEmpty()) {
+            QString pageHeight = epubPageHeightSettingStr;
             ui->pageSizeHeightLabel->setText(pageHeight);
             pageSizeHeightSaved = pageHeight.toInt();
         }
@@ -179,30 +179,30 @@ settings::settings(QWidget *parent) :
     }
 
     // Scaling
-    string_checkconfig(".config/09-dpi/config");
-    if(checkconfig_str_val == "") {
+    QString dpiSettingStr = readFile(".config/09-dpi/config");
+    if(dpiSettingStr.isEmpty()) {
         // Writing default value depending on the device
         if(global::deviceID == "n705\n") {
-            string_writeconfig(".config/09-dpi/config", "187");
+            writeFile(".config/09-dpi/config", "187");
         }
         else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-            string_writeconfig(".config/09-dpi/config", "160");
+            writeFile(".config/09-dpi/config", "160");
         }
         else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
-            string_writeconfig(".config/09-dpi/config", "195");
+            writeFile(".config/09-dpi/config", "195");
         }
         else if(global::deviceID == "n437\n") {
-            string_writeconfig(".config/09-dpi/config", "275");
+            writeFile(".config/09-dpi/config", "275");
         }
         else if(global::deviceID == "n873\n") {
-            string_writeconfig(".config/09-dpi/config", "285");
+            writeFile(".config/09-dpi/config", "285");
         }
         else {
-            string_writeconfig(".config/09-dpi/config", "187");
+            writeFile(".config/09-dpi/config", "187");
         }
     }
     else {
-        int dpi_number = checkconfig_str_val.toInt();
+        int dpi_number = dpiSettingStr.toInt();
         // Checking if it's a Mini, Touch or a Glo
         if(global::deviceID == "n705\n") {
             if(dpi_number == 187) {
@@ -284,14 +284,14 @@ settings::settings(QWidget *parent) :
     }
 
     // Refresh
-    string_checkconfig_ro(".config/04-book/refresh");
-    if(checkconfig_str_val == "") {
+    QString refreshSettingStr = readFile(".config/04-book/refresh");
+    if(refreshSettingStr.isEmpty()) {
         // Set default option, 3
-        string_writeconfig(".config/04-book/refresh", "3");
+        writeFile(".config/04-book/refresh", "3");
         ui->comboBox->setCurrentText("3 pages");
     }
     else {
-        int refreshInt = checkconfig_str_val.toInt();
+        int refreshInt = refreshSettingStr.toInt();
         if(refreshInt == -1) {
             ui->comboBox->setCurrentText("Never refresh");
         }
@@ -474,9 +474,8 @@ void settings::on_aboutBtn_clicked()
     if(checkconfig("/opt/inkbox_genuine") == true) {
         QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
         aboutmsg.prepend("<font face='u001'>");
-        string_checkconfig_ro("/external_root/opt/isa/version");
         aboutmsg.append("<br><br>InkBox ");
-        aboutmsg.append(checkconfig_str_val);
+        aboutmsg.append(readFile("/external_root/opt/isa/version"));
         aboutmsg.append("</font>");
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
@@ -647,13 +646,13 @@ void settings::on_darkModeCheckBox_toggled(bool checked)
     QString settingString = "dark mode";
     if(checked == true) {
         logEnabled(settingString, className);
-        string_writeconfig(".config/10-dark_mode/config", "true");
-        string_writeconfig("/tmp/invertScreen", "y");
+        writeFile(".config/10-dark_mode/config", "true");
+        writeFile("/tmp/invertScreen", "y");
     }
     else {
         logDisabled(settingString, className);
-        string_writeconfig(".config/10-dark_mode/config", "false");
-        string_writeconfig("/tmp/invertScreen", "n");
+        writeFile(".config/10-dark_mode/config", "false");
+        writeFile("/tmp/invertScreen", "n");
     }
 }
 
@@ -662,62 +661,62 @@ void settings::on_uiScalingSlider_valueChanged(int value)
     log("Setting DPI level to " + QString::number(value), className);
     if(value == 0) {
         if(global::deviceID == "n705\n") {
-            string_writeconfig(".config/09-dpi/config", "187");
+            writeFile(".config/09-dpi/config", "187");
         }
         if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-            string_writeconfig(".config/09-dpi/config", "160");
+            writeFile(".config/09-dpi/config", "160");
         }
         if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
-            string_writeconfig(".config/09-dpi/config", "195");
+            writeFile(".config/09-dpi/config", "195");
         }
         if(global::deviceID == "n306\n") {
-            string_writeconfig(".config/09-dpi/config", "212");
+            writeFile(".config/09-dpi/config", "212");
         }
         if(global::deviceID == "n437\n") {
-            string_writeconfig(".config/09-dpi/config", "275");
+            writeFile(".config/09-dpi/config", "275");
         }
         if(global::deviceID == "n873\n") {
-            string_writeconfig(".config/09-dpi/config", "285");
+            writeFile(".config/09-dpi/config", "285");
         }
     }
     if(value == 1) {
         if(global::deviceID == "n705\n") {
-            string_writeconfig(".config/09-dpi/config", "214");
+            writeFile(".config/09-dpi/config", "214");
         }
         if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-            string_writeconfig(".config/09-dpi/config", "187");
+            writeFile(".config/09-dpi/config", "187");
         }
         if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
-            string_writeconfig(".config/09-dpi/config", "210");
+            writeFile(".config/09-dpi/config", "210");
         }
         if(global::deviceID == "n306\n") {
-            string_writeconfig(".config/09-dpi/config", "227");
+            writeFile(".config/09-dpi/config", "227");
         }
         if(global::deviceID == "n437\n") {
-            string_writeconfig(".config/09-dpi/config", "290");
+            writeFile(".config/09-dpi/config", "290");
         }
         if(global::deviceID == "n873\n") {
-            string_writeconfig(".config/09-dpi/config", "300");
+            writeFile(".config/09-dpi/config", "300");
         }
     }
     if(value == 2) {
         if(global::deviceID == "n705\n") {
-            string_writeconfig(".config/09-dpi/config", "227");
+            writeFile(".config/09-dpi/config", "227");
         }
         if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-            string_writeconfig(".config/09-dpi/config", "200");
+            writeFile(".config/09-dpi/config", "200");
         }
         if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
-            string_writeconfig(".config/09-dpi/config", "225");
+            writeFile(".config/09-dpi/config", "225");
         }
         if(global::deviceID == "n306\n") {
-            string_writeconfig(".config/09-dpi/config", "242");
+            writeFile(".config/09-dpi/config", "242");
         }
         if(global::deviceID == "n437\n") {
-            string_writeconfig(".config/09-dpi/config", "305");
+            writeFile(".config/09-dpi/config", "305");
         }
         if(global::deviceID == "n873\n") {
-            string_writeconfig(".config/09-dpi/config", "315");
+            writeFile(".config/09-dpi/config", "315");
         }
     }
 
@@ -756,28 +755,28 @@ void settings::on_comboBox_currentIndexChanged(const QString &arg1)
 {
     log("Setting page refresh setting to " + arg1, className);
     if(arg1 == "Every page") {
-        string_writeconfig(".config/04-book/refresh", "0");
+        writeFile(".config/04-book/refresh", "0");
     }
     if(arg1 == "1 page") {
-        string_writeconfig(".config/04-book/refresh", "1");
+        writeFile(".config/04-book/refresh", "1");
     }
     if(arg1 == "2 pages") {
-        string_writeconfig(".config/04-book/refresh", "2");
+        writeFile(".config/04-book/refresh", "2");
     }
     if(arg1 == "3 pages") {
-        string_writeconfig(".config/04-book/refresh", "3");
+        writeFile(".config/04-book/refresh", "3");
     }
     if(arg1 == "4 pages") {
-        string_writeconfig(".config/04-book/refresh", "4");
+        writeFile(".config/04-book/refresh", "4");
     }
     if(arg1 == "5 pages") {
-        string_writeconfig(".config/04-book/refresh", "5");
+        writeFile(".config/04-book/refresh", "5");
     }
     if(arg1 == "6 pages") {
-        string_writeconfig(".config/04-book/refresh", "6");
+        writeFile(".config/04-book/refresh", "6");
     }
     if(arg1 == "Never refresh") {
-        string_writeconfig(".config/04-book/refresh", "-1");
+        writeFile(".config/04-book/refresh", "-1");
     }
 }
 
@@ -785,7 +784,7 @@ void settings::on_resetBtn_clicked()
 {
     log("'Reset' button clicked", className);
     // We write to a temporary file to show a "Reset" prompt
-    string_writeconfig("/inkbox/resetDialog", "true");
+    writeFile("/inkbox/resetDialog", "true");
 
     // We setup the dialog
     log("Showing reset dialog", className);
@@ -798,7 +797,7 @@ void settings::on_setPasscodeBtn_clicked()
     log("'Set passcode' button clicked", className);
     log("Launching lockscreen binary", className);
     saveDeferredSettings();
-    string_writeconfig("/tmp/setPasscode", "true");
+    writeFile("/tmp/setPasscode", "true");
     QProcess process;
     process.startDetached("lockscreen", QStringList());
     qApp->quit();
@@ -842,11 +841,11 @@ void settings::on_readerScrollBarCheckBox_toggled(bool checked)
     QString settingString = "scrollbar display if necessary";
     if(checked == true) {
         logEnabled(settingString, className);
-        string_writeconfig(".config/14-reader_scrollbar/config", "true");
+        writeFile(".config/14-reader_scrollbar/config", "true");
     }
     else {
         logDisabled(settingString, className);
-        string_writeconfig(".config/14-reader_scrollbar/config", "false");
+        writeFile(".config/14-reader_scrollbar/config", "false");
     }
 }
 
@@ -884,7 +883,7 @@ void settings::openUpdateDialog() {
     log("Showing update dialog", className);
     global::mainwindow::updateDialog = true;
     // Write to a temporary file to show an "Update" prompt
-    string_writeconfig("/inkbox/updateDialog", "true");
+    writeFile("/inkbox/updateDialog", "true");
 
     // Show the dialog
     generalDialogWindow = new generalDialog(this);
@@ -935,7 +934,7 @@ void settings::usbms_launch()
 
 void settings::quit_restart() {
     // If existing, cleaning bookconfig_mount mountpoint
-    string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
+    writeFile("/opt/ibxd", "bookconfig_unmount\n");
 
     // Restarting InkBox
     QProcess process;
@@ -950,8 +949,8 @@ void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
         if(enableEncryptedStorageUserChange == true) {
             logEnabled(settingString, className);
             setDefaultWorkDir();
-            string_writeconfig(".config/18-encrypted_storage/initial_setup_done", "false");
-            string_writeconfig(".config/18-encrypted_storage/status", "true");
+            writeFile(".config/18-encrypted_storage/initial_setup_done", "false");
+            writeFile(".config/18-encrypted_storage/status", "true");
             if(QFile::exists(".config/18-encrypted_storage/storage_list")) {
                 QFile::remove(".config/18-encrypted_storage/storage_list");
             }
@@ -977,11 +976,11 @@ void settings::on_enableEncryptedStorageCheckBox_toggled(bool checked)
 void settings::disableStorageEncryption() {
     log("Disabling encrypted storage", className);
     setDefaultWorkDir();
-    string_writeconfig("/external_root/run/encfs_stop_cleanup", "true");
-    string_writeconfig("/opt/ibxd", "encfs_stop\n");
+    writeFile("/external_root/run/encfs_stop_cleanup", "true");
+    writeFile("/opt/ibxd", "encfs_stop\n");
     QThread::msleep(5000);
 
-    string_writeconfig(".config/18-encrypted_storage/status", "false");
+    writeFile(".config/18-encrypted_storage/status", "false");
     QFile::remove(".config/18-encrypted_storage/initial_setup_done");
     QFile::remove(".config/18-encrypted_storage/storage_list");
     QFile::remove("/mnt/onboard/onboard/data.encfs");
@@ -1013,7 +1012,7 @@ void settings::on_repackBtn_clicked()
     }
     else {
         log("Showing encrypted storage repack dialog", className);
-        string_writeconfig("/external_root/run/encfs_repack", "true");
+        writeFile("/external_root/run/encfs_repack", "true");
         quit_restart();
     }
 }
@@ -1022,7 +1021,7 @@ void settings::on_generateSystemReportBtn_clicked()
 {
     log("'Generate system report' button clicked", className);
     log("Generating system report", className);
-    string_writeconfig("/opt/ibxd", "generate_system_report\n");
+    writeFile("/opt/ibxd", "generate_system_report\n");
     while(true) {
         if(QFile::exists("/inkbox/systemReportDone")) {
             if(checkconfig("/inkbox/systemReportDone") == true) {
@@ -1049,8 +1048,8 @@ void settings::on_tzComboBox_currentTextChanged(const QString &arg1)
         // Preventing unnecessary (e)MMC writes
         if(readFile(".config/19-timezone/config-name") != arg1) {
             QProcess::execute("ln", QStringList() << "-sf" << "/usr/share/zoneinfo/" + arg1 << ".config/19-timezone/config");
-            string_writeconfig(".config/19-timezone/config-name", arg1.toStdString());
-            string_writeconfig("/opt/ibxd", "gui_remount_localtime\n");
+            writeFile(".config/19-timezone/config-name", arg1);
+            writeFile("/opt/ibxd", "gui_remount_localtime\n");
             QThread::msleep(500);
         }
     }
@@ -1127,11 +1126,11 @@ void settings::on_usbmsDialogBox_clicked(bool checked)
     QString settingString = "USB Mass Storage dialog display";
     if(checked == true) {
         logEnabled(settingString, className);
-        string_writeconfig(".config/22-usb/show-dialog", "true");
+        writeFile(".config/22-usb/show-dialog", "true");
     }
     else {
         logDisabled(settingString, className);
-        string_writeconfig(".config/22-usb/show-dialog", "false");
+        writeFile(".config/22-usb/show-dialog", "false");
     }
 }
 
@@ -1140,11 +1139,11 @@ void settings::on_autoCheckUpdatesBox_clicked(bool checked)
     QString settingString = "automatic updates checking";
     if(checked == true) {
         logEnabled(settingString, className);
-        string_writeconfig(".config/23-updates/check-updates", "true");
+        writeFile(".config/23-updates/check-updates", "true");
     }
     else {
         logDisabled(settingString, className);
-        string_writeconfig(".config/23-updates/check-updates", "false");
+        writeFile(".config/23-updates/check-updates", "false");
     }
 }
 

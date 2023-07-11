@@ -9,6 +9,7 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
     ui(new Ui::bookInfoDialog)
 {
     ui->setupUi(this);
+    using global::bookInfoDialog::localInfoDialog;
 
     // Preventing outside interaction
     this->setModal(true);
@@ -58,8 +59,8 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
 
             QDir gutenbergDir;
             gutenbergDir.mkpath("/inkbox/gutenberg");
-            string_writeconfig("/inkbox/gutenberg/bookid", QString::number(global::library::bookId).toStdString());
-            string_writeconfig("/opt/ibxd", "gutenberg_get_cover\n");
+            writeFile("/inkbox/gutenberg/bookid", QString::number(global::library::bookId));
+            writeFile("/opt/ibxd", "gutenberg_get_cover\n");
             while(true) {
                 if(QFile::exists("/inkbox/gutenberg/getCoverDone")) {
                     if(checkconfig("/inkbox/gutenberg/getCoverDone") == true) {
@@ -148,9 +149,9 @@ void bookInfoDialog::on_getBtn_clicked()
 {
     QDir gutenbergDir;
     gutenbergDir.mkpath("/inkbox/gutenberg");
-    string_writeconfig("/inkbox/gutenberg/bookid", QString::number(global::library::bookId).toStdString());
-    string_writeconfig("/inkbox/gutenberg/booktitle", global::library::bookTitle.toStdString());
-    string_writeconfig("/opt/ibxd", "gutenberg_get_book\n");
+    writeFile("/inkbox/gutenberg/bookid", QString::number(global::library::bookId));
+    writeFile("/inkbox/gutenberg/booktitle", global::library::bookTitle);
+    writeFile("/opt/ibxd", "gutenberg_get_book\n");
 
     global::toast::modalToast = true;
     global::toast::indefiniteToast = true;

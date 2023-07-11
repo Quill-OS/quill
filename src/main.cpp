@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     log("Running on device " + global::deviceID, "main", true);
 
     // Tell the OS that we're currently running
-    string_writeconfig("/tmp/inkbox_running", "true");
+    writeFile("/tmp/inkbox_running", "true");
 
     setDefaultWorkDir();
     if(checkconfig("/run/wifi_able") == true) {
@@ -65,9 +65,9 @@ int main(int argc, char *argv[])
     if(QFile::exists("/tmp/rescan_userapps")) {
         QFile::remove("/tmp/rescan_userapps");
         log("Re-scanning user applications from explicit request", "main");
-        string_writeconfig("/opt/ibxd", "gui_apps_stop\n");
+        writeFile("/opt/ibxd", "gui_apps_stop\n");
         QThread::msleep(1000);
-        string_writeconfig("/opt/ibxd", "gui_apps_start\n");
+        writeFile("/opt/ibxd", "gui_apps_start\n");
         while(true) {
             if(QFile::exists("/tmp/gui_apps_started")) {
                 if(checkconfig("/tmp/gui_apps_started") == true) {
@@ -150,7 +150,7 @@ int main(int argc, char *argv[])
             global::reader::startUsbmsPrompt = true;
             global::reader::skipOpenDialog = true;
 
-            string_writeconfig("/inkbox/skip_opendialog", "true");
+            writeFile("/inkbox/skip_opendialog", "true");
             if(global::deviceID == "n705\n") {
                 global::isN705 = true;
             }

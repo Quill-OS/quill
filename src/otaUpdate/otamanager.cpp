@@ -14,7 +14,7 @@ otaManager::otaManager(QWidget *parent) :
     QThread::msleep(500);
     if(global::otaUpdate::downloadOta == false) {
         log("Checking for available OTA update", className);
-        string_writeconfig("/opt/ibxd", "ota_update_check\n");
+        writeFile("/opt/ibxd", "ota_update_check\n");
         QTimer * otaCheckTimer = new QTimer(this);
         otaCheckTimer->setInterval(100);
         connect(otaCheckTimer, &QTimer::timeout, [&]() {
@@ -28,7 +28,7 @@ otaManager::otaManager(QWidget *parent) :
                     emit canOtaUpdate(false);
                 }
                 unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
-                string_writeconfig("/external_root/opt/storage/update/last_sync", std::to_string(currentEpoch));
+                writeFile("/external_root/opt/storage/update/last_sync", QString::number(currentEpoch));
                 QFile::remove("/run/can_ota_update");
                 otaManager::close();
             }
@@ -38,7 +38,7 @@ otaManager::otaManager(QWidget *parent) :
     else {
         log("Downloading OTA update", className);
         QFile::remove("/run/can_install_ota_update");
-        string_writeconfig("/opt/ibxd", "ota_update_download\n");
+        writeFile("/opt/ibxd", "ota_update_download\n");
         QTimer * otaDownloadTimer = new QTimer(this);
         otaDownloadTimer->setInterval(100);
         connect(otaDownloadTimer, &QTimer::timeout, [&]() {

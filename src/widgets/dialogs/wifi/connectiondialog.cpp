@@ -343,7 +343,7 @@ void connectiondialog::on_connectBtn_clicked()
 
     ui->cancelBtn->setEnabled(false);
     if(checkWifiState() == global::wifi::wifiState::configured) {
-        string_writeconfig("/opt/ibxd", "stop_wifi_operations\n");
+        writeFile("/opt/ibxd", "stop_wifi_operations\n");
     }
     writeFile("/run/wifi_network_essid", connectedNetworkData.name);
     writeFile("/run/wifi_network_passphrase", finalPassphrase);
@@ -354,11 +354,11 @@ void connectiondialog::finalConnectWait() {
     if(checkIfWifiBusy() == true) {
         // To be sure
         if(waitTry == 10) {
-            string_writeconfig("/opt/ibxd", "stop_wifi_operations\n");
+            writeFile("/opt/ibxd", "stop_wifi_operations\n");
         }
         // Wait for everything to shut down; 10 seconds timeout
         if(waitTry == 20) {
-            string_writeconfig("/opt/ibxd", "stop_wifi_operations\n");
+            writeFile("/opt/ibxd", "stop_wifi_operations\n");
             emit showToastSignal("Failed to stop other Wi-Fi processes");
             ui->cancelBtn->setEnabled(true);
         }
@@ -368,12 +368,12 @@ void connectiondialog::finalConnectWait() {
         }
     }
     else {
-        string_writeconfig("/opt/ibxd", "connect_to_wifi_network\n");
+        writeFile("/opt/ibxd", "connect_to_wifi_network\n");
 
         // This will be deleted later in MainWindow's icon updater if it failed. It is also deleted in the Wi-Fi stop script.
         log("Writing to configuration directory with connection information data", className);
-        string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid", connectedNetworkData.name.toStdString());
-        string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/passphrase", passphraseForReconnecting.toStdString());
+        writeFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/essid", connectedNetworkData.name);
+        writeFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/passphrase", passphraseForReconnecting);
 
         this->deleteLater();
         this->close();

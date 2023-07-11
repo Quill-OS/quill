@@ -129,7 +129,7 @@ void wifilogger::getWifiInformation() {
     if(waitingForFile == false) {
         wifiInformationPath.remove();
         log("Sending get_wifi_information ibxd call", className);
-        string_writeconfig("/opt/ibxd", "get_wifi_information\n");
+        writeFile("/opt/ibxd", "get_wifi_information\n");
         waitingForFile = true;
     }
 

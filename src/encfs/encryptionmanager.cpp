@@ -145,7 +145,7 @@ void encryptionManager::on_setupAbortBtn_clicked()
 {
     log("Aborting setup", className);
     setDefaultWorkDir();
-    string_writeconfig(".config/18-encrypted_storage/status", "false");
+    writeFile(".config/18-encrypted_storage/status", "false");
     quit_restart();
 }
 
@@ -178,15 +178,15 @@ void encryptionManager::setupEncryptedStorage() {
     }
     else {
         mkEncfsDirs();
-        std::string bootstrapPassphrase = global::encfs::passphrase.toStdString();
+        QString bootstrapPassphrase = global::encfs::passphrase;
         global::encfs::passphrase = "";
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_create", "true");
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_files_location", "/data/onboard/encfs-dropbox");
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_archive_location", "/data/onboard/data.encfs");
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_bootstrap_passphrase", bootstrapPassphrase);
+        writeFile("/external_root/run/encfs/encrypted_storage_create", "true");
+        writeFile("/external_root/run/encfs/encrypted_storage_bootstrap_files_location", "/data/onboard/encfs-dropbox");
+        writeFile("/external_root/run/encfs/encrypted_storage_bootstrap_archive_location", "/data/onboard/data.encfs");
+        writeFile("/external_root/run/encfs/encrypted_storage_bootstrap_passphrase", bootstrapPassphrase);
         setDefaultWorkDir();
-        string_writeconfig(".config/18-encrypted_storage/storage_list", "/data/onboard/encfs-decrypted");
-        string_writeconfig("/opt/ibxd", "encfs_restart\n");
+        writeFile(".config/18-encrypted_storage/storage_list", "/data/onboard/encfs-decrypted");
+        writeFile("/opt/ibxd", "encfs_restart\n");
         bool exitStatus;
         ui->activityWidget->setCurrentIndex(3);
         QTimer * t = new QTimer(this);
@@ -213,21 +213,21 @@ void encryptionManager::unlockEncryptedStorage() {
         this->setStyleSheet("background-color: white");
         ui->activityWidget->show();
         mkEncfsDirs();
-        std::string passphrase = global::encfs::passphrase.toStdString();
+        QString passphrase = global::encfs::passphrase;
         global::encfs::passphrase = "";
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_archive", "/data/onboard/data.encfs");
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_mountpoint", "/data/onboard/encfs-decrypted");
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_bindmount", "/kobo/mnt/onboard/onboard/encfs-decrypted");
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_passphrase", passphrase);
-        string_writeconfig("/opt/ibxd", "encfs_restart\n");
+        writeFile("/external_root/run/encfs/encrypted_storage_archive", "/data/onboard/data.encfs");
+        writeFile("/external_root/run/encfs/encrypted_storage_mountpoint", "/data/onboard/encfs-decrypted");
+        writeFile("/external_root/run/encfs/encrypted_storage_bindmount", "/kobo/mnt/onboard/onboard/encfs-decrypted");
+        writeFile("/external_root/run/encfs/encrypted_storage_passphrase", passphrase);
+        writeFile("/opt/ibxd", "encfs_restart\n");
         bool exitStatus;
 
-        string_checkconfig_ro("/inkbox/encryptedStoragePassphraseTries");
-        if(checkconfig_str_val.isEmpty()) {
+        QString passphraseTriesStr = readFile("/inkbox/encryptedStoragePassphraseTries");
+        if(passphraseTriesStr.isEmpty()) {
             passphraseTries = 0;
         }
         else {
-            passphraseTries = checkconfig_str_val.toInt();
+            passphraseTries = passphraseTriesStr.toInt();
             passphraseTries++;
         }
 
@@ -245,19 +245,19 @@ void encryptionManager::unlockEncryptedStorage() {
                         int delay = 0;
                         if(passphraseTries <= 3) {
                             if(passphraseTries == 0) {
-                                string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "0");
+                                writeFile("/inkbox/encryptedStoragePassphraseTries", "0");
                                 delay = 5000;
                             }
                             else if(passphraseTries == 1) {
-                                string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "1");
+                                writeFile("/inkbox/encryptedStoragePassphraseTries", "1");
                                 delay = 10000;
                             }
                             else if(passphraseTries == 2) {
-                                string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "2");
+                                writeFile("/inkbox/encryptedStoragePassphraseTries", "2");
                                 delay = 20000;
                             }
                             else if(passphraseTries >= 3) {
-                                string_writeconfig("/inkbox/encryptedStoragePassphraseTries", "3");
+                                writeFile("/inkbox/encryptedStoragePassphraseTries", "3");
                                 unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
                                 currentEpoch += 86400;
                                 QString unlockTime_str = QString::number(currentEpoch);
@@ -305,7 +305,7 @@ void encryptionManager::mkEncfsDirs() {
 void encryptionManager::on_exitSuccessBtn_clicked()
 {
     setDefaultWorkDir();
-    string_writeconfig(".config/18-encrypted_storage/initial_setup_done", "true");
+    writeFile(".config/18-encrypted_storage/initial_setup_done", "true");
     quit_restart();
 }
 
@@ -315,7 +315,7 @@ void encryptionManager::setupExitWidget(bool exitStatus) {
             ui->activityWidget->setCurrentIndex(1);
         }
         else {
-            string_writeconfig(".config/18-encrypted_storage/status", "false");
+            writeFile(".config/18-encrypted_storage/status", "false");
             ui->activityWidget->setCurrentIndex(2);
         }
         setupExitWidgetRan = true;
@@ -325,7 +325,7 @@ void encryptionManager::setupExitWidget(bool exitStatus) {
 void encryptionManager::on_failureContinueBtn_clicked()
 {
     setDefaultWorkDir();
-    string_writeconfig(".config/18-encrypted_storage/initial_setup_done", "true");
+    writeFile(".config/18-encrypted_storage/initial_setup_done", "true");
     quit_restart();
 }
 
@@ -338,7 +338,7 @@ void encryptionManager::setupFailedAuthenticationMessageBox() {
 
 void encryptionManager::on_acceptBtn_clicked()
 {
-    string_writeconfig(".config/18-encrypted_storage/status", "false");
+    writeFile(".config/18-encrypted_storage/status", "false");
     quit_restart();
 }
 
@@ -363,11 +363,11 @@ void encryptionManager::repackEncryptedStorage() {
         this->setStyleSheet("background-color: white");
         ui->activityWidget->show();
         mkEncfsDirs();
-        std::string passphrase = global::encfs::passphrase.toStdString();
+        QString passphrase = global::encfs::passphrase;
         global::encfs::passphrase = "";
-        string_writeconfig("/external_root/run/encfs/encrypted_storage_repack_passphrase", passphrase);
+        writeFile("/external_root/run/encfs/encrypted_storage_repack_passphrase", passphrase);
         QFile::remove("/external_root/run/openrc/started/encfs");
-        string_writeconfig("/opt/ibxd", "encfs_restart\n");
+        writeFile("/opt/ibxd", "encfs_restart\n");
         bool exitStatus;
         ui->activityWidget->setCurrentIndex(3);
         QTimer * t = new QTimer(this);

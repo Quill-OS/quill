@@ -187,10 +187,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Dark mode; write to the Kobo Nightmode FIFO
     if(checkconfig(".config/10-dark_mode/config") == true) {
-        string_writeconfig("/tmp/invertScreen", "y");
+        writeFile("/tmp/invertScreen", "y");
     }
     else {
-        string_writeconfig("/tmp/invertScreen", "n");
+        writeFile("/tmp/invertScreen", "n");
     }
 
     // Clock setting to show seconds
@@ -199,7 +199,7 @@ MainWindow::MainWindow(QWidget *parent)
         t->setInterval(500);
         connect(t, &QTimer::timeout, [&]() {
            QString time = QTime::currentTime().toString("hh:mm:ss");
-           get_battery_level();
+           getBatteryLevel();
            ui->timeLabel->setText(time);
            ui->batteryLabel->setText(batt_level);
         } );
@@ -210,7 +210,7 @@ MainWindow::MainWindow(QWidget *parent)
         t->setInterval(500);
         connect(t, &QTimer::timeout, [&]() {
            QString time = QTime::currentTime().toString("hh:mm");
-           get_battery_level();
+           getBatteryLevel();
            ui->timeLabel->setText(time);
            ui->batteryLabel->setText(batt_level);
         } );
@@ -272,8 +272,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     // Global reading settings
-    string_checkconfig(".config/16-global_reading_settings/config");
-    if(checkconfig_str_val == "") {
+    if(readFile(".config/16-global_reading_settings/config").isEmpty()) {
         checked_box = false;
         writeconfig(".config/16-global_reading_settings/config", "GlobalReadingSettings=");
     }
@@ -281,7 +280,7 @@ MainWindow::MainWindow(QWidget *parent)
     if(checkconfig(".config/05-quote/config") == false) {
         stdIconWidth = sW / 2;
         stdIconHeight = sH / 2;
-        int quote_value = display_quote();
+        int quote_value = displayQuote();
         if(quote_value == 1) {
             QPixmap pixmap(":/resources/chesterton.jpg");
             QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -321,17 +320,17 @@ MainWindow::MainWindow(QWidget *parent)
     // Check if it's the first boot since an update and confirm that it installed successfully
     if(checkconfig("/opt/inkbox_genuine") == true) {
         if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
-            string_checkconfig_ro("/external_root/opt/isa/version");
+            QString version = readFile("/external_root/opt/isa/version");
             QString updatemsg = "<font face='u001'>InkBox update to version ";
-            updatemsg = updatemsg.append(checkconfig_str_val);
+            updatemsg = updatemsg.append(version);
             updatemsg = updatemsg.remove(QRegExp("[\n]"));
             updatemsg = updatemsg.append(" completed successfully.<br><br>Changelog:<br>");
-            string_checkconfig_ro("/external_root/opt/isa/changelog");
-            updatemsg = updatemsg.append(checkconfig_str_val);
+            QString changelog = readFile("/external_root/opt/isa/changelog");
+            updatemsg = updatemsg.append(changelog);
             updatemsg = updatemsg.append("</font>");
             log("Showing update changelog", className);
             QMessageBox::information(this, tr("Information"), updatemsg);
-            string_writeconfig("/external_root/opt/update/inkbox_updated", "false");
+            writeFile("/external_root/opt/update/inkbox_updated", "false");
 
             // Trigger Gutenberg re-sync, because we deleted the .inkbox folder ;)
             if(QFile::exists("/external_root/opt/storage/gutenberg/last_sync")) {
@@ -390,8 +389,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // If the DEVKEY file is present, install a developer key
     if(QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY") == true && QFile::exists("/mnt/onboard/onboard/.inkbox/DEVKEY.dgst") == true) {
-        string_checkconfig_ro("/mnt/onboard/onboard/.inkbox/DEVKEY");
-        QString developerKey = checkconfig_str_val.left(256);
+        QString developerKey = readFile("/mnt/onboard/onboard/.inkbox/DEVKEY").left(256);
 
         setDefaultWorkDir();
         QString prog ("sh");
@@ -411,7 +409,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Write version control info to file in tmpfs
     if(checkconfig("/opt/inkbox_genuine") == true) {
-        string_writeconfig("/external_root/run/inkbox_gui_git_commit", GIT_COMMIT);
+        writeFile("/external_root/run/inkbox_gui_git_commit", GIT_COMMIT);
     }
 }
 
@@ -424,7 +422,7 @@ void MainWindow::openUpdateDialog() {
     log("Showing Update dialog", className);
     global::mainwindow::updateDialog = true;
     // Write to a temporary file to show an "Update" prompt
-    string_writeconfig("/inkbox/updateDialog", "true");
+    writeFile("/inkbox/updateDialog", "true");
 
     // Setup the dialog
     generalDialogWindow = new generalDialog(this);
@@ -667,7 +665,7 @@ void MainWindow::setBatteryIcon() {
             ui->batteryIcon->setPixmap(scaledChargingPixmap);
         }
         else {
-            get_battery_level();
+            getBatteryLevel();
             if(batt_level_int >= 75 && batt_level_int <= 100) {
                 ui->batteryIcon->setPixmap(scaledFullPixmap);
             }
@@ -697,7 +695,7 @@ void MainWindow::setBatteryIcon() {
             ui->batteryIcon->setPixmap(scaledChargingPixmap);
         }
         else {
-            get_battery_level();
+            getBatteryLevel();
             if(batt_level_int >= 75 && batt_level_int <= 100) {
                 ui->batteryIcon->setPixmap(scaledFullPixmap);
             }
@@ -714,23 +712,23 @@ void MainWindow::setBatteryIcon() {
 void MainWindow::setInitialBrightness() {
     if(global::deviceID == "n873\n") {
         int warmth;
-        string_checkconfig_ro(".config/03-brightness/config-warmth");
-        if(checkconfig_str_val == "") {
+        QString warmthConfig = readFile(".config/03-brightness/config-warmth");
+        if(warmthConfig.isEmpty()) {
             warmth = 0;
         }
         else {
-            warmth = checkconfig_str_val.toInt();
+            warmth = warmthConfig.toInt();
         }
         cinematicWarmth(warmth);
     }
-    int brightness_value = brightness_checkconfig(".config/03-brightness/config");
+    int brightness_value = brightnessCheckconfig(".config/03-brightness/config");
     if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
         log("Setting initial brightness to " + QString::number(brightness_value), className);
     }
     if(checkconfig("/tmp/oobe-inkbox_completed") == true) {
         // Coming from OOBE setup; not doing that fancy stuff again ;p
         QFile::remove("/tmp/oobe-inkbox_completed");
-        pre_set_brightness(brightness_value);
+        preSetBrightness(brightness_value);
         log("Ignoring cinematic brightness call because it has already been done", className);
     }
     else {
@@ -741,7 +739,7 @@ void MainWindow::setInitialBrightness() {
         }
         else {
             if(checkconfig("/tmp/inkbox-cinematicBrightness_ran") == false) {
-                string_writeconfig("/tmp/inkbox-cinematicBrightness_ran", "true");
+                writeFile("/tmp/inkbox-cinematicBrightness_ran", "true");
                 cinematicBrightness(brightness_value, 0);
             }
             else {
@@ -1023,10 +1021,10 @@ void MainWindow::resetFullWindow() {
 
 void MainWindow::checkForOtaUpdate() {
     if(global::wifi::isConnected == true) {
-        string_checkconfig_ro("/external_root/opt/storage/update/last_sync");
-        if(!checkconfig_str_val.isEmpty()) {
+        QString lastSync = readFile("/external_root/opt/storage/update/last_sync");
+        if(!lastSync.isEmpty()) {
             unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
-            unsigned long syncEpoch = checkconfig_str_val.toULong();
+            unsigned long syncEpoch = lastSync.toULong();
             unsigned long allowSyncEpoch = syncEpoch + 86400;
             if(currentEpoch > allowSyncEpoch) {
                 launchOtaUpdater();

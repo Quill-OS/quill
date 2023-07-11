@@ -67,25 +67,25 @@ usbmsSplash::usbmsSplash(QWidget *parent) :
 void usbmsSplash::usbmsLaunch()
 {
     log("Entering USBMS session", className);
-    string_writeconfig("/tmp/in_usbms", "true");
+    writeFile("/tmp/in_usbms", "true");
     QTimer::singleShot(1500, this, SLOT(brightnessDown()));
 
     if(global::usbms::koboxExportExtensions == true) {
-        string_writeconfig("/opt/ibxd", "kobox_extensions_storage_unmount\n");
+        writeFile("/opt/ibxd", "kobox_extensions_storage_unmount\n");
     }
     if(checkconfig("/external_root/run/encfs_mounted") == true) {
-        string_writeconfig("/external_root/run/encfs_stop_cleanup", "true");
-        string_writeconfig("/opt/ibxd", "encfs_stop\n");
+        writeFile("/external_root/run/encfs_stop_cleanup", "true");
+        writeFile("/opt/ibxd", "encfs_stop\n");
         QThread::msleep(1500);
     }
 
-    string_writeconfig("/opt/ibxd", "onboard_unmount\n");
+    writeFile("/opt/ibxd", "onboard_unmount\n");
     QThread::msleep(1000);
 
-    string_writeconfig("/opt/ibxd", "usbnet_stop\n");
+    writeFile("/opt/ibxd", "usbnet_stop\n");
     QThread::msleep(1000);
 
-    string_writeconfig("/opt/ibxd", "gui_apps_stop\n");
+    writeFile("/opt/ibxd", "gui_apps_stop\n");
     QThread::msleep(1000);
 
     if(global::deviceID == "n306\n" or global::deviceID == "n873\n") {
@@ -181,7 +181,7 @@ void usbmsSplash::brightnessDown() {
 
 void usbmsSplash::quit_restart() {
     // If existing, cleaning bookconfig_mount mountpoint
-    string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
+    writeFile("/opt/ibxd", "bookconfig_unmount\n");
 
     // Restarting InkBox
     QProcess process;
@@ -192,17 +192,17 @@ void usbmsSplash::quit_restart() {
 void usbmsSplash::restartServices() {
     // Restarting USBNet
     // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet)
-    string_writeconfig("/opt/ibxd", "usbnet_start\n");
+    writeFile("/opt/ibxd", "usbnet_start\n");
     QThread::msleep(1000);
     // Mounting onboard storage
-    string_writeconfig("/opt/ibxd", "onboard_mount\n");
+    writeFile("/opt/ibxd", "onboard_mount\n");
     QThread::msleep(1000);
     // Checking for updates
-    string_writeconfig("/opt/ibxd", "update_inkbox_restart\n");
+    writeFile("/opt/ibxd", "update_inkbox_restart\n");
     QThread::msleep(2500);
     QFile::remove("/tmp/in_usbms");
     // GUI apps: update main JSON file
-    string_writeconfig("/opt/ibxd", "gui_apps_start\n");
+    writeFile("/opt/ibxd", "gui_apps_start\n");
     while(true) {
         if(QFile::exists("/tmp/gui_apps_started")) {
             if(checkconfig("/tmp/gui_apps_started") == true) {

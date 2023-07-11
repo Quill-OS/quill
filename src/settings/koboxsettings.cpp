@@ -40,8 +40,8 @@ koboxSettings::koboxSettings(QWidget *parent) :
 
     // DPI setting
     QString dpiSetting;
-    string_checkconfig(".config/00-kobox/dpiSetting");
-    if(checkconfig_str_val == "") {
+    QString dpiSettingStr = readFile(".config/00-kobox/dpiSetting");
+    if(dpiSettingStr.isEmpty()) {
         if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             dpiSetting = "125";
         }
@@ -57,12 +57,11 @@ koboxSettings::koboxSettings(QWidget *parent) :
         else {
             dpiSetting = "125";
         }
-        std::string dpiSetting_str = dpiSetting.toStdString();
-        string_writeconfig(".config/00-kobox/dpiSetting", dpiSetting_str);
+        writeFile(".config/00-kobox/dpiSetting", dpiSetting);
     }
 
-    string_checkconfig(".config/00-kobox/dpiSetting");
-    int dpi_setting = checkconfig_str_val.toInt();
+    readFile(".config/00-kobox/dpiSetting");
+    int dpi_setting = dpiSettingStr.toInt();
     ui->spinBox->setValue(dpi_setting);
 }
 
@@ -112,8 +111,7 @@ void koboxSettings::openResetKoboxDialog() {
 void koboxSettings::on_spinBox_valueChanged(int arg1)
 {
     QString number = QString::number(arg1);
-    string number_str = number.toStdString();
-    string_writeconfig(".config/00-kobox/dpiSetting", number_str);
+    writeFile(".config/00-kobox/dpiSetting", number);
     log("X11 DPI set to " + number, className);
 }
 

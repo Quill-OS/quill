@@ -73,18 +73,18 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     int value;
     int warmthValue;
     if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
-        value = get_brightness();
+        value = getBrightness();
         if(global::isN873 == true) {
-            warmthValue = get_warmth();
+            warmthValue = getWarmth();
             ui->warmthSlider->setValue(warmthValue);
         }
     }
     else if(global::isN613 == true) {
         setDefaultWorkDir();
-        value = brightness_checkconfig(".config/03-brightness/config");
+        value = brightnessCheckconfig(".config/03-brightness/config");
     }
     else {
-        value = get_brightness();
+        value = getBrightness();
     }
 
     // Setting the slider to the appropriate position
@@ -96,24 +96,24 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     ui->valueLabel->setText(valueStr);
     // Warmth value label
     if(global::isN873 == true) {
-        warmthValue = get_warmth();
+        warmthValue = getWarmth();
         QString warmthValueStr = QString::number(warmthValue);
         ui->warmthValueLabel->setText(warmthValueStr);
     }
 
     // Saving current brightness value in case we want to go backwards
     if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
-        oldValue = get_brightness();
+        oldValue = getBrightness();
         if(global::isN873 == true) {
-            oldWarmthValue = get_warmth();
+            oldWarmthValue = getWarmth();
         }
     }
     else if(global::isN613 == true) {
         setDefaultWorkDir();
-        oldValue = brightness_checkconfig(".config/03-brightness/config");
+        oldValue = brightnessCheckconfig(".config/03-brightness/config");
     }
     else {
-        oldValue = get_brightness();
+        oldValue = getBrightness();
     }
 }
 
@@ -125,15 +125,15 @@ brightnessDialog::~brightnessDialog()
 void brightnessDialog::on_quitBtn_clicked()
 {
     // Reverting back to the old value
-    brightnessDialog::pre_set_brightness(oldValue);
+    brightnessDialog::preSetBrightness(oldValue);
     if(global::isN873 == true) {
-        set_warmth(oldWarmthValue);
+        setWarmth(oldWarmthValue);
     }
 
     // Just in case ;)
-    brightness_writeconfig(oldValue);
+    brightnessWriteconfig(oldValue);
     if(global::isN873 == true) {
-        warmth_writeconfig(oldWarmthValue);
+        warmthWriteconfig(oldWarmthValue);
     }
 
     // Leaving
@@ -142,7 +142,7 @@ void brightnessDialog::on_quitBtn_clicked()
 
 void brightnessDialog::on_horizontalSlider_valueChanged(int value)
 {
-    brightnessDialog::pre_set_brightness(value);
+    brightnessDialog::preSetBrightness(value);
     QString valueStr = QString::number(value);
     valueStr = valueStr.append("%");
     ui->valueLabel->setText(valueStr);
@@ -170,32 +170,32 @@ void brightnessDialog::on_okBtn_clicked()
 
     // Write brightness config
     log("Display brightness set to " + QString::number(brightnessValue), className);
-    brightness_writeconfig(brightnessValue);
+    brightnessWriteconfig(brightnessValue);
     if(global::isN873 == true) {
         warmthValue = ui->warmthSlider->value();
         log("Display warmth set to " + QString::number(warmthValue), className);
-        warmth_writeconfig(warmthValue);
+        warmthWriteconfig(warmthValue);
     }
 
     // Leaving
     brightnessDialog::close();
 }
 
-void brightnessDialog::pre_set_brightness(int brightnessValue) {
+void brightnessDialog::preSetBrightness(int brightnessValue) {
     if(global::isN705 == true or global::isN905C == true or global::isKT == true or global::isN873 == true) {
-        set_brightness(brightnessValue);
+        setBrightness(brightnessValue);
     }
     else if(global::isN613 == true) {
-        set_brightness_ntxio(brightnessValue);
+        setBrightness_ntxio(brightnessValue);
     }
     else {
-        set_brightness(brightnessValue);
+        setBrightness(brightnessValue);
     }
 }
 
 void brightnessDialog::on_warmthSlider_valueChanged(int value)
 {
-    set_warmth(value);
+    setWarmth(value);
     QString valueStr = QString::number(value);
     ui->warmthValueLabel->setText(valueStr);
 }

@@ -212,7 +212,6 @@ namespace global {
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534
 namespace {
-    QString checkconfig_str_val;
     QString deviceUID;
     QString device;
     QString batt_level;
@@ -275,37 +274,17 @@ namespace {
         }
         return 0;
     };
-    bool checkconfig_rw(QString file) {
-        if(QFile::exists(file)) {
-            QFile config(file);
-            config.open(QIODevice::ReadWrite);
-            QTextStream in (&config);
-            const QString content = in.readAll();
-            std::string contentstr = content.toStdString();
-            config.close();
-            if(contentstr.find("true") != std::string::npos) {
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        else {
-            return false;
-        }
-        return 0;
-    };
     void setDefaultWorkDir() {
         QDir::setCurrent("/mnt/onboard/.adds/inkbox");
     }
-    int brightness_checkconfig(QString file) {
+    int brightnessCheckconfig(QString file) {
         if(QFile::exists(file)) {
             QFile config(file);
             config.open(QIODevice::ReadWrite);
             QTextStream in (&config);
             const QString content = in.readAll();
-            int content_int = content.toInt();
-            return content_int;
+            int contentInt = content.toInt();
+            return contentInt;
             config.close();
         }
         else {
@@ -313,7 +292,7 @@ namespace {
         }
         return 0;
     }
-    void set_brightness(int value) {
+    void setBrightness(int value) {
         if(QFile::exists("/var/run/brightness")) {
             std::ofstream fhandler;
             fhandler.open("/var/run/brightness");
@@ -321,33 +300,18 @@ namespace {
             fhandler.close();
         }
     }
-    void set_brightness_ntxio(int value) {
+    void setBrightness_ntxio(int value) {
         // Thanks to Kevin Short for this (GloLight)
         int light;
         if((light = open("/dev/ntx_io", O_RDWR)) == -1) {
-                fprintf(stderr, "Error opening ntx_io device\n");
+            fprintf(stderr, "Error opening ntx_io device\n");
         }
         ioctl(light, 241, value);
         close(light);
     }
-    int int_checkconfig(QString file) {
-        if(QFile::exists(file)) {
-            QFile int_config(file);
-            int_config.open(QIODevice::ReadOnly);
-            QString valuestr = int_config.readAll();
-            int value = valuestr.toInt();
-            int_config.close();
-            return value;
-        }
-        else {
-            return EXIT_FAILURE;
-        }
-        return 0;
-    }
-    int display_quote() {
+    int displayQuote() {
         int quoteNumber = QRandomGenerator::global()->bounded(1, 6);
         return quoteNumber;
-        return 0;
     }
     bool writeFile(QString filename, QString content) {
         QFile file(filename);
@@ -359,38 +323,6 @@ namespace {
         else {
             QString function = __func__; log(function + ": Failed to write string '" + content + "' to file '" + filename + "'", "functions");
             return false;
-        }
-    }
-    void string_writeconfig(std::string file, std::string config_option) {
-        std::ofstream fhandler;
-        fhandler.open(file);
-        fhandler << config_option;
-        fhandler.close();
-    }
-    void string_checkconfig(QString file) {
-        if(QFile::exists(file)) {
-            checkconfig_str_val = "";
-            QFile config(file);
-            config.open(QIODevice::ReadWrite);
-            QTextStream in (&config);
-            checkconfig_str_val = in.readAll();
-            config.close();
-        }
-        else {
-            checkconfig_str_val = "";
-        }
-    }
-    void string_checkconfig_ro(QString file) {
-        if(QFile::exists(file)) {
-            checkconfig_str_val = "";
-            QFile config(file);
-            config.open(QIODevice::ReadOnly);
-            QTextStream in (&config);
-            checkconfig_str_val = in.readAll();
-            config.close();
-        }
-        else {
-            checkconfig_str_val = "";
         }
     }
     QString readFile(QString file) {
@@ -405,27 +337,27 @@ namespace {
             return NULL;
         }
     }
-    void brightness_writeconfig(int value) {
+    void brightnessWriteconfig(int value) {
         std::ofstream fhandler;
         fhandler.open(".config/03-brightness/config");
         fhandler << value;
         fhandler.close();
     }
-    void warmth_writeconfig(int value) {
+    void warmthWriteconfig(int value) {
         std::ofstream fhandler;
         fhandler.open(".config/03-brightness/config-warmth");
         fhandler << value;
         fhandler.close();
     }
-    int get_brightness() {
+    int getBrightness() {
         if(global::deviceID == "n613\n") {
-            string_checkconfig_ro(".config/03-brightness/config");
+            QString brightnessConfig = readFile(".config/03-brightness/config");
             int brightness;
-            if(checkconfig_str_val == "") {
+            if(brightnessConfig.isEmpty()) {
                 brightness = 0;
             }
             else {
-                brightness = checkconfig_str_val.toInt();
+                brightness = brightnessConfig.toInt();
             }
             return brightness;
         }
@@ -444,7 +376,7 @@ namespace {
         }
         return 0;
     }
-    void get_battery_level() {
+    void getBatteryLevel() {
         QString batteryLevelFileQstr;
         if(global::deviceID == "kt\n") {
             QFile batt_level_file("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_capacity");
@@ -501,7 +433,7 @@ namespace {
     };
     bool isBatteryLow() {
         // Checks if battery level is under 15% of total capacity.
-        get_battery_level();
+        getBatteryLevel();
         if(batt_level_int <= 15) {
             return true;
         }
@@ -512,7 +444,7 @@ namespace {
     }
     bool isBatteryCritical() {
         // Checks if the battery level is critical (i.e. <= 5%)
-        get_battery_level();
+        getBatteryLevel();
         if(batt_level_int <= 5) {
             QString function = __func__; log(function + ": Battery is at a critical charge level!", "functions");
             return true;
@@ -524,10 +456,10 @@ namespace {
     }
     void zeroBrightness() {
         if(global::deviceID != "n613\n") {
-            set_brightness(0);
+            setBrightness(0);
         }
         else {
-            set_brightness_ntxio(0);
+            setBrightness_ntxio(0);
         }
     }
     void poweroff(bool splash) {
@@ -605,18 +537,16 @@ namespace {
         proc->deleteLater();
 
         setDefaultWorkDir();
-        string_writeconfig("/external_root/run/initrd-fifo", "get_kernel_build_id\n");
+        writeFile("/external_root/run/initrd-fifo", "get_kernel_build_id\n");
         QThread::msleep(100);
-        string_writeconfig("/external_root/run/initrd-fifo", "get_kernel_commit\n");
+        writeFile("/external_root/run/initrd-fifo", "get_kernel_commit\n");
         QThread::msleep(100);
 
-        string_checkconfig_ro("/external_root/run/kernel_build_id");
-        QString kernelBuildID = checkconfig_str_val.trimmed();
+        QString kernelBuildID = readFile("/external_root/run/kernel_build_id").trimmed();
         kernelVersion.append(", build ");
         kernelVersion.append(kernelBuildID);
 
-        string_checkconfig_ro("/external_root/run/kernel_commit");
-        QString kernelCommit = checkconfig_str_val.trimmed();
+        QString kernelCommit = readFile("/external_root/run/kernel_commit").trimmed();
         kernelVersion.append(", commit ");
         kernelVersion.append(kernelCommit);
     }
@@ -645,8 +575,7 @@ namespace {
         getUID();
         getKernelVersion();
         global::systemInfoText = "<b>InkBox OS version ";
-        string_checkconfig_ro("/external_root/opt/isa/version");
-        global::systemInfoText.append(checkconfig_str_val);
+        global::systemInfoText.append(readFile("/external_root/opt/isa/version"));
         global::systemInfoText.append("</b><br>Copyright <font face='Inter'>©</font> 2021-2023 Nicolas Mailloux and contributors<br>Special thanks to: Szybet, NiLuJe, akemnade, Rain92 (GitHub)");
         global::systemInfoText.append("<br><b>GUI Git commit:</b> ");
         global::systemInfoText.append(GIT_VERSION);
@@ -753,15 +682,15 @@ namespace {
             log(function + "Defined default PDF page width to " + QString::number(defaultPdfPageWidth), "functions");
         }
     }
-    void pre_set_brightness(int brightnessValue) {
+    void preSetBrightness(int brightnessValue) {
         if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n") {
-            set_brightness(brightnessValue);
+            setBrightness(brightnessValue);
         }
         else if(global::deviceID == "n613\n") {
-            set_brightness_ntxio(brightnessValue);
+            setBrightness_ntxio(brightnessValue);
         }
         else {
-            set_brightness(brightnessValue);
+            setBrightness(brightnessValue);
         }
     }
     void cinematicBrightness(int value, int mode) {
@@ -777,69 +706,69 @@ namespace {
             int brightness = 0;
             while(brightness != value) {
                 brightness = brightness + 1;
-                pre_set_brightness(brightness);
+                preSetBrightness(brightness);
                 QThread::msleep(30);
             }
         }
         else if(mode == 1) {
-            int brightness = get_brightness();
+            int brightness = getBrightness();
             while(brightness != 0) {
                 brightness = brightness - 1;
-                pre_set_brightness(brightness);
+                preSetBrightness(brightness);
                 QThread::msleep(30);
             }
         }
         else if(mode == 2) {
-            int brightness = get_brightness();
+            int brightness = getBrightness();
             if(brightness <= value) {
                 while(brightness != value) {
                     brightness = brightness + 1;
-                    pre_set_brightness(brightness);
+                    preSetBrightness(brightness);
                     QThread::msleep(30);
                 }
             }
             else if(brightness >= value) {
                 while(brightness != value) {
                     brightness = brightness - 1;
-                    pre_set_brightness(brightness);
+                    preSetBrightness(brightness);
                     QThread::msleep(30);
                 }
             }
         }
     }
-    int get_warmth() {
+    int getWarmth() {
         QString sysfsWarmthPath;
         if(global::deviceID == "n873\n") {
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
-        string_checkconfig_ro(sysfsWarmthPath);
-        int warmthValue = checkconfig_str_val.toInt();
+        QString warmthConfig = readFile(sysfsWarmthPath);
+        int warmthValue = warmthConfig.toInt();
         warmthValue = 10 - warmthValue;
         return warmthValue;
     }
-    void set_warmth(int warmthValue) {
+    void setWarmth(int warmthValue) {
         // Value 0 gives a warmer lighting than value 10
         warmthValue = 10 - warmthValue;
-        std::string warmthValueStr = std::to_string(warmthValue);
-        std::string sysfsWarmthPath;
+        QString warmthValueStr = QString::number(warmthValue);
+        QString sysfsWarmthPath;
         if(global::deviceID == "n873\n") {
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
-        string_writeconfig(sysfsWarmthPath, warmthValueStr);
+        writeFile(sysfsWarmthPath, warmthValueStr);
     }
     void cinematicWarmth(int warmthValue) {
-        int currentWarmth = get_warmth();
+        int currentWarmth = getWarmth();
         if(warmthValue < currentWarmth) {
             while(warmthValue < currentWarmth) {
                 currentWarmth--;
-                set_warmth(currentWarmth);
+                setWarmth(currentWarmth);
                 QThread::msleep(30);
             }
         }
         else if(warmthValue > currentWarmth) {
             while(warmthValue > currentWarmth) {
                 currentWarmth++;
-                set_warmth(currentWarmth);
+                setWarmth(currentWarmth);
                 QThread::msleep(30);
             }
         }
@@ -848,7 +777,7 @@ namespace {
         log("Installing update package", "functions");
         writeFile("/mnt/onboard/onboard/.inkbox/can_really_update", "true\n");
         writeFile("/external_root/opt/update/will_update", "true\n");
-	writeFile("/external_root/boot/flags/WILL_UPDATE", "true\n");
+	    writeFile("/external_root/boot/flags/WILL_UPDATE", "true\n");
         reboot(true);
     }
     bool getEncFSStatus() {

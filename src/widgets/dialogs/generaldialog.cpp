@@ -57,14 +57,14 @@ generalDialog::generalDialog(QWidget *parent) :
     }
 
     if(QFile::exists("/inkbox/searchComboBoxFunction") == true) {
-        string_checkconfig_ro("/inkbox/searchComboBoxFunction");
-        if(checkconfig_str_val == "Dictionary") {
+        QString searchComboBoxFunction = readFile("/inkbox/searchComboBoxFunction");
+        if(searchComboBoxFunction == "Dictionary") {
             ui->searchComboBox->setCurrentIndex(0);
         }
-        else if(checkconfig_str_val == "Local storage") {
+        else if(searchComboBoxFunction == "Local storage") {
             ui->searchComboBox->setCurrentIndex(1);
         }
-        else if(checkconfig_str_val == "Online library") {
+        else if(searchComboBoxFunction == "Online library") {
             ui->searchComboBox->setCurrentIndex(2);
         }
         else {
@@ -85,7 +85,7 @@ generalDialog::generalDialog(QWidget *parent) :
             }
             ui->headerLabel->setText("Warning");
             QTimer::singleShot(50, this, SLOT(adjust_size()));
-            string_writeconfig("/inkbox/resetDialog", "false");
+            writeFile("/inkbox/resetDialog", "false");
         }
         else {
             resetDialog = true;
@@ -94,7 +94,7 @@ generalDialog::generalDialog(QWidget *parent) :
             ui->bodyLabel->setText("Settings will be reset.");
             ui->headerLabel->setText("Warning");
             QTimer::singleShot(50, this, SLOT(adjust_size()));
-            string_writeconfig("/inkbox/resetDialog", "false");
+            writeFile("/inkbox/resetDialog", "false");
         }
     }
     else if(checkconfig("/inkbox/updateDialog") == true) {
@@ -104,7 +104,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->bodyLabel->setText("<font face='u001'>Do you want to update InkBox now</font><font face='Inter'>?</font>"); // Because I hate Univers/U001's question mark ...
         ui->headerLabel->setText("Update available");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
-        string_writeconfig("/inkbox/updateDialog", "false");
+        writeFile("/inkbox/updateDialog", "false");
     }
     else if(global::settings::settingsRebootDialog == true) {
         settingsRebootDialog = true;
@@ -122,13 +122,13 @@ generalDialog::generalDialog(QWidget *parent) :
     else if(global::mainwindow::lowBatteryDialog == true) {
         lowBatteryDialog = true;
         ui->stackedWidget->setCurrentIndex(1);
-        get_battery_level();
+        getBatteryLevel();
         QString message = "The battery's level is low.\nPlease charge your eReader.\nCurrent level: ";
         message.append(batt_level);
         ui->bodyLabel->setText(message);
         ui->headerLabel->setText("Low battery");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
-        string_writeconfig("/inkbox/lowBatteryDialog", "false");
+        writeFile("/inkbox/lowBatteryDialog", "false");
     }
     else if(global::usbms::usbmsDialog == true) {
         usbmsDialog = true;
@@ -238,7 +238,7 @@ void generalDialog::on_cancelBtn_clicked()
 {
     log("Cancel button clicked", className);
     if(updateDialog == true) {
-        string_writeconfig("/tmp/cancelUpdateDialog", "true");
+        writeFile("/tmp/cancelUpdateDialog", "true");
         generalDialog::close();
     }
     else if(usbmsDialog == true) {
@@ -367,7 +367,7 @@ void generalDialog::on_okBtn_clicked()
         if(global::keyboard::searchDialog == true) {
             if(!global::keyboard::keyboardText.isEmpty()) {
                 if(ui->searchComboBox->currentText() == "Dictionary") {
-                    string_writeconfig("/inkbox/searchComboBoxFunction", "Dictionary");
+                    writeFile("/inkbox/searchComboBoxFunction", "Dictionary");
                     for(int i = ui->mainStackedWidget->count(); i >= 0; i--) {
                         QWidget * widget = ui->mainStackedWidget->widget(i);
                         ui->mainStackedWidget->removeWidget(widget);
@@ -382,7 +382,7 @@ void generalDialog::on_okBtn_clicked()
                     ui->mainStackedWidget->insertWidget(1, dictionaryWidgetWindow);
                 }
                 else if(ui->searchComboBox->currentText() == "Local storage") {
-                    string_writeconfig("/inkbox/searchComboBoxFunction", "Local storage");
+                    writeFile("/inkbox/searchComboBoxFunction", "Local storage");
                     QString onboardPath;
                     QStringList storageSearchResults;
                     if(checkconfig("/opt/inkbox_genuine") == true) {
@@ -432,7 +432,7 @@ void generalDialog::on_okBtn_clicked()
                 }
                 else if(ui->searchComboBox->currentText() == "Online library") {
                     if(testPing() == 0 or global::deviceID == "emu\n") {
-                        string_writeconfig("/inkbox/searchComboBoxFunction", "Online library");
+                        writeFile("/inkbox/searchComboBoxFunction", "Online library");
                         log("Searching online library for '" + global::keyboard::keyboardText + "'", className);
 
                         if(!readFile("/external_root/opt/storage/gutenberg/last_sync").isEmpty()) {
@@ -456,8 +456,8 @@ void generalDialog::on_okBtn_clicked()
                             if(noGutenbergSyncToDo == true or (gutenbergSyncDone == true && gutenbergSyncStatus == true)) {
                                 if(searchTimerDone == false) {
                                     searchTimerDone = true;
-                                    string_writeconfig("/inkbox/gutenberg_search_request", global::keyboard::keyboardText.toStdString());
-                                    string_writeconfig("/opt/ibxd", "gutenberg_search\n");
+                                    writeFile("/inkbox/gutenberg_search_request", global::keyboard::keyboardText);
+                                    writeFile("/opt/ibxd", "gutenberg_search\n");
                                     global::toast::modalToast = true;
                                     global::toast::indefiniteToast = true;
                                     emit showToast("Searching");
@@ -546,7 +546,7 @@ void generalDialog::on_okBtn_clicked()
     if(global::encfs::repackDialog == true) {
         global::encfs::repackDialog = false;
         log("Encrypted storage repack requested", className);
-        string_writeconfig("/external_root/run/encfs_repack", "true");
+        writeFile("/external_root/run/encfs_repack", "true");
         quit_restart();
     }
     else if(global::userApps::appCompatibilityDialog == true) {
@@ -655,13 +655,10 @@ void generalDialog::refreshScreenNative() {
 
 void generalDialog::startVNC(QString server, QString password, QString port) {
     log("Launching VNC viewer", className);
-    std::string server_str = server.toStdString();
-    std::string password_str = password.toStdString();
-    std::string port_str = port.toStdString();
-    string_writeconfig("/external_root/tmp/app_vnc_server", server_str);
-    string_writeconfig("/external_root/tmp/app_vnc_password", password_str);
-    string_writeconfig("/external_root/tmp/app_vnc_port", port_str);
-    string_writeconfig("/opt/ibxd", "app_start_vnc\n");
+    writeFile("/external_root/tmp/app_vnc_server", server);
+    writeFile("/external_root/tmp/app_vnc_password", password);
+    writeFile("/external_root/tmp/app_vnc_port", port);
+    writeFile("/opt/ibxd", "app_start_vnc\n");
     qApp->quit();
 }
 
@@ -694,7 +691,7 @@ void generalDialog::closeIndefiniteToastNative() {
 void generalDialog::quit_restart() {
     log("Restarting InkBox", className);
     // If existing, cleaning bookconfig_mount mountpoint
-    string_writeconfig("/opt/ibxd", "bookconfig_unmount\n");
+    writeFile("/opt/ibxd", "bookconfig_unmount\n");
 
     // Restarting InkBox
     QProcess process;
@@ -708,7 +705,7 @@ void generalDialog::syncGutenbergCatalog() {
     global::toast::indefiniteToast = true;
     emit showToast("Sync in progress");
 
-    string_writeconfig("/opt/ibxd", "gutenberg_sync\n");
+    writeFile("/opt/ibxd", "gutenberg_sync\n");
     QTimer * syncCheckTimer = new QTimer(this);
     syncCheckTimer->setInterval(500);
     connect(syncCheckTimer, &QTimer::timeout, [&]() {

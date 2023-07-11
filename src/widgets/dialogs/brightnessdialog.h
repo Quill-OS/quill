@@ -15,10 +15,9 @@ class brightnessDialog : public QDialog
 
 public:
     QString className = this->metaObject()->className();
-    QString checkconfig_str_val;
     int oldValue;
     int oldWarmthValue;
-    void pre_set_brightness(int brightnessValue);
+    void preSetBrightness(int brightnessValue);
     explicit brightnessDialog(QWidget *parent = nullptr);
     ~brightnessDialog();
 

@@ -314,7 +314,7 @@ void wifiDialog::on_wifiCheckBox_stateChanged(int arg1)
                 log("Turning Wi-Fi off", className);
                 QTimer::singleShot(0, this, SLOT(turnOffWifi()));
                 // To inform the Wi-Fi icon updater to not show the connected/failed to connect message
-                string_writeconfig("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped", "true");
+                writeFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped", "true");
                 ui->stopBtn->setStyleSheet(ui->stopBtn->styleSheet() + "background-color: lightGray;");
                 ui->stopBtn->setEnabled(false);
             }
@@ -338,13 +338,13 @@ void wifiDialog::on_wifiCheckBox_stateChanged(int arg1)
 }
 
 void wifiDialog::turnOnWifi() {
-    string_writeconfig("/opt/ibxd", "toggle_wifi_on\n");
+    writeFile("/opt/ibxd", "toggle_wifi_on\n");
     // No one will notice this freeze :>
     waitToScan();
 }
 
 void wifiDialog::turnOffWifi() {
-    string_writeconfig("/opt/ibxd", "toggle_wifi_off\n");
+    writeFile("/opt/ibxd", "toggle_wifi_off\n");
 }
 
 void wifiDialog::on_logBtn_clicked()

@@ -166,10 +166,10 @@ libraryWidget::libraryWidget(QWidget *parent) :
     sH = QGuiApplication::screens()[0]->size().height();
 
     // Prevent abusive sync
-    string_checkconfig_ro("/external_root/opt/storage/gutenberg/last_sync");
-    if(!checkconfig_str_val.isEmpty()) {
+    QString lastSync = readFile("/external_root/opt/storage/gutenberg/last_sync");
+    if(!lastSync.isEmpty()) {
         unsigned long currentEpoch = QDateTime::currentSecsSinceEpoch();
-        unsigned long syncEpoch = checkconfig_str_val.toULong();
+        unsigned long syncEpoch = lastSync.toULong();
         unsigned long allowSyncEpoch = syncEpoch + 86400;
         if(currentEpoch > allowSyncEpoch) {
             syncCatalog();
@@ -278,7 +278,7 @@ void libraryWidget::syncCatalog() {
 
 void libraryWidget::syncCatalogSlot() {
     bool syncDone = false;
-    string_writeconfig("/opt/ibxd", "gutenberg_sync\n");
+    writeFile("/opt/ibxd", "gutenberg_sync\n");
     while(true) {
         if(syncDone == false) {
             if(QFile::exists("/inkbox/gutenbergSyncDone") == true) {

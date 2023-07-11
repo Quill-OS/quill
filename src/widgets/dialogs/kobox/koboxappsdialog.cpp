@@ -88,8 +88,8 @@ void koboxAppsDialog::on_launchBtn_clicked()
     }
     else {
         // DPI setting
-        string_checkconfig(".config/00-kobox/dpiSetting");
-        if(checkconfig_str_val == "") {
+        QString initialDpiSetting = readFile(".config/00-kobox/dpiSetting");
+        if(initialDpiSetting.isEmpty()) {
             if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
                 dpiSetting = "125";
             }
@@ -108,7 +108,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
 
         }
         else {
-            dpiSetting = checkconfig_str_val.toStdString();
+            dpiSetting = initialDpiSetting;
         }
 
         // Fullscreen or windowed (i3)
@@ -118,11 +118,11 @@ void koboxAppsDialog::on_launchBtn_clicked()
         if(itemText == "Netsurf") {
             log("Launching KoBox app: NetSurf", className);
             // Bypass standard shell script launch shenanigans
-            string_writeconfig("/external_root/tmp/X_program", "!netsurf");
+            writeFile("/external_root/tmp/X_program", "!netsurf");
         }
         else if(itemText == "KTerm") {
             log("Launching KoBox app: KTerm", className);
-            string_writeconfig("/external_root/tmp/X_program", "/usr/local/bin/kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
+            writeFile("/external_root/tmp/X_program", "/usr/local/bin/kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
             dpModeSetting = "fullscreen";
             if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
                 dpiSetting = "175";
@@ -142,17 +142,16 @@ void koboxAppsDialog::on_launchBtn_clicked()
         }
         else if(itemText == "Geany") {
             log("Launching KoBox app: Geany", className);
-            string_writeconfig("/external_root/tmp/X_program", "geany");
+            writeFile("/external_root/tmp/X_program", "geany");
         }
         else {
             log("Launching KoBox app: " + itemText, className);
-            QString itemTextLower = itemText.toLower();
-            std::string app = itemTextLower.toStdString();
-            string_writeconfig("/external_root/tmp/X_program", app);
+            QString app = itemText.toLower();
+            writeFile("/external_root/tmp/X_program", app);
         }
 
-        string_writeconfig("/external_root/tmp/X_dpmode", dpModeSetting);
-        string_writeconfig("/external_root/tmp/X_dpi", dpiSetting);
+        writeFile("/external_root/tmp/X_dpmode", dpModeSetting);
+        writeFile("/external_root/tmp/X_dpi", dpiSetting);
 
         /* Wheeee! */
         global::kobox::showKoboxSplash = true;
@@ -167,11 +166,11 @@ void koboxAppsDialog::on_launchBtn_clicked()
 
         // Stop EncFS/Encrypted storage
         if(checkconfig("/external_root/run/encfs_mounted") == true) {
-            string_writeconfig("/external_root/run/encfs_stop_cleanup", "true");
-            string_writeconfig("/opt/ibxd", "encfs_stop\n");
+            writeFile("/external_root/run/encfs_stop_cleanup", "true");
+            writeFile("/opt/ibxd", "encfs_stop\n");
         }
 
         // Write to FIFO to start X11
-        string_writeconfig("/opt/ibxd", "x_start_gui\n");
+        writeFile("/opt/ibxd", "x_start_gui\n");
     }
 }
