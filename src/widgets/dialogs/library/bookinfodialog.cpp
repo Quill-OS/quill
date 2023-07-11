@@ -9,7 +9,6 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
     ui(new Ui::bookInfoDialog)
 {
     ui->setupUi(this);
-    using global::bookInfoDialog::localInfoDialog;
 
     // Preventing outside interaction
     this->setModal(true);
