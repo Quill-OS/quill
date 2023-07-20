@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent)
         wifiIconWidth = sW / 22.5;
         wifiIconHeight = sH / 22.5;
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "emu\n") {
         stdIconWidth = sW / 12.5;
         stdIconHeight = sH / 12.5;
         brightnessIconWidth = sW / 24.5;
@@ -149,7 +149,7 @@ MainWindow::MainWindow(QWidget *parent)
     if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 1px; padding-right: 1px;");
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "emu\n") {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;");
     }
     else if(global::deviceID == "n873\n") {
@@ -640,7 +640,7 @@ void MainWindow::resetIcons() {
 
 void MainWindow::setBatteryIcon() {
     // Battery
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n") {
         // Hide brightness controls; they won't be very useful there anyway (for anything but the Glo (HD)/Libra/Aura 2) ...
         if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             ui->brightnessBtn->hide();

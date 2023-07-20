@@ -252,7 +252,7 @@ reader::reader(QWidget *parent) :
         ui->fontChooser->setCurrentText(global::reader::font);
     }
     // Night mode
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n249\n" or global::deviceID == "n306\n") {
         if(checkconfig(".config/10-dark_mode/config") == true) {
             log("Setting night mode to ON", className);
             writeFile("/tmp/invertScreen", "y");
@@ -281,7 +281,7 @@ reader::reader(QWidget *parent) :
         ui->previousBtn->setStyleSheet("padding: 13.5px");
         ui->optionsBtn->setStyleSheet("padding: 13.5px");
     }
-    else if(global::deviceID == "n437\n") {
+    else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
         ui->nextBtn->setStyleSheet("padding: 12.5px");
         ui->previousBtn->setStyleSheet("padding: 12.5px");
         ui->optionsBtn->setStyleSheet("padding: 12.5px");
@@ -343,7 +343,7 @@ reader::reader(QWidget *parent) :
     if(checkconfig("/opt/inkbox_genuine") == true) {
         float stdIconWidth;
         float stdIconHeight;
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
             stdIconWidth = sW / 16;
             stdIconHeight = sW / 16;
         }
@@ -535,7 +535,7 @@ reader::reader(QWidget *parent) :
         if(global::deviceID == "n705\n") {
             infoLabelDefinedLength = 35;
         }
-        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
             infoLabelDefinedLength = 50;
         }
         else {
@@ -563,7 +563,7 @@ reader::reader(QWidget *parent) :
         if(global::deviceID == "n705\n") {
             infoLabelDefinedLength = 35;
         }
-        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
+        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
             infoLabelDefinedLength = 50;
         }
         else {
@@ -1122,7 +1122,7 @@ void reader::on_optionsBtn_clicked()
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 13.5px");
         }
-        else if(global::deviceID == "n437\n") {
+        else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 12.5px");
         }
         else {
@@ -1130,7 +1130,7 @@ void reader::on_optionsBtn_clicked()
         }
         ui->optionsBtn->setIcon(QIcon(":/resources/settings.png"));
         // The Glo HD (N437) has a newer platform plugin that doesn't need this
-        if(global::deviceID != "n437\n") {
+        if(global::deviceID != "n437\n" or global::deviceID != "n306\n" or global::deviceID != "n249\n") {
             QTimer::singleShot(500, this, SLOT(repaint()));
         }
         menubar_shown = false;
@@ -1140,7 +1140,7 @@ void reader::on_optionsBtn_clicked()
         if(global::deviceID == "n873\n") {
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 13.5px");
         }
-        else if(global::deviceID == "n437\n") {
+        else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 12.5px");
         }
         else {

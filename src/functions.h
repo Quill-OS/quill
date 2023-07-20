@@ -205,6 +205,7 @@ namespace global {
     inline bool isN236 = false;
     inline bool isN437 = false;
     inline bool isN306 = false;
+    inline bool isN249 = false;
     inline bool isKT = false;
     inline bool runningInstanceIsReaderOnly;
     inline QString deviceID;
@@ -293,11 +294,21 @@ namespace {
         return 0;
     }
     void setBrightness(int value) {
-        if(QFile::exists("/var/run/brightness")) {
-            std::ofstream fhandler;
-            fhandler.open("/var/run/brightness");
-            fhandler << value;
-            fhandler.close();
+        if(global::deviceID == "n249\n") {
+            if(QFile::exists("/var/run/brightness_write")) {
+                std::ofstream fhandler;
+                fhandler.open("/var/run/brightness_write");
+                fhandler << value;
+                fhandler.close();
+            }
+        }
+        else {
+            if(QFile::exists("/var/run/brightness")) {
+                std::ofstream fhandler;
+                fhandler.open("/var/run/brightness");
+                fhandler << value;
+                fhandler.close();
+            }
         }
     }
     void setBrightness_ntxio(int value) {
@@ -553,7 +564,7 @@ namespace {
     QString getConnectionInformation() {
         QString getIpProg ("sh");
         QStringList getIpArgs;
-        if(global::deviceID != "n437\n") {
+        if(global::deviceID != "n437\n" and global::deviceID != "n249\n") {
             getIpArgs << "-c" << "/sbin/ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'";
         }
         else {
@@ -624,7 +635,7 @@ namespace {
                 defaultEpubPageHeight = 425;
                 defaultEpubPageWidth = 425;
             }
-            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "emu\n") {
                 defaultEpubPageHeight = 450;
                 defaultEpubPageWidth = 450;
             }
@@ -657,7 +668,7 @@ namespace {
                     defaultPdfPageWidth = 974;
                 }
             }
-            else if(global::deviceID == "n437\n") {
+            else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
                 if(global::reader::pdfOrientation == 0) {
                     defaultPdfPageHeight = 1398;
                     defaultPdfPageWidth = 1022;
@@ -683,7 +694,7 @@ namespace {
         }
     }
     void preSetBrightness(int brightnessValue) {
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n") {
             setBrightness(brightnessValue);
         }
         else if(global::deviceID == "n613\n") {
@@ -738,21 +749,32 @@ namespace {
     }
     int getWarmth() {
         QString sysfsWarmthPath;
+        int warmthValue;
         if(global::deviceID == "n873\n") {
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
+        else if(global::deviceID == "n249\n") {
+            sysfsWarmthPath = "/sys/class/backlight/backlight_warm/actual_brightness";
+        }
         QString warmthConfig = readFile(sysfsWarmthPath);
-        int warmthValue = warmthConfig.toInt();
-        warmthValue = 10 - warmthValue;
+        warmthValue = warmthConfig.toInt();
+        if (global::deviceID == "n873\n") {
+            warmthValue = 10 - warmthValue;
+        }
         return warmthValue;
     }
     void setWarmth(int warmthValue) {
-        // Value 0 gives a warmer lighting than value 10
-        warmthValue = 10 - warmthValue;
-        QString warmthValueStr = QString::number(warmthValue);
         QString sysfsWarmthPath;
+        QString warmthValueStr;
         if(global::deviceID == "n873\n") {
+            // Value 0 gives a warmer lighting than value 10
+            warmthValue = 10 - warmthValue;
+            warmthValueStr = QString::number(warmthValue);
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
+        }
+        else if(global::deviceID == "n249\n") {
+            warmthValueStr = QString::number(warmthValue);
+            sysfsWarmthPath = "/sys/class/backlight/backlight_warm/brightness";
         }
         writeFile(sysfsWarmthPath, warmthValueStr);
     }
@@ -1040,7 +1062,7 @@ namespace {
         else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
             return 2.6;
         }
-        else if(global::deviceID == "n437\n" or global::deviceID == "n873\n") {
+        else if(global::deviceID == "n437\n" or global::deviceID == "n249\n" or global::deviceID == "n873\n") {
             return 3;
         }
         else {
@@ -1049,7 +1071,7 @@ namespace {
     }
     global::wifi::wifiState checkWifiState() {
         QString interfaceName;
-        if(global::deviceID == "n437\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == "n437\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n") {
             interfaceName = "wlan0";
         }
         else {

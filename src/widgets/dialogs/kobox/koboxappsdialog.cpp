@@ -96,7 +96,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
             else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
                 dpiSetting = "175";
             }
-            else if(global::deviceID == "n437\n") {
+            else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
                 dpiSetting = "225";
             }
             else if(global::deviceID == "n873\n") {
@@ -130,7 +130,7 @@ void koboxAppsDialog::on_launchBtn_clicked()
             else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
                 dpiSetting = "225";
             }
-            else if(global::deviceID == "n437\n") {
+            else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
                 dpiSetting = "275";
             }
             else if(global::deviceID == "n873\n") {

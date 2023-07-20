@@ -26,7 +26,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
             if(global::deviceID == "n873\n") {
                 padding = 27;
             }
-            else if(global::deviceID == "n437\n") {
+            else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
                 padding = 20;
             }
             ui->closeBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: " + QString::number(padding) + "px");
@@ -136,7 +136,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->sat->setStyleSheet("font-weight: bold; font-size: 7pt; padding: 27px");
         ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 15px; border: 1px solid black");
     }
-    else if(global::deviceID == "n437\n") {
+    else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
         ui->n1->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
         ui->n2->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
         ui->n3->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");

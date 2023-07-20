@@ -172,6 +172,9 @@ int main(int argc, char *argv[])
             else if(global::deviceID == "n306\n") {
                 global::isN306 = true;
             }
+	    else if(global::deviceID == "n249\n") {
+                global::isN249 = true;
+            }
             else if(global::deviceID == "kt\n") {
                 global::isKT = true;
             }
@@ -216,8 +219,11 @@ int main(int argc, char *argv[])
             else if(global::deviceID == "n437\n") {
                 global::isN437 = true;
             }
-            else if(global::deviceID == "n306\n") {
+	    else if(global::deviceID == "n306\n") {
                 global::isN306 = true;
+            }
+	    else if(global::deviceID == "n249\n") {
+                global::isN249 = true;
             }
             else if(global::deviceID == "kt\n") {
                 global::isKT = true;

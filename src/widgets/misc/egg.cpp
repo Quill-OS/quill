@@ -25,7 +25,7 @@ egg::egg(QWidget *parent) :
         ui->nextBtn->setStyleSheet("padding: 13.5px");
         ui->previousBtn->setStyleSheet("padding: 13.5px");
     }
-    else if(global::deviceID == "n437\n") {
+    else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
         ui->nextBtn->setStyleSheet("padding: 12.5px");
         ui->previousBtn->setStyleSheet("padding: 12.5px");
     }
@@ -49,10 +49,8 @@ void egg::changeIndex(int index) {
     /*
         Contributors list:
             Szybet (0)
-            NiLuJe (1)
-            akemnade (2)
         Maintainer:
-            tux-linux (3)
+            tux-linux (1)
     */
 
     // Contributor name

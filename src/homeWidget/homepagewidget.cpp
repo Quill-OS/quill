@@ -23,7 +23,7 @@ homePageWidget::homePageWidget(QWidget *parent) :
         stdIconWidth = sW / 25;
         stdIconHeight = sH / 25;
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "emu\n") {
         stdIconWidth = sW / 23.5;
         stdIconHeight = sH / 23.5;
     }
@@ -65,7 +65,7 @@ homePageWidget::homePageWidget(QWidget *parent) :
         stdIconWidth = sW / stdIconWidthDivider;
         stdIconHeight = sH / stdIconHeightDivider;
     }
-    else if(global::deviceID == "n437\n") {
+    else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
         stdIconWidthDivider = 6.5;
         stdIconHeightDivider = 6.5;
         stdIconWidth = sW / stdIconWidthDivider;
