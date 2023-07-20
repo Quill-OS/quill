@@ -814,6 +814,14 @@ namespace {
                 return 0;
             }
         }
+        else if(global::deviceID == "n249\n") {
+            if(readFile("/sys/class/udc/ci_hdrc.0/state") != "not attached\n") {
+                return 1;
+            }
+            else {
+                return 0;
+            }
+        }
         else {
             // Thanks to https://github.com/koreader/KoboUSBMS/blob/2efdf9d920c68752b2933f21c664dc1afb28fc2e/usbms.c#L148-L158
             int ntxfd;
