@@ -811,7 +811,7 @@ namespace {
             }
         }
         else if(global::deviceID == "n249\n") {
-            if(readFile("/sys/class/power_supply/rn5t618-battery/status") != "Not charging\n") {
+            if(readFile("/sys/class/power_supply/rn5t618-battery/status") != "Discharging\n") {
                 return 1;
             }
             else {
