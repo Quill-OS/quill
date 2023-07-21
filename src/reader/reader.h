@@ -80,7 +80,6 @@ public:
     bool goToSavedPageDone;
     QString ittext;
     QString book_file;
-    bool batt_status;
     QString selected_text;
     QString word;
     QString words; // Saved words

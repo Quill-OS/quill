@@ -201,7 +201,7 @@ MainWindow::MainWindow(QWidget *parent)
            QString time = QTime::currentTime().toString("hh:mm:ss");
            getBatteryLevel();
            ui->timeLabel->setText(time);
-           ui->batteryLabel->setText(batt_level);
+           ui->batteryLabel->setText(batteryLevel);
         } );
         t->start();
     }
@@ -212,7 +212,7 @@ MainWindow::MainWindow(QWidget *parent)
            QString time = QTime::currentTime().toString("hh:mm");
            getBatteryLevel();
            ui->timeLabel->setText(time);
-           ui->batteryLabel->setText(batt_level);
+           ui->batteryLabel->setText(batteryLevel);
         } );
         t->start();
     }
@@ -666,13 +666,13 @@ void MainWindow::setBatteryIcon() {
         }
         else {
             getBatteryLevel();
-            if(batt_level_int >= 75 && batt_level_int <= 100) {
+            if(batteryLevelInt >= 75 && batteryLevelInt <= 100) {
                 ui->batteryIcon->setPixmap(scaledFullPixmap);
             }
-            else if(batt_level_int >= 25 && batt_level_int <= 74) {
+            else if(batteryLevelInt >= 25 && batteryLevelInt <= 74) {
                 ui->batteryIcon->setPixmap(scaledHalfPixmap);
             }
-            else if(batt_level_int >= 0 && batt_level_int <= 24) {
+            else if(batteryLevelInt >= 0 && batteryLevelInt <= 24) {
                 ui->batteryIcon->setPixmap(scaledEmptyPixmap);
             }
         }
@@ -696,13 +696,13 @@ void MainWindow::setBatteryIcon() {
         }
         else {
             getBatteryLevel();
-            if(batt_level_int >= 75 && batt_level_int <= 100) {
+            if(batteryLevelInt >= 75 && batteryLevelInt <= 100) {
                 ui->batteryIcon->setPixmap(scaledFullPixmap);
             }
-            else if(batt_level_int >= 25 && batt_level_int <= 74) {
+            else if(batteryLevelInt >= 25 && batteryLevelInt <= 74) {
                 ui->batteryIcon->setPixmap(scaledHalfPixmap);
             }
-            else if(batt_level_int >= 0 && batt_level_int <= 24) {
+            else if(batteryLevelInt >= 0 && batteryLevelInt <= 24) {
                 ui->batteryIcon->setPixmap(scaledEmptyPixmap);
             }
         }

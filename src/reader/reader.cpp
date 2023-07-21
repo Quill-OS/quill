@@ -397,7 +397,7 @@ reader::reader(QWidget *parent) :
         connect(t, &QTimer::timeout, [&]() {
            QString time = QTime::currentTime().toString("hh:mm:ss");
            getBatteryLevel();
-           ui->batteryLabel->setText(batt_level);
+           ui->batteryLabel->setText(batteryLevel);
            ui->timeLabel->setText(time);
         } );
         t->start();
@@ -408,7 +408,7 @@ reader::reader(QWidget *parent) :
         connect(t, &QTimer::timeout, [&]() {
            QString time = QTime::currentTime().toString("hh:mm");
            getBatteryLevel();
-           ui->batteryLabel->setText(batt_level);
+           ui->batteryLabel->setText(batteryLevel);
            ui->timeLabel->setText(time);
         } );
         t->start();
@@ -1360,13 +1360,13 @@ void reader::menubar_show() {
     }
     else {
         getBatteryLevel();
-        if(batt_level_int >= 75 && batt_level_int <= 100) {
+        if(batteryLevelInt >= 75 && batteryLevelInt <= 100) {
             ui->batteryIconLabel->setPixmap(scaledFullPixmap);
         }
-        if(batt_level_int >= 25 && batt_level_int <= 74) {
+        if(batteryLevelInt >= 25 && batteryLevelInt <= 74) {
             ui->batteryIconLabel->setPixmap(scaledHalfPixmap);
         }
-        if(batt_level_int >= 0 && batt_level_int <= 24) {
+        if(batteryLevelInt >= 0 && batteryLevelInt <= 24) {
             ui->batteryIconLabel->setPixmap(scaledEmptyPixmap);
         }
     }

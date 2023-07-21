@@ -88,7 +88,7 @@ void usbmsSplash::usbmsLaunch()
     writeFile("/opt/ibxd", "gui_apps_stop\n");
     QThread::msleep(1000);
 
-    if(global::deviceID == "n306\n" or global::deviceID == "n873\n") {
+    if(global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "n873\n") {
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/fs/configfs/configfs.ko");
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/drivers/usb/gadget/libcomposite.ko");
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/drivers/usb/gadget/function/usb_f_mass_storage.ko");

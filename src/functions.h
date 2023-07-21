@@ -215,9 +215,9 @@ namespace global {
 namespace {
     QString deviceUID;
     QString device;
-    QString batt_level;
+    QString batteryLevel;
     QString kernelVersion;
-    int batt_level_int;
+    int batteryLevelInt;
     int defaultEpubPageWidth;
     int defaultEpubPageHeight;
     int defaultPdfPageWidth;
@@ -388,31 +388,27 @@ namespace {
         return 0;
     }
     void getBatteryLevel() {
-        QString batteryLevelFileQstr;
+        batteryLevelInt = 100;
+        batteryLevel = "100%";
         if(global::deviceID == "kt\n") {
-            QFile batt_level_file("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_capacity");
-            if(batt_level_file.exists()) {
-                batt_level_file.open(QIODevice::ReadOnly);
-                batt_level = batt_level_file.readAll();
-                batt_level = batt_level.trimmed();
-                batt_level_int = batt_level.toInt();
-                batt_level = batt_level.append("%");
-                batt_level_file.close();
+            if(QFile::exists("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_capacity")) {
+                batteryLevel = readFile("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_capacity").trimmed();
+                batteryLevelInt = batteryLevel.toInt();
+                batteryLevel.append("%");
+            }
+        }
+        else if(global::deviceID == "n249\n") {
+            if(QFile::exists("/sys/class/power_supply/rn5t618-battery/capacity")) {
+                batteryLevel = readFile("/sys/class/power_supply/rn5t618-battery/capacity").trimmed();
+                batteryLevelInt = batteryLevel.toInt();
+                batteryLevel.append("%");
             }
         }
         else {
-            QFile batt_level_file("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity");
-            if(batt_level_file.exists()) {
-                batt_level_file.open(QIODevice::ReadOnly);
-                batt_level = batt_level_file.readAll();
-                batt_level = batt_level.trimmed();
-                batt_level_int = batt_level.toInt();
-                batt_level = batt_level.append("%");
-                batt_level_file.close();
-            }
-            else {
-                batt_level_int = 100;
-                batt_level = "100%";
+            if(QFile::exists("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity")) {
+                batteryLevel = readFile("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity").trimmed();
+                batteryLevelInt = batteryLevel.toInt();
+                batteryLevel.append("%");
             }
         }
     }
@@ -445,7 +441,7 @@ namespace {
     bool isBatteryLow() {
         // Checks if battery level is under 15% of total capacity.
         getBatteryLevel();
-        if(batt_level_int <= 15) {
+        if(batteryLevelInt <= 15) {
             return true;
         }
         else {
@@ -456,7 +452,7 @@ namespace {
     bool isBatteryCritical() {
         // Checks if the battery level is critical (i.e. <= 5%)
         getBatteryLevel();
-        if(batt_level_int <= 5) {
+        if(batteryLevelInt <= 5) {
             QString function = __func__; log(function + ": Battery is at a critical charge level!", "functions");
             return true;
         }
@@ -815,7 +811,7 @@ namespace {
             }
         }
         else if(global::deviceID == "n249\n") {
-            if(readFile("/sys/class/udc/ci_hdrc.0/state") != "not attached\n") {
+            if(readFile("/sys/class/power_supply/rn5t618-battery/status") != "Not charging\n") {
                 return 1;
             }
             else {

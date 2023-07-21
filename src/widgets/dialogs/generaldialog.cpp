@@ -124,7 +124,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->stackedWidget->setCurrentIndex(1);
         getBatteryLevel();
         QString message = "The battery's level is low.\nPlease charge your eReader.\nCurrent level: ";
-        message.append(batt_level);
+        message.append(batteryLevel);
         ui->bodyLabel->setText(message);
         ui->headerLabel->setText("Low battery");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
