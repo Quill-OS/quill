@@ -726,7 +726,7 @@ reader::~reader()
 }
 
 int reader::setup_book(QString book, int i, bool run_parser) {
-    // Parse ebook
+    // Parse eBook
     if(remount == true) {
         QString mount_prog ("sh");
         QStringList mount_args;
@@ -1849,6 +1849,7 @@ void reader::gotoPage(int pageNumber) {
             setup_book(book_file, mupdf::epub::epubPageNumber, true);
             ui->text->setText("");
             ui->text->setText(epubPageContent);
+            global::reader::currentViewportText = ui->text->toHtml();
 
             pagesTurned = 0;
             writeconfig_pagenumber(false);
