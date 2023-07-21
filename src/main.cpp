@@ -66,7 +66,13 @@ int main(int argc, char *argv[])
         QFile::remove("/tmp/rescan_userapps");
         log("Re-scanning user applications from explicit request", "main");
         writeFile("/opt/ibxd", "gui_apps_stop\n");
-        QThread::msleep(1000);
+        while(true) {
+            if(QFile::exists("/tmp/gui_apps_stopped")) {
+                log("there");
+                QFile::remove("/tmp/gui_apps_stopped");
+                break;
+            }
+        }
         writeFile("/opt/ibxd", "gui_apps_start\n");
         while(true) {
             if(QFile::exists("/tmp/gui_apps_started")) {
