@@ -710,7 +710,7 @@ void MainWindow::setBatteryIcon() {
 }
 
 void MainWindow::setInitialBrightness() {
-    if(global::deviceID == "n873\n") {
+    if(global::deviceID == "n249\n" or global::deviceID == "n873\n") {
         int warmth;
         QString warmthConfig = readFile(".config/03-brightness/config-warmth");
         if(warmthConfig.isEmpty()) {

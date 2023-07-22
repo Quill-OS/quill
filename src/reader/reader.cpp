@@ -2257,7 +2257,7 @@ void reader::setCinematicBrightnessWarmthSlot() {
             log("Local Reading Settings: Setting brightness to " + QString::number(brightness_value), className);
             cinematicBrightness(brightness_value, 2);
         }
-        if(global::deviceID == "n873\n") {
+        if(global::deviceID == "n249\n" or global::deviceID == "n873\n") {
             int warmthValue = readFile(".config/03-brightness/config-warmth").toInt();
             log("Local Reading Settings: Setting warmth to " + QString::number(warmthValue), className);
             cinematicWarmth(warmthValue);
