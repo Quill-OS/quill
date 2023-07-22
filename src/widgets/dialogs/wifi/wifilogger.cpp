@@ -189,6 +189,8 @@ void wifilogger::updateLogs() {
 
         ui->fancyLogsText->setText(fancyLogsText);
         ui->allLogsText->setText(allLogsText);
+        ui->fancyLogsText->verticalScrollBar()->setValue(ui->fancyLogsText->verticalScrollBar()->maximum());
+        ui->allLogsText->verticalScrollBar()->setValue(ui->allLogsText->verticalScrollBar()->maximum());
     }
 }
 
