@@ -252,7 +252,7 @@ reader::reader(QWidget *parent) :
         ui->fontChooser->setCurrentText(global::reader::font);
     }
     // Night mode
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n249\n" or global::deviceID == "n306\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
         if(checkconfig(".config/10-dark_mode/config") == true) {
             log("Setting night mode to ON", className);
             writeFile("/tmp/invertScreen", "y");

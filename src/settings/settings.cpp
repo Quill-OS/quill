@@ -106,7 +106,7 @@ settings::settings(QWidget *parent) :
         ui->quoteCheckBox->click();
     }
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n") {
+    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
         if(checkconfig(".config/10-dark_mode/config") == true) {
             ui->darkModeCheckBox->click();
         }
