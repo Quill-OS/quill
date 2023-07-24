@@ -142,7 +142,16 @@ generalDialog::generalDialog(QWidget *parent) :
     else if(global::text::textBrowserDialog == true) {
         textBrowserDialog = true;
         textwidgetWindow = new textwidget();
-        ui->headerLabel->setText("Information");
+        
+        if(global::text::textBrowserTitle.isEmpty() == true) {
+            ui->headerLabel->setText("Information");
+        }
+        else {
+            ui->headerLabel->setText(global::text::textBrowserTitle);
+        }
+        // Important
+        ui->bodyLabel->setText(global::text::textBrowserContents);
+        
         ui->stackedWidget->setCurrentIndex(1);
         ui->mainStackedWidget->insertWidget(1, textwidgetWindow);
         ui->mainStackedWidget->setCurrentIndex(1);
@@ -584,11 +593,13 @@ void generalDialog::on_acceptBtn_clicked()
     }
     if(textBrowserDialog == true) {
         global::text::textBrowserContents = "";
+        global::text::textBrowserTitle = "";
         global::text::textBrowserDialog = false;
     }
 
     if(appInfoDialog == true) {
         global::text::textBrowserContents = "";
+        global::text::textBrowserTitle = "";
         global::userApps::appInfoDialog = false;
     }
 

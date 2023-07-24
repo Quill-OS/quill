@@ -21,6 +21,7 @@
 #include <QJsonArray>
 #include <QCryptographicHash>
 #include <QNetworkInterface>
+#include <QMutex>
 
 #include <stdio.h>
 #include <fcntl.h>
@@ -87,6 +88,7 @@ namespace global {
     namespace text {
         inline bool textBrowserDialog;
         inline QString textBrowserContents;
+        inline QString textBrowserTitle = ""; // At default: empty; "Information" will be displayed
     }
     namespace keyboard {
         inline bool keyboardDialog;
@@ -196,6 +198,37 @@ namespace global {
             int signal;
         };
     }
+    namespace audio {
+            inline bool enabled = false;
+            struct musicFile {
+                QString path;
+                QString name; // Cut path for easier use in names
+                int lengths; // length Seconds
+                QString length; // In minutes:seconds
+                int id;
+            };
+            // 'None' is when 'currentAction' is empty
+            enum class Action { // Function will be called with this enum
+                Play,
+                Next,
+                Previous,
+                Pause,
+                Continue,
+                Stop, // Sets 'paused' to false, 'isSomethingCurrentlyPlaying' to false, and 'itemCurrentlyPlaying' to -1; also stops playing
+                SetVolume,
+            };
+            inline QVector<Action> currentAction;
+            inline QVector<musicFile> queue;
+            inline QVector<musicFile> fileList;
+            inline int itemCurrentlyPlaying = -1; // Also indicates in the queue menu which a grey color which is playing
+            inline QMutex audioMutex; // These variables will be shared between threads, so here, it's to protect it
+            inline int progressSeconds = -5; // -5 at default to avoid cutting song too early... yea
+            inline bool paused = false;
+            inline bool isSomethingCurrentlyPlaying = false; // Pause and continue
+            inline bool firstScan = true;
+            inline int volumeLevel = 40; // Default save value
+            inline bool songChanged = false;
+        }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
     inline bool isN705 = false;
@@ -261,9 +294,8 @@ namespace {
             config.open(QIODevice::ReadOnly);
             QTextStream in (&config);
             const QString content = in.readAll();
-            std::string contentstr = content.toStdString();
             config.close();
-            if(contentstr.find("true") != std::string::npos) {
+            if(content.contains("true")) {
                 return true;
             }
             else {
@@ -271,6 +303,7 @@ namespace {
             }
         }
         else {
+            QString function = __func__; log(function + ": Warning: File '" + file + "' doesn't exist, returning false", "functions");
             return false;
         }
         return 0;
@@ -1142,6 +1175,19 @@ namespace {
         // https://stackoverflow.com/questions/2799379/is-there-an-easy-way-to-strip-html-from-a-qstring-in-qt
         // This can cause problems if someone names their directory with HTML tags, so stop here. Anki, which is a big project, also doesn't care about this
         return text.remove(QRegExp("<[^>]*>"));
+    }
+    void bool_writeconfig(QString file, bool option) {
+        QString str;
+        if(option == true) {
+            str = "true";
+        }
+        else {
+            str = "false";
+        }
+        std::ofstream fhandler;
+        fhandler.open(file.toStdString());
+        fhandler << str.toStdString();
+        fhandler.close();
     }
 }
 

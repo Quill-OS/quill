@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>706</width>
+    <width>749</width>
     <height>601</height>
    </rect>
   </property>
@@ -17,6 +17,37 @@
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
      <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="14">
+       <widget class="Line" name="line_9">
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QLabel" name="labelLine_2">
+        <property name="text">
+         <string>―</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="15">
+       <widget class="QLabel" name="batteryIcon">
+        <property name="text">
+         <string>batteryIcon</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="homeBtn">
+        <property name="text">
+         <string>Home</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="1">
        <spacer name="horizontalSpacer">
         <property name="orientation">
@@ -30,23 +61,15 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="15">
-       <widget class="QLabel" name="batteryLabel">
-        <property name="font">
-         <font>
-          <family>Inter</family>
-          <pointsize>11</pointsize>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
+      <item row="0" column="9">
+       <widget class="QPushButton" name="brightnessBtn">
         <property name="text">
-         <string>batt</string>
+         <string>Brightness</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="16">
-       <widget class="Line" name="line_8">
+      <item row="0" column="11">
+       <widget class="Line" name="line_7">
         <property name="frameShadow">
          <enum>QFrame::Plain</enum>
         </property>
@@ -55,10 +78,13 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="14">
-       <widget class="QLabel" name="batteryIcon">
-        <property name="text">
-         <string>batteryIcon</string>
+      <item row="0" column="7">
+       <widget class="Line" name="audioLine">
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
         </property>
        </widget>
       </item>
@@ -75,14 +101,60 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="4">
-       <widget class="QLabel" name="label_2">
+      <item row="0" column="18">
+       <widget class="QLabel" name="timeLabel">
+        <property name="font">
+         <font>
+          <family>Inter</family>
+          <pointsize>11</pointsize>
+          <italic>false</italic>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>time</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="17">
+       <widget class="Line" name="line_8">
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="labelLine_1">
         <property name="text">
          <string>―</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="12">
+      <item row="0" column="16">
+       <widget class="QLabel" name="batteryLabel">
+        <property name="font">
+         <font>
+          <family>Inter</family>
+          <pointsize>11</pointsize>
+          <italic>false</italic>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>time</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="13">
        <widget class="QPushButton" name="wifiBtn">
         <property name="text">
          <string>Wi-Fi</string>
@@ -107,62 +179,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="2">
-       <widget class="QLabel" name="label">
+      <item row="0" column="6">
+       <widget class="QPushButton" name="audioBtn">
         <property name="text">
-         <string>―</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="0">
-       <widget class="QPushButton" name="homeBtn">
-        <property name="text">
-         <string>Home</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="17">
-       <widget class="QLabel" name="timeLabel">
-        <property name="font">
-         <font>
-          <family>Inter</family>
-          <pointsize>11</pointsize>
-          <italic>false</italic>
-          <bold>true</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>time</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="8">
-       <widget class="QPushButton" name="brightnessBtn">
-        <property name="text">
-         <string>Brightness</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="10">
-       <widget class="Line" name="line_7">
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="13">
-       <widget class="Line" name="line_9">
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <string>Audio</string>
         </property>
        </widget>
       </item>

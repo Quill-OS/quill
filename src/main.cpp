@@ -23,6 +23,7 @@
 #include "encryptionmanager.h"
 #include "sleepthread.h"
 #include "sleepdialog.h"
+#include "audiothread.h"
 
 #include <QApplication>
 #include <QFile>
@@ -102,6 +103,20 @@ int main(int argc, char *argv[])
     QObject::connect(sleepThreadWindow, &sleepThread::startDialog, sleepDialogWindow, &sleepDialog::launchSleepDialog);
     QObject::connect(sleepThreadWindow, &sleepThread::stopDialog, sleepDialogWindow, &sleepDialog::hideSleepDialog);
     IPDThread->start();
+
+    // Audio stuff
+    if(checkconfig(".config/e-2-audio/enabled") == true) {
+        log("Audio is enabled", "main");
+        global::audio::enabled = true;
+        QThread * audioThread = new QThread();
+        audiothread * audioObject = new audiothread();
+        audioObject->moveToThread(audioThread);
+        QObject::connect(audioThread, &QThread::started, audioObject, &audiothread::start);
+        audioThread->start();
+    }
+    else {
+        log("Audio is disabled", "main");
+    }
 
     if(checkconfig(".config/18-encrypted_storage/status") == true and checkconfig("/external_root/run/encfs_mounted") == false) {
         // Open Encryption Manager to unlock encrypted storage

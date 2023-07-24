@@ -25,8 +25,12 @@ DEFINES += GIT_COMMIT=\\\"$$GIT_COMMIT\\\"
 
 SOURCES += \
     src/apps/todo.cpp \
+    src/audio/audiothread.cpp \
     src/splash/alert.cpp \
     src/apps/apps.cpp \
+    src/widgets/dialogs/audio/audiodialog.cpp \
+    src/widgets/dialogs/audio/audiofile.cpp \
+    src/widgets/dialogs/audio/audiofilequeue.cpp \
     src/widgets/dialogs/library/bookinfodialog.cpp \
     src/widgets/dialogs/library/bookoptionsdialog.cpp \
     src/widgets/dialogs/brightnessdialog.cpp \
@@ -69,9 +73,13 @@ SOURCES += \
     src/settings/powerdaemonsettings.cpp
 
 HEADERS += \
+    src/audio/audiothread.h \
     src/apps/todo.h \
     src/splash/alert.h \
     src/apps/apps.h \
+    src/widgets/dialogs/audio/audiodialog.h \
+    src/widgets/dialogs/audio/audiofile.h \
+    src/widgets/dialogs/audio/audiofilequeue.h \
     src/widgets/dialogs/library/bookinfodialog.h \
     src/widgets/dialogs/library/bookoptionsdialog.h \
     src/widgets/dialogs/brightnessdialog.h \
@@ -117,6 +125,9 @@ FORMS += \
     src/apps/todo.ui \
     src/splash/alert.ui \
     src/apps/apps.ui \
+    src/widgets/dialogs/audio/audiodialog.ui \
+    src/widgets/dialogs/audio/audiofile.ui \
+    src/widgets/dialogs/audio/audiofilequeue.ui \
     src/widgets/dialogs/library/bookinfodialog.ui \
     src/widgets/dialogs/library/bookoptionsdialog.ui \
     src/widgets/dialogs/brightnessdialog.ui \
@@ -163,3 +174,6 @@ RESOURCES += \
     src/eink.qrc
 
 INCLUDEPATH += $$system(find ./ -type d -print -path ./.git -prune | grep -v "./.git")
+INCLUDEPATH += $$PWD/libs/libsndfile/include/
+DEPENDPATH += $$PWD/libs/libsndfile/include/
+LIBS += -L$$PWD/libs/prebuilt -lsndfile

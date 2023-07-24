@@ -102,6 +102,7 @@ private slots:
     void setupLocalLibraryWidget();
     void setupHomePageWidget();
     void launchOnlineLibrary();
+    void on_audioBtn_clicked();
 
 private:
     Ui::MainWindow * ui;
