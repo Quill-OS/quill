@@ -16,6 +16,7 @@ audioDialog::audioDialog(QWidget *parent) :
 {
     ui->setupUi(this);
     audioDialog::setFont(QFont("u001"));
+    ui->fileNameLabel->setFont(QFont("u001"));
 
     progress = new QTimer(this);
 
@@ -45,16 +46,16 @@ audioDialog::audioDialog(QWidget *parent) :
 
     int topButtonsSize = 55;
     int menuButtonsSize = 80;
-    int playButtonsSize = 50;
+    int playBtnsSize = 50;
 
     ui->minusBtn->setIconSize(QSize{topButtonsSize,topButtonsSize});
     ui->plusBtn->setIconSize(QSize{topButtonsSize,topButtonsSize});
     ui->exitBtn->setIconSize(QSize{topButtonsSize,topButtonsSize});
     ui->refreshBtn->setIconSize(QSize{topButtonsSize,topButtonsSize});
 
-    ui->nextBtn->setIconSize(QSize{playButtonsSize,playButtonsSize});
-    ui->previousBtn->setIconSize(QSize{playButtonsSize,playButtonsSize});
-    ui->playBtn->setIconSize(QSize{playButtonsSize,playButtonsSize});
+    ui->nextBtn->setIconSize(QSize{playBtnsSize,playBtnsSize});
+    ui->previousBtn->setIconSize(QSize{playBtnsSize,playBtnsSize});
+    ui->playBtn->setIconSize(QSize{playBtnsSize,playBtnsSize});
 
     ui->libraryBtn->setIconSize(QSize{menuButtonsSize,menuButtonsSize});
     ui->queueBtn->setIconSize(QSize{menuButtonsSize,menuButtonsSize});
@@ -150,14 +151,14 @@ void audioDialog::refreshFileList() {
         writeFile(".config/e-2-audio/path", "/mnt/onboard/onboard/music/");
         log("Music config file doesn't exist, creating it", className);
     }
-    // For example in this path: /mnt/onboard/onboard/music/ ( with / at the end )
+    // For example in this path: '/mnt/onboard/onboard/music/' (with '/' at the end)
     QString path = readFile(".config/e-2-audio/path").replace("\n", "");
     log("Path for audio files: '" + path + "'", className);
     QDir dir{path};
     // Other file formats could be added, by building more libraries
     // https://github.com/arnavyc/sndfile-alsa-example/blob/main/src/sndfile-alsa.c
     // https://github.com/libsndfile/libsndfile
-    // Is it easy to do? Yes. Does it take more space? Yes. Do I care? No, i have this fancy command:
+    // Is it easy to do? Yes. Does it take more space? Yes. Do I care? No, I have this fancy command instead:
     // for i in *; do ffmpeg -i "$i" "${i%.*}.wav"; done
     // (Szybet)
     dir.setNameFilters(QStringList("*.wav"));

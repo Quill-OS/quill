@@ -7,6 +7,11 @@ audiofilequeue::audiofilequeue(QWidget *parent) :
 {
     ui->setupUi(this);
     audiofilequeue::setFont(QFont("u001"));
+    ui->nameLabel->setFont(QFont("u001"));
+    ui->timeLabel->setFont(QFont("u001"));
+
+    ui->playBtn->setProperty("type", "borderless");
+    ui->deleteBtn->setProperty("type", "borderless");
 
     ui->nameLabel->setWordWrap(true);
 }
@@ -23,7 +28,7 @@ void audiofilequeue::provideData(global::audio::musicFile fileProvided, bool gra
     if(gray == true) {
         log("Setting background gray", className);
         ui->deleteBtn->setStyleSheet("background: #aeadac;");
-        ui->playButton->setStyleSheet("background: #aeadac;");
+        ui->playBtn->setStyleSheet("background: #aeadac;");
         isPlaying = true;
     }
 }
@@ -69,7 +74,7 @@ void audiofilequeue::on_deleteBtn_clicked()
     global::audio::audioMutex.unlock();
 }
 
-void audiofilequeue::on_playButton_clicked()
+void audiofilequeue::on_playBtn_clicked()
 {
     global::audio::audioMutex.lock();
     for(int i = 0; i < global::audio::queue.size(); i++) {

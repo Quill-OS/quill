@@ -8,6 +8,10 @@ audiofile::audiofile(QWidget *parent) :
 {
     ui->setupUi(this);
     audiofile::setFont(QFont("u001"));
+    ui->nameLabel->setFont(QFont("u001"));
+    ui->timeLabel->setFont(QFont("u001"));
+
+    ui->addBtn->setProperty("type", "borderless");
 
     ui->nameLabel->setWordWrap(true);
 }

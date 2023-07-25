@@ -32,7 +32,7 @@ signals:
 
 private slots:
     void on_deleteBtn_clicked();
-    void on_playButton_clicked();
+    void on_playBtn_clicked();
 };
 
 #endif // AUDIOFILEQUEUE_H
