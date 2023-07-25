@@ -69,7 +69,6 @@ int main(int argc, char *argv[])
         writeFile("/opt/ibxd", "gui_apps_stop\n");
         while(true) {
             if(QFile::exists("/tmp/gui_apps_stopped")) {
-                log("there");
                 QFile::remove("/tmp/gui_apps_stopped");
                 break;
             }
