@@ -444,7 +444,7 @@ namespace {
                 batteryLevel.append("%");
             }
             else {
-                // It's for the Nia model c - but also its a more regular - default path, so make it the fallback
+                // It's for the Nia model C - but it's also a more regular/default path, so make it the fallback
                 QString path = "/sys/class/power_supply/battery/capacity";
                 if(QFile::exists(path)) {
                     batteryLevel = readFile(path).trimmed();
