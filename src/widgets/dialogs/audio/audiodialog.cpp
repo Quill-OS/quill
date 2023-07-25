@@ -62,7 +62,7 @@ audioDialog::audioDialog(QWidget *parent) :
     ui->fileNameLabel->setWordWrap(true);
 
     // Default "page"
-    ui->libraryBtn->setStyleSheet("background: grey;");
+    ui->libraryBtn->setStyleSheet("background: #aeadac;");
     ui->refreshBtn->setIcon(QIcon(":/resources/refresh-small.png"));
     ui->refreshBtn->hide();
     ui->lineRefresh->hide();
@@ -114,7 +114,7 @@ void audioDialog::changeMenu() {
         ui->lineRefresh->show();
         ui->refreshBtn->setIcon(QIcon(":/resources/clean.png"));
         ui->libraryBtn->setStyleSheet("background: white;");
-        ui->queueBtn->setStyleSheet("background: grey;");
+        ui->queueBtn->setStyleSheet("background: #aeadac;");
         refreshAudioFileWidgetsQueue();
     }
     else if(currentMenu != Library){
@@ -122,7 +122,7 @@ void audioDialog::changeMenu() {
         emit deleteItself();
         ui->refreshBtn->hide();
         ui->lineRefresh->hide();
-        ui->libraryBtn->setStyleSheet("background: grey;");
+        ui->libraryBtn->setStyleSheet("background: #aeadac;");
         ui->queueBtn->setStyleSheet("background: white;");
         refreshAudioFileWidgets();
     }
@@ -152,7 +152,7 @@ void audioDialog::refreshFileList() {
     }
     // For example in this path: /mnt/onboard/onboard/music/ ( with / at the end )
     QString path = readFile(".config/e-2-audio/path").replace("\n", "");
-    log("Path for audio files: " + path, className);
+    log("Path for audio files: '" + path + "'", className);
     QDir dir{path};
     // Other file formats could be added, by building more libraries
     // https://github.com/arnavyc/sndfile-alsa-example/blob/main/src/sndfile-alsa.c
@@ -248,12 +248,12 @@ void audioDialog::refreshAudioFileWidgetsQueue() {
     for(int i = 0; i < global::audio::queue.size(); i++) {
         log("Adding new item: " + QString::number(i), className);
         audiofilequeue* newAudioFileQueue = new audiofilequeue(this);
-        bool grey = false;
+        bool gray = false;
         if(global::audio::isSomethingCurrentlyPlaying == true && global::audio::itemCurrentlyPlaying == i) {
-            grey = true;
+            gray = true;
         }
         global::audio::queue[i].id = i; // Give them invidual ID once more, because files can repeat
-        newAudioFileQueue->provideData(global::audio::queue[i], grey);
+        newAudioFileQueue->provideData(global::audio::queue[i], gray);
         QObject::connect(this, &audioDialog::deleteItself, newAudioFileQueue, &audiofilequeue::die);
         QObject::connect(newAudioFileQueue, &audiofilequeue::playFileChild, this, &audioDialog::playFile);
         ui->verticalLayout->addWidget(newAudioFileQueue, Qt::AlignTop);

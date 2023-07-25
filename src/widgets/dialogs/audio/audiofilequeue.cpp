@@ -16,14 +16,14 @@ audiofilequeue::~audiofilequeue()
     delete ui;
 }
 
-void audiofilequeue::provideData(global::audio::musicFile fileProvided, bool grey) {
+void audiofilequeue::provideData(global::audio::musicFile fileProvided, bool gray) {
     file = fileProvided;
     ui->nameLabel->setText(file.name);
     ui->timeLabel->setText(file.length);
-    if(grey == true) {
-        log("Setting background grey", className);
-        ui->deleteBtn->setStyleSheet("background: grey;");
-        ui->playButton->setStyleSheet("background: grey;");
+    if(gray == true) {
+        log("Setting background gray", className);
+        ui->deleteBtn->setStyleSheet("background: #aeadac;");
+        ui->playButton->setStyleSheet("background: #aeadac;");
         isPlaying = true;
     }
 }

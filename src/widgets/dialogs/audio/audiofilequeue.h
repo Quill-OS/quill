@@ -18,7 +18,7 @@ public:
     QString className = this->metaObject()->className();
     bool isPlaying = false;
 
-    void provideData(global::audio::musicFile fileProvided, bool grey);
+    void provideData(global::audio::musicFile fileProvided, bool gray);
     global::audio::musicFile file;
 
 public slots:

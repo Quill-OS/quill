@@ -220,7 +220,7 @@ namespace global {
             inline QVector<Action> currentAction;
             inline QVector<musicFile> queue;
             inline QVector<musicFile> fileList;
-            inline int itemCurrentlyPlaying = -1; // Also indicates in the queue menu which a grey color which is playing
+            inline int itemCurrentlyPlaying = -1; // Also indicates in the queue menu which a gray color which is playing
             inline QMutex audioMutex; // These variables will be shared between threads, so here, it's to protect it
             inline int progressSeconds = -5; // -5 at default to avoid cutting song too early... yea
             inline bool paused = false;
