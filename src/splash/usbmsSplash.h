@@ -23,6 +23,7 @@ public:
 
 private slots:
     void brightnessDown();
+    void warmthDown();
     void quit_restart();
     void restartServices();
 

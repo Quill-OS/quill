@@ -69,6 +69,7 @@ void usbmsSplash::usbmsLaunch()
     log("Entering USBMS session", className);
     writeFile("/tmp/in_usbms", "true");
     QTimer::singleShot(1500, this, SLOT(brightnessDown()));
+    QTimer::singleShot(1500, this, SLOT(warmthDown()));
 
     if(global::usbms::koboxExportExtensions == true) {
         writeFile("/opt/ibxd", "kobox_extensions_storage_unmount\n");
@@ -179,6 +180,12 @@ void usbmsSplash::brightnessDown() {
     writeFile("/tmp/inkbox-cinematicBrightness_ran", "false");
 }
 
+void usbmsSplash::warmthDown() {
+    if(global::deviceID == "n249\n" or global::deviceID == "n873\n") {
+        cinematicWarmth(0);
+    }
+}
+
 void usbmsSplash::quit_restart() {
     // If existing, cleaning bookconfig_mount mountpoint
     writeFile("/opt/ibxd", "bookconfig_unmount\n");
@@ -193,7 +200,7 @@ void usbmsSplash::restartServices() {
     // Restarting USBNet
     // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet)
     writeFile("/opt/ibxd", "usbnet_start\n");
-    QThread::msleep(1000);
+    QThread::msleep(5000);
     // Mounting onboard storage
     writeFile("/opt/ibxd", "onboard_mount\n");
     QThread::msleep(1000);
