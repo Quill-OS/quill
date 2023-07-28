@@ -786,6 +786,7 @@ void generalDialog::waitForGutenbergSearchDone() {
                 break;
             }
         }
+        QThread::msleep(500);
     }
 }
 

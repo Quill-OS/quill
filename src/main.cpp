@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
                 QFile::remove("/tmp/gui_apps_stopped");
                 break;
             }
+            QThread::msleep(500);
         }
         writeFile("/opt/ibxd", "gui_apps_start\n");
         while(true) {
@@ -88,6 +89,7 @@ int main(int argc, char *argv[])
                     break;
                 }
             }
+            QThread::msleep(500);
         }
         updateUserAppsMainJsonFile();
     }

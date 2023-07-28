@@ -77,17 +77,41 @@ void usbmsSplash::usbmsLaunch()
     if(checkconfig("/external_root/run/encfs_mounted") == true) {
         writeFile("/external_root/run/encfs_stop_cleanup", "true");
         writeFile("/opt/ibxd", "encfs_stop\n");
-        QThread::msleep(1500);
+        while(true) {
+            if(QFile::exists("/tmp/encfs_stopped")) {
+                QFile::remove("/tmp/encfs_stopped");
+                break;
+            }
+            QThread::msleep(500);
+        }
+    }
+
+    writeFile("/opt/ibxd", "gui_apps_stop\n");
+    while(true) {
+        if(QFile::exists("/tmp/gui_apps_stopped")) {
+            QFile::remove("/tmp/gui_apps_stopped");
+            break;
+        }
+        QThread::msleep(500);
     }
 
     writeFile("/opt/ibxd", "onboard_unmount\n");
-    QThread::msleep(1000);
+    while(true) {
+        if(QFile::exists("/tmp/onboard_unmounted")) {
+            QFile::remove("/tmp/onboard_unmounted");
+            break;
+        }
+        QThread::msleep(500);
+    }
 
     writeFile("/opt/ibxd", "usbnet_stop\n");
-    QThread::msleep(1000);
-
-    writeFile("/opt/ibxd", "gui_apps_stop\n");
-    QThread::msleep(1000);
+    while(true) {
+        if(QFile::exists("/tmp/usbnet_stopped")) {
+            QFile::remove("/tmp/usbnet_stopped");
+            break;
+        }
+        QThread::msleep(500);
+    }
 
     if(global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "n873\n") {
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/fs/configfs/configfs.ko");
@@ -200,13 +224,34 @@ void usbmsSplash::restartServices() {
     // Restarting USBNet
     // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet)
     writeFile("/opt/ibxd", "usbnet_start\n");
-    QThread::msleep(5000);
+    while(true) {
+        if(QFile::exists("/tmp/usbnet_started")) {
+            QFile::remove("/tmp/usbnet_started");
+            break;
+        }
+        QThread::msleep(500);
+    }
+
     // Mounting onboard storage
     writeFile("/opt/ibxd", "onboard_mount\n");
-    QThread::msleep(1000);
+    while(true) {
+        if(QFile::exists("/tmp/onboard_mounted")) {
+            QFile::remove("/tmp/onboard_mounted");
+            break;
+        }
+        QThread::msleep(500);
+    }
+
     // Checking for updates
     writeFile("/opt/ibxd", "update_inkbox_restart\n");
-    QThread::msleep(2500);
+    while(true) {
+        if(QFile::exists("/tmp/update_inkbox_restarted")) {
+            QFile::remove("/tmp/update_inkbox_restarted");
+            break;
+        }
+        QThread::msleep(500);
+    }
+
     QFile::remove("/tmp/in_usbms");
     // GUI apps: update main JSON file
     writeFile("/opt/ibxd", "gui_apps_start\n");
@@ -223,6 +268,7 @@ void usbmsSplash::restartServices() {
                 break;
             }
         }
+        QThread::msleep(500);
     }
     // Remove macOS dotfiles
     {

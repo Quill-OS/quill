@@ -179,5 +179,6 @@ void bookInfoDialog::waitForBookFetch() {
                 break;
             }
         }
+        QThread::msleep(500);
     }
 }
