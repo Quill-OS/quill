@@ -32,6 +32,7 @@ audioDialog::audioDialog(QWidget *parent) :
     // Centering dialog
     int x = (screenGeometry.width() - this->width()) / 2;
     int y = (screenGeometry.height() - this->height()) / 2;
+    int screenSizeProduct = screenGeometry.width() * screenGeometry.height();
     this->move(x, y);
 
     ui->minusBtn->setProperty("type", "borderless");
@@ -44,9 +45,9 @@ audioDialog::audioDialog(QWidget *parent) :
     ui->queueBtn->setProperty("type", "borderless");
     ui->refreshBtn->setProperty("type", "borderless");
 
-    int topButtonsSize = 55;
-    int menuButtonsSize = 80;
-    int playBtnsSize = 50;
+    int topButtonsSize = screenSizeProduct / 14298.6;
+    int menuButtonsSize = screenSizeProduct / 9830;
+    int playBtnsSize = screenSizeProduct / 15728;
 
     ui->minusBtn->setIconSize(QSize{topButtonsSize,topButtonsSize});
     ui->plusBtn->setIconSize(QSize{topButtonsSize,topButtonsSize});
