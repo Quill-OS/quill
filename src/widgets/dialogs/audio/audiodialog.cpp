@@ -155,7 +155,7 @@ void audioDialog::refreshFileList() {
     // For example in this path: '/mnt/onboard/onboard/music/' (with '/' at the end)
     QString path = readFile(".config/e-2-audio/path").replace("\n", "");
 
-    // Needed by gui apps
+    // Needed by GUI user apps
     if(path.isEmpty()) {
         path = "/mnt/onboard/onboard/music/";
     }
