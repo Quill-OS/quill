@@ -167,6 +167,8 @@ void audioDialog::refreshFileList() {
     // https://github.com/libsndfile/libsndfile
     // Is it easy to do? Yes. Does it take more space? Yes. Do I care? No, I have this fancy command instead:
     // for i in *; do ffmpeg -i "$i" "${i%.*}.wav"; done
+    // To make the files smaller:
+    // for i in *; do ffmpeg -i "$i" -sample_fmt s16 -ar 22000 "${i%.*}22k.wav"; done
     // (Szybet)
     dir.setNameFilters(QStringList("*.wav"));
     dir.setFilter(QDir::Files | QDir::NoDotAndDotDot | QDir::NoSymLinks);
