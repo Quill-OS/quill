@@ -420,6 +420,32 @@ namespace {
         }
         return 0;
     }
+    QString getPowerSupplyOfType(QString type) {
+        QDirIterator supplies("/sys/class/power_supply", QDirIterator::NoIteratorFlags);
+        while(supplies.hasNext()) {
+	    supplies.next();
+            QString supply = supplies.filePath();
+            // badly classified device by some ntx kernels, ignore
+            if ((type == "Battery") &&
+                (supplies.fileName() == "mc13892_charger")) {
+                continue;
+            }
+	    if (readFile(supplies.filePath() + "/type").trimmed() == type) {
+                return supply;
+            }
+        }
+	return NULL;
+    }
+    QString getBatteryFile() {
+        static QString capacity;
+	if (capacity.isNull()) {
+	    QString battery = getPowerSupplyOfType("Battery");
+            if (!battery.isNull()) {
+                capacity = battery + "/capacity";
+            }
+        }
+        return capacity;
+    }
     void getBatteryLevel() {
         batteryLevelInt = 100;
         batteryLevel = "100%";
@@ -430,22 +456,15 @@ namespace {
                 batteryLevel.append("%");
             }
         }
-        else if(global::deviceID == "n249\n") {
-            if(QFile::exists("/sys/class/power_supply/rn5t618-battery/capacity")) {
-                batteryLevel = readFile("/sys/class/power_supply/rn5t618-battery/capacity").trimmed();
-                batteryLevelInt = batteryLevel.toInt();
-                batteryLevel.append("%");
-            }
-        }
         else {
+            // probably superfluous, catched by default
             if(QFile::exists("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity")) {
                 batteryLevel = readFile("/sys/devices/platform/pmic_battery.1/power_supply/mc13892_bat/capacity").trimmed();
                 batteryLevelInt = batteryLevel.toInt();
                 batteryLevel.append("%");
             }
             else {
-                // It's for the Nia model C - but it's also a more regular/default path, so make it the fallback
-                QString path = "/sys/class/power_supply/battery/capacity";
+                QString path = getBatteryFile();
                 if(QFile::exists(path)) {
                     batteryLevel = readFile(path).trimmed();
                     batteryLevelInt = batteryLevel.toInt();
