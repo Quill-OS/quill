@@ -425,7 +425,7 @@ namespace {
         while(supplies.hasNext()) {
 	    supplies.next();
             QString supply = supplies.filePath();
-            // badly classified device by some ntx kernels, ignore
+            // Badly-classified device by some ntx kernels, ignore
             if ((type == "Battery") &&
                 (supplies.fileName() == "mc13892_charger")) {
                 continue;
