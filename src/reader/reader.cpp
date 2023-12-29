@@ -119,14 +119,6 @@ reader::reader(QWidget *parent) :
     ui->viewHighlightsBtn->setText("");
     ui->viewHighlightsBtn->setIcon(QIcon(":/resources/view-highlights.png"));
 
-    // On the Mini with QT_FONT_DPI set to 187 (default for this device), quitBtn makes the UI go beyond the limits of the screen when the menu bar is shown
-    if(global::deviceID == "n705\n") {
-        ui->quitBtn->hide();
-        ui->quitBtn->deleteLater();
-        ui->line_19->hide();
-        ui->line_19->deleteLater();
-    }
-
     // Style misc.
     ui->bookInfoLabel->setStyleSheet("font-style: italic");
 

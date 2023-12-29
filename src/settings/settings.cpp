@@ -81,9 +81,7 @@ settings::settings(QWidget *parent) :
         homeIconHeight = sW / 20;
     }
 
-    ui->headerBtn->hide();
-    ui->headerLabel->hide();
-    ui->line_12->hide();
+    ui->headerStackedWidget->hide();
 
     ui->headerBtn->setIcon(QIcon(":/resources/chevron-left.png"));
     ui->headerBtn->setProperty("type", "borderless");
@@ -1109,14 +1107,10 @@ void settings::on_settingsStackedWidget_currentChanged(int arg1)
 {
     if(ui->settingsStackedWidget->currentIndex() != 0) {
         ui->headerLabel->setText(ui->settingsStackedWidget->currentWidget()->objectName());
-        ui->headerBtn->show();
-        ui->headerLabel->show();
-        ui->line_12->show();
+        ui->headerStackedWidget->show();
     }
     else {
-        ui->headerBtn->hide();
-        ui->headerLabel->hide();
-        ui->line_12->hide();
+        ui->headerStackedWidget->hide();
     }
 }
 
