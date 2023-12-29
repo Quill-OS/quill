@@ -111,7 +111,7 @@
         <file>resources/checkbox-indeterminate.png</file>
         <file>resources/egg/0.jpg</file>
         <file>resources/egg/1.jpg</file>
-	<file>resources/music-note.png</file>
+        <file>resources/music-note.png</file>
         <file>resources/music-library.png</file>
         <file>resources/next.png</file>
         <file>resources/music-queue.png</file>
@@ -119,5 +119,6 @@
         <file>resources/previous.png</file>
         <file>resources/pause.png</file>
         <file>resources/clean.png</file>
+        <file>resources/usbms-inverted.png</file>
     </qresource>
 </RCC>

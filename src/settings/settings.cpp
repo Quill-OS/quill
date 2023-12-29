@@ -28,6 +28,14 @@ settings::settings(QWidget *parent) :
     ui->tzComboBox->setFont(QFont("u001"));
     ui->uiScaleNumberLabel->setFont(QFont("Inter"));
     ui->aboutBtn->setFont(QFont("u001"));
+    ui->headerBtn->setFont(QFont("Inter"));
+    ui->headerLabel->setFont(QFont("Chivo"));
+    ui->readingSettingsBtn->setFont(QFont("Chivo"));
+    ui->homeSettingsBtn->setFont(QFont("Chivo"));
+    ui->librarySettingsBtn->setFont(QFont("Chivo"));
+    ui->storageSettingsBtn->setFont(QFont("Chivo"));
+    ui->systemSettingsBtn->setFont(QFont("Chivo"));
+    ui->securitySettingsBtn->setFont(QFont("Chivo"));
     ui->okBtn->setFont(QFont("Inter"));
 
     ui->setPasscodeBtn->setProperty("type", "borderless");
@@ -40,8 +48,6 @@ settings::settings(QWidget *parent) :
     ui->showSystemInfoBtn->setProperty("type", "borderless");
     ui->generateSystemReportBtn->setProperty("type", "borderless");
     ui->checkOtaUpdateBtn->setProperty("type", "borderless");
-    ui->previousBtn->setProperty("type", "borderless");
-    ui->nextBtn->setProperty("type", "borderless");
     ui->repackBtn->setProperty("type", "borderless");
     ui->exportHighlightsBtn->setProperty("type", "borderless");
     ui->label->setStyleSheet("font-size: 10.5pt; font-weight: bold");
@@ -61,35 +67,75 @@ settings::settings(QWidget *parent) :
     ui->exportHighlightsBtn->setStyleSheet("font-size: 9pt");
     ui->uiScaleNumberLabel->setStyleSheet("font-size: 9pt; font-weight: bold");
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
-        ui->previousBtn->setStyleSheet("padding: 7.5px;");
-        ui->nextBtn->setStyleSheet("padding: 7.5px;");
+    // Getting the screen's size
+    sW = QGuiApplication::screens()[0]->size().width();
+    sH = QGuiApplication::screens()[0]->size().height();
+
+    // Defining what the default icon size will be
+    if(global::deviceID == "n705\n") {
+        homeIconWidth = sW / 18;
+        homeIconHeight = sW / 18;
     }
     else {
-        ui->previousBtn->setStyleSheet("padding: 10px;");
-        ui->nextBtn->setStyleSheet("padding: 10px");
+        homeIconWidth = sW / 20;
+        homeIconHeight = sW / 20;
     }
 
-    ui->previousBtn->setText("");
-    ui->previousBtn->setIcon(QIcon(":/resources/chevron-left.png"));
-    ui->nextBtn->setText("");
-    ui->nextBtn->setIcon(QIcon(":/resources/chevron-right.png"));
+    ui->headerBtn->hide();
+    ui->headerLabel->hide();
+    ui->line_12->hide();
+    ui->headerBtn->setIcon(QIcon(":/resources/chevron-left.png"));
+    //ui->headerBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
+
+    ui->headerBtn->setProperty("type", "borderless");
+    ui->headerBtn->setStyleSheet("font-size: 9pt; font-weight: bold; padding: 15px");
+    ui->headerLabel->setStyleSheet("padding: 15px");
+
+    ui->readingSettingsBtn->setText("\t\t\tReading");
+    ui->readingSettingsBtn->setProperty("type", "borderless");
+    ui->readingSettingsBtn->setStyleSheet("padding: 25px; Text-align: left");
+    ui->readingSettingsBtn->setIcon(QIcon(":/resources/book.png"));
+    ui->readingSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
+
+    ui->homeSettingsBtn->setText("\t\t\tHome");
+    ui->homeSettingsBtn->setProperty("type", "borderless");
+    ui->homeSettingsBtn->setStyleSheet("padding: 25px; Text-align:left");
+    ui->homeSettingsBtn->setIcon(QIcon(":/resources/home.png"));
+    ui->homeSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
+
+    ui->librarySettingsBtn->setText("\t\t\tLibrary");
+    ui->librarySettingsBtn->setProperty("type", "borderless");
+    ui->librarySettingsBtn->setStyleSheet("padding: 25px; Text-align:left");
+    ui->librarySettingsBtn->setIcon(QIcon(":/resources/online-library.png"));
+    ui->storageSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
+
+    ui->storageSettingsBtn->setText("\t\t\tStorage");
+    ui->storageSettingsBtn->setProperty("type", "borderless");
+    ui->storageSettingsBtn->setStyleSheet("padding: 25px; Text-align:left");
+    ui->storageSettingsBtn->setIcon(QIcon(":/resources/usbms-inverted.png"));
+    ui->storageSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
+
+    ui->systemSettingsBtn->setText("\t\t\tSystem");
+    ui->systemSettingsBtn->setProperty("type", "borderless");
+    ui->systemSettingsBtn->setStyleSheet("padding: 25px; Text-align:left");
+    ui->systemSettingsBtn->setIcon(QIcon(":/resources/settings.png"));
+    ui->systemSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
+
+    ui->securitySettingsBtn->setText("\t\t\tSecurity");
+    ui->securitySettingsBtn->setProperty("type", "borderless");
+    ui->securitySettingsBtn->setStyleSheet("padding: 25px; Text-align:left");
+    ui->securitySettingsBtn->setIcon(QIcon(":/resources/lock.png"));
+    ui->securitySettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
 
     ui->requestLeaseBtn->hide();
     ui->usbmsBtn->hide();
-    ui->label_3->hide();
     ui->label_4->hide();
-    ui->label_5->hide();
     ui->label_6->hide();
-    ui->line_3->hide();
-    ui->line_7->hide();
     ui->updateBtn->hide();
     ui->updateLabel->hide();
     ui->enableLockscreenCheckBox->hide();
     ui->setPasscodeBtn->hide();
     ui->setPasscodeLabel->hide();
-    ui->securityLabel->hide();
-    ui->line_2->hide();
 
     // Variables
     defineDefaultPageSize(0);
@@ -386,25 +432,16 @@ settings::settings(QWidget *parent) :
         if(checkconfig("/external_root/opt/root/rooted") == true) {
             ui->requestLeaseBtn->show();
             ui->label_4->show();
-            ui->label_3->show();
-            ui->line_3->show();
         }
         else {
             ui->requestLeaseBtn->hide();
             ui->label_4->hide();
-            ui->label_3->hide();
-            ui->line_3->hide();
         }
-        ui->securityLabel->show();
-        ui->line_2->show();
         ui->enableLockscreenCheckBox->show();
         ui->setPasscodeBtn->show();
         ui->setPasscodeLabel->show();
         ui->usbmsBtn->show();
-        ui->label_5->show();
         ui->label_6->show();
-        ui->line_7->show();
-        ui->okBtn->setText("OK");
     }
     else {
         ui->label_8->setText("Reset InkBox");
@@ -546,85 +583,6 @@ void settings::on_requestLeaseBtn_clicked()
 void settings::on_usbmsBtn_clicked()
 {
     usbms_launch();
-}
-
-// Now I know that QStackedWidgets exist... ;p
-
-void settings::on_previousBtn_clicked()
-{
-    log("'Previous' button clicked", className);
-    settings_page = settings_page - 1;
-    if(settings_page == 1) {
-        ui->stackedWidget->setCurrentIndex(0);
-
-        if(checkconfig("/opt/inkbox_genuine") == true) {
-            // Enforcing security policy if the user has not rooted the device
-            if(checkconfig("/external_root/opt/root/rooted") == true) {
-                ui->requestLeaseBtn->show();
-                ui->label_4->show();
-                ui->label_3->show();
-                ui->line_3->show();
-            }
-            else {
-                ui->requestLeaseBtn->hide();
-                ui->label_4->hide();
-                ui->label_3->hide();
-                ui->line_3->hide();
-            }
-        }
-    }
-    else {
-        if(settings_page == 2) {
-            ui->stackedWidget->setCurrentIndex(1);
-            if(checkconfig("/opt/inkbox_genuine") == true) {
-                if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
-                    ui->updateBtn->show();
-                    ui->updateLabel->show();
-                }
-                else {
-                    ui->updateBtn->show();
-                    ui->updateLabel->show();
-                }
-            }
-        }
-        if(settings_page <= 0) {
-            // Prevent unwanted accesses
-            settings_page = settings_page + 1;
-        }
-    }
-}
-
-void settings::on_nextBtn_clicked()
-{
-    log("'Next' button clicked", className);
-    settings_page = settings_page + 1;
-    if(settings_page == 2) {
-        ui->stackedWidget->setCurrentIndex(1);
-
-        if(checkconfig("/opt/inkbox_genuine") == true) {
-            // Enforcing security policy if the user has not rooted the device
-            if(checkconfig("/external_root/opt/root/rooted") == true) {
-                ui->requestLeaseBtn->show();
-                ui->label_4->show();
-                ui->label_3->show();
-                ui->line_3->show();
-            }
-            else {
-                ui->requestLeaseBtn->hide();
-                ui->label_4->hide();
-                ui->label_3->hide();
-                ui->line_3->hide();
-            }
-
-            if(checkconfig("/mnt/onboard/onboard/.inkbox/can_update") == true) {
-                ui->updateBtn->show();
-                ui->updateLabel->show();
-            }
-        }
-    }
-    if(settings_page >= 3) {
-        settings_page = settings_page - 1;
-    }
 }
 
 void settings::on_updateBtn_clicked()
@@ -1161,4 +1119,62 @@ void settings::on_lockscreenBackgroundComboBox_currentTextChanged(const QString 
         writeFile(".config/12-lockscreen/background", "background");
         log("Set lockscreen background to 'background'", className);
     }
+}
+
+void settings::on_settingsStackedWidget_currentChanged(int arg1)
+{
+    if(ui->settingsStackedWidget->currentIndex() != 0) {
+        ui->headerLabel->setText(ui->settingsStackedWidget->currentWidget()->objectName());
+        ui->headerBtn->show();
+        ui->headerLabel->show();
+        ui->line_12->show();
+    }
+    else {
+        ui->headerBtn->hide();
+        ui->headerLabel->hide();
+        ui->line_12->hide();
+    }
+}
+
+
+void settings::on_readingSettingsBtn_clicked()
+{
+    ui->settingsStackedWidget->setCurrentIndex(1);
+}
+
+
+void settings::on_homeSettingsBtn_clicked()
+{
+    ui->settingsStackedWidget->setCurrentIndex(2);
+}
+
+
+void settings::on_librarySettingsBtn_clicked()
+{
+    ui->settingsStackedWidget->setCurrentIndex(3);
+}
+
+
+void settings::on_storageSettingsBtn_clicked()
+{
+    ui->settingsStackedWidget->setCurrentIndex(4);
+}
+
+
+void settings::on_systemSettingsBtn_clicked()
+{
+    ui->settingsStackedWidget->setCurrentIndex(5);
+}
+
+
+void settings::on_securitySettingsBtn_clicked()
+{
+    ui->settingsStackedWidget->setCurrentIndex(6);
+}
+
+
+void settings::on_headerBtn_clicked()
+{
+    // "Home" button
+    ui->settingsStackedWidget->setCurrentIndex(0);
 }

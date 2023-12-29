@@ -28,6 +28,11 @@ public:
     bool timezone_not_user_change = true;
     bool enableEncryptedStorageUserChange = false;
 
+    float sW;
+    float sH;
+    float homeIconWidth;
+    float homeIconHeight;
+
     explicit settings(QWidget *parent = nullptr);
     ~settings();
 
@@ -39,8 +44,6 @@ private slots:
     void on_quoteCheckBox_toggled(bool checked);
     void on_requestLeaseBtn_clicked();
     void on_usbmsBtn_clicked();
-    void on_previousBtn_clicked();
-    void on_nextBtn_clicked();
     void on_updateBtn_clicked();
     void on_darkModeCheckBox_toggled(bool checked);
     void on_uiScalingSlider_valueChanged(int value);
@@ -79,6 +82,14 @@ private slots:
     void on_autoCheckUpdatesBox_clicked(bool checked);
     void on_lockscreenBackgroundComboBox_currentTextChanged(const QString &arg1);
     void saveDeferredSettings();
+    void on_settingsStackedWidget_currentChanged(int arg1);
+    void on_readingSettingsBtn_clicked();
+    void on_homeSettingsBtn_clicked();
+    void on_librarySettingsBtn_clicked();
+    void on_storageSettingsBtn_clicked();
+    void on_systemSettingsBtn_clicked();
+    void on_securitySettingsBtn_clicked();
+    void on_headerBtn_clicked();
 
 signals:
     void showToast(QString messageToDisplay);
