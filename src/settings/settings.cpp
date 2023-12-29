@@ -84,9 +84,8 @@ settings::settings(QWidget *parent) :
     ui->headerBtn->hide();
     ui->headerLabel->hide();
     ui->line_12->hide();
-    ui->headerBtn->setIcon(QIcon(":/resources/chevron-left.png"));
-    //ui->headerBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
 
+    ui->headerBtn->setIcon(QIcon(":/resources/chevron-left.png"));
     ui->headerBtn->setProperty("type", "borderless");
     ui->headerBtn->setStyleSheet("font-size: 9pt; font-weight: bold; padding: 15px");
     ui->headerLabel->setStyleSheet("padding: 15px");
@@ -228,10 +227,7 @@ settings::settings(QWidget *parent) :
     QString dpiSettingStr = readFile(".config/09-dpi/config");
     if(dpiSettingStr.isEmpty()) {
         // Writing default value depending on the device
-        if(global::deviceID == "n705\n") {
-            writeFile(".config/09-dpi/config", "187");
-        }
-        else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             writeFile(".config/09-dpi/config", "160");
         }
         else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
@@ -249,19 +245,7 @@ settings::settings(QWidget *parent) :
     }
     else {
         int dpi_number = dpiSettingStr.toInt();
-        // Checking if it's a Mini, Touch or a Glo
-        if(global::deviceID == "n705\n") {
-            if(dpi_number == 187) {
-                ui->uiScalingSlider->setValue(0);
-            }
-            if(dpi_number == 214) {
-                ui->uiScalingSlider->setValue(1);
-            }
-            if(dpi_number == 227) {
-                ui->uiScalingSlider->setValue(2);
-            }
-        }
-        else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
             if(dpi_number == 160) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -317,13 +301,13 @@ settings::settings(QWidget *parent) :
             }
         }
         else {
-            if(dpi_number == 187) {
+            if(dpi_number == 160) {
                 ui->uiScalingSlider->setValue(0);
             }
-            if(dpi_number == 214) {
+            if(dpi_number == 187) {
                 ui->uiScalingSlider->setValue(1);
             }
-            if(dpi_number == 227) {
+            if(dpi_number == 200) {
                 ui->uiScalingSlider->setValue(2);
             }
         }
