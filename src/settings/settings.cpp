@@ -103,7 +103,7 @@ settings::settings(QWidget *parent) :
     ui->homeSettingsBtn->setIcon(QIcon(":/resources/home.png"));
     ui->homeSettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
 
-    ui->librarySettingsBtn->setText("\t\t\tLibrary");
+    ui->librarySettingsBtn->setText("\t\t\t Library");
     ui->librarySettingsBtn->setProperty("type", "borderless");
     ui->librarySettingsBtn->setStyleSheet("padding: 25px; Text-align:left");
     ui->librarySettingsBtn->setIcon(QIcon(":/resources/online-library.png"));

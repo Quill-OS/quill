@@ -347,13 +347,13 @@ Save &amp;&amp; Quit
      <widget class="QWidget" name="Reading">
       <layout class="QVBoxLayout" name="verticalLayout_8">
        <property name="leftMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="topMargin">
         <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -672,13 +672,13 @@ Save &amp;&amp; Quit
      <widget class="QWidget" name="Home">
       <layout class="QVBoxLayout" name="verticalLayout_9">
        <property name="leftMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="topMargin">
         <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -726,13 +726,13 @@ Save &amp;&amp; Quit
      <widget class="QWidget" name="Library">
       <layout class="QVBoxLayout" name="verticalLayout_10">
        <property name="leftMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="topMargin">
         <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -766,13 +766,13 @@ Save &amp;&amp; Quit
      <widget class="QWidget" name="Storage">
       <layout class="QVBoxLayout" name="verticalLayout_12">
        <property name="leftMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="topMargin">
         <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -848,13 +848,13 @@ Save &amp;&amp; Quit
      <widget class="QWidget" name="System">
       <layout class="QVBoxLayout" name="verticalLayout_13">
        <property name="leftMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="topMargin">
         <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
@@ -1225,13 +1225,13 @@ Save &amp;&amp; Quit
      <widget class="QWidget" name="Security">
       <layout class="QVBoxLayout" name="verticalLayout_14">
        <property name="leftMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="topMargin">
         <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>0</number>
+        <number>20</number>
        </property>
        <property name="bottomMargin">
         <number>0</number>
