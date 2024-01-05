@@ -1,4 +1,5 @@
 # InkBox
+<img src="https://github.com/Kobo-InkBox/inkbox/blob/master/screenshots/homepage.png?raw=true" width="33%"></img> <img src="https://github.com/Kobo-InkBox/inkbox/blob/master/screenshots/reading.png?raw=true" width="33%"></img> <img src="https://github.com/Kobo-InkBox/inkbox/blob/master/screenshots/library.png?raw=true" width="33%"></img> 
 ## About InkBox
 InkBox is an open-source, Qt-based eBook reader for Kobo devices. It also comes as an entire [native open-source OS](https://github.com/Kobo-InkBox/rootfs) and provides support for a number of devices.
 <br>
