@@ -433,6 +433,13 @@ MainWindow::MainWindow(QWidget *parent)
     if(checkconfig("/opt/inkbox_genuine") == true) {
         writeFile("/external_root/run/inkbox_gui_git_commit", GIT_COMMIT);
     }
+
+    // Telemetry
+    if(checkconfig(".config/24-telemetry/enabled") == false && checkconfig(".config/24-telemetry/asked") == false) {
+        if(testPing() == 0) {
+            QTimer::singleShot(1000, this, SLOT(openTelemetryDialog()));
+        }
+    }
 }
 
 MainWindow::~MainWindow()
@@ -1082,4 +1089,13 @@ void MainWindow::on_audioBtn_clicked()
 {
     QDialog* newAudioDialog = new audioDialog(this);
     newAudioDialog->exec();
+}
+
+void MainWindow::openTelemetryDialog() {
+    log("Showing telemetry request dialog", className);
+    global::telemetry::telemetryDialog = true;
+
+    generalDialogWindow = new generalDialog(this);
+    generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+    QApplication::processEvents();
 }

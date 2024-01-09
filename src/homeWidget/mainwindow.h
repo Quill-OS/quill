@@ -103,6 +103,7 @@ private slots:
     void setupHomePageWidget();
     void launchOnlineLibrary();
     void on_audioBtn_clicked();
+    void openTelemetryDialog();
 
 private:
     Ui::MainWindow * ui;

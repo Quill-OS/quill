@@ -38,6 +38,7 @@ public:
     bool keyboardDialog = false;
     bool keypadDialog = false;
     bool librarySyncDialog = false;
+    bool telemetryDialog = false;
     bool dictionaryResults = false;
     bool vncServerSet = false;
     bool vncPasswordSet = false;

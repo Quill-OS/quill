@@ -226,16 +226,19 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->headerLabel->setText("Sync required");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
+    else if(global::telemetry::telemetryDialog == true) {
+        telemetryDialog = true;
+        ui->stackedWidget->setCurrentIndex(0);
+        ui->okBtn->setText("Send");
+        ui->cancelBtn->setText("Don't send");
+        ui->bodyLabel->setText("<font face='u001'>We, InkBox OS developers, would like to know a bit more about our userbase.<br>We will be extremely grateful if you allow us to collect some information about your device.<br>Would you like to send it to us</font><font face='Inter'>?</font><font face='u001'><br>No personal data will be transmitted.</font>");
+        ui->headerLabel->setText("Telemetry request");
+        QTimer::singleShot(50, this, SLOT(adjust_size()));
+    }
     else {
         // We shouldn't be there ;)
         log("Launched without settings", className);
     }
-
-    // Centering dialog
-    QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
-    int x = (screenGeometry.width() - this->width()) / 2;
-    int y = (screenGeometry.height() - this->height()) / 2;
-    this->move(x, y);
 }
 
 generalDialog::~generalDialog()
@@ -300,6 +303,11 @@ void generalDialog::on_cancelBtn_clicked()
         else if(global::library::librarySyncDialog == true) {
             emit noSyncOnlineLibrary();
             global::library::librarySyncDialog = false;
+        }
+        else if(global::telemetry::telemetryDialog == true) {
+            global::telemetry::telemetryDialog = false;
+            log("User declined telemetry request", className);
+            writeFile("/mnt/onboard/.adds/inkbox/.config/24-telemetry/asked", "true");
         }
         generalDialog::close();
     }
@@ -570,6 +578,11 @@ void generalDialog::on_okBtn_clicked()
         global::library::librarySyncDialog = false;
         generalDialog::close();
     }
+    else if(global::telemetry::telemetryDialog == true) {
+        global::telemetry::telemetryDialog = false;
+
+        generalDialog::close();
+    }
 }
 void generalDialog::on_acceptBtn_clicked()
 {
@@ -608,10 +621,17 @@ void generalDialog::on_acceptBtn_clicked()
 }
 
 void generalDialog::adjust_size() {
+    float widthProportion = 2;
+    float heightProportion = 2;
+    if(telemetryDialog) {
+        widthProportion = 2.8;
+        heightProportion = 2.6;
+    }
+
     this->adjustSize();
     QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
-    int x = (screenGeometry.width() - this->width()) / 2;
-    int y = (screenGeometry.height() - this->height()) / 2;
+    int x = (screenGeometry.width() - this->width()) / widthProportion;
+    int y = (screenGeometry.height() - this->height()) / heightProportion;
     this->move(x, y);
     this->show();
     emit refreshScreen();

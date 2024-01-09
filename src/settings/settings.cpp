@@ -1117,36 +1117,42 @@ void settings::on_settingsStackedWidget_currentChanged(int arg1)
 
 void settings::on_readingSettingsBtn_clicked()
 {
+    log("'Reading settings' button clicked", className);
     ui->settingsStackedWidget->setCurrentIndex(1);
 }
 
 
 void settings::on_homeSettingsBtn_clicked()
 {
+    log("'Home settings' button clicked", className);
     ui->settingsStackedWidget->setCurrentIndex(2);
 }
 
 
 void settings::on_librarySettingsBtn_clicked()
 {
+    log("'Library settings' button clicked", className);
     ui->settingsStackedWidget->setCurrentIndex(3);
 }
 
 
 void settings::on_storageSettingsBtn_clicked()
 {
+    log("'Storage settings' button clicked", className);
     ui->settingsStackedWidget->setCurrentIndex(4);
 }
 
 
 void settings::on_systemSettingsBtn_clicked()
 {
+    log("'System settings' button clicked", className);
     ui->settingsStackedWidget->setCurrentIndex(5);
 }
 
 
 void settings::on_securitySettingsBtn_clicked()
 {
+    log("'Security settings' button clicked", className);
     ui->settingsStackedWidget->setCurrentIndex(6);
 }
 
@@ -1154,5 +1160,6 @@ void settings::on_securitySettingsBtn_clicked()
 void settings::on_headerBtn_clicked()
 {
     // "Home" button
+    log("'Home' button clicked", className);
     ui->settingsStackedWidget->setCurrentIndex(0);
 }
