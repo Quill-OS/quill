@@ -231,7 +231,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->stackedWidget->setCurrentIndex(0);
         ui->okBtn->setText("Send");
         ui->cancelBtn->setText("Don't send");
-        ui->bodyLabel->setText("<font face='u001'>We, InkBox OS developers, would like to know a bit more about our userbase.<br>We will be extremely grateful if you allow us to collect some information about your device.<br>Would you like to send it to us</font><font face='Inter'>?</font><font face='u001'><br>No personal data will be transmitted.</font>");
+        ui->bodyLabel->setText("<font face='u001'>We, the InkBox OS developers, would like to know a bit more about our userbase.<br>We would be extremely grateful if you would allow us to collect some information about your device.<br>Would you like to send it to us</font><font face='Inter'>?</font><font face='u001'><br>No personal data will be transmitted.</font>");
         ui->headerLabel->setText("Telemetry request");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
     }
@@ -624,8 +624,18 @@ void generalDialog::adjust_size() {
     float widthProportion = 2;
     float heightProportion = 2;
     if(telemetryDialog) {
-        widthProportion = 2.8;
-        heightProportion = 2.6;
+        if(global::deviceID == "n705\n") {
+            widthProportion = 3.3;
+            heightProportion = 2.6;
+        }
+        else if(global::deviceID == "n873\n") {
+            widthProportion = 3;
+            heightProportion = 2.6;
+        }
+        else {
+            widthProportion = 3.4;
+            heightProportion = 2.6;
+        }
     }
 
     this->adjustSize();

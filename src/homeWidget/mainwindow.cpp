@@ -1093,6 +1093,9 @@ void MainWindow::on_audioBtn_clicked()
 
 void MainWindow::openTelemetryDialog() {
     log("Showing telemetry request dialog", className);
+    // Preventing a small race condition
+    global::usbms::usbmsDialog = false;
+
     global::telemetry::telemetryDialog = true;
 
     generalDialogWindow = new generalDialog(this);
