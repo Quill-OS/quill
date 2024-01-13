@@ -309,6 +309,12 @@ void generalDialog::on_cancelBtn_clicked()
             log("User declined telemetry request", className);
             writeFile("/mnt/onboard/.adds/inkbox/.config/24-telemetry/asked", "true");
         }
+        else if(global::keyboard::telemetryMessageDialog == true) {
+            global::keyboard::telemetryMessageDialog = false;
+            global::keyboard::keyboardText = "";
+            global::telemetry::collectedData::message = "";
+            log("No message to be sent along with collected data", className);
+        }
         generalDialog::close();
     }
 }
@@ -550,6 +556,20 @@ void generalDialog::on_okBtn_clicked()
                 showToast("Please type in the required argument");
             }
         }
+        else if(global::keyboard::telemetryMessageDialog == true) {
+            if(!global::keyboard::keyboardText.isEmpty()) {
+                global::telemetry::collectedData::message = global::keyboard::keyboardText;
+                global::keyboard::keyboardText = "";
+                global::keyboard::telemetryMessageDialog = false;
+                global::keyboard::keyboardDialog = false;
+                log("Message to be sent along with collected data is: " + global::telemetry::collectedData::message, className);
+                this->close();
+            }
+            else {
+                global::toast::delay = 3000;
+                showToast("Please type in the required argument");
+            }
+        }
         else {
             global::keyboard::keyboardDialog = false;
             generalDialog::close();
@@ -580,7 +600,7 @@ void generalDialog::on_okBtn_clicked()
     }
     else if(global::telemetry::telemetryDialog == true) {
         global::telemetry::telemetryDialog = false;
-
+        global::keyboard::telemetryMessageDialog = true;
         generalDialog::close();
     }
 }
@@ -676,6 +696,12 @@ void generalDialog::setupKeyboardDialog() {
         ui->headerLabel->setText("Enter your encrypted storage's passphrase");
         ui->okBtn->setText("OK");
         ui->cancelBtn->setText("Cancel");
+    }
+    else if(global::keyboard::telemetryMessageDialog == true) {
+        ui->headerLabel->setWordWrap(true);
+        ui->headerLabel->setText("If you'd like, feel free to send us a random message along with the collected data");
+        ui->okBtn->setText("Continue");
+        ui->cancelBtn->setText("No, thanks");
     }
     else {
         ui->headerLabel->setText("Enter a string");

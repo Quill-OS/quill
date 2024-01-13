@@ -177,10 +177,10 @@ void localLibraryWidget::setupDatabase() {
     // Determine maximum page number
     booksNumber = databaseJsonArrayList.size();
     if(folderFeatureEnabled == false) {
-           pagesNumber = std::ceil((double)booksNumber / buttonsNumber);
+        pagesNumber = std::ceil((double)booksNumber / buttonsNumber);
     }
     else {
-           calculateMaximumPagesNumberForFolders();
+        calculateMaximumPagesNumberForFolders();
     }
     if(databaseJsonArrayList.isEmpty()) {
         log("Database is empty", className);

@@ -97,6 +97,7 @@ namespace global {
         inline bool encfsDialog;
         inline bool vncDialog;
         inline bool wifiPassphraseDialog;
+        inline bool telemetryMessageDialog;
         inline QString keyboardText;
         inline QString keypadText;
         inline bool embed = true;
@@ -232,6 +233,14 @@ namespace global {
     namespace telemetry {
         inline bool enabled = false;
         inline bool telemetryDialog = false;
+        namespace collectedData {
+            inline QString message;
+            inline QString deviceUID;
+            inline QString systemVersion;
+            inline QString device;
+            inline bool deviceRooted;
+            inline bool developerKeyInstalled;
+        }
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -582,7 +591,7 @@ namespace {
             proc->deleteLater();
         }
     }
-    void getUID() {
+    QString getUID() {
         QString prog ("dd");
         QStringList args;
         args << "if=/dev/mmcblk0" << "bs=512" << "skip=1" << "count=1" << "status=none";
@@ -594,6 +603,8 @@ namespace {
         deviceUID = deviceUID.left(256);
 
         proc->deleteLater();
+
+        return deviceUID;
     }
     void getKernelVersion() {
         QString prog ("uname");
@@ -1220,6 +1231,36 @@ namespace {
         fhandler.open(file.toStdString());
         fhandler << str.toStdString();
         fhandler.close();
+    }
+    QJsonObject collectDeviceInformation() {
+        global::telemetry::collectedData::deviceUID = getUID();
+        global::telemetry::collectedData::systemVersion = readFile("/opt/version").trimmed();
+        global::telemetry::collectedData::device = global::deviceID.trimmed();
+        if(checkconfig("/external_root/opt/root/rooted")) {
+            global::telemetry::collectedData::deviceRooted = "true";
+        }
+        else {
+            global::telemetry::collectedData::deviceRooted = "false";
+        }
+        if(checkconfig("/external_root/opt/developer/valid-key")) {
+            global::telemetry::collectedData::developerKeyInstalled = "true";
+        }
+        else {
+            global::telemetry::collectedData::developerKeyInstalled = "false";
+        }
+
+        QJsonObject data;
+        data.insert("UID", global::telemetry::collectedData::deviceUID);
+        data.insert("SystemVersion", global::telemetry::collectedData::systemVersion);
+        data.insert("DeviceModel", global::telemetry::collectedData::device);
+        data.insert("DeviceRooted", global::telemetry::collectedData::deviceRooted);
+        data.insert("DeveloperKeyInstalled", global::telemetry::collectedData::developerKeyInstalled);
+        data.insert("Message", global::telemetry::collectedData::message);
+
+        return(data);
+    }
+    bool sendDeviceInformation(QJsonObject data) {
+        qDebug() << data;
     }
 }
 

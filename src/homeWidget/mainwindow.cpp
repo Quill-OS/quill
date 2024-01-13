@@ -1099,6 +1099,27 @@ void MainWindow::openTelemetryDialog() {
     global::telemetry::telemetryDialog = true;
 
     generalDialogWindow = new generalDialog(this);
+    QObject::connect(generalDialogWindow, &generalDialog::destroyed, this, &MainWindow::openTelemetryMessageDialog);
     generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
     QApplication::processEvents();
+}
+
+void MainWindow::openTelemetryMessageDialog() {
+    if(global::keyboard::telemetryMessageDialog == true) {
+        log("Showing telemetry message dialog", className);
+        global::keyboard::keyboardDialog = true;
+        global::keyboard::keyboardText = "";
+        generalDialogWindow = new generalDialog(this);
+        QObject::connect(generalDialogWindow, &generalDialog::destroyed, this, &MainWindow::sendDeviceInformationSlot);
+        generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
+        QApplication::processEvents();
+    }
+}
+
+void MainWindow::sendDeviceInformationSlot() {
+    QJsonObject data = collectDeviceInformation();
+    qDebug() << data;
+    sendDeviceInformation(data);
+    writeFile("/mnt/onboard/.adds/inkbox/.config/24-telemetry/asked", "true");
+    writeFile("/mnt/onboard/.adds/inkbox/.config/24-telemetry/enabled", "true");
 }

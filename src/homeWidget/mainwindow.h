@@ -104,6 +104,8 @@ private slots:
     void launchOnlineLibrary();
     void on_audioBtn_clicked();
     void openTelemetryDialog();
+    void openTelemetryMessageDialog();
+    void sendDeviceInformationSlot();
 
 private:
     Ui::MainWindow * ui;
