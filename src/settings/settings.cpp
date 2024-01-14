@@ -124,6 +124,7 @@ settings::settings(QWidget *parent) :
     ui->securitySettingsBtn->setIcon(QIcon(":/resources/lock.png"));
     ui->securitySettingsBtn->setIconSize(QSize(homeIconWidth, homeIconHeight));
 
+    ui->usbNetworkingCheckBox->hide();
     ui->requestLeaseBtn->hide();
     ui->usbmsBtn->hide();
     ui->label_4->hide();
@@ -412,10 +413,15 @@ settings::settings(QWidget *parent) :
     if(checkconfig("/opt/inkbox_genuine") == true) {
         // Enforcing security policy if the user has not rooted the device
         if(checkconfig("/external_root/opt/root/rooted") == true) {
+            ui->usbNetworkingCheckBox->show();
+            if(checkconfig("/external_root/boot/flags/USBNET_ENABLE")) {
+                ui->usbNetworkingCheckBox->click();
+            }
             ui->requestLeaseBtn->show();
             ui->label_4->show();
         }
         else {
+            ui->usbNetworkingCheckBox->hide();
             ui->requestLeaseBtn->hide();
             ui->label_4->hide();
         }
@@ -1162,4 +1168,16 @@ void settings::on_headerBtn_clicked()
     // "Home" button
     log("'Home' button clicked", className);
     ui->settingsStackedWidget->setCurrentIndex(0);
+}
+
+void settings::on_usbNetworkingCheckBox_toggled(bool checked)
+{
+    if(checked) {
+        writeFile("/external_root/boot/flags/USBNET_ENABLE", "true");
+        writeFile("/opt/ibxd", "usbnet_start\n");
+    }
+    else {
+        writeFile("/external_root/boot/flags/USBNET_ENABLE", "false");
+        writeFile("/opt/ibxd", "usbnet_stop\n");
+    }
 }

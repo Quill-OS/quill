@@ -90,6 +90,7 @@ private slots:
     void on_systemSettingsBtn_clicked();
     void on_securitySettingsBtn_clicked();
     void on_headerBtn_clicked();
+    void on_usbNetworkingCheckBox_toggled(bool checked);
 
 signals:
     void showToast(QString messageToDisplay);
