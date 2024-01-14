@@ -28,6 +28,7 @@ SOURCES += \
     src/audio/audiothread.cpp \
     src/splash/alert.cpp \
     src/apps/apps.cpp \
+    src/telemetry/telemetry.cpp \
     src/widgets/dialogs/audio/audiodialog.cpp \
     src/widgets/dialogs/audio/audiofile.cpp \
     src/widgets/dialogs/audio/audiofilequeue.cpp \
@@ -77,6 +78,7 @@ HEADERS += \
     src/apps/todo.h \
     src/splash/alert.h \
     src/apps/apps.h \
+    src/telemetry/telemetry.h \
     src/widgets/dialogs/audio/audiodialog.h \
     src/widgets/dialogs/audio/audiofile.h \
     src/widgets/dialogs/audio/audiofilequeue.h \

@@ -311,8 +311,8 @@ void generalDialog::on_cancelBtn_clicked()
         }
         else if(global::keyboard::telemetryMessageDialog == true) {
             global::keyboard::telemetryMessageDialog = false;
+            emit telemetryMessage(global::keyboard::keyboardText);
             global::keyboard::keyboardText = "";
-            global::telemetry::collectedData::message = "";
             log("No message to be sent along with collected data", className);
         }
         generalDialog::close();
@@ -558,11 +558,11 @@ void generalDialog::on_okBtn_clicked()
         }
         else if(global::keyboard::telemetryMessageDialog == true) {
             if(!global::keyboard::keyboardText.isEmpty()) {
-                global::telemetry::collectedData::message = global::keyboard::keyboardText;
+                emit telemetryMessage(global::keyboard::keyboardText);
+                log("Message to be sent along with collected data is: " + global::keyboard::keyboardText, className);
                 global::keyboard::keyboardText = "";
                 global::keyboard::telemetryMessageDialog = false;
                 global::keyboard::keyboardDialog = false;
-                log("Message to be sent along with collected data is: " + global::telemetry::collectedData::message, className);
                 this->close();
             }
             else {

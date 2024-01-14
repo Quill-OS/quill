@@ -233,14 +233,6 @@ namespace global {
     namespace telemetry {
         inline bool enabled = false;
         inline bool telemetryDialog = false;
-        namespace collectedData {
-            inline QString message;
-            inline QString deviceUID;
-            inline QString systemVersion;
-            inline QString device;
-            inline bool deviceRooted;
-            inline bool developerKeyInstalled;
-        }
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
@@ -1179,21 +1171,26 @@ namespace {
             }
         }
     }
-    int testPing() {
+    int testPing(QString ipAddress = "1.1.1.1") {
         // For some reason, implementing a non-blocking version of this functions triggers a "terminate called without an active exception" error with a platform plugin compiled with a newer GCC 11 toolchain. The problem has been solved by transplanting this function into the related area which uses it.
+        QString function = __func__; log(function + ": pinging IP address " + ipAddress, "functions");
         QProcess *pingProcess = new QProcess();
         QString pingProg = "ping";
         QStringList pingArgs;
-        pingArgs << "-c" << "1" << "1.1.1.1";
+        pingArgs << "-c" << "1" << ipAddress;
         pingProcess->start(pingProg, pingArgs);
         pingProcess->waitForFinished();
         int exitCode = pingProcess->exitCode();
         pingProcess->deleteLater();
         if(exitCode == 0) {
+            log("Ping successful", "functions");
             global::wifi::isConnected = true;
         }
         else {
-            global::wifi::isConnected = false;
+            log("Ping unsuccessful", "functions");
+            if(ipAddress == "1.1.1.1") {
+                global::wifi::isConnected = false;
+            }
         }
         return exitCode;
     }
@@ -1231,36 +1228,6 @@ namespace {
         fhandler.open(file.toStdString());
         fhandler << str.toStdString();
         fhandler.close();
-    }
-    QJsonObject collectDeviceInformation() {
-        global::telemetry::collectedData::deviceUID = getUID();
-        global::telemetry::collectedData::systemVersion = readFile("/opt/version").trimmed();
-        global::telemetry::collectedData::device = global::deviceID.trimmed();
-        if(checkconfig("/external_root/opt/root/rooted")) {
-            global::telemetry::collectedData::deviceRooted = "true";
-        }
-        else {
-            global::telemetry::collectedData::deviceRooted = "false";
-        }
-        if(checkconfig("/external_root/opt/developer/valid-key")) {
-            global::telemetry::collectedData::developerKeyInstalled = "true";
-        }
-        else {
-            global::telemetry::collectedData::developerKeyInstalled = "false";
-        }
-
-        QJsonObject data;
-        data.insert("UID", global::telemetry::collectedData::deviceUID);
-        data.insert("SystemVersion", global::telemetry::collectedData::systemVersion);
-        data.insert("DeviceModel", global::telemetry::collectedData::device);
-        data.insert("DeviceRooted", global::telemetry::collectedData::deviceRooted);
-        data.insert("DeveloperKeyInstalled", global::telemetry::collectedData::developerKeyInstalled);
-        data.insert("Message", global::telemetry::collectedData::message);
-
-        return(data);
-    }
-    bool sendDeviceInformation(QJsonObject data) {
-        qDebug() << data;
     }
 }
 

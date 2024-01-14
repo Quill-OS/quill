@@ -94,6 +94,7 @@ signals:
     void disableStorageEncryption();
     void syncOnlineLibrary();
     void noSyncOnlineLibrary();
+    void telemetryMessage(QString message);
 };
 
 #endif // GENERALDIALOG_H

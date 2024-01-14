@@ -436,7 +436,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Telemetry
     if(checkconfig(".config/24-telemetry/enabled") == false && checkconfig(".config/24-telemetry/asked") == false) {
-        if(testPing() == 0) {
+        if(testPing("23.163.0.39") == 0) {
             QTimer::singleShot(1000, this, SLOT(openTelemetryDialog()));
         }
     }
@@ -1110,16 +1110,14 @@ void MainWindow::openTelemetryMessageDialog() {
         global::keyboard::keyboardDialog = true;
         global::keyboard::keyboardText = "";
         generalDialogWindow = new generalDialog(this);
-        QObject::connect(generalDialogWindow, &generalDialog::destroyed, this, &MainWindow::sendDeviceInformationSlot);
+        QObject::connect(generalDialogWindow, &generalDialog::telemetryMessage, this, &MainWindow::sendDeviceInformationSlot);
         generalDialogWindow->setAttribute(Qt::WA_DeleteOnClose);
         QApplication::processEvents();
     }
 }
 
-void MainWindow::sendDeviceInformationSlot() {
-    QJsonObject data = collectDeviceInformation();
-    qDebug() << data;
-    sendDeviceInformation(data);
-    writeFile("/mnt/onboard/.adds/inkbox/.config/24-telemetry/asked", "true");
-    writeFile("/mnt/onboard/.adds/inkbox/.config/24-telemetry/enabled", "true");
+void MainWindow::sendDeviceInformationSlot(QString message) {
+    telemetryInstance = new telemetry(this);
+    QObject::connect(telemetryInstance, &telemetry::showToast, this, &MainWindow::showToast);
+    telemetryInstance->message = message;
 }

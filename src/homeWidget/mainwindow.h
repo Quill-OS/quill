@@ -20,6 +20,7 @@
 #include "librarywidget.h"
 #include "locallibrarywidget.h"
 #include "homepagewidget.h"
+#include "telemetry.h"
 
 using namespace std;
 
@@ -105,7 +106,7 @@ private slots:
     void on_audioBtn_clicked();
     void openTelemetryDialog();
     void openTelemetryMessageDialog();
-    void sendDeviceInformationSlot();
+    void sendDeviceInformationSlot(QString message);
 
 private:
     Ui::MainWindow * ui;
@@ -126,6 +127,7 @@ private:
     libraryWidget * libraryWidgetWindow;
     localLibraryWidget * localLibraryWidgetWindow;
     homePageWidget * homePageWidgetWindow;
+    telemetry * telemetryInstance;
 };
 
 #endif // MAINWINDOW_H
