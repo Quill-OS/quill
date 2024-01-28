@@ -42,7 +42,7 @@ To upgrade InkBox, go to http://23.163.0.39/bundles/inkbox/native/update/ and co
 
 If you install the Nickel add-on, unpack the 'base' archive in the root of the onboard storage, not in any subfolder inside it.
 ## I want to learn more about this!
-I suggest you visit the [wiki](https://inkbox.ddns.net/wiki). The [General information](https://inkbox.ddns.net/wiki/index.php?title=General_information) page is a pretty good place to start. Feel free to contribute if you think you have something valuable to add.
+I suggest you visit the [wiki](https://github.com/Kobo-InkBox/inkbox/wiki). Feel free to contribute if you think you have something valuable to add.
 ## How can I contribute?
 If you like this project and want to improve it in some way, feel free to fork this repository or [one of the subprojects this organization hosts](https://github.com/Kobo-InkBox), then make a [pull request](https://github.com/Kobo-InkBox/inkbox/pulls). I'll be happy to review it when I have time. You can also join the official [Matrix space](https://matrix.to/#/#inkbox-os-project:matrix.org) or [Discord server](https://discord.com/invite/uSWtWbY23m) if you'd like to chat a bit.
 <br><br>
