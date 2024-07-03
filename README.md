@@ -1,9 +1,9 @@
-# InkBox
+# Quill
 <img src="https://github.com/Quill-OS/quill/blob/master/screenshots/homepage.png?raw=true" width="30%"></img> <img src="https://github.com/Quill-OS/quill/blob/master/screenshots/reading.png?raw=true" width="30%"></img> <img src="https://github.com/Quill-OS/quill/blob/master/screenshots/library.png?raw=true" width="30%"></img> 
-## About InkBox
-InkBox is an open-source, Qt-based eBook reader for Kobo devices. It also comes as an entire [native open-source OS](https://github.com/Quill-OS/rootfs) and provides support for a number of devices.
+## About Quill
+Quill is an open-source, Qt-based eBook reader for Kobo devices. It also comes as an entire [native open-source OS](https://github.com/Quill-OS/rootfs) and provides support for a number of devices.
 <br>
-InkBox features:
+Quill features:
 - Full integrated KoBox X11 subsystem
 - ePUB, PDF, pictures and plain text display support
 - Versatile configuration options for reading
@@ -33,12 +33,12 @@ Alternatively, you can also open a terminal and check the device node of the Kob
 ```
 xzcat inkbox.xz | dd of=/dev/mmcblk0
 ```
-<b>IMPORTANT:</b> InkBox OS does NOT provide ANY WARRANTY at all and we are not responsible if you brick your device with one of the factory images or update bundles available online. See [legal information](https://github.com/Quill-OS/quill/blob/master/LEGAL.md) for more details.
+<b>IMPORTANT:</b> Quill OS does NOT provide ANY WARRANTY at all and we are not responsible if you brick your device with one of the factory images or update bundles available online. See [legal information](https://github.com/Quill-OS/quill/blob/master/LEGAL.md) for more details.
 
-## How do I upgrade InkBox?
-To upgrade InkBox, go to http://23.163.0.39/bundles/inkbox/native/update/ and copy the files for your device onto the `.inkbox` folder in the USB storage partition.
+## How do I upgrade Quill?
+To upgrade Quill, go to http://23.163.0.39/bundles/inkbox/native/update/ and copy the files for your device onto the `.inkbox` folder in the USB storage partition.
 
-**Note**: Prior to version 1.6, InkBox had to be upgraded one version at a time. If your device's factory image ships with version 1.5, you need to closely follow the upgrade instructions [here](http://23.163.0.39/bundles/inkbox/native/update/1.6/HOWTO-Update).
+**Note**: Prior to version 1.6, Quill (then InkBox) had to be upgraded one version at a time. If your device's factory image ships with version 1.5, you need to closely follow the upgrade instructions [here](http://23.163.0.39/bundles/inkbox/native/update/1.6/HOWTO-Update).
 
 If you install the Nickel add-on, unpack the 'base' archive in the root of the onboard storage, not in any subfolder inside it.
 ## I want to learn more about this!
