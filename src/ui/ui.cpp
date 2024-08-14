@@ -12,7 +12,7 @@ void UI::applyStyle(QWidget &widget, QString styleName) {
         styleName = Device::getSingleton()->getStyleSheetPath() + styleName;
     }
     if(!styleName.endsWith(".qss")) {
-        styleName = styleName + "qss";
+        styleName = styleName + ".qss";
     }
 
     QFile stylesheetFile(styleName);

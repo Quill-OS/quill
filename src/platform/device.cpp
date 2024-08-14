@@ -83,29 +83,8 @@ QString Device::readFile(QString path) {
 }
 
 QString Device::getPowerSupplyPath() {
-    // get the path to the battery so we can check the charge latter
-    QString result;
-    QDirIterator supplies("/sys/class/power_supply", QDirIterator::NoIteratorFlags);
-    while(supplies.hasNext()) {
-        QString supply = supplies.filePath();
-
-        // Badly-classified device by some ntx kernels, ignore
-        if (supplies.fileName() == "mc13892_charger") {
-            continue;
-        }
-
-        if(QFile::exists(supply + "/type")) {
-            QString content = readFile(supply + "/type");
-            if(content == "Battery"){
-                result = supply;
-                break;
-            }
-
-        }
-
-        supplies.next();
-    }
-    return result;
+	// Since every or almost every device we support uses this path, we will keep things simple for now
+	return "/sys/class/power_supply/mc13892_bat/";
 }
 
 

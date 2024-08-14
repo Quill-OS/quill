@@ -11,7 +11,6 @@ DeviceKindleTouch::DeviceKindleTouch()
 int DeviceKindleTouch::getBatteryLevel() {
     if(QFile::exists("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_capacity")) {
         return readFile("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_capacity").toInt();
-
     }
     return 100;
 }
