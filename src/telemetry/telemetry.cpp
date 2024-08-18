@@ -30,9 +30,7 @@ QJsonObject telemetry::collectDeviceInformation() {
 bool telemetry::sendDeviceInformation(QJsonObject data) {
     log("Telemetry data to be sent to server: " + QJsonDocument(data).toJson(QJsonDocument::Compact), className);
 
-    // NOTE: This URL *will* change in the future
-    // TODO: Add error-handling
-    QNetworkRequest request(QUrl("http://192.168.3.1:8080/"));
+    QNetworkRequest request(QUrl("http://23.163.0.39:4317/"));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
     QNetworkAccessManager nam;
@@ -42,8 +40,14 @@ bool telemetry::sendDeviceInformation(QJsonObject data) {
     }
     QByteArray responseData = reply->readAll();
     reply->deleteLater();
-
-    return true;
+    QString responseDataQstring = QString(responseData);
+    log("Telemetry server's response data was: '" + responseDataQstring + "'", className);
+    if(responseDataQstring != "Data received successfully") {
+        return false;
+    }
+    else {
+        return true;
+    }
 }
 
 void telemetry::telemetrySlot() {
@@ -51,6 +55,9 @@ void telemetry::telemetrySlot() {
     if(sendDeviceInformation(data)) {
         writeFile("/mnt/onboard/.adds/inkbox/.config/24-telemetry/asked", "true");
         writeFile("/mnt/onboard/.adds/inkbox/.config/24-telemetry/enabled", "true");
-        showToast("Data successfully sent\nThank you!");
+        showToast("Data sent successfully\nThank you!");
+    }
+    else {
+        showToast("Error while sending data");
     }
 }
