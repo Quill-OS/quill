@@ -1,3 +1,18 @@
+## The project is dead
+Because of the new kobo colour models using secure boot, which makes us not able to support them with quill and us not having time for a project that will die of the lack of new devices, the project is dead.
+
+Don't expect any support or anything. Until you are a knowledgable person who can with no problem for example... cross compile a qt app you should not touch this project. You are on your own.
+
+Some more info about it:
+- https://www.mobileread.com/forums/showthread.php?t=363175
+- https://www.mobileread.com/forums/showthread.php?t=337972&page=9
+
+It was a fun time while it lasted, thanks for the support and love for open source.
+
+and fuck Kobo for the enshittification of their devices
+
+~Szybet
+
 # Quill
 <img src="https://github.com/Quill-OS/quill/blob/master/screenshots/homepage.png?raw=true" width="30%"></img> <img src="https://github.com/Quill-OS/quill/blob/master/screenshots/reading.png?raw=true" width="30%"></img> <img src="https://github.com/Quill-OS/quill/blob/master/screenshots/library.png?raw=true" width="30%"></img> 
 ## About Quill
