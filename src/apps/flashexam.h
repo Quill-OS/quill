@@ -2,6 +2,7 @@
 #define FLASHEXAM_H
 
 #include <QWidget>
+#include <QGraphicsScene>
 
 namespace Ui {
 class flashExam;
@@ -20,6 +21,7 @@ private:
     Ui::flashExam *ui;
     int cardsTotal;
     int currentCardNumber;
+    QString listName;
     bool randomize;
     bool answerShown = false;
     QStringList cardsStringList;
@@ -27,6 +29,8 @@ private:
     void setupCardsList();
     void initCardsList(QString cardsList, QString answersList);
     void displayCard(bool existingCardNumber);
+    QString displayImage(QString cardText);
+    QGraphicsScene * graphicsScene;
 
 signals:
     void showToast(QString messageToDisplay);

@@ -237,7 +237,14 @@
           <widget class="QGraphicsView" name="graphicsView"/>
          </item>
          <item row="3" column="0">
-          <widget class="QTextBrowser" name="textBrowser"/>
+          <widget class="QTextBrowser" name="textBrowser">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
          </item>
          <item row="5" column="0">
           <widget class="QPushButton" name="revealBtn">

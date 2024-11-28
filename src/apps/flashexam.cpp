@@ -28,6 +28,7 @@ flashExam::flashExam(QWidget *parent)
     ui->backBtn->setIcon(QIcon(":/resources/arrow-left.png"));
     ui->randomizeCheckBox->click();
 
+    graphicsScene = new QGraphicsScene(this);
     setupCardsList();
 }
 
@@ -50,15 +51,15 @@ void flashExam::setupCardsList() {
 
 void flashExam::on_startBtn_clicked()
 {
-    QString currentItem = ui->listWidget->currentItem()->text();
+    listName = ui->listWidget->currentItem()->text();
     if(ui->listWidget->selectedItems().isEmpty()) {
         emit showToast("You must select a cards list");
     }
     else {
-        QString cardsList = "/mnt/onboard/onboard/.flashexam/" + currentItem;
-        QString answersList = "/mnt/onboard/onboard/.flashexam/" + currentItem + ".answers";
+        QString cardsList = "/mnt/onboard/onboard/.flashexam/" + listName;
+        QString answersList = "/mnt/onboard/onboard/.flashexam/" + listName + ".answers";
         if(QFile::exists(answersList)) {
-            log("Setting up cards list '" + currentItem + "'", className);
+            log("Setting up cards list '" + listName + "'", className);
             initCardsList(cardsList, answersList);
         }
         else {
@@ -71,20 +72,7 @@ void flashExam::initCardsList(QString cardsList, QString answersList) {
     cardsStringList = readFile(cardsList).split(QRegExp("(\\r\\n)|(\\n\\r)|\\r|\\n"), QString::SkipEmptyParts);
     answersStringList = readFile(answersList).split(QRegExp("(\\r\\n)|(\\n\\r)|\\r|\\n"), QString::SkipEmptyParts);
     randomize = ui->randomizeCheckBox->isChecked();
-
-    int it = 1;
-    for (auto& i : cardsStringList) {
-        i.prepend(QString::number(it) + " ");
-        it += 1;
-    }
-
-    it = 1;
-    for (auto& i : answersStringList) {
-        i.prepend(QString::number(it) + " ");
-        it += 1;
-    }
-
-    cardsTotal = it;
+    cardsTotal = cardsStringList.count() + 1;
     displayCard(false);
     ui->stackedWidget->setCurrentIndex(1);
 }
@@ -101,8 +89,7 @@ void flashExam::on_revealBtn_clicked()
         displayCard(true);
     }
     else {
-        QString answerText = answersStringList.at(currentCardNumber);
-        answerText.remove(0, 2);
+        QString answerText = displayImage(answersStringList.at(currentCardNumber));
         ui->textBrowser->setText(answerText);
         answerShown = true;
         ui->revealBtn->setText("Hide answer");
@@ -116,15 +103,12 @@ void flashExam::on_nextBtn_clicked()
 }
 
 void flashExam::displayCard(bool existingCardNumber) {
-    QString cardText;
     if(!existingCardNumber) {
         if(randomize) {
             currentCardNumber = QRandomGenerator::global()->bounded(cardsTotal - 1);
         }
     }
-    cardText = cardsStringList.at(currentCardNumber);
-    ui->graphicsView->hide();
-    cardText.remove(0, 2);
+    QString cardText = displayImage(cardsStringList.at(currentCardNumber));
     ui->cardNumberLabel->setText("Card " + QString::number(currentCardNumber + 1));
     ui->textBrowser->setText(cardText);
 
@@ -132,3 +116,34 @@ void flashExam::displayCard(bool existingCardNumber) {
     answerShown = false;
 }
 
+QString flashExam::displayImage(QString cardText) {
+    ui->textBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->graphicsView->hide();
+    QRegularExpression imageRegex("IMG='([^']+)'");
+    QRegularExpressionMatch match = imageRegex.match(cardText);
+
+    if (match.hasMatch()) {
+        QString imagePath = match.captured(1); // Captured group 1 is the value of IMG
+        log("Displaying image '" + imagePath + "'", className);
+
+        ui->graphicsView->items().clear();
+        graphicsScene->clear();
+        QPixmap pixmap("/mnt/onboard/onboard/.flashexam/resources/" + listName + "/" + imagePath);
+        graphicsScene->addPixmap(pixmap);
+        ui->graphicsView->setScene(graphicsScene);
+        // Shrinking scene if item is smaller than previous one
+        QRectF rect = graphicsScene->itemsBoundingRect();
+        graphicsScene->setSceneRect(rect);
+        ui->graphicsView->fitInView(graphicsScene->sceneRect(), Qt::KeepAspectRatio);
+        ui->textBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+        ui->graphicsView->show();
+    }
+    else {
+        log("IMG key not found", className);
+    }
+
+    QRegularExpression removeRegex("IMG='[^']+'\\s*");
+    cardText.remove(removeRegex);
+
+    return cardText;
+}
