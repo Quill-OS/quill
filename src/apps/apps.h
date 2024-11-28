@@ -7,6 +7,7 @@
 #include "koboxappsdialog.h"
 #include "generaldialog.h"
 #include "todo.h"
+#include "flashexam.h"
 
 #include <QJsonDocument>
 
@@ -40,6 +41,8 @@ private slots:
     void updateJsonFileSlot(QJsonDocument jsonDocument);
     void showFailedToParseMainUserAppsJsonFile();
     void on_todoLaunchBtn_clicked();
+
+    void on_flashExamLaunchBtn_clicked();
 
 private:
     Ui::apps * ui;

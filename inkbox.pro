@@ -24,6 +24,7 @@ DEFINES += GIT_COMMIT=\\\"$$GIT_COMMIT\\\"
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/apps/flashexam.cpp \
     src/apps/todo.cpp \
     src/audio/audiothread.cpp \
     src/splash/alert.cpp \
@@ -74,6 +75,7 @@ SOURCES += \
     src/settings/powerdaemonsettings.cpp
 
 HEADERS += \
+    src/apps/flashexam.h \
     src/audio/audiothread.h \
     src/apps/todo.h \
     src/splash/alert.h \
@@ -124,6 +126,7 @@ HEADERS += \
     src/settings/powerdaemonsettings.h
 
 FORMS += \
+    src/apps/flashexam.ui \
     src/apps/todo.ui \
     src/splash/alert.ui \
     src/apps/apps.ui \

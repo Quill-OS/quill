@@ -24,6 +24,7 @@ apps::apps(QWidget *parent) :
     ui->reversiLaunchBtn->setProperty("type", "borderless");
     ui->g2048LaunchBtn->setProperty("type", "borderless");
     ui->todoLaunchBtn->setProperty("type", "borderless");
+    ui->flashExamLaunchBtn->setProperty("type", "borderless");
 
     ui->label->setStyleSheet("padding-top: 2px; padding-bottom: 5px");
     ui->koboxAppsOpenButton->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
@@ -34,6 +35,7 @@ apps::apps(QWidget *parent) :
     ui->reversiLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->g2048LaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
     ui->todoLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
+    ui->flashExamLaunchBtn->setStyleSheet("background: lightGrey; font-size: 9pt; padding: 8px");
 
     ui->noUserAppsAvailableLabel->hide();
 
@@ -376,3 +378,13 @@ void apps::on_todoLaunchBtn_clicked()
     todoWindow->setGeometry(QRect(QPoint(0,0), qApp->primaryScreen()->geometry().size()));
     todoWindow->show();
 }
+
+void apps::on_flashExamLaunchBtn_clicked()
+{
+    flashExam * flashExamWindow = new flashExam();
+    QObject::connect(flashExamWindow, &flashExam::showToast, this, &apps::showToast);
+    flashExamWindow->setAttribute(Qt::WA_DeleteOnClose);
+    flashExamWindow->setGeometry(QRect(QPoint(0,0), qApp->primaryScreen()->geometry().size()));
+    flashExamWindow->show();
+}
+
