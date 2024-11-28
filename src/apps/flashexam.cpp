@@ -23,6 +23,7 @@ flashExam::flashExam(QWidget *parent)
     ui->revealBtn->setStyleSheet("padding: 20px; QPushButton[type='borderless']:pressed { background: black; color: white; border: none}");
     ui->nextBtn->setStyleSheet("padding: 20px; QPushButton[type='borderless']:pressed { background: black; color: white; border: none}");
     ui->backBtn->setStyleSheet("QPushButton[type='borderless']:pressed { background: black; color: white; border: none}");
+    ui->textBrowser->setStyleSheet("font-size: 12pt");
     ui->closeBtn->setIcon(QIcon(":/resources/close.png"));
     ui->backBtn->setIcon(QIcon(":/resources/arrow-left.png"));
     ui->randomizeCheckBox->click();
@@ -98,8 +99,6 @@ void flashExam::on_revealBtn_clicked()
 {
     if(answerShown) {
         displayCard(true);
-        answerShown = false;
-        ui->revealBtn->setText("Show answer");
     }
     else {
         QString answerText = answersStringList.at(currentCardNumber);
@@ -128,5 +127,8 @@ void flashExam::displayCard(bool existingCardNumber) {
     cardText.remove(0, 2);
     ui->cardNumberLabel->setText("Card " + QString::number(currentCardNumber + 1));
     ui->textBrowser->setText(cardText);
+
+    ui->revealBtn->setText("Show answer");
+    answerShown = false;
 }
 

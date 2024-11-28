@@ -41,7 +41,6 @@ private slots:
     void updateJsonFileSlot(QJsonDocument jsonDocument);
     void showFailedToParseMainUserAppsJsonFile();
     void on_todoLaunchBtn_clicked();
-
     void on_flashExamLaunchBtn_clicked();
 
 private:
