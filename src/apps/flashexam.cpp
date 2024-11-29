@@ -18,16 +18,21 @@ flashExam::flashExam(QWidget *parent)
     ui->revealBtn->setProperty("type", "borderless");
     ui->nextBtn->setProperty("type", "borderless");
     ui->backBtn->setProperty("type", "borderless");
+    ui->didNotKnowBtn->setProperty("type", "borderless");
     ui->startBtn->setStyleSheet("padding: 20px; QPushButton[type='borderless']:pressed { background: black; color: white; border: none }");
     ui->closeBtn->setStyleSheet("QPushButton[type='borderless']:pressed { background: black; color: white; border: none}");
     ui->revealBtn->setStyleSheet("padding: 20px; QPushButton[type='borderless']:pressed { background: black; color: white; border: none}");
     ui->nextBtn->setStyleSheet("padding: 20px; QPushButton[type='borderless']:pressed { background: black; color: white; border: none}");
+    ui->didNotKnowBtn->setStyleSheet("padding: 20px; QPushButton[type='borderless']:pressed { background: black; color: white; border: none}");
     ui->backBtn->setStyleSheet("QPushButton[type='borderless']:pressed { background: black; color: white; border: none}");
     ui->textBrowser->setStyleSheet("font-size: 12pt");
     ui->closeBtn->setIcon(QIcon(":/resources/close.png"));
     ui->backBtn->setIcon(QIcon(":/resources/arrow-left.png"));
+    ui->didNotKnowBtn->setIcon(QIcon(":/resources/close.png"));
+    ui->nextBtn->setIcon(QIcon(":/resources/check.png"));
     ui->nonRedundantRandomizationCheckBox->setDisabled(true);
     ui->randomizeCheckBox->click();
+    ui->randomizeCheckBox->setDisabled(true);
 
     graphicsScene = new QGraphicsScene(this);
     setupCardsList();
@@ -46,6 +51,7 @@ void flashExam::on_closeBtn_clicked()
 void flashExam::setupCardsList() {
     QDir dir("/mnt/onboard/onboard/.flashexam");
     ui->listWidget->clear();
+    ui->cardNumberLabel->show();
     for (const QString &filename : dir.entryList(QDir::Files)) {
         if(!filename.contains(".answers")) {
             ui->listWidget->addItem(filename);
@@ -80,6 +86,7 @@ void flashExam::initCardsList(QString cardsList, QString answersList) {
     randomize = ui->randomizeCheckBox->isChecked();
     nonRedundantRandomization = ui->nonRedundantRandomizationCheckBox->isChecked();
     cardsAlreadyShown.clear();
+    cardsNotKnown.clear();
     ui->nonRedundantRandomizationCheckBox->setChecked(false);
     cardsTotal = cardsStringList.count() + 1;
     displayCard(false);
@@ -101,7 +108,8 @@ void flashExam::on_revealBtn_clicked()
     }
     else {
         QString answerText = displayImage(answersStringList.at(currentCardNumber));
-        ui->textBrowser->setText(answerText);
+        ui->textBrowser->clear();
+        ui->textBrowser->setText("<i>" + answerText + "</i>");
         answerShown = true;
         ui->revealBtn->setText("Hide answer");
     }
@@ -114,6 +122,21 @@ void flashExam::on_nextBtn_clicked()
 }
 
 void flashExam::displayCard(bool existingCardNumber) {
+    if(nonRedundantRandomization) {
+        float cardsTotalFloat = cardsTotal * 1.0;
+        float cardsAlreadyShownNumber = cardsAlreadyShown.count() * 1.0;
+        float cardsNotKnownNumber = cardsNotKnown.count() * 1.0;
+        if(answerShown) {
+            ui->cardNumberLabel->setText(QString::number((cardsAlreadyShownNumber - 1) / cardsTotalFloat * 100, 'f', 1) + "% done, " + QString::number(cardsNotKnownNumber / cardsTotalFloat * 100, 'f', 1) + "% forgotten");
+        }
+        else {
+            ui->cardNumberLabel->setText(QString::number(cardsAlreadyShownNumber / cardsTotalFloat * 100, 'f', 1) + "% done, " + QString::number(cardsNotKnownNumber / cardsTotalFloat * 100, 'f', 1) + "% forgotten");
+        }
+    }
+    else {
+        ui->cardNumberLabel->hide();
+    }
+
     if(!existingCardNumber) {
         if(randomize) {
             while(true) {
@@ -142,7 +165,8 @@ void flashExam::displayCard(bool existingCardNumber) {
         }
     }
     QString cardText = displayImage(cardsStringList.at(currentCardNumber));
-    ui->cardNumberLabel->setText("Card " + QString::number(currentCardNumber + 1));
+
+    ui->textBrowser->clear();
     ui->textBrowser->setText(cardText);
 
     ui->revealBtn->setText("Show answer");
@@ -191,5 +215,12 @@ void flashExam::on_randomizeCheckBox_toggled(bool checked)
     else {
         ui->nonRedundantRandomizationCheckBox->setDisabled(true);
     }
+}
+
+
+void flashExam::on_didNotKnowBtn_clicked()
+{
+    cardsNotKnown.append(currentCardNumber);
+    on_nextBtn_clicked();
 }
 
