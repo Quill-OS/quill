@@ -23,6 +23,8 @@ private:
     int currentCardNumber;
     QString listName;
     bool randomize;
+    bool nonRedundantRandomization;
+    QList<int> cardsAlreadyShown;
     bool answerShown = false;
     QStringList cardsStringList;
     QStringList answersStringList;
@@ -40,6 +42,7 @@ private slots:
     void on_backBtn_clicked();
     void on_revealBtn_clicked();
     void on_nextBtn_clicked();
+    void on_randomizeCheckBox_toggled(bool checked);
 };
 
 #endif // FLASHEXAM_H

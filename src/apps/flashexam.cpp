@@ -26,6 +26,7 @@ flashExam::flashExam(QWidget *parent)
     ui->textBrowser->setStyleSheet("font-size: 12pt");
     ui->closeBtn->setIcon(QIcon(":/resources/close.png"));
     ui->backBtn->setIcon(QIcon(":/resources/arrow-left.png"));
+    ui->nonRedundantRandomizationCheckBox->setDisabled(true);
     ui->randomizeCheckBox->click();
 
     graphicsScene = new QGraphicsScene(this);
@@ -44,18 +45,21 @@ void flashExam::on_closeBtn_clicked()
 
 void flashExam::setupCardsList() {
     QDir dir("/mnt/onboard/onboard/.flashexam");
+    ui->listWidget->clear();
     for (const QString &filename : dir.entryList(QDir::Files)) {
-        ui->listWidget->addItem(filename);
+        if(!filename.contains(".answers")) {
+            ui->listWidget->addItem(filename);
+        }
     }
 }
 
 void flashExam::on_startBtn_clicked()
 {
-    listName = ui->listWidget->currentItem()->text();
     if(ui->listWidget->selectedItems().isEmpty()) {
         emit showToast("You must select a cards list");
     }
     else {
+        listName = ui->listWidget->currentItem()->text();
         QString cardsList = "/mnt/onboard/onboard/.flashexam/" + listName;
         QString answersList = "/mnt/onboard/onboard/.flashexam/" + listName + ".answers";
         if(QFile::exists(answersList)) {
@@ -69,9 +73,14 @@ void flashExam::on_startBtn_clicked()
 }
 
 void flashExam::initCardsList(QString cardsList, QString answersList) {
+    cardsStringList.clear();
+    answersStringList.clear();
     cardsStringList = readFile(cardsList).split(QRegExp("(\\r\\n)|(\\n\\r)|\\r|\\n"), QString::SkipEmptyParts);
     answersStringList = readFile(answersList).split(QRegExp("(\\r\\n)|(\\n\\r)|\\r|\\n"), QString::SkipEmptyParts);
     randomize = ui->randomizeCheckBox->isChecked();
+    nonRedundantRandomization = ui->nonRedundantRandomizationCheckBox->isChecked();
+    cardsAlreadyShown.clear();
+    ui->nonRedundantRandomizationCheckBox->setChecked(false);
     cardsTotal = cardsStringList.count() + 1;
     displayCard(false);
     ui->stackedWidget->setCurrentIndex(1);
@@ -79,6 +88,8 @@ void flashExam::initCardsList(QString cardsList, QString answersList) {
 
 void flashExam::on_backBtn_clicked()
 {
+    this->setDisabled(false);
+    setupCardsList();
     ui->stackedWidget->setCurrentIndex(0);
 }
 
@@ -105,7 +116,29 @@ void flashExam::on_nextBtn_clicked()
 void flashExam::displayCard(bool existingCardNumber) {
     if(!existingCardNumber) {
         if(randomize) {
-            currentCardNumber = QRandomGenerator::global()->bounded(cardsTotal - 1);
+            while(true) {
+                currentCardNumber = QRandomGenerator::global()->bounded(cardsTotal - 1);
+                if(nonRedundantRandomization) {
+                    if(!cardsAlreadyShown.contains(currentCardNumber)) {
+                        cardsAlreadyShown.append(currentCardNumber);
+                        break;
+                    }
+                    else {
+                        if(cardsAlreadyShown.count() != cardsTotal - 1) {
+                            log("cardsAlreadyShown already contains random card number chosen, choosing another one", className);
+                        }
+                        else {
+                            emit showToast("No more cards to display");
+                            QTimer::singleShot(5000, this, SLOT(on_backBtn_clicked()));
+                            this->setDisabled(true);
+                            break;
+                        }
+                    }
+                }
+                else {
+                    break;
+                }
+            }
         }
     }
     QString cardText = displayImage(cardsStringList.at(currentCardNumber));
@@ -122,24 +155,26 @@ QString flashExam::displayImage(QString cardText) {
     QRegularExpression imageRegex("IMG='([^']+)'");
     QRegularExpressionMatch match = imageRegex.match(cardText);
 
-    if (match.hasMatch()) {
-        QString imagePath = match.captured(1); // Captured group 1 is the value of IMG
+    if(match.hasMatch()) {
+        QString imageFile = match.captured(1); // Captured group 1 is the value of IMG
+        QString imagePath = "/mnt/onboard/onboard/.flashexam/resources/" + imageFile;
         log("Displaying image '" + imagePath + "'", className);
-
-        ui->graphicsView->items().clear();
-        graphicsScene->clear();
-        QPixmap pixmap("/mnt/onboard/onboard/.flashexam/resources/" + listName + "/" + imagePath);
-        graphicsScene->addPixmap(pixmap);
-        ui->graphicsView->setScene(graphicsScene);
-        // Shrinking scene if item is smaller than previous one
-        QRectF rect = graphicsScene->itemsBoundingRect();
-        graphicsScene->setSceneRect(rect);
-        ui->graphicsView->fitInView(graphicsScene->sceneRect(), Qt::KeepAspectRatio);
-        ui->textBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-        ui->graphicsView->show();
-    }
-    else {
-        log("IMG key not found", className);
+        if(QFile::exists(imagePath)) {
+            ui->graphicsView->items().clear();
+            graphicsScene->clear();
+            QPixmap pixmap(imagePath);
+            graphicsScene->addPixmap(pixmap);
+            ui->graphicsView->setScene(graphicsScene);
+            // Shrinking scene if item is smaller than previous one
+            QRectF rect = graphicsScene->itemsBoundingRect();
+            graphicsScene->setSceneRect(rect);
+            ui->graphicsView->fitInView(graphicsScene->sceneRect(), Qt::KeepAspectRatio);
+            ui->textBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
+            ui->graphicsView->show();
+        }
+        else {
+            log("Image does not exist", className);
+        }
     }
 
     QRegularExpression removeRegex("IMG='[^']+'\\s*");
@@ -147,3 +182,14 @@ QString flashExam::displayImage(QString cardText) {
 
     return cardText;
 }
+
+void flashExam::on_randomizeCheckBox_toggled(bool checked)
+{
+    if(checked) {
+        ui->nonRedundantRandomizationCheckBox->setDisabled(false);
+    }
+    else {
+        ui->nonRedundantRandomizationCheckBox->setDisabled(true);
+    }
+}
+

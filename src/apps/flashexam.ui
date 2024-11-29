@@ -35,21 +35,6 @@
        </property>
        <item>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="3" column="0">
-          <widget class="QListWidget" name="listWidget"/>
-         </item>
-         <item row="6" column="0">
-          <widget class="QPushButton" name="startBtn">
-           <property name="font">
-            <font>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Start</string>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="0">
           <widget class="Line" name="line">
            <property name="frameShadow">
@@ -72,6 +57,21 @@
            </property>
            <property name="text">
             <string>Randomized mode</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0">
+          <widget class="QListWidget" name="listWidget"/>
+         </item>
+         <item row="7" column="0">
+          <widget class="QPushButton" name="startBtn">
+           <property name="font">
+            <font>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>Start</string>
            </property>
           </widget>
          </item>
@@ -142,13 +142,25 @@
            </item>
           </layout>
          </item>
-         <item row="5" column="0">
+         <item row="6" column="0">
           <widget class="Line" name="line_2">
            <property name="frameShadow">
             <enum>QFrame::Shadow::Plain</enum>
            </property>
            <property name="orientation">
             <enum>Qt::Orientation::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <widget class="QCheckBox" name="nonRedundantRandomizationCheckBox">
+           <property name="font">
+            <font>
+             <family>U001</family>
+            </font>
+           </property>
+           <property name="text">
+            <string>Non-redundant randomized mode</string>
            </property>
           </widget>
          </item>
@@ -172,44 +184,15 @@
        </property>
        <item>
         <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <layout class="QGridLayout" name="gridLayout_4">
-           <property name="bottomMargin">
-            <number>0</number>
+         <item row="3" column="0">
+          <widget class="QTextBrowser" name="textBrowser">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
            </property>
-           <item row="0" column="0">
-            <widget class="QPushButton" name="backBtn">
-             <property name="text">
-              <string/>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="2">
-            <widget class="QLabel" name="cardNumberLabel">
-             <property name="font">
-              <font>
-               <family>U001</family>
-              </font>
-             </property>
-             <property name="text">
-              <string>Card number</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Orientation::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
+          </widget>
          </item>
          <item row="7" column="0">
           <widget class="QPushButton" name="nextBtn">
@@ -233,28 +216,58 @@
            </property>
           </widget>
          </item>
+         <item row="0" column="0">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item row="0" column="2">
+            <widget class="QLabel" name="cardNumberLabel">
+             <property name="font">
+              <font>
+               <family>U001</family>
+              </font>
+             </property>
+             <property name="text">
+              <string>Card number</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QPushButton" name="backBtn">
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Orientation::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
          <item row="2" column="0">
           <widget class="QGraphicsView" name="graphicsView"/>
          </item>
-         <item row="3" column="0">
-          <widget class="QTextBrowser" name="textBrowser">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+         <item row="1" column="0">
+          <widget class="Line" name="line_5">
+           <property name="frameShadow">
+            <enum>QFrame::Shadow::Plain</enum>
            </property>
-          </widget>
-         </item>
-         <item row="5" column="0">
-          <widget class="QPushButton" name="revealBtn">
-           <property name="font">
-            <font>
-             <bold>true</bold>
-            </font>
+           <property name="lineWidth">
+            <number>2</number>
            </property>
-           <property name="text">
-            <string>Show answer</string>
+           <property name="orientation">
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
           </widget>
          </item>
@@ -271,16 +284,15 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="Line" name="line_5">
-           <property name="frameShadow">
-            <enum>QFrame::Shadow::Plain</enum>
+         <item row="5" column="0">
+          <widget class="QPushButton" name="revealBtn">
+           <property name="font">
+            <font>
+             <bold>true</bold>
+            </font>
            </property>
-           <property name="lineWidth">
-            <number>2</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+           <property name="text">
+            <string>Show answer</string>
            </property>
           </widget>
          </item>
