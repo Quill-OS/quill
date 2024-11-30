@@ -112,6 +112,7 @@ void flashExam::on_revealBtn_clicked()
         ui->textBrowser->setText("<i>" + answerText + "</i>");
         answerShown = true;
         ui->revealBtn->setText("Hide answer");
+        ui->continueWidget->show();
     }
 }
 
@@ -126,12 +127,7 @@ void flashExam::displayCard(bool existingCardNumber) {
         float cardsTotalFloat = cardsTotal * 1.0;
         float cardsAlreadyShownNumber = cardsAlreadyShown.count() * 1.0;
         float cardsNotKnownNumber = cardsNotKnown.count() * 1.0;
-        if(answerShown) {
-            ui->cardNumberLabel->setText(QString::number((cardsAlreadyShownNumber - 1) / cardsTotalFloat * 100, 'f', 1) + "% done, " + QString::number(cardsNotKnownNumber / cardsTotalFloat * 100, 'f', 1) + "% forgotten");
-        }
-        else {
-            ui->cardNumberLabel->setText(QString::number(cardsAlreadyShownNumber / cardsTotalFloat * 100, 'f', 1) + "% done, " + QString::number(cardsNotKnownNumber / cardsTotalFloat * 100, 'f', 1) + "% forgotten");
-        }
+        ui->cardNumberLabel->setText(QString::number(cardsAlreadyShownNumber / cardsTotalFloat * 100, 'f', 1) + "% done, " + QString::number(cardsNotKnownNumber / cardsTotalFloat * 100, 'f', 1) + "% forgotten");
     }
     else {
         ui->cardNumberLabel->hide();
@@ -171,6 +167,7 @@ void flashExam::displayCard(bool existingCardNumber) {
 
     ui->revealBtn->setText("Show answer");
     answerShown = false;
+    ui->continueWidget->hide();
 }
 
 QString flashExam::displayImage(QString cardText) {
