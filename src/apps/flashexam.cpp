@@ -31,6 +31,7 @@ flashExam::flashExam(QWidget *parent)
     ui->didNotKnowBtn->setIcon(QIcon(":/resources/close.png"));
     ui->nextBtn->setIcon(QIcon(":/resources/check.png"));
     ui->nonRedundantRandomizationCheckBox->setDisabled(true);
+    ui->saveCardsNotKnownToFileCheckBox->setDisabled(true);
     ui->randomizeCheckBox->click();
     ui->randomizeCheckBox->setDisabled(true);
 
@@ -85,6 +86,7 @@ void flashExam::initCardsList(QString cardsList, QString answersList) {
     answersStringList = readFile(answersList).split(QRegExp("(\\r\\n)|(\\n\\r)|\\r|\\n"), QString::SkipEmptyParts);
     randomize = ui->randomizeCheckBox->isChecked();
     nonRedundantRandomization = ui->nonRedundantRandomizationCheckBox->isChecked();
+    saveCardsNotKnownToFile = ui->saveCardsNotKnownToFileCheckBox->isChecked();
     cardsAlreadyShown.clear();
     cardsNotKnown.clear();
     ui->nonRedundantRandomizationCheckBox->setChecked(false);
@@ -95,7 +97,7 @@ void flashExam::initCardsList(QString cardsList, QString answersList) {
 
 void flashExam::on_backBtn_clicked()
 {
-    if(nonRedundantRandomization) {
+    if(nonRedundantRandomization && cardsNotKnown.count() > 0 && saveCardsNotKnownToFile) {
         QString cardsNotKnownQstring;
         for(int i = 0; i < cardsNotKnown.count(); i++) {
             cardsNotKnownQstring.append(cardsStringList.at(cardsNotKnown.at(i)) + "\n");
@@ -227,5 +229,16 @@ void flashExam::on_didNotKnowBtn_clicked()
 {
     cardsNotKnown.append(currentCardNumber);
     on_nextBtn_clicked();
+}
+
+void flashExam::on_nonRedundantRandomizationCheckBox_toggled(bool checked)
+{
+    if(checked) {
+        ui->saveCardsNotKnownToFileCheckBox->setDisabled(false);
+    }
+    else {
+        ui->saveCardsNotKnownToFileCheckBox->setDisabled(true);
+        ui->saveCardsNotKnownToFileCheckBox->setChecked(false);
+    }
 }
 

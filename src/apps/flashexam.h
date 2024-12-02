@@ -24,6 +24,7 @@ private:
     QString listName;
     bool randomize;
     bool nonRedundantRandomization;
+    bool saveCardsNotKnownToFile;
     QList<int> cardsAlreadyShown;
     QList<int> cardsNotKnown;
     bool answerShown = false;
@@ -45,6 +46,7 @@ private slots:
     void on_nextBtn_clicked();
     void on_randomizeCheckBox_toggled(bool checked);
     void on_didNotKnowBtn_clicked();
+    void on_nonRedundantRandomizationCheckBox_toggled(bool checked);
 };
 
 #endif // FLASHEXAM_H
