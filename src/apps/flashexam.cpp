@@ -95,6 +95,14 @@ void flashExam::initCardsList(QString cardsList, QString answersList) {
 
 void flashExam::on_backBtn_clicked()
 {
+    if(nonRedundantRandomization) {
+        QString cardsNotKnownQstring;
+        for(int i = 0; i < cardsNotKnown.count(); i++) {
+            cardsNotKnownQstring.append(cardsStringList.at(cardsNotKnown.at(i)) + "\n");
+        }
+        log("Writing cardsNotKnownQstring to file", className);
+        writeFile("/mnt/onboard/onboard/flashexam-cards-not-known_" + QDateTime::currentDateTime().toString("dd.MM.yyyy-hh.mm.ss"), cardsNotKnownQstring);
+    }
     this->setDisabled(false);
     setupCardsList();
     ui->stackedWidget->setCurrentIndex(0);
