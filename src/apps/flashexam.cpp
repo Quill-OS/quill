@@ -188,7 +188,7 @@ QString flashExam::displayImage(QString cardText) {
 
     if(match.hasMatch()) {
         QString imageFile = match.captured(1); // Captured group 1 is the value of IMG
-        QString imagePath = "/mnt/onboard/onboard/.flashexam/resources/" + imageFile;
+        QString imagePath = "/mnt/onboard/onboard/.flashexam/resources/" + listName + "/" + imageFile;
         log("Displaying image '" + imagePath + "'", className);
         if(QFile::exists(imagePath)) {
             ui->graphicsView->items().clear();
