@@ -25,6 +25,9 @@ private:
     bool randomize;
     bool nonRedundantRandomization;
     bool saveCardsNotKnownToFile;
+    bool brainBruteForceMode;
+    bool brainBruteForceLock = false;
+    int brainBruteForceCardsThreshold;
     QList<int> cardsAlreadyShown;
     QList<int> cardsNotKnown;
     bool answerShown = false;
@@ -47,6 +50,7 @@ private slots:
     void on_randomizeCheckBox_toggled(bool checked);
     void on_didNotKnowBtn_clicked();
     void on_nonRedundantRandomizationCheckBox_toggled(bool checked);
+    void on_brainBruteForceCheckBox_toggled(bool checked);
 };
 
 #endif // FLASHEXAM_H

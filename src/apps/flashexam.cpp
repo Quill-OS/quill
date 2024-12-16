@@ -34,6 +34,7 @@ flashExam::flashExam(QWidget *parent)
     ui->saveCardsNotKnownToFileCheckBox->setDisabled(true);
     ui->randomizeCheckBox->click();
     ui->randomizeCheckBox->setDisabled(true);
+    ui->brainBruteForceCardsThresholdSpinBox->setDisabled(true);
 
     graphicsScene = new QGraphicsScene(this);
     setupCardsList();
@@ -69,6 +70,7 @@ void flashExam::on_startBtn_clicked()
         listName = ui->listWidget->currentItem()->text();
         QString cardsList = "/mnt/onboard/onboard/.flashexam/" + listName;
         QString answersList = "/mnt/onboard/onboard/.flashexam/" + listName + ".answers";
+        brainBruteForceCardsThreshold = ui->brainBruteForceCardsThresholdSpinBox->value();
         if(QFile::exists(answersList)) {
             log("Setting up cards list '" + listName + "'", className);
             initCardsList(cardsList, answersList);
@@ -87,6 +89,7 @@ void flashExam::initCardsList(QString cardsList, QString answersList) {
     randomize = ui->randomizeCheckBox->isChecked();
     nonRedundantRandomization = ui->nonRedundantRandomizationCheckBox->isChecked();
     saveCardsNotKnownToFile = ui->saveCardsNotKnownToFileCheckBox->isChecked();
+    brainBruteForceMode = ui->brainBruteForceCheckBox->isChecked();
     cardsAlreadyShown.clear();
     cardsNotKnown.clear();
     ui->nonRedundantRandomizationCheckBox->setChecked(false);
@@ -140,13 +143,32 @@ void flashExam::displayCard(bool existingCardNumber) {
         ui->cardNumberLabel->setText(QString::number(cardsAlreadyShownNumber / cardsTotalFloat * 100, 'f', 1) + "% done, " + QString::number(cardsNotKnownNumber / cardsTotalFloat * 100, 'f', 1) + "% forgotten");
     }
     else {
-        ui->cardNumberLabel->hide();
+        if(!brainBruteForceLock) {
+            ui->cardNumberLabel->hide();
+        }
     }
 
     if(!existingCardNumber) {
         if(randomize) {
+            if(brainBruteForceLock && cardsNotKnown.isEmpty()) {
+                brainBruteForceLock = false;
+                ui->cardNumberLabel->hide();
+                ui->cardNumberLabel->setText("");
+            }
+            if(brainBruteForceMode && cardsNotKnown.count() >= brainBruteForceCardsThreshold) {
+                brainBruteForceLock = true;
+                ui->cardNumberLabel->setText("Brain brute-force mode");
+                ui->cardNumberLabel->show();
+            }
             while(true) {
-                currentCardNumber = QRandomGenerator::global()->bounded(cardsTotal - 1);
+                if(brainBruteForceLock) {
+                    currentCardNumber = cardsNotKnown.at(cardsNotKnown.count() - 1);
+                    cardsNotKnown.removeLast();
+                    log("Brain brute-force mode: displaying card " + QString::number(currentCardNumber), className);
+                }
+                else {
+                    currentCardNumber = QRandomGenerator::global()->bounded(cardsTotal - 1);
+                }
                 if(nonRedundantRandomization) {
                     if(!cardsAlreadyShown.contains(currentCardNumber)) {
                         cardsAlreadyShown.append(currentCardNumber);
@@ -218,9 +240,11 @@ void flashExam::on_randomizeCheckBox_toggled(bool checked)
 {
     if(checked) {
         ui->nonRedundantRandomizationCheckBox->setDisabled(false);
+        ui->brainBruteForceCheckBox->setDisabled(false);
     }
     else {
         ui->nonRedundantRandomizationCheckBox->setDisabled(true);
+        ui->brainBruteForceCheckBox->setDisabled(true);
     }
 }
 
@@ -234,11 +258,31 @@ void flashExam::on_didNotKnowBtn_clicked()
 void flashExam::on_nonRedundantRandomizationCheckBox_toggled(bool checked)
 {
     if(checked) {
-        ui->saveCardsNotKnownToFileCheckBox->setDisabled(false);
+        if(!ui->brainBruteForceCheckBox->isChecked()) {
+            ui->saveCardsNotKnownToFileCheckBox->setDisabled(false);
+        }
     }
     else {
         ui->saveCardsNotKnownToFileCheckBox->setDisabled(true);
         ui->saveCardsNotKnownToFileCheckBox->setChecked(false);
+    }
+}
+
+
+void flashExam::on_brainBruteForceCheckBox_toggled(bool checked)
+{
+    if(checked) {
+        if(ui->nonRedundantRandomizationCheckBox->isChecked()) {
+            ui->saveCardsNotKnownToFileCheckBox->setDisabled(true);
+            ui->saveCardsNotKnownToFileCheckBox->setChecked(false);
+        }
+        ui->brainBruteForceCardsThresholdSpinBox->setDisabled(false);
+    }
+    else {
+        if(ui->nonRedundantRandomizationCheckBox->isChecked()) {
+            ui->saveCardsNotKnownToFileCheckBox->setDisabled(false);
+        }
+        ui->brainBruteForceCardsThresholdSpinBox->setDisabled(true);
     }
 }
 
