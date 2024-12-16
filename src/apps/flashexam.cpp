@@ -93,6 +93,7 @@ void flashExam::initCardsList(QString cardsList, QString answersList) {
     cardsAlreadyShown.clear();
     cardsNotKnown.clear();
     ui->nonRedundantRandomizationCheckBox->setChecked(false);
+    ui->brainBruteForceCheckBox->setChecked(false);
     cardsTotal = cardsStringList.count() + 1;
     displayCard(false);
     ui->stackedWidget->setCurrentIndex(1);
@@ -136,24 +137,23 @@ void flashExam::on_nextBtn_clicked()
 }
 
 void flashExam::displayCard(bool existingCardNumber) {
-    if(nonRedundantRandomization) {
-        float cardsTotalFloat = cardsTotal * 1.0;
-        float cardsAlreadyShownNumber = cardsAlreadyShown.count() * 1.0;
-        float cardsNotKnownNumber = cardsNotKnown.count() * 1.0;
-        ui->cardNumberLabel->setText(QString::number(cardsAlreadyShownNumber / cardsTotalFloat * 100, 'f', 1) + "% done, " + QString::number(cardsNotKnownNumber / cardsTotalFloat * 100, 'f', 1) + "% forgotten");
-    }
-    else {
-        if(!brainBruteForceLock) {
-            ui->cardNumberLabel->hide();
-        }
-    }
-
     if(!existingCardNumber) {
         if(randomize) {
             if(brainBruteForceLock && cardsNotKnown.isEmpty()) {
                 brainBruteForceLock = false;
-                ui->cardNumberLabel->hide();
-                ui->cardNumberLabel->setText("");
+            }
+            if(nonRedundantRandomization) {
+                float cardsTotalFloat = cardsTotal * 1.0;
+                float cardsAlreadyShownNumber = cardsAlreadyShown.count() * 1.0;
+                float cardsNotKnownNumber = cardsNotKnown.count() * 1.0;
+                if(!brainBruteForceLock) {
+                    if(brainBruteForceMode) {
+                        ui->cardNumberLabel->setText(QString::number(cardsAlreadyShownNumber / cardsTotalFloat * 100, 'f', 1) + "% done");
+                    }
+                    else {
+                        ui->cardNumberLabel->setText(QString::number(cardsAlreadyShownNumber / cardsTotalFloat * 100, 'f', 1) + "% done, " + QString::number(cardsNotKnownNumber / cardsTotalFloat * 100, 'f', 1) + "% forgotten");
+                    }
+                }
             }
             if(brainBruteForceMode && cardsNotKnown.count() >= brainBruteForceCardsThreshold) {
                 brainBruteForceLock = true;
@@ -170,8 +170,10 @@ void flashExam::displayCard(bool existingCardNumber) {
                     currentCardNumber = QRandomGenerator::global()->bounded(cardsTotal - 1);
                 }
                 if(nonRedundantRandomization) {
-                    if(!cardsAlreadyShown.contains(currentCardNumber)) {
-                        cardsAlreadyShown.append(currentCardNumber);
+                    if(brainBruteForceLock || !cardsAlreadyShown.contains(currentCardNumber)) {
+                        if(!brainBruteForceLock) {
+                            cardsAlreadyShown.append(currentCardNumber);
+                        }
                         break;
                     }
                     else {
