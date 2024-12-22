@@ -1,5 +1,5 @@
-## The project is dead
-Because of the new kobo colour models using secure boot, which makes us not able to support them with quill and us not having time for a project that will die of the lack of new devices, the project is dead.
+## The project is ~~dead~~ looking for wizards
+Because of the new kobo colour models using secure boot, which makes us not able to support them with quill and us not having time for a project that will die of the lack of new devices, the project is dead (maybe).
 
 Don't expect any support or anything. Until you are a knowledgable person who can with no problem for example... cross compile a qt app you should not touch this project. You are on your own.
 
