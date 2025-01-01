@@ -1,6 +1,6 @@
 /*
     InkBox: Open-source Qt-based eBook reader
-    Copyright (C) 2021-2024 Nicolas Mailloux <nicolecrivain@gmail.com>
+    Copyright (C) 2021-2025 Nicolas Mailloux <nicolecrivain@gmail.com>
     SPDX-License-Identifier: GPL-3.0-only
 
     This program is free software: you can redistribute it and/or modify

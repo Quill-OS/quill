@@ -651,7 +651,7 @@ namespace {
         getKernelVersion();
         global::systemInfoText = "<b>InkBox OS version ";
         global::systemInfoText.append(readFile("/external_root/opt/isa/version"));
-        global::systemInfoText.append("</b><br>Copyright <font face='Inter'>©</font> 2021-2024 Nicolas Mailloux and contributors<br>Special thanks to: Szybet, NiLuJe, akemnade, Rain92 (GitHub)");
+        global::systemInfoText.append("</b><br>Copyright <font face='Inter'>©</font> 2021-2025 Nicolas Mailloux and contributors<br>Special thanks to: Szybet, NiLuJe, akemnade, Rain92 (GitHub)");
         global::systemInfoText.append("<br><b>GUI Git commit:</b> ");
         global::systemInfoText.append(GIT_VERSION);
         global::systemInfoText.append("<br><b>Device UID:</b> ");
