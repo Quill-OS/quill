@@ -51,7 +51,7 @@ void flashExam::on_closeBtn_clicked()
 }
 
 void flashExam::setupCardsList() {
-    QDir dir("/mnt/onboard/onboard/.flashexam");
+    QDir dir(basePath + ".flashexam");
     ui->listWidget->clear();
     ui->cardNumberLabel->show();
     for (const QString &filename : dir.entryList(QDir::Files)) {
@@ -68,8 +68,8 @@ void flashExam::on_startBtn_clicked()
     }
     else {
         listName = ui->listWidget->currentItem()->text();
-        QString cardsList = "/mnt/onboard/onboard/.flashexam/" + listName;
-        QString answersList = "/mnt/onboard/onboard/.flashexam/" + listName + ".answers";
+        QString cardsList = basePath + ".flashexam/" + listName;
+        QString answersList = basePath + ".flashexam/" + listName + ".answers";
         brainBruteForceCardsThreshold = ui->brainBruteForceCardsThresholdSpinBox->value();
         if(QFile::exists(answersList)) {
             log("Setting up cards list '" + listName + "'", className);
@@ -107,7 +107,7 @@ void flashExam::on_backBtn_clicked()
             cardsNotKnownQstring.append(cardsStringList.at(cardsNotKnown.at(i)) + "\n");
         }
         log("Writing cardsNotKnownQstring to file", className);
-        writeFile("/mnt/onboard/onboard/flashexam-cards-not-known_" + QDateTime::currentDateTime().toString("dd.MM.yyyy-hh.mm.ss"), cardsNotKnownQstring);
+        writeFile(basePath + "flashexam-cards-not-known_" + QDateTime::currentDateTime().toString("dd.MM.yyyy-hh.mm.ss"), cardsNotKnownQstring);
     }
     this->setDisabled(false);
     setupCardsList();
@@ -212,7 +212,7 @@ QString flashExam::displayImage(QString cardText) {
 
     if(match.hasMatch()) {
         QString imageFile = match.captured(1); // Captured group 1 is the value of IMG
-        QString imagePath = "/mnt/onboard/onboard/.flashexam/resources/" + listName + "/" + imageFile;
+        QString imagePath = basePath + ".flashexam/resources/" + listName + "/" + imageFile;
         log("Displaying image '" + imagePath + "'", className);
         if(QFile::exists(imagePath)) {
             ui->graphicsView->items().clear();

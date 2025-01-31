@@ -18,6 +18,12 @@ public:
     ~flashExam();
 
 private:
+    #ifndef PCBUILD
+        QString basePath = "/mnt/onboard/onboard/";
+    #endif
+    #ifdef PCBUILD
+        QString basePath = "./";
+    #endif
     Ui::flashExam *ui;
     int cardsTotal;
     int currentCardNumber;
