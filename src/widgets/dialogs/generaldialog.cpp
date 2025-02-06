@@ -101,7 +101,7 @@ generalDialog::generalDialog(QWidget *parent) :
         updateDialog = true;
         ui->okBtn->setText("Update");
         ui->cancelBtn->setText("Not now");
-        ui->bodyLabel->setText("<font face='u001'>Do you want to update InkBox now</font><font face='Inter'>?</font>"); // Because I hate Univers/U001's question mark ...
+        ui->bodyLabel->setText("<font face='u001'>Do you want to update Quill now</font><font face='Inter'>?</font>"); // Because I hate Univers/U001's question mark ...
         ui->headerLabel->setText("Update available");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
         writeFile("/inkbox/updateDialog", "false");
@@ -231,7 +231,7 @@ generalDialog::generalDialog(QWidget *parent) :
         ui->stackedWidget->setCurrentIndex(0);
         ui->okBtn->setText("Send");
         ui->cancelBtn->setText("Don't send");
-        ui->bodyLabel->setText("<font face='u001'>We, the InkBox OS developers, would like to know a bit more about our userbase.<br>We would be extremely grateful if you would allow us to collect some information about your device.<br>Would you like to send it to us</font><font face='Inter'>?</font><font face='u001'><br>No personal data will be transmitted.</font>");
+        ui->bodyLabel->setText("<font face='u001'>We, the Quill OS developers, would like to know a bit more about our userbase.<br>We would be extremely grateful if you would allow us to collect some information about your device.<br>Would you like to send it to us</font><font face='Inter'>?</font><font face='u001'><br>No personal data will be transmitted.</font>");
         ui->headerLabel->setText("Telemetry request");
         QTimer::singleShot(50, this, SLOT(adjust_size()));
     }

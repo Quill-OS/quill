@@ -172,7 +172,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Welcome to InkBox</string>
+         <string>Welcome to Quill</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>

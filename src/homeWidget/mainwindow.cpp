@@ -204,7 +204,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Reading from the config files and tweaking the program according to the options set
     // Demo setting, changes "Welcome to InkBox" label to "InkBox"
     if(checkconfig(".config/01-demo/config") == true) {
-        ui->inkboxLabel->setText("InkBox");
+        ui->inkboxLabel->setText("Quill");
     }
 
     // Dark mode; write to the Kobo Nightmode FIFO
@@ -343,7 +343,7 @@ MainWindow::MainWindow(QWidget *parent)
     if(checkconfig("/opt/inkbox_genuine") == true) {
         if(checkconfig("/external_root/opt/update/inkbox_updated") == true) {
             QString version = readFile("/external_root/opt/isa/version");
-            QString updatemsg = "<font face='u001'>InkBox update to version ";
+            QString updatemsg = "<font face='u001'>Quill update to version ";
             updatemsg = updatemsg.append(version);
             updatemsg = updatemsg.remove(QRegExp("[\n]"));
             updatemsg = updatemsg.append(" completed successfully.<br><br>Changelog:<br>");

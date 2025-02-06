@@ -39,7 +39,7 @@
         </font>
        </property>
        <property name="text">
-        <string>InkBox settings</string>
+        <string>Quill settings</string>
        </property>
       </widget>
      </item>

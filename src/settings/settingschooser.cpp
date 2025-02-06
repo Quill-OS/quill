@@ -58,7 +58,7 @@ settingsChooser::settingsChooser(QWidget *parent) :
         ui->powerSettingsBtn->setStyleSheet("padding: 40px; Text-align: left");
     }
 
-    ui->inkboxSettingsBtn->setText("\t\t\tInkBox settings");
+    ui->inkboxSettingsBtn->setText("\t\t\tQuill settings");
     ui->koboxSettingsBtn->setText("\t\t\tKoBox settings");
     ui->powerSettingsBtn->setText("\t\t\tPower settings");
 

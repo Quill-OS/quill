@@ -68,7 +68,7 @@
           </font>
          </property>
          <property name="text">
-          <string>InkBox settings</string>
+          <string>Quill settings</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>
@@ -342,7 +342,7 @@
          <item>
           <widget class="QPushButton" name="aboutBtn">
            <property name="text">
-            <string>About InkBox</string>
+            <string>About Quill</string>
            </property>
           </widget>
          </item>
@@ -765,7 +765,7 @@ Save &amp;&amp; Quit
          <item row="4" column="0">
           <widget class="QCheckBox" name="demoCheckBox">
            <property name="text">
-            <string>Disable &quot;Welcome to InkBox&quot; message</string>
+            <string>Disable &quot;Welcome to Quill&quot; message</string>
            </property>
           </widget>
          </item>
@@ -1103,7 +1103,7 @@ Save &amp;&amp; Quit
            <item row="0" column="0">
             <widget class="QLabel" name="updateLabel">
              <property name="text">
-              <string>Update InkBox</string>
+              <string>Update Quill</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>

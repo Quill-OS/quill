@@ -432,7 +432,7 @@ settings::settings(QWidget *parent) :
         ui->label_6->show();
     }
     else {
-        ui->label_8->setText("Reset InkBox");
+        ui->label_8->setText("Reset Quill");
     }
 
     if(global::device::isWifiAble == false) {
@@ -497,15 +497,15 @@ void settings::on_aboutBtn_clicked()
 {
     log("Showing About message box", className);
     if(checkconfig("/opt/inkbox_genuine") == true) {
-        QString aboutmsg = "InkBox is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
+        QString aboutmsg = "Quill is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive.";
         aboutmsg.prepend("<font face='u001'>");
-        aboutmsg.append("<br><br>InkBox ");
+        aboutmsg.append("<br><br>Quill ");
         aboutmsg.append(readFile("/external_root/opt/isa/version"));
         aboutmsg.append("</font>");
         QMessageBox::information(this, tr("Information"), aboutmsg);
     }
     else {
-        QMessageBox::information(this, tr("About"), tr("InkBox is an open-source Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive."));
+        QMessageBox::information(this, tr("About"), tr("Quill is an open-source, Qt-based eBook reader. It aims to bring you the latest Qt features while being also fast and responsive."));
     }
 }
 

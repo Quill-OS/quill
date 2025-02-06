@@ -40,7 +40,7 @@ alert::alert(QWidget *parent) :
 
         signatureError = true;
         log("Displaying signature error alert splash", className);
-        ui->securityLabel->setText("Failed to update InkBox.");
+        ui->securityLabel->setText("Failed to update Quill.");
         ui->messageLabel->setText("The digital signature of the update is untrusted.\nFor security reasons, it cannot be installed.");
         ui->stackedWidget->setCurrentIndex(1);
     }
@@ -51,7 +51,7 @@ alert::alert(QWidget *parent) :
 
         log("Displaying downgrade error alert splash", className);
         downgradeError = true;
-        ui->securityLabel->setText("Failed to update InkBox.");
+        ui->securityLabel->setText("Failed to update Quill.");
         ui->messageLabel->setText("An error occured during the update process.\nThe update package's version is lower than the actual installed version.");
         ui->stackedWidget->setCurrentIndex(1);
     }
