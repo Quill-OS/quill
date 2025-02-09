@@ -247,6 +247,7 @@ namespace global {
     inline bool isKT = false;
     inline bool runningInstanceIsReaderOnly;
     inline QString deviceID;
+    inline QString realDeviceID;
 }
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534
@@ -1143,7 +1144,7 @@ namespace {
     }
     global::wifi::wifiState checkWifiState() {
         QString interfaceName;
-        if(global::deviceID == "n437\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == "n437\n" or global::deviceID == "n249\n" or global::realDeviceID == "n418\n" or global::deviceID == "kt\n") {
             interfaceName = "wlan0";
         }
         else {
