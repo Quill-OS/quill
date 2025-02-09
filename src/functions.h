@@ -333,7 +333,7 @@ namespace {
         return 0;
     }
     void setBrightness(int value) {
-        if(global::deviceID == "n249\n") {
+        if(global::realDeviceID == "n249\n") {
             if(QFile::exists("/var/run/brightness_write")) {
                 std::ofstream fhandler;
                 fhandler.open("/var/run/brightness_write");
@@ -343,6 +343,9 @@ namespace {
         }
         else {
             if(QFile::exists("/var/run/brightness")) {
+                if(global::realDeviceID == "n418\n") {
+                    value = round(float(value)/100*2047);
+                }
                 std::ofstream fhandler;
                 fhandler.open("/var/run/brightness");
                 fhandler << value;
@@ -418,6 +421,9 @@ namespace {
                 QString valuestr = brightness.readAll();
                 int value = valuestr.toInt();
                 brightness.close();
+                if(global::realDeviceID == "n418\n") {
+                    value = round(float(value)/2047*100);
+                }
                 return value;
             }
             else {
@@ -815,31 +821,41 @@ namespace {
     int getWarmth() {
         QString sysfsWarmthPath;
         int warmthValue;
-        if(global::deviceID == "n873\n") {
+        if(global::realDeviceID == "n873\n") {
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
-        else if(global::deviceID == "n249\n") {
+        else if(global::realDeviceID == "n418\n") {
+            sysfsWarmthPath = "/sys/class/leds/aw99703-bl_FL1/brightness";
+        }
+        else if(global::realDeviceID == "n249\n") {
             sysfsWarmthPath = "/sys/class/backlight/backlight_warm/actual_brightness";
         }
         QString warmthConfig = readFile(sysfsWarmthPath);
         warmthValue = warmthConfig.toInt();
-        if (global::deviceID == "n873\n") {
+        if(global::realDeviceID == "n873\n") {
             warmthValue = 10 - warmthValue;
+        }
+        else if(global::realDeviceID == "n418\n") {
+            warmthValue = round((float(warmthValue)/2047)*100);
         }
         return warmthValue;
     }
     void setWarmth(int warmthValue) {
         QString sysfsWarmthPath;
         QString warmthValueStr;
-        if(global::deviceID == "n873\n") {
+        if(global::realDeviceID == "n873\n") {
             // Value 0 gives a warmer lighting than value 10
             warmthValue = 10 - warmthValue;
             warmthValueStr = QString::number(warmthValue);
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
-        else if(global::deviceID == "n249\n") {
+        else if(global::realDeviceID == "n249\n") {
             warmthValueStr = QString::number(warmthValue);
             sysfsWarmthPath = "/sys/class/backlight/backlight_warm/brightness";
+        }
+        else if(global::realDeviceID == "n418\n") {
+            warmthValueStr = QString::number(round(float(warmthValue)/100*2047));
+            sysfsWarmthPath = "/sys/class/leds/aw99703-bl_FL1/brightness";
         }
         writeFile(sysfsWarmthPath, warmthValueStr);
     }

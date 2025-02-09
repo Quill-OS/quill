@@ -10,7 +10,7 @@ QJsonObject telemetry::collectDeviceInformation() {
     QJsonObject data;
     data.insert("DeviceUID", getUID());
     data.insert("SystemVersion", readFile("/opt/version").trimmed());
-    data.insert("Device", global::deviceID.trimmed());
+    data.insert("Device", global::realDeviceID.trimmed());
     if(checkconfig("/external_root/opt/root/rooted")) {
         data.insert("DeviceRooted", "true");
     }

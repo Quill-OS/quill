@@ -150,8 +150,6 @@ MainWindow::MainWindow(QWidget *parent)
     else {
         ui->audioBtn->setIcon(QIcon(":/resources/music-note.png"));
         ui->audioBtn->setIconSize(QSize(wifiIconWidth, wifiIconHeight));
-        ui->labelLine_1->hide();
-        ui->labelLine_2->hide();
     }
 
     updateWifiAble();
