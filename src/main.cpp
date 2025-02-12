@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
 
     global::deviceID = readFile("/opt/inkbox_device");
     global::realDeviceID = readFile("/external_root/opt/inkbox_device");
-    log("Running on device " + global::deviceID, "main", true);
+    log("Running on device " + global::realDeviceID, "main", true);
 
     // Tell the OS that we're currently running
     writeFile("/tmp/inkbox_running", "true");

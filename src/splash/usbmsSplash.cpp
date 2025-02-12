@@ -113,20 +113,23 @@ void usbmsSplash::usbmsLaunch()
         QThread::msleep(500);
     }
 
-    if(global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "n873\n") {
+    if(global::realDeviceID == "n306\n" or global::realDeviceID == "n249\n" or global::realDeviceID == "n873\n") {
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/fs/configfs/configfs.ko");
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/drivers/usb/gadget/libcomposite.ko");
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/drivers/usb/gadget/function/usb_f_mass_storage.ko");
     }
-    else if(global::deviceID == "kt\n") {
+    else if(global::realDeviceID == "kt\n") {
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/2.6.35-inkbox/kernel/drivers/usb/gadget/arcotg_udc.ko");
     }
 
     QString prog_1 ("insmod");
     QStringList args_1;
 
-    if(global::deviceID == "kt\n") {
+    if(global::realDeviceID == "kt\n") {
         massStorageModule = "/external_root/lib/modules/2.6.35-inkbox/kernel/drivers/usb/gadget/g_file_storage.ko";
+    }
+    else if(global::realDeviceID == "n418\n") {
+        massStorageModule = "/external_root/lib/modules/4.1.15-inkbox/kernel/g_mass_storage.ko";
     }
     else {
         massStorageModule = "/external_root/lib/modules/g_mass_storage.ko";
