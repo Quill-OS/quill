@@ -963,7 +963,17 @@ void MainWindow::openReaderFramework() {
 
 void MainWindow::openKoreader() {
     log("Launching KOReader", className);
+    global::reader::showKoreaderSplash = true;
+    usbmsWindow = new usbmsSplash();
+    usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
+    usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
+    usbmsWindow->show();
+
     remove("/tmp/inkbox-cinematicBrightness_ran");
+    QTimer::singleShot(2500, this, SLOT(runKoreader()));
+}
+
+void MainWindow::runKoreader() {
     QProcess process;
     QStringList args;
     args << global::reader::bookFile;

@@ -108,6 +108,7 @@ private slots:
     void openTelemetryDialog();
     void openTelemetryMessageDialog();
     void sendDeviceInformationSlot(QString message);
+    void runKoreader();
 
 private:
     Ui::MainWindow * ui;

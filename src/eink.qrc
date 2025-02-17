@@ -120,5 +120,6 @@
         <file>resources/pause.png</file>
         <file>resources/clean.png</file>
         <file>resources/usbms-inverted.png</file>
+        <file>resources/koreader.png</file>
     </qresource>
 </RCC>

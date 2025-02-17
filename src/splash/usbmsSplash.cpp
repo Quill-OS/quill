@@ -45,6 +45,31 @@ usbmsSplash::usbmsSplash(QWidget *parent) :
         QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
         ui->label_2->setPixmap(scaledPixmap);
     }
+    else if(global::reader::showKoreaderSplash == true) {
+        float stdIconWidth = sW / 1.50;
+        float stdIconHeight = sH / 1.50;
+
+        // Stylesheet
+        QFile stylesheetFile("/mnt/onboard/.adds/inkbox/eink.qss");
+        stylesheetFile.open(QFile::ReadOnly);
+        this->setStyleSheet(stylesheetFile.readAll());
+        stylesheetFile.close();
+
+        ui->label->setFont(QFont("Inter"));
+        ui->label->setText("Launching KOReader subsystem");
+        ui->label->setStyleSheet("font-size: 14pt; font-weight: bold");
+        ui->label_3->setText("Please wait, this could take a while.");
+        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+            ui->label_3->setStyleSheet("font-size: 11pt");
+        }
+        else {
+            ui->label_3->setStyleSheet("font-size: 10pt");
+        }
+
+        QPixmap pixmap(":/resources/koreader.png");
+        QPixmap scaledPixmap = pixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        ui->label_2->setPixmap(scaledPixmap);
+    }
     else {
         float stdIconWidth = sW / 1.15;
         float stdIconHeight = sH / 1.15;
