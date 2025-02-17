@@ -53,6 +53,7 @@ namespace global {
         inline int fontSize;
         inline int margins;
         inline QString currentViewportText;
+        inline bool useKoreader = false;
     }
     namespace kobox {
         inline bool showKoboxSplash;

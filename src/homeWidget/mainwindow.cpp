@@ -438,6 +438,11 @@ MainWindow::MainWindow(QWidget *parent)
             QTimer::singleShot(1000, this, SLOT(openTelemetryDialog()));
         }
     }
+
+    // KOReader
+    if(readFile(".config/25-reader_engine/reader_engine") == "koreader") {
+        global::reader::useKoreader = true;
+    }
 }
 
 MainWindow::~MainWindow()
@@ -938,9 +943,14 @@ void MainWindow::openBookFile(QString book, bool relativePath) {
         }
     }
 
-    global::reader::skipOpenDialog = true;
     global::reader::bookFile = book;
-    openReaderFramework();
+    if(global::reader::useKoreader) {
+        openKoreader();
+    }
+    else {
+        global::reader::skipOpenDialog = true;
+        openReaderFramework();
+    }
 }
 
 void MainWindow::openReaderFramework() {
@@ -949,6 +959,16 @@ void MainWindow::openReaderFramework() {
     readerWindow->setAttribute(Qt::WA_DeleteOnClose);
     connect(readerWindow, SIGNAL(openBookFile(QString, bool)), SLOT(openBookFile(QString, bool)));
     readerWindow->showFullScreen();
+}
+
+void MainWindow::openKoreader() {
+    log("Launching KOReader", className);
+    remove("/tmp/inkbox-cinematicBrightness_ran");
+    QProcess process;
+    QStringList args;
+    args << global::reader::bookFile;
+    process.startDetached("/mnt/onboard/.adds/koreader/koreader.sh", args);
+    qApp->quit();
 }
 
 void MainWindow::checkForUpdate() {

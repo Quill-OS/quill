@@ -395,6 +395,11 @@ settings::settings(QWidget *parent) :
         ui->autoCheckUpdatesBox->click();
     }
 
+    // KOReader
+    if(readFile(".config/25-reader_engine/reader_engine") == "koreader") {
+        ui->useKoreaderCheckBox->click();
+    }
+
     // 'Export highlights' button
     if(!QFile::exists(global::localLibrary::highlightsDatabasePath) or readFile(global::localLibrary::highlightsDatabasePath).isEmpty()) {
         ui->exportHighlightsBtn->setEnabled(false);
@@ -1179,5 +1184,18 @@ void settings::on_usbNetworkingCheckBox_toggled(bool checked)
     else {
         writeFile("/external_root/boot/flags/USBNET_ENABLE", "false");
         writeFile("/opt/ibxd", "usbnet_stop\n");
+    }
+}
+
+void settings::on_useKoreaderCheckBox_toggled(bool checked)
+{
+    QString settingString = "KOReader engine";
+    if(checked == true) {
+        logEnabled(settingString, className);
+        writeFile(".config/25-reader_engine/reader_engine", "koreader");
+    }
+    else {
+        logDisabled(settingString, className);
+        writeFile(".config/25-reader_engine/reader_engine", "false");
     }
 }

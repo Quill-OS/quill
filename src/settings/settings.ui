@@ -200,8 +200,8 @@
              <rect>
               <x>0</x>
               <y>0</y>
-              <width>461</width>
-              <height>636</height>
+              <width>457</width>
+              <height>605</height>
              </rect>
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -407,8 +407,8 @@ Save &amp;&amp; Quit
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>423</width>
-            <height>738</height>
+            <width>419</width>
+            <height>725</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -678,6 +678,13 @@ Save &amp;&amp; Quit
             <widget class="QCheckBox" name="menuBarCheckBox">
              <property name="text">
               <string>Always show status bar</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="useKoreaderCheckBox">
+             <property name="text">
+              <string>Use KOReader</string>
              </property>
             </widget>
            </item>

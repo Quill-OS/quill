@@ -94,6 +94,7 @@ private slots:
     void launchOtaUpdater();
     void openBookFile(QString book, bool relativePath);
     void openReaderFramework();
+    void openKoreader();
     void checkForUpdate();
     void checkForOtaUpdate();
     void openEncfsRepackDialog();

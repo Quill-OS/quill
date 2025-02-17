@@ -91,6 +91,7 @@ private slots:
     void on_securitySettingsBtn_clicked();
     void on_headerBtn_clicked();
     void on_usbNetworkingCheckBox_toggled(bool checked);
+    void on_useKoreaderCheckBox_toggled(bool checked);
 
 signals:
     void showToast(QString messageToDisplay);
