@@ -53,7 +53,12 @@ void flashExam::on_closeBtn_clicked()
 void flashExam::setupCardsList() {
     QDir dir(basePath + ".flashexam");
     ui->listWidget->clear();
-    ui->cardNumberLabel->show();
+    if(nonRedundantRandomization) {
+        ui->cardNumberLabel->show();
+    }
+    else {
+        ui->cardNumberLabel->hide();
+    }
     for (const QString &filename : dir.entryList(QDir::Files)) {
         if(!filename.contains(".answers")) {
             ui->listWidget->addItem(filename);
@@ -123,7 +128,7 @@ void flashExam::on_revealBtn_clicked()
     else {
         QString answerText = displayImage(answersStringList.at(currentCardNumber));
         ui->textBrowser->clear();
-        ui->textBrowser->setText("<i>" + answerText + "</i>");
+        ui->textBrowser->setText("<em>" + answerText + "</em>");
         answerShown = true;
         ui->revealBtn->setText("Hide answer");
         ui->continueWidget->show();
@@ -142,6 +147,7 @@ void flashExam::displayCard(bool existingCardNumber) {
             if(brainBruteForceLock && cardsNotKnown.isEmpty()) {
                 brainBruteForceLock = false;
             }
+
             if(nonRedundantRandomization) {
                 float cardsTotalFloat = cardsTotal * 1.0;
                 float cardsAlreadyShownNumber = cardsAlreadyShown.count() * 1.0;
@@ -155,16 +161,20 @@ void flashExam::displayCard(bool existingCardNumber) {
                     }
                 }
             }
+            else {
+                ui->cardNumberLabel->hide();
+            }
+
             if(brainBruteForceMode && cardsNotKnown.count() >= brainBruteForceCardsThreshold) {
                 brainBruteForceLock = true;
                 ui->cardNumberLabel->setText("Brain brute-force mode");
-                ui->cardNumberLabel->show();
             }
             while(true) {
                 if(brainBruteForceLock) {
                     currentCardNumber = cardsNotKnown.at(cardsNotKnown.count() - 1);
                     cardsNotKnown.removeLast();
                     log("Brain brute-force mode: displaying card " + QString::number(currentCardNumber), className);
+                    ui->cardNumberLabel->show();
                 }
                 else {
                     currentCardNumber = QRandomGenerator::global()->bounded(cardsTotal - 1);
