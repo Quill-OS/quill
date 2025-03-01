@@ -976,8 +976,8 @@ void MainWindow::openKoreader() {
 void MainWindow::runKoreader() {
     QProcess process;
     QStringList args;
-    args << global::reader::bookFile;
-    process.startDetached("/mnt/onboard/.adds/koreader/koreader.sh", args);
+    args << "user" << "-c" << "/mnt/onboard/.adds/koreader/koreader.sh " + global::reader::bookFile;
+    process.startDetached("/bin/su", args);
     qApp->quit();
 }
 
