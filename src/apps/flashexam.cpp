@@ -84,8 +84,8 @@ void flashExam::on_startBtn_clicked()
 void flashExam::initCardsList(QString cardsList, QString answersList) {
     cardsStringList.clear();
     answersStringList.clear();
-    cardsStringList = readFile(cardsList).split(QRegExp("(\\r\\n)|(\\n\\r)|\\r|\\n"), QString::SkipEmptyParts);
-    answersStringList = readFile(answersList).split(QRegExp("(\\r\\n)|(\\n\\r)|\\r|\\n"), QString::SkipEmptyParts);
+    cardsStringList = readFile(cardsList).split(QRegularExpression("(\\r\\n)|(\\n\\r)|\\r|\\n"), Qt::SkipEmptyParts);
+    answersStringList = readFile(answersList).split(QRegularExpression("(\\r\\n)|(\\n\\r)|\\r|\\n"), Qt::SkipEmptyParts);
     randomize = ui->randomizeCheckBox->isChecked();
     nonRedundantRandomization = ui->nonRedundantRandomizationCheckBox->isChecked();
     saveCardsNotKnownToFile = ui->saveCardsNotKnownToFileCheckBox->isChecked();
