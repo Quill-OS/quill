@@ -974,9 +974,10 @@ void MainWindow::openKoreader() {
 }
 
 void MainWindow::runKoreader() {
+    writeFile("/inkbox/book_file", global::reader::bookFile);
     QProcess process;
     QStringList args;
-    args << "user" << "-c" << "/mnt/onboard/.adds/koreader/koreader.sh " + global::reader::bookFile;
+    args << "user" << "-c" << "/mnt/onboard/.adds/koreader/koreader.sh";
     process.startDetached("/bin/su", args);
     qApp->quit();
 }
