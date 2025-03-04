@@ -577,51 +577,7 @@ reader::reader(QWidget *parent) :
     // Way to tell shell scripts that we're in the Reader framework
     writeFile("/tmp/inkboxReading", "true");
 
-    // Maintain a 'Recent books' list
-    QJsonObject recentBooksObject;
-    if(QFile::exists(global::localLibrary::recentBooksDatabasePath)) {
-        log("Reading recent books database", className);
-        QFile recentBooksDatabase(global::localLibrary::recentBooksDatabasePath);
-        QByteArray recentBooksData;
-        if(recentBooksDatabase.open(QIODevice::ReadOnly)) {
-            recentBooksData = recentBooksDatabase.readAll();
-            recentBooksDatabase.close();
-        }
-        else {
-            QString function = __func__; log(function + ": Failed to open recent books database file for reading at '" + recentBooksDatabase.fileName() + "'", className);
-        }
-        QJsonObject mainJsonObject = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(recentBooksData))).object();
-        for(int i = 1; i <= global::homePageWidget::recentBooksNumber; i++) {
-            QString objectName = "Book" + QString::number(i);
-            QJsonObject jsonObject = mainJsonObject[objectName].toObject();
-            if(i == 1) {
-                if(jsonObject.value("BookPath").toString() != book_file) {
-                    // Circular buffer
-                    for(int i = global::homePageWidget::recentBooksNumber; i >= 2; i--) {
-                        mainJsonObject["Book" + QString::number(i)] = mainJsonObject["Book" + QString::number(i - 1)];
-                    }
-                    jsonObject.insert("BookPath", QJsonValue(book_file));
-                    mainJsonObject[objectName] = jsonObject;
-                }
-            }
-        }
-        recentBooksObject = mainJsonObject;
-    }
-    else {
-        QJsonObject mainJsonObject;
-        QJsonObject firstJsonObject;
-        firstJsonObject.insert("BookPath", QJsonValue(book_file));
-        mainJsonObject["Book1"] = firstJsonObject;
 
-        for(int i = 2; i <= global::homePageWidget::recentBooksNumber; i++) {
-            QJsonObject jsonObject;
-            jsonObject.insert("BookPath", QJsonValue(""));
-            mainJsonObject["Book" + QString::number(i)] = jsonObject;
-        }
-        recentBooksObject = mainJsonObject;
-    }
-    QFile::remove(global::localLibrary::recentBooksDatabasePath);
-    writeFile(global::localLibrary::recentBooksDatabasePath, qCompress(QJsonDocument(recentBooksObject).toJson()).toBase64());
 
     // USB mass storage prompt
     if(global::reader::startUsbmsPrompt == true) {
@@ -2245,14 +2201,16 @@ void reader::on_brightnessBtn_clicked()
 void reader::setCinematicBrightnessWarmthSlot() {
     if(global::reader::globalReadingSettings == false) {
         if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
-            int brightness_value = brightnessCheckconfig(".config/03-brightness/config");
-            log("Local Reading Settings: Setting brightness to " + QString::number(brightness_value), className);
-            cinematicBrightness(brightness_value, 2);
-        }
-        if(global::deviceID == "n249\n" or global::deviceID == "n873\n") {
-            int warmthValue = readFile(".config/03-brightness/config-warmth").toInt();
-            log("Local Reading Settings: Setting warmth to " + QString::number(warmthValue), className);
-            cinematicWarmth(warmthValue);
+            int brightnessValue = brightnessCheckconfig(".config/03-brightness/config");
+            if(global::deviceID != "n873\n" or global::deviceID != "n249\n") {
+                log("Local Reading Settings: Setting brightness to " + QString::number(brightnessValue), className);
+                cinematicBrightness(brightnessValue, 0);
+            }
+            else {
+                int warmthValue = readFile(".config/03-brightness/config-warmth").toInt();
+                log("Local Reading Settings: Setting brightness to " + QString::number(brightnessValue) + "and warmth to " + QString::number(warmthValue), className);
+                cinematicBrightness(brightnessValue, warmthValue);
+            }
         }
     }
 }

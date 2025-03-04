@@ -345,9 +345,6 @@ namespace {
         }
         else {
             if(QFile::exists("/var/run/brightness")) {
-                if(global::realDeviceID == "n418\n") {
-                    value = round(float(value)/100*2047);
-                }
                 std::ofstream fhandler;
                 fhandler.open("/var/run/brightness");
                 fhandler << value;
@@ -418,14 +415,15 @@ namespace {
         }
         else {
             if(QFile::exists("/var/run/brightness")) {
-                QFile brightness("/var/run/brightness");
+                QString brightnessFilePath = "/var/run/brightness";
+                if(global::realDeviceID == "n418\n") {
+                    brightnessFilePath = "/sys/class/backlight/mxc_msp430.0/actual_brightness";
+                }
+                QFile brightness(brightnessFilePath);
                 brightness.open(QIODevice::ReadOnly);
                 QString valuestr = brightness.readAll();
                 int value = valuestr.toInt();
                 brightness.close();
-                if(global::realDeviceID == "n418\n") {
-                    value = round(float(value)/2047*100);
-                }
                 return value;
             }
             else {
@@ -777,48 +775,14 @@ namespace {
             setBrightness(brightnessValue);
         }
     }
-    void cinematicBrightness(int value, int mode) {
-        /* mode can be 0, 1, or 2, respectively:
-         * 0: Bring UP brightness
-         * 1: Bring DOWN brightness
-         * 2: Auto; smooth brightness transition between two brightness levels
-        */
-        if(global::deviceID != "n705\n" && global::deviceID != "n905\n" && global::deviceID != "kt\n") {
-            QString function = __func__; log(function + ": Setting brightness to " + QString::number(value), "functions");
-        }
-        if(mode == 0) {
-            int brightness = 0;
-            while(brightness != value) {
-                brightness = brightness + 1;
-                preSetBrightness(brightness);
-                QThread::msleep(30);
-            }
-        }
-        else if(mode == 1) {
-            int brightness = getBrightness();
-            while(brightness != 0) {
-                brightness = brightness - 1;
-                preSetBrightness(brightness);
-                QThread::msleep(30);
-            }
-        }
-        else if(mode == 2) {
-            int brightness = getBrightness();
-            if(brightness <= value) {
-                while(brightness != value) {
-                    brightness = brightness + 1;
-                    preSetBrightness(brightness);
-                    QThread::msleep(30);
-                }
-            }
-            else if(brightness >= value) {
-                while(brightness != value) {
-                    brightness = brightness - 1;
-                    preSetBrightness(brightness);
-                    QThread::msleep(30);
-                }
-            }
-        }
+    void cinematicBrightness(int brightness, int warmth) {
+        QString cbPath("/external_root/lib/ld-musl-armhf.so.1");
+        QStringList cbArgs;
+        cbArgs << "/external_root/opt/bin/cinematic_brightness" << QString::number(brightness) << QString::number(10 * warmth) << "-1" << "-1" << "3000" << "1";
+        QProcess *cbProc = new QProcess();
+        // qDebug() << cbArgs;
+        cbProc->startDetached(cbPath, cbArgs);
+        cbProc->deleteLater();
     }
     int getWarmth() {
         QString sysfsWarmthPath;
@@ -827,56 +791,37 @@ namespace {
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
         else if(global::realDeviceID == "n418\n") {
-            sysfsWarmthPath = "/sys/class/leds/aw99703-bl_FL1/brightness";
+            sysfsWarmthPath = "/sys/class/leds/aw99703-bl_FL1/color";
         }
         else if(global::realDeviceID == "n249\n") {
             sysfsWarmthPath = "/sys/class/backlight/backlight_warm/actual_brightness";
         }
         QString warmthConfig = readFile(sysfsWarmthPath);
         warmthValue = warmthConfig.toInt();
-        if(global::realDeviceID == "n873\n") {
+        if(global::realDeviceID == "n873\n" or global::realDeviceID == "n418\n") {
             warmthValue = 10 - warmthValue;
-        }
-        else if(global::realDeviceID == "n418\n") {
-            warmthValue = round((float(warmthValue)/2047)*100);
         }
         return warmthValue;
     }
     void setWarmth(int warmthValue) {
         QString sysfsWarmthPath;
         QString warmthValueStr;
-        if(global::realDeviceID == "n873\n") {
+        if(global::deviceID == "n873\n") {
             // Value 0 gives a warmer lighting than value 10
             warmthValue = 10 - warmthValue;
             warmthValueStr = QString::number(warmthValue);
-            sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
+            if(global::realDeviceID == "n873\n") {
+                sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
+            }
+            else if(global::realDeviceID == "n418\n"){
+                sysfsWarmthPath = "/sys/class/leds/aw99703-bl_FL1/color";
+            }
         }
         else if(global::realDeviceID == "n249\n") {
             warmthValueStr = QString::number(warmthValue);
             sysfsWarmthPath = "/sys/class/backlight/backlight_warm/brightness";
         }
-        else if(global::realDeviceID == "n418\n") {
-            warmthValueStr = QString::number(round(float(warmthValue)/100*2047));
-            sysfsWarmthPath = "/sys/class/leds/aw99703-bl_FL1/brightness";
-        }
         writeFile(sysfsWarmthPath, warmthValueStr);
-    }
-    void cinematicWarmth(int warmthValue) {
-        int currentWarmth = getWarmth();
-        if(warmthValue < currentWarmth) {
-            while(warmthValue < currentWarmth) {
-                currentWarmth--;
-                setWarmth(currentWarmth);
-                QThread::msleep(30);
-            }
-        }
-        else if(warmthValue > currentWarmth) {
-            while(warmthValue > currentWarmth) {
-                currentWarmth++;
-                setWarmth(currentWarmth);
-                QThread::msleep(30);
-            }
-        }
     }
     void installUpdate() {
         log("Installing update package", "functions");
@@ -909,7 +854,7 @@ namespace {
             // Thanks to https://github.com/koreader/KoboUSBMS/blob/2efdf9d920c68752b2933f21c664dc1afb28fc2e/usbms.c#L148-L158
             int ntxfd;
             if((ntxfd = open("/dev/ntx_io", O_RDWR)) == -1) {
-                    fprintf(stderr, "Error opening ntx_io device\n");
+                fprintf(stderr, "Error opening ntx_io device\n");
             }
             unsigned long ptr = 0U;
             ioctl(ntxfd, 108, &ptr);
@@ -1247,6 +1192,53 @@ namespace {
         fhandler.open(file.toStdString());
         fhandler << str.toStdString();
         fhandler.close();
+    }
+    void appendToRecentBooksDatabase(QString bookPath) {
+        // Maintain a 'Recent books' list
+        QJsonObject recentBooksObject;
+        if(QFile::exists(global::localLibrary::recentBooksDatabasePath)) {
+            log("Reading recent books database", "functions");
+            QFile recentBooksDatabase(global::localLibrary::recentBooksDatabasePath);
+            QByteArray recentBooksData;
+            if(recentBooksDatabase.open(QIODevice::ReadOnly)) {
+                recentBooksData = recentBooksDatabase.readAll();
+                recentBooksDatabase.close();
+            }
+            else {
+                log("Failed to open recent books database file for reading at '" + recentBooksDatabase.fileName() + "'", "functions");
+            }
+            QJsonObject mainJsonObject = QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(recentBooksData))).object();
+            for(int i = 1; i <= global::homePageWidget::recentBooksNumber; i++) {
+                QString objectName = "Book" + QString::number(i);
+                QJsonObject jsonObject = mainJsonObject[objectName].toObject();
+                if(i == 1) {
+                    if(jsonObject.value("BookPath").toString() != bookPath) {
+                        // Circular buffer
+                        for(int i = global::homePageWidget::recentBooksNumber; i >= 2; i--) {
+                            mainJsonObject["Book" + QString::number(i)] = mainJsonObject["Book" + QString::number(i - 1)];
+                        }
+                        jsonObject.insert("BookPath", QJsonValue(bookPath));
+                        mainJsonObject[objectName] = jsonObject;
+                    }
+                }
+            }
+            recentBooksObject = mainJsonObject;
+        }
+        else {
+            QJsonObject mainJsonObject;
+            QJsonObject firstJsonObject;
+            firstJsonObject.insert("BookPath", QJsonValue(bookPath));
+            mainJsonObject["Book1"] = firstJsonObject;
+
+            for(int i = 2; i <= global::homePageWidget::recentBooksNumber; i++) {
+                QJsonObject jsonObject;
+                jsonObject.insert("BookPath", QJsonValue(""));
+                mainJsonObject["Book" + QString::number(i)] = jsonObject;
+            }
+            recentBooksObject = mainJsonObject;
+        }
+        QFile::remove(global::localLibrary::recentBooksDatabasePath);
+        writeFile(global::localLibrary::recentBooksDatabasePath, qCompress(QJsonDocument(recentBooksObject).toJson()).toBase64());
     }
 }
 

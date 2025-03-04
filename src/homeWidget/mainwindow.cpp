@@ -742,37 +742,27 @@ void MainWindow::setBatteryIcon() {
 }
 
 void MainWindow::setInitialBrightness() {
-    if(global::deviceID == "n249\n" or global::deviceID == "n873\n") {
-        int warmth;
-        QString warmthConfig = readFile(".config/03-brightness/config-warmth");
-        if(warmthConfig.isEmpty()) {
-            warmth = 0;
+    int warmthValue = 0;
+    QString warmthConfig = readFile(".config/03-brightness/config-warmth");
+    if(!warmthConfig.isEmpty()) {
+        warmthValue = warmthConfig.toInt();
+    }
+    int brightnessValue = brightnessCheckconfig(".config/03-brightness/config");
+    if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n" and !checkconfig("/tmp/oobe-inkbox_completed")) {
+        if(global::deviceID != "n873\n" or global::deviceID != "n249\n") {
+            log("Setting initial brightness to " + QString::number(brightnessValue), className);
         }
         else {
-            warmth = warmthConfig.toInt();
+            log("Setting initial brightness to " + QString::number(brightnessValue) + " and warmth to " + QString::number(warmthValue), className);
         }
-        cinematicWarmth(warmth);
-    }
-    int brightness_value = brightnessCheckconfig(".config/03-brightness/config");
-    if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
-        log("Setting initial brightness to " + QString::number(brightness_value), className);
-    }
-    if(checkconfig("/tmp/oobe-inkbox_completed") == true) {
-        // Coming from OOBE setup; not doing that fancy stuff again ;p
-        QFile::remove("/tmp/oobe-inkbox_completed");
-        preSetBrightness(brightness_value);
-        log("Ignoring cinematic brightness call because it has already been done", className);
-    }
-    else {
-        // Fancy brightness fade-in
-        if(checkconfig("/tmp/inkbox-cinematicBrightness_auto") == true) {
+        if(checkconfig("/tmp/inkbox-cinematicBrightness_auto")) {
             QFile::remove("/tmp/inkbox-cinematicBrightness_auto");
-            cinematicBrightness(brightness_value, 2);
+            cinematicBrightness(brightnessValue, warmthValue);
         }
         else {
-            if(checkconfig("/tmp/inkbox-cinematicBrightness_ran") == false) {
+            if(!checkconfig("/tmp/inkbox-cinematicBrightness_ran")) {
                 writeFile("/tmp/inkbox-cinematicBrightness_ran", "true");
-                cinematicBrightness(brightness_value, 0);
+                cinematicBrightness(brightnessValue, warmthValue);
             }
             else {
                 log("Ignoring cinematic brightness call because it has already been done", className);
@@ -945,10 +935,12 @@ void MainWindow::openBookFile(QString book, bool relativePath) {
 
     global::reader::bookFile = book;
     if(global::reader::useKoreader) {
+        appendToRecentBooksDatabase(global::reader::bookFile);
         openKoreader();
     }
     else {
         global::reader::skipOpenDialog = true;
+        appendToRecentBooksDatabase(global::reader::bookFile);
         openReaderFramework();
     }
 }
@@ -969,7 +961,7 @@ void MainWindow::openKoreader() {
     usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
     usbmsWindow->show();
 
-    remove("/tmp/inkbox-cinematicBrightness_ran");
+    QFile::remove("/tmp/inkbox-cinematicBrightness_ran");
     QTimer::singleShot(2500, this, SLOT(runKoreader()));
 }
 

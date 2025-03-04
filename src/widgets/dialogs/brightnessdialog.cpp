@@ -72,7 +72,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     int value;
     int warmthValue;
     if(global::isN249 == true or global::isN873 == true) {
-        if(global::isN249 == true or global::realDeviceID == "n418\n") {
+        if(global::isN249 == true) {
             ui->warmthSlider->setMaximum(100);
         }
         else if(global::isN873 == true) {
@@ -84,7 +84,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
         if(global::isN249 == true or global::isN873 == true) {
             warmthValue = getWarmth();
             if(warmthValue == 0) {
-                if(global::isN249 == true or global::realDeviceID == "n418\n") {
+                if(global::isN249 == true) {
                     ui->warmthValueLabel->setText("0%");
                 }
                 else {
@@ -205,7 +205,7 @@ void brightnessDialog::on_warmthSlider_valueChanged(int value)
 {
     setWarmth(value);
     QString valueStr = QString::number(value);
-    if(global::isN249 == true or global::realDeviceID == "n418\n") {
+    if(global::isN249 == true) {
         valueStr = valueStr + "%";
     }
     ui->warmthValueLabel->setText(valueStr);

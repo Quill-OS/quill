@@ -227,15 +227,9 @@ usbmsSplash::~usbmsSplash()
     delete ui;
 }
 
-void usbmsSplash::brightnessDown() {
-    cinematicBrightness(0, 1);
+void usbmsSplash::brightnessAndWarmthDown() {
+    cinematicBrightness(0, 0);
     writeFile("/tmp/inkbox-cinematicBrightness_ran", "false");
-}
-
-void usbmsSplash::warmthDown() {
-    if(global::deviceID == "n249\n" or global::deviceID == "n873\n") {
-        cinematicWarmth(0);
-    }
 }
 
 void usbmsSplash::quit_restart() {

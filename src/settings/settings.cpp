@@ -801,7 +801,7 @@ void settings::on_readerScrollBarCheckBox_toggled(bool checked)
 }
 
 void settings::brightnessDown() {
-    cinematicBrightness(0, 1);
+    cinematicBrightness(0, 0);
 }
 
 void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)

@@ -22,8 +22,7 @@ public:
     void usbmsLaunch();
 
 private slots:
-    void brightnessDown();
-    void warmthDown();
+    void brightnessAndWarmthDown();
     void quit_restart();
     void restartServices();
 
