@@ -955,11 +955,11 @@ void MainWindow::openReaderFramework() {
 
 void MainWindow::openKoreader() {
     log("Launching KOReader", className);
-    global::reader::showKoreaderSplash = true;
+    /* global::reader::showKoreaderSplash = true;
     usbmsWindow = new usbmsSplash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
     usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
-    usbmsWindow->show();
+    usbmsWindow->show(); */
 
     QFile::remove("/tmp/inkbox-cinematicBrightness_ran");
     QTimer::singleShot(2500, this, SLOT(runKoreader()));

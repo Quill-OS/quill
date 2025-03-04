@@ -335,6 +335,7 @@ namespace {
         return 0;
     }
     void setBrightness(int value) {
+        log("Setting brightness to " + QString::number(value), "functions");
         if(global::realDeviceID == "n249\n") {
             if(QFile::exists("/var/run/brightness_write")) {
                 std::ofstream fhandler;
@@ -353,6 +354,7 @@ namespace {
         }
     }
     void setBrightness_ntxio(int value) {
+        log("Setting brightness to " + QString::number(value), "functions");
         // Thanks to Kevin Short for this (GloLight)
         int light;
         if((light = open("/dev/ntx_io", O_RDWR)) == -1) {
@@ -779,8 +781,8 @@ namespace {
         QString cbPath("/external_root/lib/ld-musl-armhf.so.1");
         QStringList cbArgs;
         cbArgs << "/external_root/opt/bin/cinematic_brightness" << QString::number(brightness) << QString::number(10 * warmth) << "-1" << "-1" << "3000" << "1";
+        log("Invoking cinematic_brightness binary: " + cbPath + " " + cbArgs.join(" "), "functions");
         QProcess *cbProc = new QProcess();
-        // qDebug() << cbArgs;
         cbProc->startDetached(cbPath, cbArgs);
         cbProc->deleteLater();
     }
@@ -804,6 +806,7 @@ namespace {
         return warmthValue;
     }
     void setWarmth(int warmthValue) {
+        log("Setting warmth to " + QString::number(warmthValue), "functions");
         QString sysfsWarmthPath;
         QString warmthValueStr;
         if(global::deviceID == "n873\n") {
