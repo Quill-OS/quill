@@ -316,10 +316,14 @@ void localLibraryWidget::on_nextPageBtn_clicked()
 }
 
 void localLibraryWidget::openBook(int bookID) {
+    if(bookID == -1) {
+        bookID = idForOpenBook;
+    }
     QJsonObject jsonObject = databaseJsonArrayList.at(bookID - 1).toObject();
     QString bookPath = jsonObject["BookPath"].toString();
     log("Opening book with ID " + QString::number(bookID) + ", path '" + bookPath + "'", className);
     emit openBookSignal(bookPath, false);
+    localLibraryWidget::close();
 }
 
 void localLibraryWidget::btnOpenBook(int buttonNumber) {
@@ -338,8 +342,9 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
     }
     else {
         log("A book was selected", className);
-        openBook(id);
-        localLibraryWidget::close();
+        bookIconArray[buttonNumber]->setPixmap(hourglassPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        idForOpenBook = id;
+        QTimer::singleShot(500, this, SLOT(openBook()));
     }
 }
 

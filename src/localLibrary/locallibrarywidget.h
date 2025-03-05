@@ -49,19 +49,21 @@ public:
     int bookIndexVector = 0;
     int goBackInIndex = 0;
     QPixmap pixmapForFolder = QPixmap(":/resources/folder.png");
+    QPixmap hourglassPixmap = QPixmap(":/resources/hourglass-top.png");
     QVector<int> booksListForPathIndex;
     int fileListCount;
     int directoryListCount;
     int completeItemsList;
     // If the path is set to '/mnt/onboard/onboard/', and it's empty, this will be true
     bool mainPathIsEmpty = false;
+    int idForOpenBook;
 
 private slots:
     void setupDatabase();
     void setupBooksList(int pageNumber);
     void on_previousPageBtn_clicked();
     void on_nextPageBtn_clicked();
-    void openBook(int id);
+    void openBook(int bookID = -1);
     void btnOpenBook(int buttonNumber);
     void refreshScreenNative();
     void openGoToPageDialog();
