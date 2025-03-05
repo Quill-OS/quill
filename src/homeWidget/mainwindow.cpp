@@ -934,7 +934,7 @@ void MainWindow::openBookFile(QString book, bool relativePath) {
     }
 
     global::reader::bookFile = book;
-    if(global::reader::useKoreader) {
+    if(global::reader::useKoreader and !imageFileMatch(global::reader::bookFile)) {
         appendToRecentBooksDatabase(global::reader::bookFile);
         openKoreader();
     }
@@ -959,10 +959,12 @@ void MainWindow::openKoreader() {
     usbmsWindow = new usbmsSplash();
     usbmsWindow->setAttribute(Qt::WA_DeleteOnClose);
     usbmsWindow->setGeometry(QRect(QPoint(0,0), screen()->geometry ().size()));
-    usbmsWindow->show(); */
+    usbmsWindow->show();
+
+    QTimer::singleShot(2500, this, SLOT(runKoreader())); */
 
     QFile::remove("/tmp/inkbox-cinematicBrightness_ran");
-    QTimer::singleShot(2500, this, SLOT(runKoreader()));
+    runKoreader();
 }
 
 void MainWindow::runKoreader() {

@@ -1243,6 +1243,22 @@ namespace {
         QFile::remove(global::localLibrary::recentBooksDatabasePath);
         writeFile(global::localLibrary::recentBooksDatabasePath, qCompress(QJsonDocument(recentBooksObject).toJson()).toBase64());
     }
+    bool imageFileMatch(QString file) {
+        if(file.right(3) == "png" or file.right(3) == "PNG" or file.right(3) == "jpg" or file.right(3) == "JPG" or file.right(3) == "bmp" or file.right(3) == "BMP" or file.right(3) == "tif" or file.right(3) == "TIF") {
+            log("File format: image", "functions");
+            writeFile("/inkbox/bookIsImage", "true");
+            return true;
+        }
+        else if(file.right(4) == "jpeg" or file.right(4) == "JPEG" or file.right(4) == "tiff" or file.right(4) == "TIFF") {
+            log("File format: image", "functions");
+            writeFile("/inkbox/bookIsImage", "true");
+            return true;
+        }
+        else {
+            writeFile("/inkbox/bookIsImage", "false");
+            return false;
+        }
+    }
 }
 
 #endif // FUNCTIONS_H

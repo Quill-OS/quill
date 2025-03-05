@@ -720,7 +720,7 @@ int reader::setup_book(QString book, int i, bool run_parser) {
             filematch_ran = true;
             is_pdf = true;
         }
-        else if(image_file_match(book) == true) {
+        else if(imageFileMatch(book) == true) {
             ui->previousBtn->hide();
             ui->nextBtn->hide();
             ui->line->hide();
@@ -1929,23 +1929,6 @@ bool reader::pdf_file_match(QString file) {
     }
     else {
         writeFile("/inkbox/bookIsPdf", "false");
-        return false;
-    }
-}
-
-bool reader::image_file_match(QString file) {
-    if(file.right(3) == "png" or file.right(3) == "PNG" or file.right(3) == "jpg" or file.right(3) == "JPG" or file.right(3) == "bmp" or file.right(3) == "BMP" or file.right(3) == "tif" or file.right(3) == "TIF") {
-        log("File format: image", className);
-        writeFile("/inkbox/bookIsImage", "true");
-        return true;
-    }
-    else if(file.right(4) == "jpeg" or file.right(4) == "JPEG" or file.right(4) == "tiff" or file.right(4) == "TIFF") {
-        log("File format: image", className);
-        writeFile("/inkbox/bookIsImage", "true");
-        return true;
-    }
-    else {
-        writeFile("/inkbox/bookIsImage", "false");
         return false;
     }
 }
