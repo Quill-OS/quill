@@ -3,6 +3,7 @@
 
 #include <QLabel>
 #include <QWidget>
+#include <QTimer>
 
 class QClickableLabel : public QLabel {
     Q_OBJECT
@@ -11,6 +12,8 @@ public:
     explicit QClickableLabel(QWidget* parent = Q_NULLPTR, Qt::WindowFlags f = Qt::WindowFlags());
     ~QClickableLabel();
     long long timeAtClick;
+    int stdIconWidth;
+    int stdIconHeight;
 
 signals:
     void clicked();
@@ -19,6 +22,9 @@ signals:
     void bookPath(QString path);
     void longPressInt(int id);
     void longPressString(QString bookPath);
+
+private slots:
+    void unclickedSlot();
 
 protected:
     void mousePressEvent(QMouseEvent * event);

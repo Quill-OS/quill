@@ -342,7 +342,7 @@ void localLibraryWidget::btnOpenBook(int buttonNumber) {
     }
     else {
         log("A book was selected", className);
-        bookIconArray[buttonNumber]->setPixmap(hourglassPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation));
+        bookIconArray[buttonNumber]->setPixmap(hourglassPixmap.scaled(stdIconWidth, stdIconHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         idForOpenBook = id;
         QTimer::singleShot(500, this, SLOT(openBook()));
     }

@@ -29,9 +29,10 @@ void QClickableLabel::mouseReleaseEvent(QMouseEvent * event) {
         }
     }
     else {
-        emit unclicked();
-        emit bookID(objectName().toInt());
-        emit bookPath(QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(objectName().toUtf8()))).object()["BookPath"].toString());
+        if(!objectName().toInt()) {
+            this->setPixmap(QPixmap(":/resources/hourglass-top-rectangular.png").scaled(stdIconWidth, stdIconHeight, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        }
+        QTimer::singleShot(500, this, SLOT(unclickedSlot()));
     }
     if(objectName() == "pageNumberLabel") {
         QClickableLabel::setStyleSheet("border-radius: 10px; padding-left: 10px; padding-right: 10px");
@@ -39,4 +40,10 @@ void QClickableLabel::mouseReleaseEvent(QMouseEvent * event) {
     else {
         QClickableLabel::setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
     }
+}
+
+void QClickableLabel::unclickedSlot() {
+    emit unclicked();
+    emit bookID(objectName().toInt());
+    emit bookPath(QJsonDocument::fromJson(qUncompress(QByteArray::fromBase64(objectName().toUtf8()))).object()["BookPath"].toString());
 }

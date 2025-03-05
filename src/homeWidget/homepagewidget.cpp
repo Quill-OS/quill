@@ -178,6 +178,8 @@ void homePageWidget::setupDisplay(bool databaseGenerated) {
                 bookBtnArray[i]->setAlignment(Qt::AlignCenter);
                 bookBtnArray[i]->setFont(QFont("u001"));
                 bookBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
+                bookBtnArray[i]->stdIconWidth = stdIconWidth;
+                bookBtnArray[i]->stdIconHeight = stdIconHeight;
                 // Book title label
                 bookTitleArray[i]->setWordWrap(true);
                 bookTitleArray[i]->setAlignment(Qt::AlignCenter);
@@ -282,6 +284,8 @@ void homePageWidget::setupDisplay(bool databaseGenerated) {
                 pinnedBooksBtnArray[i]->setAlignment(Qt::AlignCenter);
                 pinnedBooksBtnArray[i]->setFont(QFont("u001"));
                 pinnedBooksBtnArray[i]->setStyleSheet("color: black; background-color: white; border-radius: 10px; padding: 10px");
+                pinnedBooksBtnArray[i]->stdIconWidth = stdIconWidth;
+                pinnedBooksBtnArray[i]->stdIconHeight = stdIconHeight;
                 // Book title label
                 pinnedBooksTitleArray[i]->setWordWrap(true);
                 pinnedBooksTitleArray[i]->setAlignment(Qt::AlignCenter);

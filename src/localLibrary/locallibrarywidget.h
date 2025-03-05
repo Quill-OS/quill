@@ -49,7 +49,7 @@ public:
     int bookIndexVector = 0;
     int goBackInIndex = 0;
     QPixmap pixmapForFolder = QPixmap(":/resources/folder.png");
-    QPixmap hourglassPixmap = QPixmap(":/resources/hourglass-top.png");
+    QPixmap hourglassPixmap = QPixmap(":/resources/hourglass-top-rectangular.png");
     QVector<int> booksListForPathIndex;
     int fileListCount;
     int directoryListCount;

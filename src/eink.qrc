@@ -121,5 +121,6 @@
         <file>resources/clean.png</file>
         <file>resources/usbms-inverted.png</file>
         <file>resources/koreader.png</file>
+        <file>resources/hourglass-top-rectangular.png</file>
     </qresource>
 </RCC>
