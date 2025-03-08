@@ -68,29 +68,14 @@ int main(int argc, char *argv[])
         QFile::remove("/tmp/rescan_userapps");
         log("Re-scanning user applications from explicit request", "main");
         writeFile("/opt/ibxd", "gui_apps_stop\n");
-        while(true) {
-            if(QFile::exists("/tmp/gui_apps_stopped")) {
-                QFile::remove("/tmp/gui_apps_stopped");
-                break;
-            }
-            QThread::msleep(500);
-        }
+        waitForStatusFile("/tmp/gui_apps_stopped");
         writeFile("/opt/ibxd", "gui_apps_start\n");
-        while(true) {
-            if(QFile::exists("/tmp/gui_apps_started")) {
-                if(checkconfig("/tmp/gui_apps_started") == true) {
-                    log("GUI apps service started successfully", "main");
-                    QFile::remove("/tmp/gui_apps_started");
-                    updateUserAppsMainJsonFile();
-                    break;
-                }
-                else {
-                    log("GUI apps service failed to start", "main");
-                    QFile::remove("/tmp/gui_apps_started");
-                    break;
-                }
-            }
-            QThread::msleep(500);
+        if(waitForStatusFile("/tmp/gui_apps_started")) {
+            log("GUI apps service started successfully", "main");
+            updateUserAppsMainJsonFile();
+        }
+        else {
+            log("GUI apps service failed to start", "main");
         }
         updateUserAppsMainJsonFile();
     }

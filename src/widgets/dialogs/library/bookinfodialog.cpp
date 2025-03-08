@@ -60,23 +60,15 @@ bookInfoDialog::bookInfoDialog(QWidget *parent) :
             gutenbergDir.mkpath("/inkbox/gutenberg");
             writeFile("/inkbox/gutenberg/bookid", QString::number(global::library::bookId));
             writeFile("/opt/ibxd", "gutenberg_get_cover\n");
-            while(true) {
-                if(QFile::exists("/inkbox/gutenberg/getCoverDone")) {
-                    if(checkconfig("/inkbox/gutenberg/getCoverDone") == true) {
-                        QPixmap coverPixmap("/inkbox/gutenberg/book_cover.jpg");
-                        QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                        ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
-                        QFile::remove("/inkbox/gutenberg/getCoverDone");
-                        break;
-                    }
-                    else {
-                        QPixmap coverPixmap(":/resources/cover_unavailable.png");
-                        QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-                        ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
-                        QFile::remove("/inkbox/gutenberg/getCoverDone");
-                        break;
-                    }
-                }
+            if(waitForStatusFile("/inkbox/gutenberg/getCoverDone")) {
+                QPixmap coverPixmap("/inkbox/gutenberg/book_cover.jpg");
+                QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
+            }
+            else {
+                QPixmap coverPixmap(":/resources/cover_unavailable.png");
+                QPixmap scaledCoverPixmap = coverPixmap.scaled(stdIconWidth, stdIconHeight, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+                ui->bookCoverLabel->setPixmap(scaledCoverPixmap);
             }
         }
 
@@ -161,24 +153,15 @@ void bookInfoDialog::on_getBtn_clicked()
 }
 
 void bookInfoDialog::waitForBookFetch() {
-    while(true) {
-        if(QFile::exists("/inkbox/gutenberg/getBookDone")) {
-            if(checkconfig("/inkbox/gutenberg/getBookDone") == true) {
-                emit closeIndefiniteToast();
-                QString function = __func__; log(function + ": Download successful", className);
-                emit showToast("Download successful");
-                QFile::remove("/inkbox/gutenberg/getBookDone");
-                QFile::remove(global::localLibrary::databasePath);
-                break;
-            }
-            else {
-                emit closeIndefiniteToast();
-                QString function = __func__; log(function + ": Download failed", className);
-                emit showToast("Download failed");
-                QFile::remove("/inkbox/gutenberg/getBookDone");
-                break;
-            }
-        }
-        QThread::msleep(500);
+    if(waitForStatusFile("/inkbox/gutenberg/getBookDone")) {
+        emit closeIndefiniteToast();
+        QString function = __func__; log(function + ": Download successful", className);
+        emit showToast("Download successful");
+        QFile::remove(global::localLibrary::databasePath);
+    }
+    else {
+        emit closeIndefiniteToast();
+        QString function = __func__; log(function + ": Download failed", className);
+        emit showToast("Download failed");
     }
 }

@@ -973,18 +973,12 @@ void settings::on_generateSystemReportBtn_clicked()
     log("'Generate system report' button clicked", className);
     log("Generating system report", className);
     writeFile("/opt/ibxd", "generate_system_report\n");
-    while(true) {
-        if(QFile::exists("/inkbox/systemReportDone")) {
-            if(checkconfig("/inkbox/systemReportDone") == true) {
-                QFile::remove(global::localLibrary::databasePath);
-                emit showToast("System report generated successfully");
-            }
-            else {
-                emit showToast("Error in generating system report");
-            }
-            QFile::remove("/inkbox/systemReportDone");
-            break;
-        }
+    if(waitForStatusFile("/inkbox/systemReportDone")) {
+        QFile::remove(global::localLibrary::databasePath);
+        emit showToast("System report generated successfully");
+    }
+    else {
+        emit showToast("Error in generating system report");
     }
 }
 
@@ -1180,10 +1174,12 @@ void settings::on_usbNetworkingCheckBox_toggled(bool checked)
     if(checked) {
         writeFile("/external_root/boot/flags/USBNET_ENABLE", "true");
         writeFile("/opt/ibxd", "usbnet_start\n");
+        waitForStatusFile("/tmp/usbnet_started");
     }
     else {
         writeFile("/external_root/boot/flags/USBNET_ENABLE", "false");
         writeFile("/opt/ibxd", "usbnet_stop\n");
+        waitForStatusFile("/tmp/usbnet_stopped");
     }
 }
 

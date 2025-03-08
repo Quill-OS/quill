@@ -93,50 +93,27 @@ void usbmsSplash::usbmsLaunch()
 {
     log("Entering USBMS session", className);
     writeFile("/tmp/in_usbms", "true");
-    QTimer::singleShot(1500, this, SLOT(brightnessDown()));
-    QTimer::singleShot(1500, this, SLOT(warmthDown()));
+    QTimer::singleShot(1500, this, SLOT(brightnessAndWarmthDown()));
 
     if(global::usbms::koboxExportExtensions == true) {
         writeFile("/opt/ibxd", "kobox_extensions_storage_unmount\n");
+        waitForStatusFile("/tmp/kobox_extensions_storage_unmounted");
     }
+
     if(checkconfig("/external_root/run/encfs_mounted") == true) {
         writeFile("/external_root/run/encfs_stop_cleanup", "true");
         writeFile("/opt/ibxd", "encfs_stop\n");
-        while(true) {
-            if(QFile::exists("/tmp/encfs_stopped")) {
-                QFile::remove("/tmp/encfs_stopped");
-                break;
-            }
-            QThread::msleep(500);
-        }
+        waitForStatusFile("/tmp/encfs_stopped");
     }
 
     writeFile("/opt/ibxd", "gui_apps_stop\n");
-    while(true) {
-        if(QFile::exists("/tmp/gui_apps_stopped")) {
-            QFile::remove("/tmp/gui_apps_stopped");
-            break;
-        }
-        QThread::msleep(500);
-    }
+    waitForStatusFile("/tmp/gui_apps_stopped");
 
     writeFile("/opt/ibxd", "onboard_unmount\n");
-    while(true) {
-        if(QFile::exists("/tmp/onboard_unmounted")) {
-            QFile::remove("/tmp/onboard_unmounted");
-            break;
-        }
-        QThread::msleep(500);
-    }
+    waitForStatusFile("/tmp/onboard_unmounted");
 
     writeFile("/opt/ibxd", "usbnet_stop\n");
-    while(true) {
-        if(QFile::exists("/tmp/usbnet_stopped")) {
-            QFile::remove("/tmp/usbnet_stopped");
-            break;
-        }
-        QThread::msleep(500);
-    }
+    waitForStatusFile("/tmp/usbnet_stopped");
 
     if(global::realDeviceID == "n306\n" or global::realDeviceID == "n249\n" or global::realDeviceID == "n873\n") {
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/fs/configfs/configfs.ko");
@@ -243,55 +220,28 @@ void usbmsSplash::quit_restart() {
 }
 
 void usbmsSplash::restartServices() {
+    // Remounting onboard storage filesystem
+    writeFile("/opt/ibxd", "onboard_mount\n");
+    waitForStatusFile("/tmp/onboard_mounted");
+
     // Restarting USBNet
     // NOTE: USBNet is only started if required conditions are met (see https://github.com/Kobo-InkBox/rootfs/blob/master/etc/init.d/usbnet)
     writeFile("/opt/ibxd", "usbnet_start\n");
-    while(true) {
-        if(QFile::exists("/tmp/usbnet_started")) {
-            QFile::remove("/tmp/usbnet_started");
-            break;
-        }
-        QThread::msleep(500);
-    }
+    waitForStatusFile("/tmp/usbnet_started");
 
-    // Mounting onboard storage
-    writeFile("/opt/ibxd", "onboard_mount\n");
-    while(true) {
-        if(QFile::exists("/tmp/onboard_mounted")) {
-            QFile::remove("/tmp/onboard_mounted");
-            break;
-        }
-        QThread::msleep(500);
+    // GUI apps: update main JSON file
+    writeFile("/opt/ibxd", "gui_apps_start\n");
+    if(waitForStatusFile("/tmp/gui_apps_started")) {
+        updateUserAppsMainJsonFile();
+    }
+    else {
+        log("GUI apps service failed to start", className);
     }
 
     // Checking for updates
     writeFile("/opt/ibxd", "update_inkbox_restart\n");
-    while(true) {
-        if(QFile::exists("/tmp/update_inkbox_restarted")) {
-            QFile::remove("/tmp/update_inkbox_restarted");
-            break;
-        }
-        QThread::msleep(500);
-    }
+    waitForStatusFile("/tmp/update_inkbox_restarted");
 
-    QFile::remove("/tmp/in_usbms");
-    // GUI apps: update main JSON file
-    writeFile("/opt/ibxd", "gui_apps_start\n");
-    while(true) {
-        if(QFile::exists("/tmp/gui_apps_started")) {
-            if(checkconfig("/tmp/gui_apps_started") == true) {
-                QFile::remove("/tmp/gui_apps_started");
-                updateUserAppsMainJsonFile();
-                break;
-            }
-            else {
-                log("GUI apps service failed to start", className);
-                QFile::remove("/tmp/gui_apps_started");
-                break;
-            }
-        }
-        QThread::msleep(500);
-    }
     // Remove macOS dotfiles
     {
         QString prog("busybox-initrd");
@@ -304,6 +254,7 @@ void usbmsSplash::restartServices() {
     }
     // Re-generate local library on next launch
     QFile::remove(global::localLibrary::databasePath);
+    QFile::remove("/tmp/in_usbms");
 
     quit_restart();
 }

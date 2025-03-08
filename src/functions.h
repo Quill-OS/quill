@@ -1259,6 +1259,19 @@ namespace {
             return false;
         }
     }
+    bool waitForStatusFile(QString file) {
+        log("Waiting for status file '" + file + "'", "functions");
+        bool status = false;
+        while(true) {
+            if(QFile::exists(file)) {
+                status = checkconfig(file);
+                QFile::remove(file);
+                break;
+            }
+            QThread::msleep(250);
+        }
+        return status;
+    }
 }
 
 #endif // FUNCTIONS_H

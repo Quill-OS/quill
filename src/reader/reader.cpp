@@ -219,13 +219,8 @@ reader::reader(QWidget *parent) :
             global::reader::globalReadingSettings = false;
             writeFile("/opt/ibxd", "bookconfig_mount\n");
             // Callback handler to wait until bookconfig_mount has finished execution
-            while(true) {
-                if(QFile::exists("/inkbox/bookConfigSetUp")) {
-                    QFile::remove("/inkbox/bookConfigSetUp");
-                    setupLocalSettingsEnvironment();
-                    break;
-                }
-            }
+            waitForStatusFile("/tmp/bookConfigSetUp");
+            setupLocalSettingsEnvironment();
         }
         else {
             global::reader::globalReadingSettings = true;
