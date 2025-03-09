@@ -972,6 +972,14 @@ void MainWindow::runKoreader() {
     QProcess process;
     QStringList args;
     args << "user" << "-c" << "/mnt/onboard/.adds/koreader/koreader.sh";
+    if(global::deviceID == "kt\n") {
+        // I could have used the mount() syscall, but handling loop devices would have been somewhat complicated with this old kernel
+        QProcess mountProc;
+        QStringList mountArgs;
+        mountArgs << "/mnt/onboard/.adds/koreader/system-lib/kt.sqsh" << "/lib" << "-o" << "nosuid,nodev" << "-t" << "squashfs";
+        mountProc.start("/bin/mount", mountArgs);
+        mountProc.waitForFinished();
+    }
     process.startDetached("/bin/su", args);
     qApp->quit();
 }
