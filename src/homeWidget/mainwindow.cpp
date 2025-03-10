@@ -971,7 +971,7 @@ void MainWindow::runKoreader() {
     writeFile("/inkbox/book_file", global::reader::bookFile);
     QProcess process;
     QStringList args;
-    args << "user" << "-c" << "/mnt/onboard/.adds/koreader/koreader.sh";
+    args << "DEVICE=" + global::realDeviceID.trimmed() << "/bin/su" << "user" << "-c" << "/mnt/onboard/.adds/koreader/koreader.sh";
     if(global::deviceID == "kt\n") {
         // I could have used the mount() syscall, but handling loop devices would have been somewhat complicated with this old kernel
         QProcess mountProc;
@@ -980,7 +980,7 @@ void MainWindow::runKoreader() {
         mountProc.start("/bin/mount", mountArgs);
         mountProc.waitForFinished();
     }
-    process.startDetached("/bin/su", args);
+    process.startDetached("/usr/bin/env", args);
     qApp->quit();
 }
 
