@@ -244,9 +244,9 @@ void usbmsSplash::restartServices() {
 
     // Remove macOS dotfiles
     {
-        QString prog("busybox-initrd");
+        QString prog("/usr/bin/find");
         QStringList args;
-        args << "find" << "/mnt/onboard/onboard" << "-type" << "f" << "-name" << "._*" << "-delete";
+        args << "/mnt/onboard/onboard" << "-type" << "f" << "-name" << "._*" << "-delete";
         QProcess * proc = new QProcess();
         proc->start(prog, args);
         proc->waitForFinished();

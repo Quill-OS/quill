@@ -132,9 +132,9 @@ void localLibraryWidget::setupDatabase() {
             }
         }
 
-        QString prog("busybox-initrd");
+        QString prog("/usr/bin/env");
         QStringList args;
-        args << "env" << "icon_width_divider=" + QString::number(stdIconWidthDivider - 1.5) << "icon_height_divider=" + QString::number(stdIconHeightDivider - 1.5) << "./explore_local_library.sh" << booksList;
+        args << "icon_width_divider=" + QString::number(stdIconWidthDivider - 1.5) << "icon_height_divider=" + QString::number(stdIconHeightDivider - 1.5) << "./explore_local_library.sh" << booksList;
 
         /*
         *   Logs/steps needed to debug the database creation
