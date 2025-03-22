@@ -666,6 +666,8 @@ void virtualkeyboard::reverseKeys(keyboardMode keyboardMode) {
         ui->lx->setText("X");
         ui->ly->setText("Y");
         ui->lz->setText("Z");
+
+        ui->spt->setText(".");
     }
     else if(keyboardMode == keyboardMode::lowerCase) {
         ui->shiftBtn->setText("⇧");
@@ -707,6 +709,8 @@ void virtualkeyboard::reverseKeys(keyboardMode keyboardMode) {
         ui->lx->setText("x");
         ui->ly->setText("y");
         ui->lz->setText("z");
+
+        ui->spt->setText(".");
     }
     else if(keyboardMode == keyboardMode::specialCharacters) {
         ui->shiftBtn->setText("⇧");
@@ -724,7 +728,7 @@ void virtualkeyboard::reverseKeys(keyboardMode keyboardMode) {
 
         ui->lq->setText("@");
         ui->lw->setText("#");
-        ui->le->setText("€");
+        ui->le->setText("$");
         ui->lr->setText("%");
         // Important
         ui->lt->setText("&&");
@@ -751,6 +755,8 @@ void virtualkeyboard::reverseKeys(keyboardMode keyboardMode) {
         ui->lb->setText("]");
         ui->ln->setText("<");
         ui->lm->setText(">");
+
+        ui->spt->setText("=");
     }
     QTimer::singleShot(1000, this, SLOT(adjust_size_function()));
 }
