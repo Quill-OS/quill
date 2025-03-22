@@ -432,13 +432,6 @@ MainWindow::MainWindow(QWidget *parent)
         writeFile("/external_root/run/inkbox_gui_git_commit", GIT_COMMIT);
     }
 
-    // Telemetry
-    if(checkconfig(".config/24-telemetry/enabled") == false && checkconfig(".config/24-telemetry/asked") == false) {
-        if(testPing("23.163.0.39") == 0) {
-            QTimer::singleShot(1000, this, SLOT(openTelemetryDialog()));
-        }
-    }
-
     // KOReader
     if(readFile(".config/25-reader_engine/reader_engine") == "koreader") {
         global::reader::useKoreader = true;
@@ -855,6 +848,12 @@ void MainWindow::updateWifiIcon() {
                     }
                     else {
                         showToast("Connection successful");
+                    }
+                    // Telemetry
+                    if(checkconfig(".config/24-telemetry/enabled") == false && checkconfig(".config/24-telemetry/asked") == false) {
+                        if(testPing("23.163.0.39") == 0) {
+                            QTimer::singleShot(1000, this, SLOT(openTelemetryDialog()));
+                        }
                     }
                     isConnecting = false;
                     QFile("/mnt/onboard/.adds/inkbox/.config/17-wifi_connection_information/stopped").remove();
