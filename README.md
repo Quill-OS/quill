@@ -5,9 +5,11 @@
  - https://www.mobileread.com/forums/showthread.php?t=363175
  - https://www.mobileread.com/forums/showthread.php?t=337972&page=9
 
- Besides, we are progressively transitioning to Pine64's PineNote (see [here](https://github.com/PorQ-Pine)).
+ Besides, we are progressively transitioning to Pine64's PineNote (see [here](https://github.com/PorQ-Pine)), where we plan to rewrite the OS from the ground up while keeping the esssence of it (and the GUI's design).
 
- I plan to backport new features to Kobos when we get to that point, but this should not be seen as a guarantee.
+ I plan to backport new features to Kobos when we get to that point, but this should not be seen as a guarantee, although it would be sad to give up on all those Kobos...
+
+ **TL;DR**: expect no support from us, although you can still ask questions (with some hope). No official updates are planned either (for now).
 
  Thanks for your understanding!
 
