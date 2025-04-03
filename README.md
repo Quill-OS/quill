@@ -1,3 +1,16 @@
+ ## Warning
+ The recently-released Kobo Libra Colour uses Secure Boot, which makes it very difficult for us to port it to Quill OS.
+
+ Some more info about it:
+ - https://www.mobileread.com/forums/showthread.php?t=363175
+ - https://www.mobileread.com/forums/showthread.php?t=337972&page=9
+
+ Besides, we are progressively transitioning to Pine64's PineNote (see [here](https://github.com/PorQ-Pine)).
+
+ I plan to backport new features to Kobos when we get to that point, but this should not be seen as a guarantee.
+
+ Thanks for your understanding!
+
 # Quill
 <img src="https://github.com/Quill-OS/quill/blob/master/screenshots/homepage.png?raw=true" width="30%"></img> <img src="https://github.com/Quill-OS/quill/blob/master/screenshots/reading.png?raw=true" width="30%"></img> <img src="https://github.com/Quill-OS/quill/blob/master/screenshots/library.png?raw=true" width="30%"></img> 
 ## About Quill
