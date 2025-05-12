@@ -126,10 +126,10 @@ void flashExam::on_revealBtn_clicked()
         displayCard(true);
     }
     else {
+        answerShown = true;
         QString answerText = displayImage(answersStringList.at(currentCardNumber));
         ui->textBrowser->clear();
         ui->textBrowser->setText("<em>" + answerText + "</em>");
-        answerShown = true;
         ui->revealBtn->setText("Hide answer");
         ui->continueWidget->show();
     }
@@ -204,18 +204,19 @@ void flashExam::displayCard(bool existingCardNumber) {
             }
         }
     }
+    answerShown = false;
     QString cardText = displayImage(cardsStringList.at(currentCardNumber));
 
     ui->textBrowser->clear();
     ui->textBrowser->setText(cardText);
 
     ui->revealBtn->setText("Show answer");
-    answerShown = false;
     ui->continueWidget->hide();
 }
 
 QString flashExam::displayImage(QString cardText) {
     ui->textBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    ui->textBrowser->show();
     ui->graphicsView->hide();
     QRegularExpression imageRegex("IMG='([^']+)'");
     QRegularExpressionMatch match = imageRegex.match(cardText);
@@ -225,6 +226,9 @@ QString flashExam::displayImage(QString cardText) {
         QString imagePath = basePath + ".flashexam/resources/" + listName + "/" + imageFile;
         log("Displaying image '" + imagePath + "'", className);
         if(QFile::exists(imagePath)) {
+            if(cardText.count() <= 7 + imageFile.count()) {
+                ui->textBrowser->hide();
+            }
             ui->graphicsView->items().clear();
             graphicsScene->clear();
             QPixmap pixmap(imagePath);
@@ -297,4 +301,3 @@ void flashExam::on_brainBruteForceCheckBox_toggled(bool checked)
         ui->brainBruteForceCardsThresholdSpinBox->setDisabled(true);
     }
 }
-
