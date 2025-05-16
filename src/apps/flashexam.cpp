@@ -159,6 +159,7 @@ void flashExam::displayCard(bool existingCardNumber) {
                     else {
                         ui->cardNumberLabel->setText(QString::number(cardsAlreadyShownNumber / cardsTotalFloat * 100, 'f', 1) + "% done, " + QString::number(cardsNotKnownNumber / cardsTotalFloat * 100, 'f', 1) + "% forgotten");
                     }
+                    ui->cardNumberLabel->show();
                 }
             }
             else {
