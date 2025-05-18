@@ -237,9 +237,9 @@ QString flashExam::displayImage(QString cardText) {
             // Shrinking scene if item is smaller than previous one
             QRectF rect = graphicsScene->itemsBoundingRect();
             graphicsScene->setSceneRect(rect);
+            ui->graphicsView->show();
             ui->graphicsView->fitInView(graphicsScene->sceneRect(), Qt::KeepAspectRatio);
             ui->textBrowser->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Maximum);
-            ui->graphicsView->show();
         }
         else {
             log("Image does not exist", className);
