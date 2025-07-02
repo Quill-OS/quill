@@ -311,6 +311,7 @@ void generalDialog::on_cancelBtn_clicked()
         }
         else if(global::keyboard::telemetryMessageDialog == true) {
             global::keyboard::telemetryMessageDialog = false;
+            global::keyboard::keyboardDialog = false;
             emit telemetryMessage(global::keyboard::keyboardText);
             global::keyboard::keyboardText = "";
             log("No message to be sent along with collected data", className);
