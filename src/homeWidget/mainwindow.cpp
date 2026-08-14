@@ -393,7 +393,7 @@ MainWindow::MainWindow(QWidget *parent)
                         ;
                     }
                     else {
-                        // An USB cable is connected!
+                        // A USB cable is connected!
                         setBatteryIcon();
                         openUsbmsDialog();
                     }

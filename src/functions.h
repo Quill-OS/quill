@@ -865,17 +865,19 @@ namespace {
             if(readFile("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_status") == "1\n") {
                 return 1;
             }
-            else {
-                return 0;
-            }
+            return 0;
         }
         else if(global::deviceID == global::device::KoboClaraHD) {
             if(readFile("/sys/class/power_supply/rn5t618-battery/status") != "Discharging\n") {
                 return 1;
             }
-            else {
-                return 0;
+            return 0;
+        }
+        else if(global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KoboLibraColour) {
+            if(readFile("/sys/class/power_supply/bd71827_ac/online") != "0\n") {
+                return 1;
             }
+            return 0;
         }
         else {
             // Thanks to https://github.com/koreader/KoboUSBMS/blob/2efdf9d920c68752b2933f21c664dc1afb28fc2e/usbms.c#L148-L158
