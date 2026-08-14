@@ -21,11 +21,11 @@ egg::egg(QWidget *parent) :
     ui->infoBtn->setIcon(QIcon(":/resources/info.png"));
     ui->titleLabel->setFont(QFont("Inter"));
     ui->contributorName->setFont(QFont("Inter"));
-    if(global::deviceID == "n873\n") {
+    if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         ui->nextBtn->setStyleSheet("padding: 13.5px");
         ui->previousBtn->setStyleSheet("padding: 13.5px");
     }
-    else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+    else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
         ui->nextBtn->setStyleSheet("padding: 12.5px");
         ui->previousBtn->setStyleSheet("padding: 12.5px");
     }

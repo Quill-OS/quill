@@ -90,16 +90,16 @@ void koboxAppsDialog::on_launchBtn_clicked()
         // DPI setting
         QString initialDpiSetting = readFile(".config/00-kobox/dpiSetting");
         if(initialDpiSetting.isEmpty()) {
-            if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+            if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
                 dpiSetting = "125";
             }
-            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+            else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::Emulator) {
                 dpiSetting = "175";
             }
-            else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+            else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KoboClaraHD) {
                 dpiSetting = "225";
             }
-            else if(global::deviceID == "n873\n") {
+            else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
                 dpiSetting = "250";
             }
             else {
@@ -124,16 +124,16 @@ void koboxAppsDialog::on_launchBtn_clicked()
             log("Launching KoBox app: KTerm", className);
             writeFile("/external_root/tmp/X_program", "/usr/local/bin/kterm -l /usr/local/share/kterm/layouts/keyboard-kt.xml -k 1");
             dpModeSetting = "fullscreen";
-            if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+            if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
                 dpiSetting = "175";
             }
-            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+            else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::Emulator) {
                 dpiSetting = "225";
             }
-            else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+            else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
                 dpiSetting = "275";
             }
-            else if(global::deviceID == "n873\n") {
+            else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
                 dpiSetting = "300";
             }
             else {

@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Needed, the screen is shifted?
     // ~Szybet
-    if(global::deviceID == "n306\n") {
+    if(global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC) {
         ui->centralwidget->layout()->setContentsMargins(4, 5, 8, 8);
     }
 
@@ -82,7 +82,7 @@ MainWindow::MainWindow(QWidget *parent)
     sH = QGuiApplication::screens()[0]->size().height();
 
     // Defining what the default icon size will be
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         stdIconWidth = sW / 12;
         stdIconHeight = sH / 12;
         brightnessIconWidth = sW / 24;
@@ -92,7 +92,7 @@ MainWindow::MainWindow(QWidget *parent)
         wifiIconWidth = sW / 20.5;
         wifiIconHeight = sH / 20.5;
     }
-    else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+    else if(global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
         stdIconWidth = sW / 14;
         stdIconHeight = sH / 14;
         brightnessIconWidth = sW / 26;
@@ -102,7 +102,7 @@ MainWindow::MainWindow(QWidget *parent)
         wifiIconWidth = sW / 22.5;
         wifiIconHeight = sH / 22.5;
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "emu\n") {
+    else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::Emulator) {
         stdIconWidth = sW / 12.5;
         stdIconHeight = sH / 12.5;
         brightnessIconWidth = sW / 24.5;
@@ -166,13 +166,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->wifiBtn->setStyleSheet("font-size: 9pt; padding-bottom: 0px; padding-top: 0px; padding-left: 8px; padding-right: 8px");
 
     // Checking if we have a Mini or Touch there
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+    if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 1px; padding-right: 1px;");
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "emu\n") {
+    else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::Emulator) {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;");
     }
-    else if(global::deviceID == "n873\n") {
+    else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         ui->batteryIcon->setStyleSheet("font-size: 5pt; padding-bottom: 0px; padding-top: 0px; padding-left: 0px; padding-right: 0px;");
     }
     else {
@@ -187,7 +187,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     // Deleting/Hiding "Library" button if device is not WiFi-able
     // NOTE: Using deleteLater() on these elements causes a segmentation fault and aborts the whole program when the Settings, Apps or Home button is pressed. No idea why.
-    if(global::device::isWifiAble == false && global::deviceID != "emu\n") {
+    if(global::device::isWifiAble == false && global::deviceID != global::device::Emulator) {
         ui->libraryButton->hide();
         ui->line_10->hide();
     }
@@ -665,9 +665,9 @@ void MainWindow::resetIcons() {
 
 void MainWindow::setBatteryIcon() {
     // Battery
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n") {
+    if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KindleTouch) {
         // Hide brightness controls; they won't be very useful there anyway (for anything but the Glo (HD)/Libra/Aura 2) ...
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
             ui->brightnessBtn->hide();
             ui->line_7->hide();
         }
@@ -741,8 +741,8 @@ void MainWindow::setInitialBrightness() {
         warmthValue = warmthConfig.toInt();
     }
     int brightnessValue = brightnessCheckconfig(".config/03-brightness/config");
-    if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n" and !checkconfig("/tmp/oobe-inkbox_completed")) {
-        if(global::deviceID != "n873\n" or global::deviceID != "n249\n") {
+    if(global::deviceID != global::device::KoboMini and global::deviceID != global::device::KoboTouchB and global::deviceID != global::device::KoboTouchC and global::deviceID != global::device::KindleTouch and !checkconfig("/tmp/oobe-inkbox_completed")) {
+        if(global::deviceID != global::device::KoboLibraH2O and global::deviceID != global::device::KoboLibra2 and global::deviceID != global::device::KoboLibraColour and global::deviceID != global::device::KoboClaraHD and global::deviceID != global::device::KoboClaraColour) {
             log("Setting initial brightness to " + QString::number(brightnessValue), className);
         }
         else {
@@ -970,8 +970,8 @@ void MainWindow::runKoreader() {
     writeFile("/inkbox/book_file", global::reader::bookFile);
     QProcess process;
     QStringList args;
-    args << "DEVICE=" + global::realDeviceID.trimmed() << "/bin/su" << "user" << "-c" << "/mnt/onboard/.adds/koreader/koreader.sh";
-    if(global::deviceID == "kt\n") {
+    args << "DEVICE=" + modelToString(global::deviceID).trimmed() << "/bin/su" << "user" << "-c" << "/mnt/onboard/.adds/koreader/koreader.sh";
+    if(global::deviceID == global::device::KindleTouch) {
         // I could have used the mount() syscall, but handling loop devices would have been somewhat complicated with this old kernel
         QProcess mountProc;
         QStringList mountArgs;
@@ -1012,7 +1012,7 @@ void MainWindow::openEncfsRepackDialog() {
 void MainWindow::on_libraryButton_clicked()
 {
     log("Launching Online Library", className);
-    if(testPing() == 0 or global::deviceID == "emu\n") {
+    if(testPing() == 0 or global::deviceID == global::device::Emulator) {
         // 'Do you want to sync?' dialog
         bool willSync = false;
         QString syncEpochQStr = readFile("/external_root/opt/storage/gutenberg/last_sync");

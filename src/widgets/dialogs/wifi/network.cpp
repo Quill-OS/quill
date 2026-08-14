@@ -41,7 +41,7 @@ void network::applyVariables() {
 
     // Limit name size
     int truncateThreshold;
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         truncateThreshold = 12;
     }
     else {

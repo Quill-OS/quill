@@ -239,7 +239,7 @@ reader::reader(QWidget *parent) :
         ui->fontChooser->setCurrentText(global::reader::font);
     }
     // Night mode
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
+    if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC) {
         if(checkconfig(".config/10-dark_mode/config") == true) {
             log("Setting night mode to ON", className);
             writeFile("/tmp/invertScreen", "y");
@@ -263,12 +263,12 @@ reader::reader(QWidget *parent) :
         ui->nightModeBtn->deleteLater();
     }
 
-    if(global::deviceID == "n873\n") {
+    if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         ui->nextBtn->setStyleSheet("padding: 13.5px");
         ui->previousBtn->setStyleSheet("padding: 13.5px");
         ui->optionsBtn->setStyleSheet("padding: 13.5px");
     }
-    else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+    else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
         ui->nextBtn->setStyleSheet("padding: 12.5px");
         ui->previousBtn->setStyleSheet("padding: 12.5px");
         ui->optionsBtn->setStyleSheet("padding: 12.5px");
@@ -290,7 +290,7 @@ reader::reader(QWidget *parent) :
 
     // Hiding the menubar + definition widget + brightness button + buttons bar widget
     ui->menuWidget->setVisible(false);
-    if(!(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n")) {
+    if(!(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch)) {
         ui->brightnessBtn->setVisible(true);
         ui->line_15->setVisible(true);
     }
@@ -330,7 +330,7 @@ reader::reader(QWidget *parent) :
     if(checkconfig("/opt/inkbox_genuine") == true) {
         float stdIconWidth;
         float stdIconHeight;
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KindleTouch or global::deviceID == global::device::Emulator) {
             stdIconWidth = sW / 16;
             stdIconHeight = sW / 16;
         }
@@ -519,11 +519,8 @@ reader::reader(QWidget *parent) :
         infoLabelContent.append(bookTitle);
         int infoLabelLength = infoLabelContent.length();
         int infoLabelDefinedLength;
-        if(global::deviceID == "n705\n") {
+        if(global::deviceID == global::device::KoboMini) {
             infoLabelDefinedLength = 35;
-        }
-        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
-            infoLabelDefinedLength = 50;
         }
         else {
             infoLabelDefinedLength = 50;
@@ -547,11 +544,8 @@ reader::reader(QWidget *parent) :
         }
 
         int infoLabelDefinedLength;
-        if(global::deviceID == "n705\n") {
+        if(global::deviceID == global::device::KoboMini) {
             infoLabelDefinedLength = 35;
-        }
-        else if(global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n" or global::deviceID == "emu\n") {
-            infoLabelDefinedLength = 50;
         }
         else {
             infoLabelDefinedLength = 50;
@@ -592,7 +586,7 @@ reader::reader(QWidget *parent) :
                         ;
                     }
                     else {
-                        // An USB cable is connected!
+                        // A USB cable is connected!
                         openUsbmsDialog();
                     }
                 }
@@ -642,7 +636,7 @@ reader::reader(QWidget *parent) :
                 }
             }
         } );
-        if(global::deviceID != "emu\n") {
+        if(global::deviceID != global::device::Emulator) {
             t->start();
         }
     }
@@ -1062,10 +1056,10 @@ void reader::on_optionsBtn_clicked()
     log("'Options' button clicked", className);
     if(menubar_shown == true) {
         menubar_hide();
-        if(global::deviceID == "n873\n") {
+        if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 13.5px");
         }
-        else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+        else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
             ui->optionsBtn->setStyleSheet("background: white; color: black; padding: 12.5px");
         }
         else {
@@ -1073,17 +1067,17 @@ void reader::on_optionsBtn_clicked()
         }
         ui->optionsBtn->setIcon(QIcon(":/resources/settings.png"));
         // The Glo HD (N437) has a newer platform plugin that doesn't need this
-        if(global::deviceID != "n437\n" or global::deviceID != "n306\n" or global::deviceID != "n249\n") {
+        if(global::deviceID != global::device::KoboGloHD or global::deviceID != global::device::KoboNiaA or global::deviceID != global::device::KoboNiaC or global::deviceID != global::device::KoboClaraHD or global::deviceID != global::device::KoboClaraColour) {
             QTimer::singleShot(500, this, SLOT(repaint()));
         }
         menubar_shown = false;
     }
     else {
         menubar_show();
-        if(global::deviceID == "n873\n") {
+        if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 13.5px");
         }
-        else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+        else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
             ui->optionsBtn->setStyleSheet("background: black; color: white; padding: 12.5px");
         }
         else {
@@ -2178,9 +2172,9 @@ void reader::on_brightnessBtn_clicked()
 
 void reader::setCinematicBrightnessWarmthSlot() {
     if(global::reader::globalReadingSettings == false) {
-        if(global::deviceID != "n705\n" and global::deviceID != "n905\n" and global::deviceID != "kt\n") {
+        if(global::deviceID != global::device::KoboMini and global::deviceID != global::device::KoboTouchB and global::deviceID != global::device::KoboTouchC and global::deviceID != global::device::KindleTouch) {
             int brightnessValue = brightnessCheckconfig(".config/03-brightness/config");
-            if(global::deviceID != "n873\n" or global::deviceID != "n249\n") {
+            if(global::deviceID != global::device::KoboLibraH2O or global::deviceID != global::device::KoboLibra2 or global::deviceID != global::device::KoboLibraColour or global::deviceID != global::device::KoboClaraHD or global::deviceID != global::device::KoboClaraColour) {
                 log("Local Reading Settings: Setting brightness to " + QString::number(brightnessValue), className);
                 cinematicBrightness(brightnessValue, 0);
             }

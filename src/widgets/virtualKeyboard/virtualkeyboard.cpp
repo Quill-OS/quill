@@ -23,10 +23,10 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->enterBtn->setProperty("type", "borderless");
         {
             int padding = 13;
-            if(global::deviceID == "n873\n") {
+            if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
                 padding = 27;
             }
-            else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+            else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
                 padding = 20;
             }
             ui->closeBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: " + QString::number(padding) + "px");
@@ -91,7 +91,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
     ui->spt->setProperty("type", "borderless");
     ui->sat->setProperty("type", "borderless");
 
-    if(global::deviceID == "n873\n") {
+    if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         ui->n1->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
         ui->n2->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
         ui->n3->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 27px");
@@ -136,7 +136,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->sat->setStyleSheet("font-weight: bold; font-size: 7pt; padding: 27px");
         ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 15px; border: 1px solid black");
     }
-    else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+    else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
         ui->n1->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
         ui->n2->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
         ui->n3->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 20px");
@@ -181,7 +181,7 @@ virtualkeyboard::virtualkeyboard(QWidget *parent) :
         ui->sat->setStyleSheet("font-weight: bold; font-size: 7pt; padding: 20px");
         ui->spaceBtn->setStyleSheet("font-weight: bold; font-size: 9pt; padding: 15px; border: 1px solid black");
     }
-    else if(global::deviceID == "n705\n") {
+    else if(global::deviceID == global::device::KoboMini) {
         ui->n1->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
         ui->n2->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");
         ui->n3->setStyleSheet("font-weight: bold; font-size: 8pt; padding: 11.45px");

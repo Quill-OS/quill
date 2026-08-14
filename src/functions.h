@@ -112,6 +112,43 @@ namespace global {
     }
     namespace device {
         inline bool isWifiAble;
+        enum Model {
+            KindleTouch,
+            KoboMini,
+            KoboTouchB,
+            KoboTouchC,
+            KoboGlo,
+            KoboGloHD,
+            KoboAuraE2,
+            KoboClaraHD,
+            KoboLibraH2O,
+            KoboNiaA,
+            KoboNiaC,
+            KoboLibra2,
+            KoboLibraColour,
+            KoboClaraColour,
+            Emulator,
+        };
+        inline QString modelToString(Model model) {
+            switch (model) {
+                case KindleTouch:     return "kt";
+                case KoboMini:        return "n705";
+                case KoboTouchB:      return "n905b";
+                case KoboTouchC:      return "n905c";
+                case KoboGlo:         return "n613";
+                case KoboGloHD:       return "n437";
+                case KoboAuraE2:      return "n236";
+                case KoboClaraHD:     return "n249";
+                case KoboLibraH2O:    return "n873";
+                case KoboNiaA:        return "n306";
+                case KoboNiaC:        return "n306c";
+                case KoboLibra2:      return "n418";
+                case KoboLibraColour: return "n428";
+                case KoboClaraColour: return "n367";
+                case Emulator:        return "emu";
+                default:              return "UnknownModel";
+            }
+        }
     }
     namespace otaUpdate {
         inline bool isUpdateOta;
@@ -238,18 +275,8 @@ namespace global {
     }
     inline QString systemInfoText;
     inline bool forbidOpenSearchDialog;
-    inline bool isN705 = false;
-    inline bool isN905C = false;
-    inline bool isN613 = false;
-    inline bool isN873 = false;
-    inline bool isN236 = false;
-    inline bool isN437 = false;
-    inline bool isN306 = false;
-    inline bool isN249 = false;
-    inline bool isKT = false;
     inline bool runningInstanceIsReaderOnly;
-    inline QString deviceID;
-    inline QString realDeviceID;
+    inline device::Model deviceID;
 }
 
 // https://stackoverflow.com/questions/6080853/c-multiple-definition-error-for-global-functions-in-the-header-file/20679534#20679534
@@ -336,7 +363,7 @@ namespace {
     }
     void setBrightness(int value) {
         log("Setting brightness to " + QString::number(value), "functions");
-        if(global::realDeviceID == "n249\n") {
+        if(global::deviceID == global::device::KoboClaraHD) {
             if(QFile::exists("/var/run/brightness_write")) {
                 std::ofstream fhandler;
                 fhandler.open("/var/run/brightness_write");
@@ -404,7 +431,7 @@ namespace {
         fhandler.close();
     }
     int getBrightness() {
-        if(global::deviceID == "n613\n") {
+        if(global::deviceID == global::device::KoboGlo) {
             QString brightnessConfig = readFile(".config/03-brightness/config");
             int brightness;
             if(brightnessConfig.isEmpty()) {
@@ -418,7 +445,7 @@ namespace {
         else {
             if(QFile::exists("/var/run/brightness")) {
                 QString brightnessFilePath = "/var/run/brightness";
-                if(global::realDeviceID == "n418\n") {
+                if(global::deviceID == global::device::KoboLibra2) {
                     brightnessFilePath = "/sys/class/backlight/mxc_msp430.0/actual_brightness";
                 }
                 QFile brightness(brightnessFilePath);
@@ -463,7 +490,7 @@ namespace {
     void getBatteryLevel() {
         batteryLevelInt = 100;
         batteryLevel = "100%";
-        if(global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KindleTouch) {
             if(QFile::exists("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_capacity")) {
                 batteryLevel = readFile("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_capacity").trimmed();
                 batteryLevelInt = batteryLevel.toInt();
@@ -537,7 +564,7 @@ namespace {
         return 0;
     }
     void zeroBrightness() {
-        if(global::deviceID != "n613\n") {
+        if(global::deviceID != global::device::KoboGlo) {
             setBrightness(0);
         }
         else {
@@ -637,7 +664,7 @@ namespace {
     QString getConnectionInformation() {
         QString getIpProg ("sh");
         QStringList getIpArgs;
-        if(global::deviceID != "n437\n" and global::deviceID != "n249\n") {
+        if(global::deviceID != global::device::KoboGloHD and global::deviceID != global::device::KoboClaraHD) {
             getIpArgs << "-c" << "/sbin/ifconfig eth0 | grep 'inet addr' | cut -d: -f2 | awk '{print $1}'";
         }
         else {
@@ -668,7 +695,7 @@ namespace {
         global::systemInfoText.append("<br><b>Kernel version:</b> ");
         global::systemInfoText.append(kernelVersion);
         global::systemInfoText.append("<br><b>Device:</b> ");
-        QString device = global::deviceID.trimmed();
+        QString device = modelToString(global::deviceID);
         global::systemInfoText.append(device);
         QString ipAddress = getConnectionInformation();
         global::systemInfoText.append("<br><b>IP address: </b>");
@@ -700,19 +727,19 @@ namespace {
          * 1: PDF
         */
         if(fileType == 0) {
-            if(global::deviceID == "n705\n") {
+            if(global::deviceID == global::device::KoboMini) {
                 defaultEpubPageHeight = 365;
                 defaultEpubPageWidth = 365;
             }
-            else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+            else if(global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
                 defaultEpubPageHeight = 425;
                 defaultEpubPageWidth = 425;
             }
-            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "emu\n") {
+            else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::Emulator) {
                 defaultEpubPageHeight = 450;
                 defaultEpubPageWidth = 450;
             }
-            else if(global::deviceID == "n873\n") {
+            else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
                 defaultEpubPageHeight = 525;
                 defaultEpubPageWidth = 525;
             }
@@ -721,7 +748,7 @@ namespace {
             log(function + ": Defined default ePUB page width to " + QString::number(defaultEpubPageWidth), "functions");
         }
         else if(fileType == 1) {
-            if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+            if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
                 if(global::reader::pdfOrientation == 0) {
                     defaultPdfPageHeight = 750;
                     defaultPdfPageWidth = 550;
@@ -731,7 +758,7 @@ namespace {
                     defaultPdfPageWidth = 750;
                 }
             }
-            else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+            else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::Emulator) {
                 if(global::reader::pdfOrientation == 0) {
                     defaultPdfPageHeight = 974;
                     defaultPdfPageWidth = 708;
@@ -741,7 +768,7 @@ namespace {
                     defaultPdfPageWidth = 974;
                 }
             }
-            else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+            else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
                 if(global::reader::pdfOrientation == 0) {
                     defaultPdfPageHeight = 1398;
                     defaultPdfPageWidth = 1022;
@@ -751,7 +778,7 @@ namespace {
                     defaultPdfPageWidth = 1398;
                 }
             }
-            else if(global::deviceID == "n873\n") {
+            else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
                 if(global::reader::pdfOrientation == 0) {
                     defaultPdfPageHeight = 1630;
                     defaultPdfPageWidth = 1214;
@@ -767,10 +794,7 @@ namespace {
         }
     }
     void preSetBrightness(int brightnessValue) {
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n873\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "kt\n") {
-            setBrightness(brightnessValue);
-        }
-        else if(global::deviceID == "n613\n") {
+        if(global::deviceID == global::device::KoboGlo) {
             setBrightness_ntxio(brightnessValue);
         }
         else {
@@ -789,18 +813,18 @@ namespace {
     int getWarmth() {
         QString sysfsWarmthPath;
         int warmthValue;
-        if(global::realDeviceID == "n873\n") {
+        if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibraColour or global::deviceID == global::device::KoboClaraColour) {
             sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
         }
-        else if(global::realDeviceID == "n418\n") {
+        else if(global::deviceID == global::device::KoboLibra2) {
             sysfsWarmthPath = "/sys/class/leds/aw99703-bl_FL1/color";
         }
-        else if(global::realDeviceID == "n249\n") {
+        else if(global::deviceID == global::device::KoboClaraHD) {
             sysfsWarmthPath = "/sys/class/backlight/backlight_warm/actual_brightness";
         }
         QString warmthConfig = readFile(sysfsWarmthPath);
         warmthValue = warmthConfig.toInt();
-        if(global::realDeviceID == "n873\n" or global::realDeviceID == "n418\n") {
+        if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour or global::deviceID == global::device::KoboClaraColour) {
             warmthValue = 10 - warmthValue;
         }
         return warmthValue;
@@ -809,18 +833,18 @@ namespace {
         log("Setting warmth to " + QString::number(warmthValue), "functions");
         QString sysfsWarmthPath;
         QString warmthValueStr;
-        if(global::deviceID == "n873\n") {
+        if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             // Value 0 gives a warmer lighting than value 10
             warmthValue = 10 - warmthValue;
             warmthValueStr = QString::number(warmthValue);
-            if(global::realDeviceID == "n873\n") {
-                sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
+            if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibraColour or global::deviceID == global::device::KoboClaraColour) {
+            sysfsWarmthPath = "/sys/class/backlight/lm3630a_led/color";
             }
-            else if(global::realDeviceID == "n418\n"){
+            else if(global::deviceID == global::device::KoboLibra2){
                 sysfsWarmthPath = "/sys/class/leds/aw99703-bl_FL1/color";
             }
         }
-        else if(global::realDeviceID == "n249\n") {
+        else if(global::deviceID == global::device::KoboClaraHD) {
             warmthValueStr = QString::number(warmthValue);
             sysfsWarmthPath = "/sys/class/backlight/backlight_warm/brightness";
         }
@@ -837,7 +861,7 @@ namespace {
         return checkconfig("/external_root/run/encfs_mounted");
     }
     bool isUsbPluggedIn() {
-        if(global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KindleTouch) {
             if(readFile("/sys/devices/system/yoshi_battery/yoshi_battery0/battery_status") == "1\n") {
                 return 1;
             }
@@ -845,7 +869,7 @@ namespace {
                 return 0;
             }
         }
-        else if(global::deviceID == "n249\n") {
+        else if(global::deviceID == global::device::KoboClaraHD) {
             if(readFile("/sys/class/power_supply/rn5t618-battery/status") != "Discharging\n") {
                 return 1;
             }
@@ -1095,13 +1119,13 @@ namespace {
         return QJsonObject();
     }
     float determineYIncrease() {
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n") {
+        if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC) {
             return 2;
         }
-        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::Emulator) {
             return 2.6;
         }
-        else if(global::deviceID == "n437\n" or global::deviceID == "n249\n" or global::deviceID == "n873\n") {
+        else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             return 3;
         }
         else {
@@ -1110,7 +1134,7 @@ namespace {
     }
     global::wifi::wifiState checkWifiState() {
         QString interfaceName;
-        if(global::deviceID == "n437\n" or global::deviceID == "n249\n" or global::realDeviceID == "n418\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KindleTouch) {
             interfaceName = "wlan0";
         }
         else {

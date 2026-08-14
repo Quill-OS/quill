@@ -29,7 +29,7 @@ settingsChooser::settingsChooser(QWidget *parent) :
     sH = QGuiApplication::screens()[0]->size().height();
 
     // Defining what the default icon size will be
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         homeIconWidth = sW / 18;
         homeIconHeight = sW / 18;
     }
@@ -42,12 +42,12 @@ settingsChooser::settingsChooser(QWidget *parent) :
     ui->koboxSettingsBtn->setProperty("type", "borderless");
     ui->powerSettingsBtn->setProperty("type", "borderless");
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+    if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
         ui->powerSettingsBtn->setStyleSheet("padding: 20px; Text-align: left");
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+    else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::Emulator) {
         ui->inkboxSettingsBtn->setStyleSheet("padding: 25px; Text-align: left");
         ui->koboxSettingsBtn->setStyleSheet("padding:25px; Text-align: left");
         ui->powerSettingsBtn->setStyleSheet("padding:25px; Text-align: left");

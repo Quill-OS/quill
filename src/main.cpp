@@ -43,9 +43,39 @@ int main(int argc, char *argv[])
         }
     }
 
-    global::deviceID = readFile("/opt/inkbox_device");
-    global::realDeviceID = readFile("/external_root/opt/inkbox_device");
-    log("Running on device " + global::realDeviceID, "main", true);
+    QString device = readFile("/external_root/opt/inkbox_device");
+    device = device.trimmed();
+    if (device == "n705") {
+        global::deviceID = global::device::KoboMini;
+    } else if (device == "n905b") {
+        global::deviceID = global::device::KoboTouchB;
+    } else if (device == "n905c") {
+        global::deviceID = global::device::KoboTouchC;
+    } else if (device == "n613") {
+        global::deviceID = global::device::KoboGlo;
+    } else if (device == "n437") {
+        global::deviceID = global::device::KoboGloHD;
+    } else if (device == "n236") {
+        global::deviceID = global::device::KoboAuraE2;
+    } else if (device == "n249") {
+        global::deviceID = global::device::KoboClaraHD;
+    } else if (device == "n306") {
+        global::deviceID = global::device::KoboNiaA;
+    } else if (device == "n306c") {
+        global::deviceID = global::device::KoboNiaC;
+    } else if (device == "n367") {
+        global::deviceID = global::device::KoboClaraColour;
+    } else if (device == "n873") {
+        global::deviceID = global::device::KoboLibraH2O;
+    } else if (device == "n418") {
+        global::deviceID = global::device::KoboLibra2;
+    } else if (device == "n428") {
+        global::deviceID = global::device::KoboLibraColour;
+    } else if (device == "kt") {
+        global::deviceID = global::device::KindleTouch;
+    } else if (device == "emu") {
+        global::deviceID = global::device::Emulator;
+    }
 
     // Tell the OS that we're currently running
     writeFile("/tmp/inkbox_running", "true");
@@ -127,7 +157,7 @@ int main(int argc, char *argv[])
         global::reader::startUsbmsPrompt = false;
 
         // Checking if battery level is critical; if true (and if it is not charging), then display a "Please charge your eReader" splash and power off.
-        if(global::deviceID != "emu\n") {
+        if(global::deviceID != global::device::Emulator) {
             if(isBatteryCritical() == true) {
                 if(!isUsbPluggedIn()) {
                     global::battery::showCriticalBatteryAlert = true;
@@ -159,37 +189,6 @@ int main(int argc, char *argv[])
             global::reader::skipOpenDialog = true;
 
             writeFile("/inkbox/skip_opendialog", "true");
-            if(global::deviceID == "n705\n") {
-                global::isN705 = true;
-            }
-            else if(global::deviceID == "n905\n") {
-                global::isN905C = true;
-            }
-            else if(global::deviceID == "n613\n") {
-                global::isN613 = true;
-            }
-            else if(global::deviceID == "n873\n") {
-                global::isN873 = true;
-            }
-            else if(global::deviceID == "n236\n") {
-                global::isN236 = true;
-            }
-            else if(global::deviceID == "n437\n") {
-                global::isN437 = true;
-            }
-            else if(global::deviceID == "n306\n") {
-                global::isN306 = true;
-            }
-	    else if(global::deviceID == "n249\n") {
-                global::isN249 = true;
-            }
-            else if(global::deviceID == "kt\n") {
-                global::isKT = true;
-            }
-            else {
-                ;
-            }
-
             reader w;
 
             const QScreen* screen = qApp->primaryScreen();
@@ -208,37 +207,6 @@ int main(int argc, char *argv[])
             stylesheetFile.open(QFile::ReadOnly);
             w.setStyleSheet(stylesheetFile.readAll());
             stylesheetFile.close();
-
-            if(global::deviceID == "n705\n") {
-                global::isN705 = true;
-            }
-            else if(global::deviceID == "n905\n") {
-                global::isN905C = true;
-            }
-            else if(global::deviceID == "n613\n") {
-                global::isN613 = true;
-            }
-            else if(global::deviceID == "n873\n") {
-                global::isN873 = true;
-            }
-            else if(global::deviceID == "n236\n") {
-                global::isN236 = true;
-            }
-            else if(global::deviceID == "n437\n") {
-                global::isN437 = true;
-            }
-	    else if(global::deviceID == "n306\n") {
-                global::isN306 = true;
-            }
-	    else if(global::deviceID == "n249\n") {
-                global::isN249 = true;
-            }
-            else if(global::deviceID == "kt\n") {
-                global::isKT = true;
-            }
-            else {
-                ;
-            }
 
             const QScreen * screen = qApp->primaryScreen();
             w.setGeometry(QRect(QPoint(0,0), screen->geometry().size()));

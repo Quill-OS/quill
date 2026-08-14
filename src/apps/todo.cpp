@@ -17,7 +17,7 @@ todo::todo(QWidget *parent) :
     ui->setupBtn->setEnabled(false);
 
     buttonPadding;
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+    if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
         buttonPadding = 5;
     }
     else {

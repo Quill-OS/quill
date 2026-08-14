@@ -72,7 +72,7 @@ settings::settings(QWidget *parent) :
     sH = QGuiApplication::screens()[0]->size().height();
 
     // Defining what the default icon size will be
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         homeIconWidth = sW / 18;
         homeIconHeight = sW / 18;
     }
@@ -150,7 +150,7 @@ settings::settings(QWidget *parent) :
         ui->quoteCheckBox->click();
     }
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n") {
+    if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC) {
         if(checkconfig(".config/10-dark_mode/config") == true) {
             ui->darkModeCheckBox->click();
         }
@@ -163,10 +163,10 @@ settings::settings(QWidget *parent) :
     // Words number
     QString wordsNumberConfigStr = readFile(".config/07-words_number/config");
     if(wordsNumberConfigStr.isEmpty()) {
-        if(global::deviceID == "n705\n") {
+        if(global::deviceID == global::device::KoboMini) {
             wordsNumberSaved = 120;
         }
-        else if(global::deviceID == "n873\n") {
+        else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             wordsNumberSaved = 250;
         }
         else {
@@ -226,16 +226,16 @@ settings::settings(QWidget *parent) :
     QString dpiSettingStr = readFile(".config/09-dpi/config");
     if(dpiSettingStr.isEmpty()) {
         // Writing default value depending on the device
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
             writeFile(".config/09-dpi/config", "160");
         }
-        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+        else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::Emulator) {
             writeFile(".config/09-dpi/config", "195");
         }
-        else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+        else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
             writeFile(".config/09-dpi/config", "275");
         }
-        else if(global::deviceID == "n873\n") {
+        else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             writeFile(".config/09-dpi/config", "285");
         }
         else {
@@ -244,7 +244,7 @@ settings::settings(QWidget *parent) :
     }
     else {
         int dpi_number = dpiSettingStr.toInt();
-        if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
             if(dpi_number == 160) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -255,7 +255,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
+        else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::Emulator) {
             if(dpi_number == 195) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -266,7 +266,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(global::deviceID == "n306\n") {
+        else if(global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC) {
             if(dpi_number == 212) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -277,7 +277,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(3);
             }
         }
-        else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+        else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
             if(dpi_number == 275) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -288,7 +288,7 @@ settings::settings(QWidget *parent) :
                 ui->uiScalingSlider->setValue(2);
             }
         }
-        else if(global::deviceID == "n873\n") {
+        else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             if(dpi_number == 285) {
                 ui->uiScalingSlider->setValue(0);
             }
@@ -611,62 +611,62 @@ void settings::on_uiScalingSlider_valueChanged(int value)
 {
     log("Setting DPI level to " + QString::number(value), className);
     if(value == 0) {
-        if(global::deviceID == "n705\n") {
+        if(global::deviceID == global::device::KoboMini) {
             writeFile(".config/09-dpi/config", "187");
         }
-        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
             writeFile(".config/09-dpi/config", "160");
         }
-        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::Emulator) {
             writeFile(".config/09-dpi/config", "195");
         }
-        if(global::deviceID == "n306\n") {
+        if(global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC) {
             writeFile(".config/09-dpi/config", "212");
         }
-        if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+        if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
             writeFile(".config/09-dpi/config", "275");
         }
-        if(global::deviceID == "n873\n") {
+        if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             writeFile(".config/09-dpi/config", "285");
         }
     }
     if(value == 1) {
-        if(global::deviceID == "n705\n") {
+        if(global::deviceID == global::device::KoboMini) {
             writeFile(".config/09-dpi/config", "214");
         }
-        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
             writeFile(".config/09-dpi/config", "187");
         }
-        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::Emulator) {
             writeFile(".config/09-dpi/config", "210");
         }
-        if(global::deviceID == "n306\n") {
+        if(global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC) {
             writeFile(".config/09-dpi/config", "227");
         }
-        if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+        if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
             writeFile(".config/09-dpi/config", "290");
         }
-        if(global::deviceID == "n873\n") {
+        if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             writeFile(".config/09-dpi/config", "300");
         }
     }
     if(value == 2) {
-        if(global::deviceID == "n705\n") {
+        if(global::deviceID == global::device::KoboMini) {
             writeFile(".config/09-dpi/config", "227");
         }
-        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
             writeFile(".config/09-dpi/config", "200");
         }
-        if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "emu\n") {
+        if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::Emulator) {
             writeFile(".config/09-dpi/config", "225");
         }
-        if(global::deviceID == "n306\n") {
+        if(global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC) {
             writeFile(".config/09-dpi/config", "242");
         }
-        if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+        if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
             writeFile(".config/09-dpi/config", "305");
         }
-        if(global::deviceID == "n873\n") {
+        if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             writeFile(".config/09-dpi/config", "315");
         }
     }
@@ -822,7 +822,7 @@ void settings::on_globalReadingSettingsCheckBox_toggled(bool checked)
 void settings::on_checkOtaUpdateBtn_clicked()
 {
     log("'Check for OTA update' button clicked", className);
-    if(testPing() == 0 or global::deviceID == "emu\n") {
+    if(testPing() == 0 or global::deviceID == global::device::Emulator) {
         launchOtaUpdater();
     }
     else {

@@ -15,15 +15,15 @@ homePageWidget::homePageWidget(QWidget *parent) :
     sW = QGuiApplication::screens()[0]->size().width();
     sH = QGuiApplication::screens()[0]->size().height();
 
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         stdIconWidth = sW / 23;
         stdIconHeight = sH / 23;
     }
-    else if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+    else if(global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
         stdIconWidth = sW / 25;
         stdIconHeight = sH / 25;
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n437\n" or global::deviceID == "n306\n" or global::deviceID == "n249\n" or global::deviceID == "emu\n") {
+    else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::Emulator) {
         stdIconWidth = sW / 23.5;
         stdIconHeight = sH / 23.5;
     }
@@ -43,35 +43,35 @@ homePageWidget::homePageWidget(QWidget *parent) :
     pinnedBooksBtnArray.resize(global::homePageWidget::pinnedBooksNumber);
     pinnedBooksTitleArray.resize(global::homePageWidget::pinnedBooksNumber);
 
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         bookTitleTruncateThreshold = 20;
     }
-    else if(global::deviceID == "n873\n") {
+    else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         bookTitleTruncateThreshold = 35;
     }
     else {
         bookTitleTruncateThreshold = 25;
     }
 
-    if(global::deviceID == "n705\n" or global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+    if(global::deviceID == global::device::KoboMini or global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
         stdIconWidthDivider = 8;
         stdIconHeightDivider = 8;
         stdIconWidth = sW / stdIconWidthDivider;
         stdIconHeight = sH / stdIconHeightDivider;
     }
-    else if(global::deviceID == "n613\n" or global::deviceID == "n236\n" or global::deviceID == "n306\n" or global::deviceID == "emu\n") {
+    else if(global::deviceID == global::device::KoboGlo or global::deviceID == global::device::KoboAuraE2 or global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::Emulator) {
         stdIconWidthDivider = 7;
         stdIconHeightDivider = 7;
         stdIconWidth = sW / stdIconWidthDivider;
         stdIconHeight = sH / stdIconHeightDivider;
     }
-    else if(global::deviceID == "n437\n" or global::deviceID == "n249\n") {
+    else if(global::deviceID == global::device::KoboGloHD or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour) {
         stdIconWidthDivider = 6.5;
         stdIconHeightDivider = 6.5;
         stdIconWidth = sW / stdIconWidthDivider;
         stdIconHeight = sH / stdIconHeightDivider;
     }
-    else if(global::deviceID == "n873\n") {
+    else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         stdIconWidthDivider = 6;
         stdIconHeightDivider = 6;
         stdIconWidth = sW / stdIconWidthDivider;

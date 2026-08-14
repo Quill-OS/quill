@@ -34,7 +34,7 @@ usbmsSplash::usbmsSplash(QWidget *parent) :
         ui->label->setText("Launching KoBox subsystem");
         ui->label->setStyleSheet("font-size: 14pt; font-weight: bold");
         ui->label_3->setText("Please wait, this could take a while.");
-        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
             ui->label_3->setStyleSheet("font-size: 11pt");
         }
         else {
@@ -59,7 +59,7 @@ usbmsSplash::usbmsSplash(QWidget *parent) :
         ui->label->setText("Launching KOReader subsystem");
         ui->label->setStyleSheet("font-size: 14pt; font-weight: bold");
         ui->label_3->setText("Please wait, this could take a while.");
-        if(global::deviceID == "n905\n" or global::deviceID == "kt\n") {
+        if(global::deviceID == global::device::KoboTouchB or global::deviceID == global::device::KoboTouchC or global::deviceID == global::device::KindleTouch) {
             ui->label_3->setStyleSheet("font-size: 11pt");
         }
         else {
@@ -115,23 +115,26 @@ void usbmsSplash::usbmsLaunch()
     writeFile("/opt/ibxd", "usbnet_stop\n");
     waitForStatusFile("/tmp/usbnet_stopped");
 
-    if(global::realDeviceID == "n306\n" or global::realDeviceID == "n249\n" or global::realDeviceID == "n873\n") {
+    if(global::deviceID == global::device::KoboNiaA or global::deviceID == global::device::KoboNiaC or global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboLibraH2O) {
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/fs/configfs/configfs.ko");
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/drivers/usb/gadget/libcomposite.ko");
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/drivers/usb/gadget/function/usb_f_mass_storage.ko");
     }
-    else if(global::realDeviceID == "kt\n") {
+    else if(global::deviceID == global::device::KindleTouch) {
         QProcess::execute("insmod", QStringList() << "/external_root/lib/modules/2.6.35-inkbox/kernel/drivers/usb/gadget/arcotg_udc.ko");
     }
 
     QString prog_1 ("insmod");
     QStringList args_1;
 
-    if(global::realDeviceID == "kt\n") {
+    if(global::deviceID == global::device::KindleTouch) {
         massStorageModule = "/external_root/lib/modules/2.6.35-inkbox/kernel/drivers/usb/gadget/g_file_storage.ko";
     }
-    else if(global::realDeviceID == "n418\n") {
+    else if(global::deviceID == global::device::KoboLibra2) {
         massStorageModule = "/external_root/lib/modules/4.1.15-inkbox/kernel/g_mass_storage.ko";
+    }
+    else if(global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KoboLibraColour) {
+        massStorageModule = "/external_root/lib/modules/4.9.77/kernel/drivers/usb/gadget/legacy/g_mass_storage.ko";
     }
     else {
         massStorageModule = "/external_root/lib/modules/g_mass_storage.ko";

@@ -34,7 +34,7 @@ connectiondialog::connectiondialog(QWidget *parent) :
 
     // Size
     QRect screenGeometry = QGuiApplication::screens()[0]->geometry();
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         this->setFixedWidth(screenGeometry.width() / 1.2);
     }
     else {
@@ -43,10 +43,10 @@ connectiondialog::connectiondialog(QWidget *parent) :
 
     int halfOfHalfHeight = ((screenGeometry.height() / 2) / 2) / 2;
     int finalHeight;
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         finalHeight = screenGeometry.height() - halfOfHalfHeight * 5.9;
     }
-    else if(global::deviceID == "n873\n") {
+    else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         finalHeight = screenGeometry.height() - halfOfHalfHeight * 6.45;
     }
     else {
@@ -69,7 +69,7 @@ connectiondialog::~connectiondialog()
 void connectiondialog::applyVariables() {
     // Limit name size
     int truncateThreshold;
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         truncateThreshold = 20;
     }
     else {

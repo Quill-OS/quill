@@ -52,7 +52,7 @@ generalDialog::generalDialog(QWidget *parent) :
     ui->searchComboBox->setStyleSheet("font-size: 9pt");
 
     // Disabling "Online library" search if device doesn't have Wi-Fi
-    if(global::device::isWifiAble == false && global::deviceID != "emu\n") {
+    if(global::device::isWifiAble == false && global::deviceID != global::device::Emulator) {
         ui->searchComboBox->removeItem(2);
     }
 
@@ -77,7 +77,7 @@ generalDialog::generalDialog(QWidget *parent) :
             resetDialog = true;
             ui->okBtn->setText("Proceed");
             ui->cancelBtn->setText("Go back");
-            if(global::deviceID != "n705\n") {
+            if(global::deviceID != global::device::KoboMini) {
                 ui->bodyLabel->setText("This will erase any books you have stored on the device.\nSettings will be reset.");
             }
             else {
@@ -455,7 +455,7 @@ void generalDialog::on_okBtn_clicked()
                     }
                 }
                 else if(ui->searchComboBox->currentText() == "Online library") {
-                    if(testPing() == 0 or global::deviceID == "emu\n") {
+                    if(testPing() == 0 or global::deviceID == global::device::Emulator) {
                         writeFile("/inkbox/searchComboBoxFunction", "Online library");
                         log("Searching online library for '" + global::keyboard::keyboardText + "'", className);
 
@@ -645,11 +645,11 @@ void generalDialog::adjust_size() {
     float widthProportion = 2;
     float heightProportion = 2;
     if(telemetryDialog) {
-        if(global::deviceID == "n705\n") {
+        if(global::deviceID == global::device::KoboMini) {
             widthProportion = 3.3;
             heightProportion = 2.6;
         }
-        else if(global::deviceID == "n873\n") {
+        else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             widthProportion = 3;
             heightProportion = 2.6;
         }

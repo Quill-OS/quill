@@ -39,7 +39,7 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
 
     // Icons
     int controlBtnFixedWidth;
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         controlBtnFixedWidth = 50;
     }
     else {
@@ -53,7 +53,7 @@ powerDaemonSettings::powerDaemonSettings(QWidget *parent) :
 
 
     int idleBtnsFixedWidth;
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         idleBtnsFixedWidth = 80;
     }
     else {

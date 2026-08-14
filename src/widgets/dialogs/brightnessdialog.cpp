@@ -36,19 +36,7 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     ui->valueLabel->setStyleSheet("font-size: 9pt");
     ui->warmthValueLabel->setStyleSheet("font-size: 9pt");
 
-    if(global::isN249 == false and global::isN873 == false) {
-        ui->warmthSlider->hide();
-        ui->warmthDecBtn->hide();
-        ui->warmthIncBtn->hide();
-        ui->warmthValueLabel->hide();
-        ui->warmthSlider->deleteLater();
-        ui->warmthDecBtn->deleteLater();
-        ui->warmthIncBtn->deleteLater();
-        ui->gridLayout_5->deleteLater();
-        ui->warmthValueLabel->deleteLater();
-        this->adjustSize();
-    }
-    else if(global::isN249 == true or global::isN873 == true) {
+    if(global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         ui->warmthDecBtn->setProperty("type", "borderless");
         ui->warmthIncBtn->setProperty("type", "borderless");
         ui->warmthDecBtn->setText("");
@@ -71,32 +59,28 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
 
     int value;
     int warmthValue;
-    if(global::isN249 == true or global::isN873 == true) {
-        if(global::isN249 == true) {
+    if(global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
+        if(global::deviceID == global::device::KoboClaraHD) {
             ui->warmthSlider->setMaximum(100);
         }
-        else if(global::isN873 == true) {
+        else if(global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
             ui->warmthSlider->setMaximum(10);
         }
-    }
-    if(global::isN249 or global::isN873 == true) {
         value = getBrightness();
-        if(global::isN249 == true or global::isN873 == true) {
-            warmthValue = getWarmth();
-            if(warmthValue == 0) {
-                if(global::isN249 == true) {
-                    ui->warmthValueLabel->setText("0%");
-                }
-                else {
-                    ui->warmthValueLabel->setText("0");
-                }
+        warmthValue = getWarmth();
+        if(warmthValue == 0) {
+            if(global::deviceID == global::device::KoboClaraHD) {
+                ui->warmthValueLabel->setText("0%");
             }
             else {
-                ui->warmthSlider->setValue(warmthValue);
+                ui->warmthValueLabel->setText("0");
             }
         }
+        else {
+            ui->warmthSlider->setValue(warmthValue);
+        }
     }
-    else if(global::isN613 == true) {
+    else if(global::deviceID == global::device::KoboGlo) {
         setDefaultWorkDir();
         value = brightnessCheckconfig(".config/03-brightness/config");
     }
@@ -113,13 +97,11 @@ brightnessDialog::brightnessDialog(QWidget *parent) :
     ui->valueLabel->setText(valueStr);
 
     // Saving current brightness value in case we want to go backwards
-    if(global::isN249 == true or global::isN873 == true) {
+    if(global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         oldValue = getBrightness();
-        if(global::isN249 == true or global::isN873 == true) {
-            oldWarmthValue = getWarmth();
-        }
+        oldWarmthValue = getWarmth();
     }
-    else if(global::isN613 == true) {
+    else if(global::deviceID == global::device::KoboGlo) {
         setDefaultWorkDir();
         oldValue = brightnessCheckconfig(".config/03-brightness/config");
     }
@@ -137,13 +119,13 @@ void brightnessDialog::on_quitBtn_clicked()
 {
     // Reverting back to the old value
     brightnessDialog::preSetBrightness(oldValue);
-    if(global::isN249 == true or global::isN873 == true) {
+    if(global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         setWarmth(oldWarmthValue);
     }
 
     // Just in case ;)
     brightnessWriteconfig(oldValue);
-    if(global::isN249 == true or global::isN873 == true) {
+    if(global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         warmthWriteconfig(oldWarmthValue);
     }
 
@@ -182,7 +164,7 @@ void brightnessDialog::on_okBtn_clicked()
     // Write brightness config
     log("Display brightness set to " + QString::number(brightnessValue), className);
     brightnessWriteconfig(brightnessValue);
-    if(global::isN249 == true or global::isN873 == true) {
+    if(global::deviceID == global::device::KoboClaraHD or global::deviceID == global::device::KoboClaraColour or global::deviceID == global::device::KoboLibraH2O or global::deviceID == global::device::KoboLibra2 or global::deviceID == global::device::KoboLibraColour) {
         warmthValue = ui->warmthSlider->value();
         log("Display warmth set to " + QString::number(warmthValue), className);
         warmthWriteconfig(warmthValue);
@@ -193,7 +175,7 @@ void brightnessDialog::on_okBtn_clicked()
 }
 
 void brightnessDialog::preSetBrightness(int brightnessValue) {
-    if(global::isN613 == true) {
+    if(global::deviceID == global::device::KoboGlo) {
         setBrightness_ntxio(brightnessValue);
     }
     else {
@@ -205,7 +187,7 @@ void brightnessDialog::on_warmthSlider_valueChanged(int value)
 {
     setWarmth(value);
     QString valueStr = QString::number(value);
-    if(global::isN249 == true) {
+    if(global::deviceID == global::device::KoboClaraHD) {
         valueStr = valueStr + "%";
     }
     ui->warmthValueLabel->setText(valueStr);

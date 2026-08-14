@@ -54,7 +54,7 @@ wifiDialog::wifiDialog(QWidget *parent) :
     this->move(x, y);
 
     // Button sizes
-    if(global::deviceID == "n705\n") {
+    if(global::deviceID == global::device::KoboMini) {
         ui->refreshBtn->setStyleSheet("padding: 20px;");
         ui->stopBtn->setStyleSheet("padding: 20px;");
         ui->logBtn->setStyleSheet("padding: 20px;");
@@ -395,7 +395,7 @@ void wifiDialog::watcher() {
     }
 
     if(changing == true) {
-        if(global::deviceID == "n705\n") {
+        if(global::deviceID == global::device::KoboMini) {
             setStatusText("Disconnecting or cleaning up");
         }
         else {

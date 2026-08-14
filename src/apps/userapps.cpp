@@ -140,7 +140,7 @@ void userapps::on_launchBtn_clicked()
     QJsonArray supportedDevices = jsonObject["SupportedDevices"].toArray();
 
     // This will work even if we are looking for 'n306' and there is a device named 'n306b' because QJsonArray::contains() works that way
-    if(supportedDevices.contains("all") == false and supportedDevices.contains(global::deviceID.trimmed()) == false) {
+    if(supportedDevices.contains("all") == false and supportedDevices.contains(modelToString(global::deviceID).trimmed()) == false) {
         log("Warning: User application '" + appName + "' does not support this device", className);
         global::userApps::appCompatibilityDialog = true;
         global::userApps::appCompatibilityText = "<font face='u001'>Your device is not compatible with this app.<br>Continue anyway</font><font face='Inter'>?</font>";
@@ -184,7 +184,7 @@ bool userapps::manageRequiredFeatures()
         // Wi-Fi connection required
         if(featureId == 0) {
             // Double 'if' conditions to avoid launching unnecesery testPing() in emu
-            if(global::deviceID != "emu\n") {
+            if(global::deviceID != global::device::Emulator) {
                 if(checkWifiState() != global::wifi::wifiState::configured) {
                     global::userApps::appCompatibilityText = "<font face='u001'>This app needs a Wi-Fi connection, continue anyway</font><font face='Inter'>?</font>";
                     launchDialog = true;
